@@ -1,0 +1,773 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum Theme {
+  LIGHT
+  DARK
+}
+
+enum ReportFormat {
+  PDF
+  EXCEL
+}
+
+enum DeliveryStatus {
+  SENT
+  FAILED
+}
+
+enum EnquiryStatus {
+  NEW
+  PENDING
+  CONTACTED
+  CLOSED
+}
+
+enum CareerStatus {
+  NEW
+  PENDING
+  SHORTLISTED
+  REJECTED
+  HIRED
+  CLOSED
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  roleName    String   @unique @map("role_name") @db.VarChar(100)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users User[]
+
+  @@map("roles")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  fullName     String    @map("full_name") @db.VarChar(150)
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.Text
+  phone        String?   @db.VarChar(20)
+  roleId       String    @map("role_id") @db.Uuid
+  role         Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  profileImage String?   @map("profile_image") @db.Text
+  status       Boolean   @default(true)
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  lastLogin    DateTime? @map("last_login")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  blogs                      Blog[]
+  galleryItems               Gallery[]
+  testimonials               Testimonial[]
+  faqs                       Faq[]
+  mediaItems                 MediaLibrary[]
+  reports                    Report[]
+  auditLogs                  AuditLog[]
+  assignedContactEnquiries          ContactEnquiry[]
+  assignedAdmissionEnquiries        AdmissionEnquiry[]
+  assignedFranchisePartnerEnquiries FranchisePartnerEnquiry[]
+  assignedCompanyPlacementEnquiries CompanyPlacementEnquiry[]
+
+  @@index([email])
+  @@index([roleId])
+  @@index([status, isDeleted])
+  @@map("users")
+}
+
+model CourseCategory {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(150)
+  slug         String   @unique @db.VarChar(150)
+  description  String?  @db.Text
+  displayOrder Int      @default(0) @map("display_order")
+  status       Boolean  @default(true)
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  courses Course[]
+
+  @@index([slug])
+  @@index([status, isDeleted])
+  @@map("course_categories")
+}
+
+model Trainer {
+  id              String   @id @default(uuid()) @db.Uuid
+  fullName        String   @map("full_name") @db.VarChar(200)
+  photo           String?  @db.Text
+  designation     String?  @db.VarChar(150)
+  qualification   String?  @db.VarChar(255)
+  experience      String?  @db.VarChar(100)
+  biography       String?  @db.Text
+  skills          Json?
+  certifications  String?  @db.Text
+  linkedin        String?  @db.Text
+  instagram       String?  @db.Text
+  email           String?  @db.VarChar(255)
+  phone           String?  @db.VarChar(20)
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0) @map("display_order")
+  metaTitle       String?  @map("meta_title") @db.VarChar(255)
+  metaDescription String?  @map("meta_description") @db.Text
+  isActive        Boolean  @default(true) @map("is_active")
+  isDeleted       Boolean  @default(false) @map("is_deleted")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  courses Course[]
+
+  @@index([isActive, isDeleted])
+  @@index([featured])
+  @@map("trainers")
+}
+
+model TeamMember {
+  id              String   @id @default(uuid()) @db.Uuid
+  fullName        String   @map("full_name") @db.VarChar(200)
+  photo           String?  @db.Text
+  designation     String?  @db.VarChar(150)
+  qualification   String?  @db.VarChar(255)
+  experience      String?  @db.VarChar(100)
+  biography       String?  @db.Text
+  skills          Json?
+  certifications  String?  @db.Text
+  linkedin        String?  @db.Text
+  instagram       String?  @db.Text
+  email           String?  @db.VarChar(255)
+  phone           String?  @db.VarChar(20)
+  featured        Boolean  @default(false)
+  displayOrder    Int      @default(0) @map("display_order")
+  isActive        Boolean  @default(true) @map("is_active")
+  isDeleted       Boolean  @default(false) @map("is_deleted")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, isDeleted])
+  @@index([featured])
+  @@map("teams")
+}
+
+model Course {
+  id               String         @id @default(uuid()) @db.Uuid
+  categoryId       String         @map("category_id") @db.Uuid
+  category         CourseCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  trainerId        String?        @map("trainer_id") @db.Uuid
+  trainer          Trainer?       @relation(fields: [trainerId], references: [id], onDelete: SetNull)
+  courseName       String         @map("course_name") @db.VarChar(255)
+  slug             String         @unique @db.VarChar(255)
+  shortDescription String?        @map("short_description") @db.Text
+  description      String?        @db.Text
+  bannerImage      String?        @map("banner_image") @db.Text
+  gallery          Json?
+  duration         String?        @db.VarChar(100)
+  fees             Decimal?       @db.Decimal(10, 2)
+  discountPrice    Decimal?       @map("discount_price") @db.Decimal(10, 2)
+  eligibility      String?        @db.Text
+  courseMode       String         @default("Offline") @map("course_mode") @db.VarChar(50)
+  level            String?        @db.VarChar(100)
+  syllabus         String?        @db.Text
+  learningOutcomes String?        @map("learning_outcomes") @db.Text
+  certification    String?        @db.Text
+  brochure         String?        @db.Text
+  demoVideo        String?        @map("demo_video") @db.Text
+  featured         Boolean        @default(false)
+  displayOrder     Int            @default(0) @map("display_order")
+  metaTitle        String?        @map("meta_title") @db.VarChar(255)
+  metaDescription  String?        @map("meta_description") @db.Text
+  canonicalUrl     String?        @map("canonical_url") @db.Text
+  status           ContentStatus  @default(PUBLISHED)
+  isActive         Boolean        @default(true) @map("is_active")
+  isDeleted        Boolean        @default(false) @map("is_deleted")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  placements         Placement[]
+  admissionEnquiries AdmissionEnquiry[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([trainerId])
+  @@index([status, isActive, isDeleted])
+  @@index([featured])
+  @@map("courses")
+}
+
+model Blog {
+  id              String        @id @default(uuid()) @db.Uuid
+  title           String        @db.VarChar(255)
+  slug            String        @unique @db.VarChar(255)
+  category        String?       @default("General") @db.VarChar(150)
+  excerpt         String?       @db.Text
+  featuredImage   String?       @map("featured_image") @db.Text
+  images          Json?
+  tags            Json?
+  author          String?       @db.VarChar(150)
+  authorId        String?       @map("author_id") @db.Uuid
+  authorUser      User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  readingTime     Int           @default(5) @map("reading_time")
+  content         String        @db.Text
+  metaTitle       String?       @map("meta_title") @db.VarChar(255)
+  metaDescription String?       @map("meta_description") @db.Text
+  canonicalUrl    String?       @map("canonical_url") @db.Text
+  featured        Boolean       @default(false)
+  status          ContentStatus @default(PUBLISHED)
+  isActive        Boolean       @default(true) @map("is_active")
+  isDeleted       Boolean       @default(false) @map("is_deleted")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([authorId])
+  @@index([status, isActive, isDeleted])
+  @@index([featured])
+  @@map("blogs")
+}
+
+model Placement {
+  id                String    @id @default(uuid()) @db.Uuid
+  studentName       String    @map("student_name") @db.VarChar(200)
+  studentPhoto      String?   @map("student_photo") @db.Text
+  companyName       String    @map("company_name") @db.VarChar(200)
+  companyLogo       String?   @map("company_logo") @db.Text
+  package           String?   @db.VarChar(100)
+  designation       String?   @db.VarChar(150)
+  courseId          String?   @map("course_id") @db.Uuid
+  course            Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  courseName        String?   @map("course_name") @db.VarChar(150)
+  placementDate     DateTime? @map("placement_date")
+  location          String?   @db.VarChar(150)
+  joiningYear       String?   @map("joining_year") @db.VarChar(50)
+  isVideo           Boolean   @default(false) @map("is_video")
+  videoUrl          String?   @map("video_url") @db.Text
+  videoThumbnail    String?   @map("video_thumbnail") @db.Text
+  isVerified        Boolean   @default(true) @map("is_verified")
+  successStory      String?   @map("success_story") @db.Text
+  featured          Boolean   @default(false)
+  displayOrder      Int       @default(0) @map("display_order")
+  isActive          Boolean   @default(true) @map("is_active")
+  isDeleted         Boolean   @default(false) @map("is_deleted")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([courseId])
+  @@index([isActive, isDeleted])
+  @@index([featured])
+  @@map("placements")
+}
+
+model Gallery {
+  id           String    @id @default(uuid()) @db.Uuid
+  album        String?   @db.VarChar(150)
+  category     String?   @db.VarChar(150)
+  mediaType    MediaType @default(IMAGE) @map("media_type")
+  fileUrl      String    @map("file_url") @db.Text
+  thumbnail    String?   @db.Text
+  altText      String?   @map("alt_text") @db.VarChar(255)
+  caption      String?   @db.Text
+  featured     Boolean   @default(false)
+  displayOrder Int       @default(0) @map("display_order")
+  createdById  String?   @map("created_by_id") @db.Uuid
+  createdBy    User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@index([album])
+  @@index([category])
+  @@index([mediaType])
+  @@index([isDeleted])
+  @@index([featured])
+  @@map("gallery")
+}
+
+model Testimonial {
+  id             String   @id @default(uuid()) @db.Uuid
+  studentName    String   @map("student_name") @db.VarChar(200)
+  heading        String?  @db.VarChar(255)
+  photo          String?  @db.Text
+  course         String?  @db.VarChar(150)
+  role           String?  @db.VarChar(150)
+  company        String?  @db.VarChar(150)
+  rating         Int      @default(5)
+  review         String   @db.Text
+  isVideo        Boolean  @default(true) @map("is_video")
+  videoUrl       String?  @map("video_url") @db.Text
+  videoThumbnail String?  @map("video_thumbnail") @db.Text
+  studentStory   String?  @map("student_story") @db.Text
+  featured       Boolean  @default(false)
+  displayOrder   Int      @default(0) @map("display_order")
+  createdById    String?  @map("created_by_id") @db.Uuid
+  createdBy      User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  isActive       Boolean  @default(true) @map("is_active")
+  isDeleted      Boolean  @default(false) @map("is_deleted")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, isDeleted])
+  @@index([featured])
+  @@map("testimonials")
+}
+
+model StudentReview {
+  id           String   @id @default(uuid()) @db.Uuid
+  studentName  String   @map("student_name") @db.VarChar(200)
+  photo        String?  @db.Text
+  course       String?  @db.VarChar(150)
+  rating       Int      @default(5)
+  review       String   @db.Text
+  company      String?  @db.VarChar(150)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, isDeleted])
+  @@map("student_reviews")
+}
+
+model Partner {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(200)
+  logo         String   @db.Text
+  type         String   @default("HIRING") @db.VarChar(50)
+  websiteUrl   String?  @map("website_url") @db.Text
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([type, isActive, isDeleted])
+  @@map("partners")
+}
+
+model EmiPartner {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(200)
+  logo         String   @db.Text
+  description  String?  @db.Text
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, isDeleted])
+  @@map("emi_partners")
+}
+
+model Faq {
+  id           String   @id @default(uuid()) @db.Uuid
+  question     String   @db.Text
+  answer       String   @db.Text
+  displayOrder Int      @default(0) @map("display_order")
+  createdById  String?  @map("created_by_id") @db.Uuid
+  createdBy    User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  isActive     Boolean  @default(true) @map("is_active")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive, isDeleted])
+  @@map("faqs")
+}
+
+model ContactEnquiry {
+  id           String        @id @default(uuid()) @db.Uuid
+  fullName     String        @map("full_name") @db.VarChar(150)
+  email        String        @db.VarChar(255)
+  phone        String        @db.VarChar(20)
+  subject      String?       @db.VarChar(255)
+  message      String        @db.Text
+  status       EnquiryStatus @default(NEW)
+  assignedToId String?       @map("assigned_to") @db.Uuid
+  assignedTo   User?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  remarks      String?       @db.Text
+  isDeleted    Boolean       @default(false) @map("is_deleted")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, isDeleted])
+  @@index([assignedToId])
+  @@map("contact_enquiries")
+}
+
+model AdmissionEnquiry {
+  id            String        @id @default(uuid()) @db.Uuid
+  studentName   String        @map("student_name") @db.VarChar(200)
+  email         String        @db.VarChar(255)
+  phone         String        @db.VarChar(20)
+  courseId      String?       @map("course_id") @db.Uuid
+  course        Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  city          String?       @db.VarChar(150)
+  qualification String?       @db.VarChar(150)
+  message       String?       @db.Text
+  status        EnquiryStatus @default(NEW)
+  assignedToId  String?       @map("assigned_to") @db.Uuid
+  assignedTo    User?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  remarks       String?       @db.Text
+  isDeleted     Boolean       @default(false) @map("is_deleted")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, isDeleted])
+  @@index([courseId])
+  @@index([assignedToId])
+  @@map("admission_enquiries")
+}
+
+model JobOpening {
+  id           String        @id @default(uuid()) @db.Uuid
+  title        String        @db.VarChar(200)
+  department   String?       @db.VarChar(150)
+  location     String?       @default("Offline Classroom") @db.VarChar(150)
+  jobType      String?       @default("Full-Time") @map("job_type") @db.VarChar(100)
+  description  String        @db.Text
+  requirements String?       @db.Text
+  displayOrder Int           @default(0) @map("display_order")
+  status       ContentStatus @default(PUBLISHED)
+  isActive     Boolean       @default(true) @map("is_active")
+  isDeleted    Boolean       @default(false) @map("is_deleted")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  careerEnquiries CareerEnquiry[]
+
+  @@index([status, isActive, isDeleted])
+  @@map("job_openings")
+}
+
+model CareerEnquiry {
+  id           String        @id @default(uuid()) @db.Uuid
+  fullName     String        @map("full_name") @db.VarChar(200)
+  email        String        @db.VarChar(255)
+  phone        String        @db.VarChar(20)
+  jobTitle     String        @map("job_title") @db.VarChar(200)
+  jobOpeningId String?       @map("job_opening_id") @db.Uuid
+  jobOpening   JobOpening?   @relation(fields: [jobOpeningId], references: [id], onDelete: SetNull)
+  resume       String        @db.Text
+  coverLetter  String?       @map("cover_letter") @db.Text
+  status       EnquiryStatus @default(NEW)
+  remarks      String?       @db.Text
+  isDeleted    Boolean       @default(false) @map("is_deleted")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, isDeleted])
+  @@index([jobOpeningId])
+  @@map("career_enquiries")
+}
+
+model FranchisePartnerEnquiry {
+  id                 String        @id @default(uuid()) @db.Uuid
+  fullName           String        @map("full_name") @db.VarChar(200)
+  companyName        String?       @map("company_name") @db.VarChar(255)
+  email              String        @db.VarChar(255)
+  phone              String        @db.VarChar(20)
+  city               String?       @db.VarChar(150)
+  state              String?       @db.VarChar(150)
+  investmentCapacity String?       @map("investment_capacity") @db.VarChar(150)
+  message            String?       @db.Text
+  status             EnquiryStatus @default(NEW)
+  assignedToId       String?       @map("assigned_to") @db.Uuid
+  assignedTo         User?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  remarks            String?       @db.Text
+  isDeleted          Boolean       @default(false) @map("is_deleted")
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, isDeleted])
+  @@index([assignedToId])
+  @@map("franchise_partner_enquiries")
+}
+
+model CompanyPlacementEnquiry {
+  id             String        @id @default(uuid()) @db.Uuid
+  companyName    String        @map("company_name") @db.VarChar(255)
+  contactPerson  String        @map("contact_person") @db.VarChar(200)
+  email          String        @db.VarChar(255)
+  phone          String        @db.VarChar(20)
+  jobRole        String        @map("job_role") @db.VarChar(200)
+  requiredSkills String?       @map("required_skills") @db.Text
+  vacancies      Int?          @default(1)
+  jobLocation    String?       @map("job_location") @db.VarChar(200)
+  message        String?       @db.Text
+  status         EnquiryStatus @default(NEW)
+  assignedToId   String?       @map("assigned_to") @db.Uuid
+  assignedTo     User?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  remarks        String?       @db.Text
+  isDeleted      Boolean       @default(false) @map("is_deleted")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  @@index([status, isDeleted])
+  @@index([assignedToId])
+  @@map("company_placement_enquiries")
+}
+
+model MediaLibrary {
+  id           String   @id @default(uuid()) @db.Uuid
+  fileName     String   @map("file_name") @db.VarChar(255)
+  fileType     String   @map("file_type") @db.VarChar(50)
+  fileSize     BigInt   @map("file_size")
+  fileUrl      String   @map("file_url") @db.Text
+  thumbnailUrl String?  @map("thumbnail_url") @db.Text
+  folder       String?  @db.VarChar(150)
+  altText      String?  @map("alt_text") @db.VarChar(255)
+  uploadedById String?  @map("uploaded_by") @db.Uuid
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([uploadedById])
+  @@index([fileType])
+  @@index([folder])
+  @@index([isDeleted])
+  @@map("media_library")
+}
+
+model WebsiteSettings {
+  id               String   @id @default(uuid()) @db.Uuid
+  websiteName      String   @default("QIMD - Quickup Institute of Marketing & Design") @map("website_name") @db.VarChar(255)
+  logo             String?  @db.Text
+  favicon          String?  @db.Text
+  contactEmail     String?  @map("contact_email") @db.VarChar(255)
+  contactPhone     String?  @map("contact_phone") @db.VarChar(20)
+  whatsappNumber   String?  @map("whatsapp_number") @db.VarChar(20)
+  address          String?  @db.Text
+  googleMap        String?  @map("google_map") @db.Text
+  googleAnalytics  String?  @map("google_analytics") @db.Text
+  searchConsole    String?  @map("search_console") @db.Text
+  socialLinks      Json?    @map("social_links")
+  homepageSections Json?    @map("homepage_sections")
+  footerContent    Json?    @map("footer_content")
+  robotsTxt        String?  @map("robots_txt") @db.Text
+  sitemap          String?  @db.Text
+  theme            Theme    @default(LIGHT)
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("website_settings")
+}
+
+model Report {
+  id            String       @id @default(uuid()) @db.Uuid
+  reportName    String       @map("report_name") @db.VarChar(200)
+  reportType    String       @map("report_type") @db.VarChar(100)
+  generatedById String       @map("generated_by") @db.Uuid
+  generatedBy   User         @relation(fields: [generatedById], references: [id], onDelete: Cascade)
+  generatedAt   DateTime     @default(now()) @map("generated_at")
+  filePath      String       @map("file_path") @db.Text
+  format        ReportFormat @default(PDF)
+
+  @@index([generatedById])
+  @@map("reports")
+}
+
+model NotificationLog {
+  id               String         @id @default(uuid()) @db.Uuid
+  recipient        String         @db.VarChar(255)
+  notificationType String         @map("notification_type") @db.VarChar(100)
+  subject          String         @db.VarChar(255)
+  deliveryStatus   DeliveryStatus @default(SENT) @map("delivery_status")
+  errorMessage     String?        @map("error_message") @db.Text
+  sentAt           DateTime       @default(now()) @map("sent_at")
+
+  @@index([deliveryStatus])
+  @@map("notification_logs")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  module    String   @db.VarChar(150)
+  action    String   @db.VarChar(100)
+  recordId  String?  @map("record_id") @db.Uuid
+  ipAddress String?  @map("ip_address") @db.VarChar(100)
+  userAgent String?  @map("user_agent") @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([module])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model WebPage {
+  id              String        @id @default(uuid()) @db.Uuid
+  pageName        String        @map("page_name") @db.VarChar(150)
+  slug            String        @unique @db.VarChar(150)
+  pageKey         String        @unique @map("page_key") @db.VarChar(100)
+  description     String?       @db.Text
+  status          ContentStatus @default(PUBLISHED)
+  metaTitle       String?       @map("meta_title") @db.VarChar(255)
+  metaDescription String?       @map("meta_description") @db.Text
+  canonicalUrl    String?       @map("canonical_url") @db.Text
+  ogImage         String?       @map("og_image") @db.Text
+  isDeleted       Boolean       @default(false) @map("is_deleted")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  sections PageSection[]
+
+  @@index([slug])
+  @@index([pageKey])
+  @@index([status, isDeleted])
+  @@map("web_pages")
+}
+
+model PageSection {
+  id           String        @id @default(uuid()) @db.Uuid
+  pageId       String?       @map("page_id") @db.Uuid
+  webPage      WebPage?      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  pageKey      String        @map("page_key") @db.VarChar(100)
+  sectionKey   String        @map("section_key") @db.VarChar(100)
+  sectionType  String?       @default("CUSTOM") @map("section_type") @db.VarChar(100)
+  sectionTitle String?       @map("section_title") @db.VarChar(255)
+  subtitle     String?       @db.Text
+  content      String?       @db.Text
+  image        String?       @db.Text
+  buttonText   String?       @map("button_text") @db.VarChar(150)
+  buttonUrl    String?       @map("button_url") @db.VarChar(255)
+  extraData    Json?         @map("extra_data")
+  displayOrder Int           @default(0) @map("display_order")
+  status       ContentStatus @default(PUBLISHED)
+  isActive     Boolean       @default(true) @map("is_active")
+  isDeleted    Boolean       @default(false) @map("is_deleted")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@index([pageKey, sectionKey])
+  @@index([pageKey, isActive, isDeleted])
+  @@index([pageId])
+  @@map("page_sections")
+}
+
+model HeaderSettings {
+  id               String   @id @default(uuid()) @db.Uuid
+  logo             String?  @db.Text
+  logoAltText      String?  @default("QIMD Logo") @map("logo_alt_text") @db.VarChar(255)
+  logoLink         String?  @default("/") @map("logo_link") @db.VarChar(255)
+  logoActive       Boolean  @default(true) @map("logo_active")
+  showSocialLinks  Boolean  @default(true) @map("show_social_links")
+  hireFromUsText   String?  @default("Hire From Us") @map("hire_from_us_text") @db.VarChar(150)
+  hireFromUsUrl    String?  @default("/hire-from-us") @map("hire_from_us_url") @db.VarChar(255)
+  hireFromUsNewTab Boolean  @default(false) @map("hire_from_us_new_tab")
+  hireFromUsActive Boolean  @default(true) @map("hire_from_us_active")
+  enquireNowText   String?  @default("Enquire Now") @map("enquire_now_text") @db.VarChar(150)
+  enquireNowUrl    String?  @default("/contact") @map("enquire_now_url") @db.VarChar(255)
+  enquireNowNewTab Boolean  @default(false) @map("enquire_now_new_tab")
+  enquireNowActive Boolean  @default(true) @map("enquire_now_active")
+  whatsappText     String?  @default("WhatsApp") @map("whatsapp_text") @db.VarChar(150)
+  whatsappNumber   String?  @map("whatsapp_number") @db.VarChar(50)
+  whatsappActive   Boolean  @default(true) @map("whatsapp_active")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("header_settings")
+}
+
+model HeaderContactItem {
+  id           String   @id @default(uuid()) @db.Uuid
+  type         String   @db.VarChar(50)
+  label        String   @db.VarChar(150)
+  value        String   @db.VarChar(255)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([type, isActive])
+  @@map("header_contact_items")
+}
+
+model FooterSettings {
+  id               String   @id @default(uuid()) @db.Uuid
+  logo             String?  @db.Text
+  logoAltText      String?  @default("QIMD Footer Logo") @map("logo_alt_text") @db.VarChar(255)
+  logoLink         String?  @default("/") @map("logo_link") @db.VarChar(255)
+  logoActive       Boolean  @default(true) @map("logo_active")
+  showSocialIcons  Boolean  @default(true) @map("show_social_icons")
+  addressLabel     String?  @default("Physical Institute Address") @map("address_label") @db.VarChar(150)
+  fullAddress      String?  @db.Text
+  googleMapsUrl    String?  @map("google_maps_url") @db.Text
+  addressActive    Boolean  @default(true) @map("address_active")
+  whatsappText     String?  @default("Chat with Us on WhatsApp") @map("whatsapp_text") @db.VarChar(150)
+  whatsappNumber   String?  @map("whatsapp_number") @db.VarChar(50)
+  whatsappActive   Boolean  @default(true) @map("whatsapp_active")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("footer_settings")
+}
+
+model FooterContactItem {
+  id           String   @id @default(uuid()) @db.Uuid
+  type         String   @db.VarChar(50)
+  label        String   @db.VarChar(150)
+  value        String   @db.VarChar(255)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([type, isActive])
+  @@map("footer_contact_items")
+}
+
+model FooterColumn {
+  id           String             @id @default(uuid()) @db.Uuid
+  title        String             @db.VarChar(150)
+  description  String?            @db.Text
+  icon         String?            @db.VarChar(100)
+  displayOrder Int                @default(0) @map("display_order")
+  isActive     Boolean            @default(true) @map("is_active")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  links        FooterColumnLink[]
+
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("footer_columns")
+}
+
+model FooterColumnLink {
+  id           String       @id @default(uuid()) @db.Uuid
+  columnId     String       @map("column_id") @db.Uuid
+  column       FooterColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  title        String       @db.VarChar(150)
+  url          String       @db.VarChar(255)
+  linkType     String       @default("INTERNAL") @map("link_type") @db.VarChar(50)
+  openInNewTab Boolean      @default(false) @map("open_in_new_tab")
+  displayOrder Int          @default(0) @map("display_order")
+  isActive     Boolean      @default(true) @map("is_active")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([columnId])
+  @@index([displayOrder])
+  @@map("footer_column_links")
+}
+
+
+

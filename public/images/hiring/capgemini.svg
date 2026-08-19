@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <g fill="#0070AD">
+    <path d="M25 15 C20 15 15 20 15 27 C15 35 25 45 25 45 C25 45 35 35 35 27 C35 20 30 15 25 15 Z" />
+    <path d="M23 45 L27 45 L28 48 L22 48 Z" />
+    <text x="45" y="38" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0070AD">Capgemini</text>
+  </g>
+</svg>

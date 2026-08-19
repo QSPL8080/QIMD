@@ -1,0 +1,317 @@
+'use client'
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { statsData, heroBadges, siteConfig, coursesData } from "@/data";
+import EnquiryForm from "@/components/Common/EnquiryForm";
+
+function CounterItem({ stat, index }: { stat: { value: string; label: string }, index: number }) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const isPercentage = stat.value.includes('%');
+  const isPlus = stat.value.includes('+');
+  const numericValue = parseInt(stat.value.replace(/[^0-9]/g, '')) || 0;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            let start = 0;
+            const duration = 2000;
+            const step = duration / 60;
+            const increment = numericValue / (duration / step);
+            const timer = setInterval(() => {
+              start += increment;
+              if (start >= numericValue) {
+                setCount(numericValue);
+                clearInterval(timer);
+              } else {
+                setCount(Math.floor(start));
+              }
+            }, step);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [hasAnimated, numericValue]);
+
+  return (
+    <div ref={ref} className="text-center p-2 sm:p-2.5 rounded-xl bg-white/25 backdrop-blur-md border border-white/40 shadow-sm transition-transform duration-300 hover:-translate-y-1">
+      <div className="text-xl sm:text-2xl xl:text-3xl font-extrabold text-[#3d1c99] mb-0.5 tracking-tight" suppressHydrationWarning>
+        {hasAnimated ? `${count}${isPlus ? '+' : ''}${isPercentage ? '%' : ''}` : '0'}
+      </div>
+      <div className="text-[11px] sm:text-xs text-[#111827]/70 font-semibold leading-tight">{stat.label}</div>
+    </div>
+  );
+}
+
+const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const searchResults = searchQuery.length > 1
+    ? coursesData.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    : [];
+
+  const title = section?.sectionTitle || "India's First Industry-Oriented & AI Powered Marketing & Design Institute";
+  const subtitle = section?.subtitle || "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities.";
+  const buttonText = section?.buttonText || "Explore Courses";
+  const buttonUrl = section?.buttonUrl || "/courses";
+
+  return (
+    <section
+      className="relative overflow-hidden text-white pt-2 sm:pt-3 lg:pt-4 pb-6 sm:pb-8 lg:pb-10"
+      style={{
+        background: 'linear-gradient(135deg, #9b7bff 0%, #d4a0f7 30%, #ffffff 50%, #88c4e8 70%, #7aaad8 100%)',
+      }}
+    >
+      {/* Subtle noise / depth overlay */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#764DFF]/15 blur-3xl" />
+        <div className="absolute top-1/2 -left-24 w-[420px] h-[420px] rounded-full bg-[#4999D4]/10 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full bg-[#BD69F2]/15 blur-3xl" />
+        <div
+          className="absolute inset-0 opacity-[0.035]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)',
+            backgroundSize: '28px 28px',
+          }}
+        />
+      </div>
+
+      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
+        
+        {/* Main 2-Column Hero Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-6 items-stretch">
+          
+          {/* LEFT COLUMN */}
+          <div className="lg:col-span-7 flex flex-col justify-between h-full">
+            <div>
+              {/* Search Bar Card */}
+              <div className="mb-2 sm:mb-3 hero-card-slide-left">
+                <div className="bg-white dark:bg-dark backdrop-blur-xl border border-white/30 shadow-xl rounded-xl p-3.5 sm:p-4 w-full max-w-2xl transition-all duration-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Icon icon="mdi:magnify" className="text-primary text-base" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-primary">Quick Course Search</span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search for courses (e.g. Graphic Design, Marketing)..."
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+                      className="w-full pl-3.5 pr-9 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight/80 focus:outline-none focus:border-primary focus:bg-white transition-all font-medium"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <Icon icon="mdi:close" className="text-sm" />
+                      </button>
+                    )}
+                  </div>
+                  
+                  {/* Dropdown search results */}
+                  {searchFocused && searchResults.length > 0 && (
+                    <div className="mt-2.5 pt-2 border-t border-gray-100 dark:border-gray-800 space-y-1 max-h-48 overflow-y-auto">
+                      {searchResults.map(c => (
+                        <Link
+                          key={c.id}
+                          href={`/courses/${c.slug}`}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/10 text-xs font-semibold text-midnight_text dark:text-white transition-colors"
+                        >
+                          <Icon icon="mdi:book-open-page-variant" className="text-primary text-sm flex-shrink-0" />
+                          <span>{c.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                  {searchFocused && searchQuery.length > 1 && searchResults.length === 0 && (
+                    <p className="text-xs text-gray-400 mt-2 px-1">No matching courses found</p>
+                  )}
+                </div>
+              </div>
+
+              {/* HERO CONTENT */}
+              <div className="space-y-4 sm:space-y-5">
+                {/* Institute Badge */}
+                <div className="inline-flex items-center gap-2 bg-white/80 text-[#5c38d6] border border-[#764DFF]/30 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full shadow-sm backdrop-blur-md">
+                  <Icon icon="mdi:star-four-points" className="text-xs text-[#764DFF] animate-pulse" />
+                  {siteConfig.fullName}
+                </div>
+
+                {/* Main Headline */}
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-extrabold text-[#111827] leading-snug tracking-tight drop-shadow-xs">
+                  {title}
+                </h1>
+
+                {/* Subheadline */}
+                <p className="text-[#111827]/80 text-sm sm:text-base leading-relaxed max-w-2xl font-medium">
+                  {subtitle}
+                </p>
+
+                {/* Feature Pills */}
+                <div className="flex flex-wrap gap-2 pt-1 pb-1">
+                  {heroBadges.map((badge, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1.5 bg-white/25 hover:bg-white/40 text-[#111827] text-xs font-semibold px-3 py-1.5 rounded-full border border-white/40 transition-all shadow-xs cursor-default backdrop-blur-xs"
+                    >
+                      <Icon icon="mdi:check-circle" className="text-[#764DFF] flex-shrink-0 text-sm" />
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
+                  <Link
+                    href={buttonUrl}
+                    className="inline-flex items-center gap-2 bg-primary hover:bg-darkprimary text-white font-extrabold px-6 py-3.5 rounded-xl text-sm sm:text-base transition-all duration-200 shadow-xl hover:shadow-indigo-500/25 hover:-translate-y-0.5"
+                  >
+                    <Icon icon="mdi:book-open-page-variant" className="text-lg" />
+                    {buttonText}
+                  </Link>
+                  <Link
+                    href={siteConfig.socialLinks.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#22c55e] text-white font-bold px-6 py-3.5 rounded-xl text-sm sm:text-base transition-all duration-200 shadow-xl hover:shadow-green-500/20 hover:-translate-y-0.5"
+                  >
+                    <Icon icon="mdi:whatsapp" className="text-xl" />
+                    WhatsApp Us
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* COUNTER STATS - Perfectly bottom-aligned with form */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2.5 border-t border-[#764DFF]/20 mt-3">
+              {statsData.map((stat, index) => (
+                <CounterItem key={index} stat={stat} index={index} />
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-3.5">
+            
+            {/* Promotional Banner */}
+            <div className="hero-card-slide-right">
+              <div className="relative overflow-hidden rounded-xl border border-white/60 shadow-xl p-4 sm:p-5 text-[#111827] transition-all duration-300"
+                style={{ background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(20px)' }}
+              >
+                <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 border border-[#764DFF]/20 text-[#764DFF] text-xs font-bold px-3 py-1 rounded-lg tracking-wider uppercase">
+                      <Icon icon="mdi:lightning-bolt" className="text-sm animate-pulse" />
+                      New Batch Starting Soon
+                    </span>
+                    <span className="text-[11px] font-semibold text-[#374151] bg-[#764DFF]/10 border border-[#764DFF]/20 px-2.5 py-0.5 rounded-full">
+                      Offline Courses
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-black text-[#111827] leading-tight mb-2">
+                    AI-Powered Courses <br />
+                    <span className="text-[#764DFF] font-black">100% Job Assistance</span>
+                  </h3>
+
+                  <p className="text-[#374151] text-xs sm:text-sm leading-relaxed mb-4">
+                    Join India&apos;s First Industry-Oriented AI Powered Marketing &amp; Design Institute. Hands-on practical live projects &amp; career guidance.
+                  </p>
+
+                  <div className="flex items-center gap-2 pt-1 border-t border-white/20">
+                    <Icon icon="mdi:shield-check" className="text-[#764DFF] text-lg" />
+                    <span className="text-xs font-semibold text-[#374151]">Limited Seats Available</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ADMISSION FORM - Perfectly aligned with counter cards bottom */}
+            <div className="bg-white dark:bg-dark rounded-xl shadow-xl p-5 sm:p-6 lg:p-7 border border-white/20 flex-1 flex items-center justify-center">
+              <div className="w-full max-w-md">
+                <EnquiryForm
+                  title="Fill The Form & Download Brochure"
+                  showTitle={true}
+                />
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <style jsx>{`
+        .hero-card-slide-left {
+          animation: slideInLeft 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+          will-change: transform, opacity;
+        }
+
+        .hero-card-slide-right {
+          animation: slideInRight 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+          will-change: transform, opacity;
+        }
+
+        @keyframes slideInLeft {
+          0% {
+            opacity: 0;
+            transform: translateX(-100px) translateY(15px) scale(0.96);
+            filter: blur(8px);
+          }
+
+          70% {
+            opacity: 1;
+            transform: translateX(8px) translateY(0) scale(1);
+            filter: blur(0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1);
+            filter: blur(0);
+          }
+        }
+
+        @keyframes slideInRight {
+          0% {
+            opacity: 0;
+            transform: translateX(100px) translateY(15px) scale(0.96);
+            filter: blur(8px);
+          }
+
+          70% {
+            opacity: 1;
+            transform: translateX(-8px) translateY(0) scale(1);
+            filter: blur(0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1);
+            filter: blur(0);
+          }
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default HeroSection;

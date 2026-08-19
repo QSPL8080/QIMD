@@ -1,0 +1,458 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-plus-jakarta), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+
+  --container-screen-xl: 75rem;
+  --container-screen-2xl: 83.75rem;
+
+  --shadow-cause-shadow: 0px 4px 17px 0px #00000008;
+  --shadow-darkmd: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px,
+    rgba(145, 158, 171, 0.12) 0px 12px 24px -4px;
+  --shadow-card: 0 4px 24px 0 rgba(14, 30, 63, 0.06);
+  --shadow-hero: 0 8px 40px 0 rgba(118, 77, 255, 0.18);
+
+  --transition-duration-150: 150ms;
+
+  --radius-4: 4px;
+
+  --spacing-17: 17px;
+  --spacing-25: 35.625rem;
+  --spacing-29: 28rem;
+  --spacing-45: 45rem;
+  --spacing-50: 50rem;
+  --spacing-51: 54.375rem;
+  --spacing-94: 22.5rem;
+  --spacing-120: 120rem;
+  --spacing-6_25: 6.25rem;
+  --spacing-70\%: 70%;
+  --spacing-40\%: 40%;
+  --spacing-30\%: 30%;
+  --spacing-60\%: 60%;
+  --spacing-8_5: 8.5rem;
+  --spacing-3_75: 3.75rem;
+
+  --inset-5\%: 5%;
+  --inset-35\%: 35%;
+
+  --z-index-1: 1;
+  --z-index-2: 2;
+  --z-index-999: 999;
+
+  /* ── QIMD Brand Colors — Professional Identity Palette ── */
+  --color-primary: #6366F1;         /* Professional Deep Indigo Purple */
+  --color-darkprimary: #4F46E5;     /* Darker Indigo */
+  --color-secondary: #818CF8;       /* Soft Indigo Accent */
+  --color-accent: #3B82F6;          /* Professional Royal Blue */
+  --color-complement: #4F46E5;      /* Deep Complement */
+
+  /* Text */
+  --color-midnight_text: #111827;   /* Primary dark headings */
+  --color-body_text: #374151;       /* Body / supporting text */
+  --color-muted: #6B7280;           /* Muted / helper text */
+
+  /* Status — semantic, unchanged */
+  --color-error: #EF4444;
+  --color-warning: #F97316;
+  --color-success: #10B981;
+
+  /* Surfaces */
+  --color-light_grey: #F5F3FF;      /* Subtle brand tint */
+  --color-grey: #F9F8FF;
+  --color-border: #E5E0FF;
+  --color-darkmode: #0F0D1A;
+  --color-darklight: #1A1730;
+  --color-dark_border: #332D55;
+  --color-dark: #0F0D1A;
+  --color-dustGray: #6B638A;
+
+  /* Legacy aliases */
+  --color-qimd-blue: #764DFF;
+  --color-qimd-amber: #BD69F2;
+  --color-qimd-emerald: #4999D4;
+}
+
+/*
+  Default border color compatibility.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  @apply overflow-x-hidden;
+  color: #111827;
+}
+
+/* ── Typography ─────────────────────────────────── */
+.blog-details p,
+.blog-details hr {
+  @apply mb-8;
+}
+
+.blog-details hr {
+  @apply border-border dark:border-dark_border;
+}
+
+.blog-details strong {
+  @apply font-bold dark:text-white;
+}
+
+/* ── Continuous Marquee Animations ─────────────────── */
+@keyframes marquee-left {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 25s linear infinite;
+}
+
+.animate-marquee-left-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 45s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marquee-right 25s linear infinite;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+.blog-details ul {
+  @apply mb-8 list-inside list-disc space-y-3;
+}
+
+.blog-details ol {
+  @apply mb-8 list-inside list-decimal space-y-3;
+}
+
+.blog-details h1 {
+  @apply mb-8 text-3xl font-bold text-midnight_text dark:text-white sm:text-4xl md:text-[40px] md:leading-[1.28];
+}
+
+.blog-details h2 {
+  @apply mb-8 text-2xl font-bold text-midnight_text dark:text-white sm:text-3xl md:text-[35px] md:leading-[1.28];
+}
+
+.blog-details h3 {
+  @apply mb-6 text-2xl font-bold dark:text-white sm:text-[28px] sm:leading-[40px];
+}
+
+/* ── Slick Carousel ─────────────────────────────── */
+.slick-dots li button:before {
+  @apply text-secondary! text-base!;
+}
+.slick-dots li.slick-active button:before {
+  @apply text-secondary!;
+}
+.slick-dots {
+  bottom: -50px !important;
+}
+
+/* ── Custom QIMD Animations ─────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeInUp   { animation: fadeInUp 0.7s ease-out; }
+.animate-fadeInDown { animation: fadeInDown 0.6s ease-out; }
+.animate-float      { animation: float 3s ease-in-out infinite; }
+.animate-pulse-slow { animation: pulse-slow 2.5s ease-in-out infinite; }
+
+/* ══════════════════════════════════════════════════════════════
+   QIMD BRAND GRADIENT SYSTEM
+   Primary: #764DFF → #BD69F2 → #FFFFFF → #4999D4 → #557CBE
+   Use DIAGONALLY (135deg). White must appear in the middle.
+══════════════════════════════════════════════════════════════ */
+
+/* The hero/section-level QIMD brand gradient — LIGHT PASTEL with white in middle */
+.qimd-gradient {
+  background: linear-gradient(
+    135deg,
+    #c4b0ff 0%,
+    #ddb8f8 28%,
+    #ffffff 50%,
+    #b8d9f0 72%,
+    #a8c4e8 100%
+  );
+}
+
+/* Saturated version for dark decorative use only */
+.qimd-gradient-rich {
+  background: linear-gradient(
+    135deg,
+    #764DFF 0%,
+    #BD69F2 35%,
+    #ffffff 50%,
+    #4999D4 75%,
+    #557CBE 100%
+  );
+}
+
+/* Soft background tint for accent sections */
+.qimd-gradient-soft {
+  background: linear-gradient(
+    135deg,
+    rgba(196, 176, 255, 0.18) 0%,
+    rgba(221, 184, 248, 0.10) 40%,
+    rgba(184, 217, 240, 0.10) 75%,
+    rgba(168, 196, 232, 0.18) 100%
+  );
+}
+
+/* ── Gradient Text ──────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #764DFF 0%, #BD69F2 50%, #4999D4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient Button ────────────────────────────── */
+.btn-gradient {
+  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #3B82F6 100%);
+  color: #ffffff;
+  transition: all 0.25s ease;
+}
+.btn-gradient:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+}
+
+/* ── Gradient Background Utilities ─────────────── */
+.gradient-bg {
+  background: linear-gradient(135deg, #c4b0ff 0%, #ddb8f8 28%, #ffffff 50%, #b8d9f0 72%, #a8c4e8 100%);
+}
+.gradient-bg-rich {
+  background: linear-gradient(135deg, #764DFF 0%, #BD69F2 35%, #ffffff 50%, #4999D4 75%, #557CBE 100%);
+}
+.gradient-bg-soft {
+  background: linear-gradient(135deg, rgba(196,176,255,0.12) 0%, rgba(184,217,240,0.12) 100%);
+}
+
+/* ── Section Padding Utility ────────────────────── */
+.section-py {
+  @apply py-16 lg:py-24;
+}
+
+/* ── Card Hover Effect ──────────────────────────── */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px 0 rgba(118, 77, 255, 0.13);
+}
+
+/* ── WhatsApp Floating Button ───────────────────── */
+.whatsapp-float {
+  position: fixed;
+  bottom: 5rem;
+  right: 1.6rem;
+  z-index: 999;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px 0 rgba(37, 211, 102, 0.5);
+}
+
+/* ── Marquee / Scroll ───────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* ── Form Focus Ring ────────────────────────────── */
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(118, 77, 255, 0.18);
+  border-color: #764DFF;
+}
+
+/* ── Badge ──────────────────────────────────────── */
+.badge-primary {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold;
+}
+.badge-secondary {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-semibold;
+}
+
+/* ── Counter Animation Keyframes ────────────────────── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.counter-animate {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* ── Slide-in Animations ────────────────────────────── */
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.slide-in-from-left {
+  animation: slideInFromLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.slide-in-from-right {
+  animation: slideInFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+/* ── Premium Card Enhancement ──────────────────────── */
+.premium-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 64px rgba(118, 77, 255, 0.16);
+}
+
+/* ── Glassmorphism ──────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* ── Form Select Styling ────────────────────────────── */
+select.form-input {
+  background-image: none;
+}
+
+/* ── Hide Scrollbar Utility ────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* ── QIMD CTA Section ───────────────────────────── */
+.qimd-cta-section {
+  background: linear-gradient(
+    135deg,
+    #764DFF 0%,
+    #BD69F2 35%,
+    #ffffff 50%,
+    #4999D4 75%,
+    #557CBE 100%
+  );
+  position: relative;
+}
+
+/* Navigation active/hover states */
+.nav-link-active {
+  color: #764DFF !important;
+  font-weight: 700;
+}
+.nav-link-hover:hover {
+  color: #764DFF;
+}
+
+/* ── Continuous Marquee Loop ───────────────────────────── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marqueeSeamless {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-marquee-slow {
+  display: flex;
+  width: max-content;
+  animation: marqueeSeamless 45s linear infinite;
+}
+
+.animate-marquee-slow:hover {
+  animation-play-state: paused;
+}

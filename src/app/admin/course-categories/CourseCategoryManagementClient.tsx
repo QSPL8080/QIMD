@@ -1,0 +1,353 @@
+'use client'
+
+import React, { useState } from 'react'
+import {
+  saveCategoryAction,
+  trashCategoryAction,
+  restoreCategoryAction,
+  deleteCategoryPermanentlyAction,
+} from '@/app/actions/cmsActions'
+import { Icon } from '@iconify/react'
+
+interface CategoryItem {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  displayOrder: number
+  status: boolean
+  isDeleted: boolean
+  courses?: any[]
+  createdAt: string
+}
+
+export default function CourseCategoryManagementClient({
+  initialCategories,
+}: {
+  initialCategories: CategoryItem[]
+}) {
+  const [categories, setCategories] = useState<CategoryItem[]>(initialCategories)
+  const [search, setSearch] = useState('')
+  const [showTrash, setShowTrash] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editingCat, setEditingCat] = useState<CategoryItem | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  const filtered = categories.filter((c) => {
+    const matchesSearch =
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.slug.toLowerCase().includes(search.toLowerCase())
+    const matchesTrash = showTrash ? c.isDeleted : !c.isDeleted
+    return matchesSearch && matchesTrash
+  })
+
+  const handleOpenAdd = () => {
+    setEditingCat(null)
+    setModalOpen(true)
+    setMsg(null)
+  }
+
+  const handleOpenEdit = (c: CategoryItem) => {
+    setEditingCat(c)
+    setModalOpen(true)
+    setMsg(null)
+  }
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    setMsg(null)
+
+    const formData = new FormData(e.currentTarget)
+    const rawData = {
+      name: formData.get('name'),
+      slug: formData.get('slug'),
+      description: formData.get('description'),
+      displayOrder: Number(formData.get('displayOrder') || 0),
+      status: formData.get('status') === 'true',
+    }
+
+    const res = await saveCategoryAction(rawData, editingCat?.id)
+    setLoading(false)
+
+    if (res.success) {
+      setMsg({ type: 'success', text: res.message || 'Category saved successfully' })
+      setModalOpen(false)
+      window.location.reload()
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to save' })
+    }
+  }
+
+  const handleTrash = async (id: string) => {
+    if (!confirm('Move category to Trash?')) return
+    const res = await trashCategoryAction(id)
+    if (res.success) window.location.reload()
+    else alert(res.error)
+  }
+
+  const handleRestore = async (id: string) => {
+    const res = await restoreCategoryAction(id)
+    if (res.success) window.location.reload()
+    else alert(res.error)
+  }
+
+  const handleDeletePermanently = async (id: string) => {
+    if (!confirm('Permanently delete this category? Associated courses will be updated.')) return
+    const res = await deleteCategoryPermanentlyAction(id)
+    if (res.success) window.location.reload()
+    else alert(res.error)
+  }
+
+  return (
+    <div className="space-y-6 font-sans">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <Icon icon="ion:folder-open-outline" className="w-6 h-6 text-cyan-600" />
+            Course Categories Management
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Organize training programs into digital marketing, graphic design, video editing & custom categories
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowTrash(!showTrash)}
+            className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center gap-2 ${
+              showTrash
+                ? 'bg-amber-50 border-amber-300 text-amber-800'
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            <Icon icon="ion:trash-outline" className="w-4.5 h-4.5" />
+            {showTrash ? 'View Active Categories' : 'View Trash'}
+          </button>
+
+          <button
+            onClick={handleOpenAdd}
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-xs flex items-center gap-2"
+          >
+            <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
+            Create Category
+          </button>
+        </div>
+      </div>
+
+      {msg && (
+        <div
+          className={`p-4 rounded-xl text-sm font-medium border ${
+            msg.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
+          }`}
+        >
+          {msg.text}
+        </div>
+      )}
+
+      {/* Filter */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center gap-3">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Search category name or slug..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
+          />
+          <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm min-w-[640px]">
+            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
+              <tr>
+                <th className="p-4">Category Name</th>
+                <th className="p-4">SEO Slug</th>
+                <th className="p-4">Courses Count</th>
+                <th className="p-4">Display Order</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-slate-500 font-medium text-sm">
+                    No course categories found.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="p-4">
+                      <p className="font-semibold text-slate-900 text-base leading-snug">{c.name}</p>
+                      <p className="text-xs text-slate-400 font-medium truncate max-w-xs">{c.description}</p>
+                    </td>
+                    <td className="p-4 text-slate-600 font-medium text-xs font-mono">{c.slug}</td>
+                    <td className="p-4">
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                        {c.courses?.length || 0} Courses
+                      </span>
+                    </td>
+                    <td className="p-4 font-semibold text-slate-800 text-sm">{c.displayOrder}</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${
+                          c.status
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-slate-100 text-slate-500 border border-slate-200'
+                        }`}
+                      >
+                        {c.status ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right space-x-2">
+                      {!c.isDeleted ? (
+                        <>
+                          <button
+                            onClick={() => handleOpenEdit(c)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit Category"
+                          >
+                            <Icon icon="ion:create-outline" className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleTrash(c.id)}
+                            className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                            title="Move to Trash"
+                          >
+                            <Icon icon="ion:trash-outline" className="w-5 h-5" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleRestore(c.id)}
+                            className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="Restore"
+                          >
+                            <Icon icon="ion:refresh-outline" className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePermanently(c.id)}
+                            className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="Delete Permanently"
+                          >
+                            <Icon icon="ion:trash-bin-outline" className="w-5 h-5" />
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200/80 rounded-3xl shadow-2xl w-full max-w-lg p-6 sm:p-7 max-h-[88vh] overflow-y-auto no-scrollbar space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">
+                {editingCat ? 'Edit Category' : 'Create Course Category'}
+              </h3>
+              <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <Icon icon="ion:close" className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSave} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Category Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  defaultValue={editingCat?.name || ''}
+                  onChange={(e) => {
+                    const slugInput = (e.target.form as any)?.slug
+                    if (slugInput && !editingCat) {
+                      slugInput.value = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">SEO Slug</label>
+                <input
+                  type="text"
+                  name="slug"
+                  required
+                  defaultValue={editingCat?.slug || ''}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Description</label>
+                <textarea
+                  name="description"
+                  rows={2}
+                  defaultValue={editingCat?.description || ''}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                ></textarea>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Display Order</label>
+                <input
+                  type="number"
+                  name="displayOrder"
+                  defaultValue={editingCat?.displayOrder || 0}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Status</label>
+                <select
+                  name="status"
+                  defaultValue={editingCat ? String(editingCat.status) : 'true'}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
+                >
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                >
+                  {loading ? 'Saving...' : 'Save Category'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
