@@ -86,8 +86,7 @@ export default function AdminTestimonialsPage() {
 
   const filteredItems = testimonials.filter((t) => {
     const matchesTrash = showTrash ? t.isDeleted : !t.isDeleted
-    const isVideo = t.isVideo || (t.videoUrl && t.videoUrl.trim() !== '')
-    return matchesTrash && isVideo
+    return matchesTrash
   })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

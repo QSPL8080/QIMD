@@ -18,58 +18,12 @@ export default function AdminStudentReviewsPage() {
   const [showTrash, setShowTrash] = useState(false)
   const [starRating, setStarRating] = useState<number>(5)
 
-  const seedDefaultReviewsIfEmpty = async () => {
-    const initialReviews = [
-      {
-        studentName: "Rohan V.",
-        course: "Digital Marketing Master Program",
-        review: "The practical training and live client projects helped me build confidence and prepare for interviews. The trainers were supportive throughout my learning journey.",
-        rating: 5,
-        company: "Growth Media Agency",
-      },
-      {
-        studentName: "Sneha M.",
-        course: "UI/UX & Graphic Design Course",
-        review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence.",
-        rating: 5,
-        company: "Creative Studio",
-      },
-      {
-        studentName: "Aniket K.",
-        course: "Video Editing & Content Creation",
-        review: "Unlike traditional institutes, QIMD focuses on practical implementation. Every assignment and project helped me understand how the industry actually works.",
-        rating: 5,
-        company: "Media House",
-      },
-      {
-        studentName: "Pooja S.",
-        course: "Full-Stack Digital Marketing & AI",
-        review: "From zero experience to working on real client projects, the journey at QIMD has been truly rewarding. I highly recommend it to anyone looking to build a career in the digital industry.",
-        rating: 5,
-        company: "Tech Agency",
-      },
-    ]
-
-    for (const r of initialReviews) {
-      await saveStudentReviewAction(r)
-    }
-  }
-
   const fetchItems = async () => {
     setLoading(true)
     try {
       const res = await fetch('/api/admin/reviews')
       const data = await res.json()
-      let items = data.reviews || []
-
-      if (items.length === 0) {
-        await seedDefaultReviewsIfEmpty()
-        const res2 = await fetch('/api/admin/reviews')
-        const data2 = await res2.json()
-        items = data2.reviews || []
-      }
-
-      setReviews(items)
+      setReviews(data.reviews || [])
     } catch (err) {
       console.error('Failed to fetch student reviews:', err)
     } finally {

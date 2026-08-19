@@ -41,17 +41,21 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
       data: { lastLogin: new Date() },
     })
 
-    // Log activity
-    await createAuditLog({
-      userId: user.id,
-      module: 'AUTH',
-      action: 'ADMIN_LOGIN_SUCCESS',
-    })
+    // Log activity (non-blocking)
+    try {
+      await createAuditLog({
+        userId: user.id,
+        module: 'AUTH',
+        action: 'ADMIN_LOGIN_SUCCESS',
+      })
+    } catch (e) {
+      console.warn('Audit log write warning during login:', e)
+    }
 
     return { success: true, redirect: '/admin/dashboard' }
   } catch (err: any) {
-    console.error('Login action error:', err)
-    return { success: false, error: 'An unexpected server error occurred.' }
+    console.error('Login action error details:', err)
+    return { success: false, error: err.message || 'An unexpected server error occurred.' }
   }
 }
 
