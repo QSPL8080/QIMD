@@ -135,14 +135,7 @@ export async function safeDeleteUnusedFile(
     return false
   }
 
-  // File is not used anywhere in the website DB! Clean up MediaLibrary record.
-  try {
-    await db.mediaLibrary.deleteMany({
-      where: { fileUrl: cleanUrl },
-    })
-  } catch (err) {
-    console.error('Error deleting media library record:', err)
-  }
+
 
   if (cleanUrl.startsWith('/uploads/')) {
     const localPath = path.join(process.cwd(), 'public', cleanUrl.replace(/^\//, ''))

@@ -15,44 +15,7 @@ import {
 export async function seedDatabase() {
   console.log('--- Starting Database Seeding ---')
 
-  // 1. Seed Roles (Support both exact enum role codes & display names)
-  const superAdminRole = await db.role.upsert({
-    where: { roleName: 'SUPER_ADMIN' },
-    update: {},
-    create: {
-      roleName: 'SUPER_ADMIN',
-      description: 'Super Administrator with full access to CMS, CRM, settings, and user management',
-    },
-  })
-
-  const adminRole = await db.role.upsert({
-    where: { roleName: 'ADMIN' },
-    update: {},
-    create: {
-      roleName: 'ADMIN',
-      description: 'Administrator with access to CMS and CRM management',
-    },
-  })
-
-  const employeeRole = await db.role.upsert({
-    where: { roleName: 'EMPLOYEE' },
-    update: {},
-    create: {
-      roleName: 'EMPLOYEE',
-      description: 'Employee account with operational access',
-    },
-  })
-
-  const contentManagerRole = await db.role.upsert({
-    where: { roleName: 'CONTENT_MANAGER' },
-    update: {},
-    create: {
-      roleName: 'CONTENT_MANAGER',
-      description: 'Content Manager with access to pages, sections, courses, blogs, gallery, and media',
-    },
-  })
-
-  // 2. Remove Old Admin Accounts (keep ONLY the 4 requested accounts active)
+  // 1. Remove Old Admin Accounts (keep ONLY the 4 requested accounts active)
   const activeEmails = ['superadmin@gmail.com', 'admin@gmail.com', 'employee@gmail.com', 'cm@gmail.com']
   await db.user.deleteMany({
     where: {
@@ -60,7 +23,7 @@ export async function seedDatabase() {
     },
   })
 
-  // 3. Seed ONLY the 4 active accounts with securely hashed passwords
+  // 2. Seed ONLY the 4 active accounts with securely hashed passwords
   const superadminHash = await hashPassword('Superadmin@123')
   const adminHash = await hashPassword('Admin@123')
   const employeeHash = await hashPassword('Employee@123')
@@ -72,14 +35,14 @@ export async function seedDatabase() {
     update: {
       passwordHash: superadminHash,
       status: true,
-      roleId: superAdminRole.id,
+      role: 'SUPER_ADMIN',
     },
     create: {
       fullName: 'Super Admin',
       email: 'superadmin@gmail.com',
       passwordHash: superadminHash,
       phone: '+919000000000',
-      roleId: superAdminRole.id,
+      role: 'SUPER_ADMIN',
       status: true,
     },
   })
@@ -90,14 +53,14 @@ export async function seedDatabase() {
     update: {
       passwordHash: adminHash,
       status: true,
-      roleId: adminRole.id,
+      role: 'ADMIN',
     },
     create: {
       fullName: 'Administrator',
       email: 'admin@gmail.com',
       passwordHash: adminHash,
       phone: '+919000000001',
-      roleId: adminRole.id,
+      role: 'ADMIN',
       status: true,
     },
   })
@@ -108,14 +71,14 @@ export async function seedDatabase() {
     update: {
       passwordHash: employeeHash,
       status: true,
-      roleId: employeeRole.id,
+      role: 'EMPLOYEE',
     },
     create: {
       fullName: 'Staff Employee',
       email: 'employee@gmail.com',
       passwordHash: employeeHash,
       phone: '+919000000002',
-      roleId: employeeRole.id,
+      role: 'EMPLOYEE',
       status: true,
     },
   })
@@ -126,14 +89,14 @@ export async function seedDatabase() {
     update: {
       passwordHash: cmHash,
       status: true,
-      roleId: contentManagerRole.id,
+      role: 'CONTENT_MANAGER',
     },
     create: {
       fullName: 'Content Manager',
       email: 'cm@gmail.com',
       passwordHash: cmHash,
       phone: '+919000000003',
-      roleId: contentManagerRole.id,
+      role: 'CONTENT_MANAGER',
       status: true,
     },
   })
@@ -797,6 +760,3 @@ export async function seedDatabase() {
 
   console.log('--- Database Seeding Completed Successfully ---')
 }
-
-
-

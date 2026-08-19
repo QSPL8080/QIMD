@@ -9,19 +9,12 @@ import {
 } from '@/app/actions/userActions'
 import { Icon } from '@iconify/react'
 
-interface Role {
-  id: string
-  roleName: string
-  description?: string
-}
-
 interface UserItem {
   id: string
   fullName: string
   email: string
   phone?: string
-  roleId: string
-  role: Role
+  role: string
   status: boolean
   isDeleted: boolean
   lastLogin?: string
@@ -30,11 +23,9 @@ interface UserItem {
 
 export default function UserManagementClient({
   initialUsers,
-  roles,
   currentUserId,
 }: {
   initialUsers: UserItem[]
-  roles: Role[]
   currentUserId: string
 }) {
   const [users, setUsers] = useState<UserItem[]>(initialUsers)
@@ -55,7 +46,7 @@ export default function UserManagementClient({
 
     let matchesRole = true
     if (roleFilter !== 'ALL') {
-      const rName = u.role?.roleName || ''
+      const rName = u.role || ''
       matchesRole = rName.toLowerCase().includes(roleFilter.toLowerCase())
     }
 
@@ -88,7 +79,7 @@ export default function UserManagementClient({
       fullName: formData.get('fullName'),
       email: formData.get('email'),
       phone: formData.get('phone'),
-      roleId: formData.get('roleId'),
+      role: formData.get('role'),
       password: formData.get('password'),
       status: formData.get('status') === 'true',
     }
@@ -132,10 +123,10 @@ export default function UserManagementClient({
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Icon icon="ion:people-circle-outline" className="w-6 h-6 text-blue-600" />
-            User Management & Role-Based Access Control
+            User Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Manage administrative personnel, assign roles (`SUPER_ADMIN` / `ADMIN` / `CONTENT_MANAGER`), and audit status
+            Manage administrative personnel, assign roles, and audit account statuses
           </p>
         </div>
 
@@ -194,10 +185,9 @@ export default function UserManagementClient({
             className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-600"
           >
             <option value="ALL">All Roles</option>
-            <option value="Super Admin">Super Admin</option>
-            <option value="Admin">Admin</option>
-            <option value="Employee">Employee</option>
-            <option value="Content Manager">Content Manager</option>
+            <option value="SUPER_ADMIN">Super Admin</option>
+            <option value="ADMIN">Admin</option>
+            <option value="CONTENT_MANAGER">Content Manager</option>
           </select>
 
           <select
@@ -249,7 +239,7 @@ export default function UserManagementClient({
                     </td>
                     <td className="p-4">
                       <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        {u.role?.roleName || 'Admin'}
+                        {u.role || 'ADMIN'}
                       </span>
                     </td>
                     <td className="p-4 text-slate-700 font-medium text-sm">{u.phone || 'N/A'}</td>
@@ -379,16 +369,14 @@ export default function UserManagementClient({
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">Assign Role</label>
                 <select
-                  name="roleId"
+                  name="role"
                   required
-                  defaultValue={editingUser?.roleId || roles[0]?.id}
+                  defaultValue={editingUser?.role || 'ADMIN'}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
                 >
-                  {roles.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.roleName} - {r.description}
-                    </option>
-                  ))}
+                  <option value="SUPER_ADMIN">SUPER_ADMIN - Full System Access</option>
+                  <option value="ADMIN">ADMIN - Administrator Access</option>
+                  <option value="CONTENT_MANAGER">CONTENT_MANAGER - Content Access Only</option>
                 </select>
               </div>
 

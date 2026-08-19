@@ -124,34 +124,7 @@ export async function saveCourseAction(data: any, id?: string) {
       await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'CREATE_COURSE', recordId: created.id })
     }
 
-    // Index new course banner in MediaLibrary under 'Courses'
-    if (coursePayload.bannerImage) {
-      const cleanUrl = coursePayload.bannerImage.trim()
-      const existingMedia = await db.mediaLibrary.findFirst({ where: { fileUrl: cleanUrl } })
-      if (!existingMedia) {
-        const fileName = cleanUrl.split('/').pop() || `${coursePayload.courseName}-banner.png`
-        await db.mediaLibrary.create({
-          data: {
-            fileName,
-            fileType: 'image/png',
-            fileSize: BigInt(100000),
-            fileUrl: cleanUrl,
-            thumbnailUrl: cleanUrl,
-            folder: 'Courses',
-            altText: `${coursePayload.courseName} Banner`,
-            uploadedById: session.id,
-          },
-        })
-      } else {
-        await db.mediaLibrary.update({
-          where: { id: existingMedia.id },
-          data: {
-            folder: 'Courses',
-            altText: `${coursePayload.courseName} Banner`,
-          },
-        })
-      }
-    }
+
 
     revalidatePath('/')
     revalidatePath('/courses')

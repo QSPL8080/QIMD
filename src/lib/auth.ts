@@ -10,7 +10,7 @@ export interface SessionUser {
   id: string
   fullName: string
   email: string
-  roleId: string
+  role: string
   roleName: string
 }
 
@@ -23,13 +23,13 @@ export async function comparePassword(password: string, hash: string): Promise<b
   return bcrypt.compare(password, hash)
 }
 
-export function signJwtToken(payload: { userId: string; roleId: string }): string {
+export function signJwtToken(payload: { userId: string }): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
 }
 
-export function verifyJwtToken(token: string): { userId: string; roleId: string } | null {
+export function verifyJwtToken(token: string): { userId: string } | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string; roleId: string }
+    return jwt.verify(token, JWT_SECRET) as { userId: string }
   } catch {
     return null
   }
@@ -46,7 +46,6 @@ export async function getAdminSession(): Promise<SessionUser | null> {
 
     const user = await db.user.findUnique({
       where: { id: decoded.userId },
-      include: { role: true },
     })
 
     if (!user || !user.status) return null
@@ -55,8 +54,8 @@ export async function getAdminSession(): Promise<SessionUser | null> {
       id: user.id,
       fullName: user.fullName,
       email: user.email,
-      roleId: user.roleId,
-      roleName: user.role.roleName,
+      role: user.role || 'ADMIN',
+      roleName: user.role || 'ADMIN',
     }
   } catch (err) {
     console.error('Session retrieval error:', err)

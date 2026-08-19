@@ -20,7 +20,6 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
 
     const user = await db.user.findUnique({
       where: { email: validated.data.email },
-      include: { role: true },
     })
 
     if (!user || !user.status) {
@@ -33,7 +32,7 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
     }
 
     // Generate token and set cookie
-    const token = signJwtToken({ userId: user.id, roleId: user.roleId })
+    const token = signJwtToken({ userId: user.id })
     await setAdminSessionCookie(token)
 
     // Update last login

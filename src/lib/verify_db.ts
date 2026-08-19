@@ -4,7 +4,6 @@ async function verify() {
   console.log('=== VERIFYING POSTGRESQL DATABASE FOR QIMD ===')
   try {
     const counts = {
-      roles: await db.role.count(),
       users: await db.user.count(),
       courseCategories: await db.courseCategory.count(),
       courses: await db.course.count(),
@@ -22,7 +21,6 @@ async function verify() {
       careerEnquiries: await db.careerEnquiry.count(),
       franchiseEnquiries: await db.franchisePartnerEnquiry.count(),
       companyPlacementEnquiries: await db.companyPlacementEnquiry.count(),
-      mediaLibrary: await db.mediaLibrary.count(),
       websiteSettings: await db.websiteSettings.count(),
       reports: await db.report.count(),
       notificationLogs: await db.notificationLog.count(),
@@ -33,10 +31,7 @@ async function verify() {
     
     console.log('Database Table Counts:', JSON.stringify(counts, null, 2))
     
-    const roles = await db.role.findMany({ select: { id: true, roleName: true } })
-    console.log('Roles in DB:', roles)
-    
-    const users = await db.user.findMany({ select: { id: true, fullName: true, email: true, role: { select: { roleName: true } } } })
+    const users = await db.user.findMany({ select: { id: true, fullName: true, email: true, role: true } })
     console.log('Users in DB:', users)
     
   } catch (error) {

@@ -10,7 +10,7 @@ export const userSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
   phone: z.string().optional().nullable(),
-  roleId: z.string().uuid('Valid role is required'),
+  role: z.string().default('ADMIN'),
   status: z.boolean().default(true),
 })
 

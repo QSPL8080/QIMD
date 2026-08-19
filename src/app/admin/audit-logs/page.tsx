@@ -32,7 +32,7 @@ export default async function AuditLogsPage({
   const logs = await db.auditLog.findMany({
     where,
     take: 150,
-    include: { user: { include: { role: true } } },
+    include: { user: true },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -67,7 +67,7 @@ export default async function AuditLogsPage({
             <option value="">All Users</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.fullName} ({u.email}) — [{u.role?.roleName || 'User'}]
+                {u.fullName} ({u.email}) — [{u.role || 'ADMIN'}]
               </option>
             ))}
           </select>

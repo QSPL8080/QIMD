@@ -20,7 +20,7 @@ export async function saveUserAction(data: any, id?: string) {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const { fullName, email, password, phone, roleId, status } = validated.data
+    const { fullName, email, password, phone, role, status } = validated.data
 
     if (id) {
       // Edit User
@@ -28,7 +28,7 @@ export async function saveUserAction(data: any, id?: string) {
         fullName,
         email,
         phone: phone || null,
-        roleId,
+        role: role || 'ADMIN',
         status,
       }
 
@@ -65,7 +65,7 @@ export async function saveUserAction(data: any, id?: string) {
           email,
           passwordHash: hashedPassword,
           phone: phone || null,
-          roleId,
+          role: role || 'ADMIN',
           status,
         },
       })
