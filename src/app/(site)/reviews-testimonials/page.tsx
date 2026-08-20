@@ -122,7 +122,7 @@ export default function ReviewsTestimonialsPage() {
               Student Voice &amp; Feedback
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
               Hear Directly From Our Students
             </h1>
 
