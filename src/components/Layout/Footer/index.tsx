@@ -161,13 +161,28 @@ const Footer: React.FC = () => {
                 </div>
               )}
 
-              <Link
-                href={`tel:${phone}`}
-                className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
-              >
-                <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
-                <span>{phone}</span>
-              </Link>
+              {footer?.phones && footer.phones.length > 0 ? (
+                footer.phones.map((phoneItem) => (
+                  <Link
+                    key={phoneItem.id}
+                    href={`tel:${phoneItem.value.replace(/\s+/g, '')}`}
+                    className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                  >
+                    <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
+                    <span>
+                      {phoneItem.label ? `${phoneItem.label}: ${phoneItem.value}` : phoneItem.value}
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <Link
+                  href={`tel:${phone.replace(/\s+/g, '')}`}
+                  className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                >
+                  <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
+                  <span>{phone}</span>
+                </Link>
+              )}
 
               {footer?.emails && footer.emails.length > 0 ? (
                 footer.emails.map((email) => (
