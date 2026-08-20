@@ -34,11 +34,10 @@ const Footer: React.FC = () => {
           We use inline style to apply gridTemplateColumns only on lg via a scoped CSS var.
         */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-3 lg:[grid-template-columns:var(--footer-grid)] gap-8 lg:gap-10"
-          style={{ '--footer-grid': `1.5fr repeat(${dynCols}, 1fr)` } as React.CSSProperties}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10"
         >
-          {/* Brand Column - full width on mobile/tablet (sm:col-span-3), 1 col on desktop (lg:col-auto) */}
-          <div className="sm:col-span-3 lg:col-auto space-y-5">
+          {/* Brand Column */}
+          <div className="space-y-5">
             {/* Dynamic Footer Logo */}
             {footer?.logoActive !== false && (
               <Logo
