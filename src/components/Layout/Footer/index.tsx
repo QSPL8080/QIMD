@@ -325,19 +325,10 @@ const Footer: React.FC = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 py-5 flex flex-col sm:flex-row items-center justify-center relative gap-3">
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 py-5 flex items-center justify-center">
           <p className="text-sm text-white/60 text-center" suppressHydrationWarning>
             {footer?.copyrightText || `© ${currentYear} ${siteConfig.name}. All Rights Reserved.`}
           </p>
-          {footer?.showBottomLinks && (
-            <div className="flex items-center gap-4 text-xs text-white/50 sm:absolute sm:right-4">
-              <Link href="/privacy-policy" className="hover:text-secondary transition-colors">Privacy Policy</Link>
-              <span>•</span>
-              <Link href="/terms-and-conditions" className="hover:text-secondary transition-colors">Terms & Conditions</Link>
-              <span>•</span>
-              <Link href="/refund-policy" className="hover:text-secondary transition-colors">Refund Policy</Link>
-            </div>
-          )}
         </div>
       </div>
     </footer>

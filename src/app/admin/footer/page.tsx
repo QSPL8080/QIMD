@@ -689,19 +689,10 @@ export default function AdminFooterCMSPage() {
                 <div>
                   <h3 className="font-bold text-white text-sm flex items-center gap-2">
                     <Icon icon="ion:ribbon-outline" className="w-4 h-4 text-blue-400" />
-                    Footer Bottom Bar & Copyright Text
+                    Footer Bottom Bar Copyright Text
                   </h3>
-                  <p className="text-[11px] text-slate-400">Edit copyright text and toggle bottom legal links</p>
+                  <p className="text-[11px] text-slate-400">Edit copyright text displayed in the middle of the footer bottom bar</p>
                 </div>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={settings.showBottomLinks === true}
-                    onChange={(e) => setSettings({ ...settings, showBottomLinks: e.target.checked })}
-                    className="rounded text-blue-500 w-4 h-4"
-                  />
-                  <span className="font-semibold text-slate-300">Show Legal Links (Right Side)</span>
-                </label>
               </div>
 
               <div className="space-y-3">
