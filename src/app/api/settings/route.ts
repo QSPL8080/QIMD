@@ -91,7 +91,7 @@ export async function GET() {
           active: footerSettings?.whatsappActive ?? true,
         },
         showScrollToTop: footerSettings?.showScrollToTop ?? true,
-        copyrightText: footerSettings?.copyrightText || `© ${new Date().getFullYear()} ${websiteSettings?.websiteName || siteConfig.name}. All Rights Reserved.`,
+        copyrightText: footerSettings?.copyrightText || `© ${new Date().getFullYear()} QIMD Institute. All Rights Reserved.`,
         showBottomLinks: footerSettings?.showBottomLinks ?? false,
         phones: footerPhones,
         emails: footerEmails,

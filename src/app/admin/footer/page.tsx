@@ -104,6 +104,9 @@ export default function AdminFooterCMSPage() {
     setSaving(false)
     if (res.success) {
       setStatusMsg({ type: 'success', text: 'Footer settings updated successfully' })
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+      }
       fetchData()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to update footer settings' })
