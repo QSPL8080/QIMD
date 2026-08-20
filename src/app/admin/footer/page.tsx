@@ -659,6 +659,29 @@ export default function AdminFooterCMSPage() {
                 </Link>
               </div>
             </div>
+
+            {/* FLOATING WIDGETS CONTROL CARD (WHATSAPP & SCROLL TO TOP) */}
+            <div className="bg-indigo-50/60 border border-indigo-200 p-5 rounded-2xl space-y-3 shadow-xs text-xs">
+              <div className="flex items-center justify-between border-b border-indigo-200 pb-3">
+                <h3 className="font-bold text-indigo-900 flex items-center gap-1.5 text-sm">
+                  <Icon icon="ion:chevron-up-circle-outline" className="w-4 h-4 text-indigo-700" />
+                  Scroll To Top Floating Button
+                </h3>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.showScrollToTop !== false}
+                    onChange={(e) => setSettings({ ...settings, showScrollToTop: e.target.checked })}
+                    className="rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                  />
+                  <span className="font-semibold text-indigo-900">Active</span>
+                </label>
+              </div>
+
+              <p className="text-slate-600 leading-relaxed">
+                Controls the visibility of the purple floating <span className="font-semibold text-indigo-800">Scroll-to-Top (^)</span> button at the bottom-right of the screen.
+              </p>
+            </div>
           </div>
 
           {/* SECTION 2: FOOTER CONTACT NUMBERS & EMAILS */}

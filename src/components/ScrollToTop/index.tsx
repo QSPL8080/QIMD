@@ -1,12 +1,13 @@
 'use client'
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useWebsiteSettings } from "@/app/context/WebsiteSettingsContext";
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const { footer } = useWebsiteSettings();
 
-  // Top: 0 takes us all the way back to the top of the page
-  // Behavior: smooth keeps it smooth!
+  const showScrollToTopSetting = footer?.showScrollToTop !== false;
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -15,7 +16,6 @@ export default function ScrollToTop() {
   };
 
   useEffect(() => {
-    // Button is displayed after scrolling for 500 pixels
     const toggleVisibility = () => {
       if (window.pageYOffset > 300) {
         setIsVisible(true);
@@ -28,6 +28,8 @@ export default function ScrollToTop() {
 
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
+
+  if (!showScrollToTopSetting) return null;
 
   return (
     <div className="fixed bottom-8 right-8 z-999">

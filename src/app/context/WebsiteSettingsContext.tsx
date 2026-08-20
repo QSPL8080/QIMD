@@ -26,6 +26,7 @@ interface FooterCMSContext {
   showSocialIcons: boolean
   address: { label: string; fullAddress: string; googleMapsUrl: string; active: boolean }
   whatsapp: { text: string; number: string; active: boolean }
+  showScrollToTop?: boolean
   phones: Array<{ id: string; label: string; value: string; displayOrder: number }>
   emails: Array<{ id: string; label: string; value: string; displayOrder: number }>
   columns: Array<{
@@ -107,6 +108,7 @@ const defaultFooter: FooterCMSContext = {
   showSocialIcons: true,
   address: { label: 'Physical Institute Address', fullAddress: siteConfig.address, googleMapsUrl: '', active: true },
   whatsapp: { text: 'Chat with Us on WhatsApp', number: siteConfig.whatsapp, active: true },
+  showScrollToTop: true,
   phones: [{ id: 'default-f1', label: 'Admissions', value: siteConfig.phone, displayOrder: 1 }],
   emails: [{ id: 'default-f1', label: 'General', value: siteConfig.email, displayOrder: 1 }],
   columns: [],

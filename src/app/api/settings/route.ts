@@ -90,6 +90,7 @@ export async function GET() {
           number: websiteSettings?.whatsappNumber || siteConfig.whatsapp,
           active: footerSettings?.whatsappActive ?? true,
         },
+        showScrollToTop: footerSettings?.showScrollToTop ?? true,
         phones: footerPhones,
         emails: footerEmails,
         columns: footerColumns,

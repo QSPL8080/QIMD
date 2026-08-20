@@ -633,6 +633,7 @@ model FooterSettings {
   whatsappText    String?  @default("Chat with Us on WhatsApp") @map("whatsapp_text") @db.VarChar(150)
   whatsappNumber  String?  @map("whatsapp_number") @db.VarChar(50)
   whatsappActive  Boolean  @default(true) @map("whatsapp_active")
+  showScrollToTop Boolean  @default(true) @map("show_scroll_to_top")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("footer_settings")
