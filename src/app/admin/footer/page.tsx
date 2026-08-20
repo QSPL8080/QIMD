@@ -682,6 +682,41 @@ export default function AdminFooterCMSPage() {
                 Controls the visibility of the purple floating <span className="font-semibold text-indigo-800">Scroll-to-Top (^)</span> button at the bottom-right of the screen.
               </p>
             </div>
+
+            {/* FOOTER BOTTOM BAR & COPYRIGHT CARD */}
+            <div className="bg-slate-900 text-white border border-slate-800 p-5 rounded-2xl space-y-4 text-xs shadow-xs lg:col-span-3">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Icon icon="ion:ribbon-outline" className="w-4 h-4 text-blue-400" />
+                    Footer Bottom Bar & Copyright Text
+                  </h3>
+                  <p className="text-[11px] text-slate-400">Edit copyright text and toggle bottom legal links</p>
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={settings.showBottomLinks === true}
+                    onChange={(e) => setSettings({ ...settings, showBottomLinks: e.target.checked })}
+                    className="rounded text-blue-500 w-4 h-4"
+                  />
+                  <span className="font-semibold text-slate-300">Show Legal Links (Right Side)</span>
+                </label>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Copyright Text (Centered)</label>
+                  <input
+                    type="text"
+                    value={settings.copyrightText || '© 2026 QIMD Institute. All Rights Reserved.'}
+                    onChange={(e) => setSettings({ ...settings, copyrightText: e.target.value })}
+                    placeholder="© 2026 QIMD Institute. All Rights Reserved."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-white font-medium"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* SECTION 2: FOOTER CONTACT NUMBERS & EMAILS */}

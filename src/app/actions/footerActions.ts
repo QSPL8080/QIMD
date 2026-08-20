@@ -183,6 +183,8 @@ export async function updateFooterSettingsAction(data: {
   whatsappNumber?: string | null
   whatsappActive?: boolean
   showScrollToTop?: boolean
+  copyrightText?: string | null
+  showBottomLinks?: boolean
 }) {
   const session = await requireAdminSession()
   try {
@@ -208,6 +210,8 @@ export async function updateFooterSettingsAction(data: {
           whatsappNumber: data.whatsappNumber !== undefined ? data.whatsappNumber : settings.whatsappNumber,
           whatsappActive: data.whatsappActive !== undefined ? data.whatsappActive : settings.whatsappActive,
           showScrollToTop: data.showScrollToTop !== undefined ? data.showScrollToTop : settings.showScrollToTop,
+          copyrightText: data.copyrightText !== undefined ? data.copyrightText : settings.copyrightText,
+          showBottomLinks: data.showBottomLinks !== undefined ? data.showBottomLinks : settings.showBottomLinks,
         },
       })
 
@@ -236,6 +240,8 @@ export async function updateFooterSettingsAction(data: {
           whatsappNumber: data.whatsappNumber || '+919130000000',
           whatsappActive: data.whatsappActive ?? true,
           showScrollToTop: data.showScrollToTop ?? true,
+          copyrightText: data.copyrightText || '© 2026 QIMD Institute. All Rights Reserved.',
+          showBottomLinks: data.showBottomLinks ?? false,
         },
       })
     }
