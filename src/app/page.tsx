@@ -19,6 +19,7 @@ import {
   getDynamicTestimonials,
   getDynamicHiringPartners,
   getDynamicEmiPartners,
+  getDynamicGallery,
 } from "@/lib/getDynamicData";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default async function HomePage() {
   const testimonials = await getDynamicTestimonials();
   const hiringPartners = await getDynamicHiringPartners();
   const emiPartners = await getDynamicEmiPartners();
+  const galleryItems = await getDynamicGallery();
 
   const isEnabled = (key: string) => {
     if (!sections || !sections[key]) return true;
@@ -56,7 +58,7 @@ export default async function HomePage() {
       {isEnabled("TESTIMONIALS") && <TestimonialsSection testimonials={testimonials} />}
       {isEnabled("PLACEMENT") && <PlacementsSection placements={placements} partners={hiringPartners} />}
       {isEnabled("EMI_PARTNERS") && <EmiSection emiPartners={emiPartners} />}
-      {isEnabled("GALLERY") && <GalleryPreviewSection />}
+      {isEnabled("GALLERY") && <GalleryPreviewSection items={galleryItems} />}
       {isEnabled("ENQUIRY_FORM") && <CareerCounsellingCTA />}
       {isEnabled("FAQ") && <FaqsSection limit={10} />}
     </>

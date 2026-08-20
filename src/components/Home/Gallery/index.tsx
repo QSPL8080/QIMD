@@ -1,15 +1,15 @@
+import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { galleryData } from "@/data";
 
-const GalleryPreviewSection: React.FC = () => {
-  const placeholders = [
-    { category: "Classroom", caption: "Interactive classroom sessions" },
-    { category: "Training", caption: "Hands-on practical training" },
-    { category: "Workshop", caption: "Live workshops & masterclasses" },
-    { category: "Activities", caption: "Student activities & projects" },
-    { category: "Facilities", caption: "Modern training facilities" },
-    { category: "Placements", caption: "Placement drives & events" },
-  ];
+interface GalleryPreviewSectionProps {
+  items?: any[];
+}
+
+const GalleryPreviewSection: React.FC<GalleryPreviewSectionProps> = ({ items }) => {
+  const displayItems = items && items.length > 0 ? items.slice(0, 6) : galleryData.slice(0, 6);
 
   return (
     <section className="section-py bg-white dark:bg-dark" id="gallery">
@@ -29,26 +29,41 @@ const GalleryPreviewSection: React.FC = () => {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-          {placeholders.map((item, index) => (
-            <div
-              key={index}
-              className="relative group rounded-2xl overflow-hidden bg-primary/5 dark:bg-darklight aspect-video flex items-center justify-center card-hover"
-              data-aos="fade-up"
-              data-aos-delay={index * 80}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-darkprimary/20" />
-              <div className="relative z-10 text-center p-4">
-                <Icon icon="mdi:image" className="text-primary/30 text-6xl mx-auto mb-2" />
-                <span className="text-xs font-semibold text-primary/60 uppercase tracking-wider">{item.category}</span>
-                <p className="text-xs text-muted/60 mt-1">{item.caption}</p>
-              </div>
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <Icon icon="mdi:magnify-plus" className="text-white text-3xl" />
-              </div>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayItems.map((item: any, index: number) => {
+            const imgSrc = item.src || item.fileUrl || item.imageUrl || 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80';
+            return (
+              <Link
+                key={item.id || index}
+                href="/gallery"
+                className="relative group rounded-2xl overflow-hidden bg-primary/5 dark:bg-darklight aspect-video flex items-center justify-center card-hover border border-border dark:border-dark_border shadow-card"
+                data-aos="fade-up"
+                data-aos-delay={index * 80}
+              >
+                <Image
+                  src={imgSrc}
+                  alt={item.alt || item.caption || 'QIMD Gallery Image'}
+                  fill
+                  unoptimized
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
+                  <span className="inline-block text-[10px] font-bold bg-primary/90 text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1">
+                    {item.category || 'Classroom'}
+                  </span>
+                  <p className="text-xs font-semibold text-white/90 line-clamp-1">
+                    {item.caption || item.alt || 'QIMD Practical Training'}
+                  </p>
+                </div>
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
+                  <Icon icon="mdi:magnify-plus" className="text-white text-3xl drop-shadow-md" />
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* CTA */}
