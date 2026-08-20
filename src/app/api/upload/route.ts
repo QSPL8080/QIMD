@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
-import fs from 'fs'
+import { supabaseAdmin } from '@/lib/supabase'
 import path from 'path'
+import fs from 'fs'
+
+const BUCKET_NAME = 'qimd-media'
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,18 +28,47 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true })
-    }
-
     const ext = path.extname(file.name) || '.bin'
     const uniqueName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}${ext}`
-    const filePath = path.join(uploadsDir, uniqueName)
 
-    fs.writeFileSync(filePath, buffer)
+    let fileUrl = ''
 
-    const fileUrl = `/uploads/${uniqueName}`
+    // If Supabase Storage keys are configured, upload directly to Cloud Storage
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const { data, error } = await supabaseAdmin.storage
+        .from(BUCKET_NAME)
+        .upload(uniqueName, buffer, {
+          contentType: file.type || 'application/octet-stream',
+          upsert: true,
+        })
+
+      if (error) {
+        console.error('Supabase Storage Upload Error:', error)
+        // If bucket doesn't exist yet, fallback to local storage safely
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true })
+        }
+        const filePath = path.join(uploadsDir, uniqueName)
+        fs.writeFileSync(filePath, buffer)
+        fileUrl = `/uploads/${uniqueName}`
+      } else {
+        const { data: publicUrlData } = supabaseAdmin.storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(uniqueName)
+
+        fileUrl = publicUrlData.publicUrl
+      }
+    } else {
+      // Fallback to local storage
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true })
+      }
+      const filePath = path.join(uploadsDir, uniqueName)
+      fs.writeFileSync(filePath, buffer)
+      fileUrl = `/uploads/${uniqueName}`
+    }
 
     return NextResponse.json({
       success: true,

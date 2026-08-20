@@ -12,6 +12,7 @@
     "@iconify/icons-ion": "^1.2.10",
     "@iconify/react": "^5.0.1",
     "@prisma/client": "6.4.0",
+    "@supabase/supabase-js": "^2.112.3",
     "aos": "^2.3.4",
     "axios": "^1.7.2",
     "bcryptjs": "^3.0.3",
