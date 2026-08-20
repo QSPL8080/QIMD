@@ -50,6 +50,15 @@ export default function AdminSettingsPage() {
       if (data.success && data.url) {
         const prev = faviconUrl
         setFaviconUrl(data.url)
+        
+        // Auto-save setting to DB immediately
+        const payload = {
+          ...settings,
+          favicon: data.url,
+        }
+        await updateWebsiteSettingsAction(payload)
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+
         if (prev && prev !== data.url && prev.startsWith('/uploads/')) {
           deleteUnusedImageAction(prev)
         }
@@ -67,6 +76,15 @@ export default function AdminSettingsPage() {
     if (!faviconUrl) return
     const toRemove = faviconUrl
     setFaviconUrl('')
+
+    // Auto-save setting to DB immediately
+    const payload = {
+      ...settings,
+      favicon: '',
+    }
+    await updateWebsiteSettingsAction(payload)
+    window.dispatchEvent(new Event('websiteSettingsUpdated'))
+
     if (toRemove.startsWith('/uploads/')) {
       await deleteUnusedImageAction(toRemove)
     }

@@ -186,7 +186,7 @@ export const WebsiteSettingsProvider: React.FC<{ children: React.ReactNode }> = 
             })
 
             const faviconUrl = data.favicon || '/images/logo/qimd-logo.png'
-            const links = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon']")
+            const links = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon'], link[rel*='shortcut']")
             links.forEach((link) => {
               link.href = faviconUrl
             })
