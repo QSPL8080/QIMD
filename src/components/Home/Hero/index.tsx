@@ -20,19 +20,26 @@ function CounterItem({ stat, index }: { stat: { value: string; label: string }, 
         entries.forEach(entry => {
           if (entry.isIntersecting && !hasAnimated) {
             setHasAnimated(true);
-            let start = 0;
-            const duration = 2000;
-            const step = duration / 60;
-            const increment = numericValue / (duration / step);
-            const timer = setInterval(() => {
-              start += increment;
-              if (start >= numericValue) {
-                setCount(numericValue);
-                clearInterval(timer);
+            const duration = 3000; // 3 seconds for clear, smooth counting
+            const startTime = performance.now();
+
+            const animate = (currentTime: number) => {
+              const elapsedTime = currentTime - startTime;
+              const progress = Math.min(elapsedTime / duration, 1);
+              // Smooth easeOutExpo curve
+              const easeOutProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+              const currentCount = Math.floor(easeOutProgress * numericValue);
+
+              setCount(currentCount);
+
+              if (progress < 1) {
+                requestAnimationFrame(animate);
               } else {
-                setCount(Math.floor(start));
+                setCount(numericValue);
               }
-            }, step);
+            };
+
+            requestAnimationFrame(animate);
           }
         });
       },
@@ -45,7 +52,7 @@ function CounterItem({ stat, index }: { stat: { value: string; label: string }, 
   return (
     <div ref={ref} className="text-center p-2 sm:p-2.5 rounded-xl bg-white/25 backdrop-blur-md border border-white/40 shadow-sm transition-transform duration-300 hover:-translate-y-1">
       <div className="text-xl sm:text-2xl xl:text-3xl font-extrabold text-[#3d1c99] mb-0.5 tracking-tight" suppressHydrationWarning>
-        {hasAnimated ? `${count}${isPlus ? '+' : ''}${isPercentage ? '%' : ''}` : '0'}
+        {hasAnimated ? `${count.toLocaleString()}${isPlus ? '+' : ''}${isPercentage ? '%' : ''}` : '0'}
       </div>
       <div className="text-[11px] sm:text-xs text-[#111827]/70 font-semibold leading-tight">{stat.label}</div>
     </div>
