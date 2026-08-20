@@ -169,9 +169,7 @@ const Footer: React.FC = () => {
                     className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
                   >
                     <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
-                    <span>
-                      {phoneItem.label ? `${phoneItem.label}: ${phoneItem.value}` : phoneItem.value}
-                    </span>
+                    <span>{phoneItem.value}</span>
                   </Link>
                 ))
               ) : (

@@ -31,10 +31,9 @@ export async function getFooterCMSData() {
     })
 
     if (phones.length === 0) {
+      const ws = await db.websiteSettings.findFirst()
       const initialPhones = [
-        { type: 'PHONE', label: 'Admissions', value: '+91 91300 00000', displayOrder: 1, isActive: true },
-        { type: 'PHONE', label: 'Office', value: '+91 98765 43210', displayOrder: 2, isActive: true },
-        { type: 'PHONE', label: 'Placement', value: '+91 99887 66554', displayOrder: 3, isActive: true },
+        { type: 'PHONE', label: 'Phone', value: ws?.contactPhone || '+91 90000 00000', displayOrder: 1, isActive: true },
       ]
       for (const item of initialPhones) {
         await db.footerContactItem.create({ data: item })
