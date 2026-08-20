@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { siteConfig } from '@/data'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const [headerSettings, headerPhones, headerEmails, footerSettings, footerPhones, footerEmails, footerColumns, websiteSettings] = await Promise.all([
@@ -88,12 +90,8 @@ export async function GET() {
           number: websiteSettings?.whatsappNumber || siteConfig.whatsapp,
           active: footerSettings?.whatsappActive ?? true,
         },
-        phones: footerPhones.length > 0 ? footerPhones : [
-          { id: 'f-phone-1', label: 'Admissions', value: siteConfig.phone, displayOrder: 1 }
-        ],
-        emails: footerEmails.length > 0 ? footerEmails : [
-          { id: 'f-email-1', label: 'General', value: siteConfig.email, displayOrder: 1 }
-        ],
+        phones: footerPhones,
+        emails: footerEmails,
         columns: footerColumns,
       },
 

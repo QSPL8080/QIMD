@@ -161,47 +161,61 @@ const Footer: React.FC = () => {
                 </div>
               )}
 
-              {footer?.phones && footer.phones.length > 0 ? (
-                footer.phones.map((phoneItem) => (
-                  <Link
-                    key={phoneItem.id}
-                    href={`tel:${phoneItem.value.replace(/\s+/g, '')}`}
-                    className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
-                  >
-                    <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
-                    <span>{phoneItem.value}</span>
-                  </Link>
-                ))
-              ) : (
-                <Link
-                  href={`tel:${phone.replace(/\s+/g, '')}`}
-                  className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
-                >
-                  <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
-                  <span>{phone}</span>
-                </Link>
-              )}
+              {(() => {
+                const activePhones = footer?.phones ? footer.phones.filter((p: any) => p.isActive !== false) : []
+                if (activePhones.length > 0) {
+                  return activePhones.map((phoneItem: any) => (
+                    <Link
+                      key={phoneItem.id}
+                      href={`tel:${phoneItem.value.replace(/\s+/g, '')}`}
+                      className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                    >
+                      <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
+                      <span>{phoneItem.value}</span>
+                    </Link>
+                  ))
+                }
+                if (!footer?.phones && phone) {
+                  return (
+                    <Link
+                      href={`tel:${phone.replace(/\s+/g, '')}`}
+                      className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                    >
+                      <Icon icon="mdi:phone" className="text-secondary flex-shrink-0 text-base" />
+                      <span>{phone}</span>
+                    </Link>
+                  )
+                }
+                return null
+              })()}
 
-              {footer?.emails && footer.emails.length > 0 ? (
-                footer.emails.map((email) => (
-                  <Link
-                    key={email.id}
-                    href={`mailto:${email.value}`}
-                    className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
-                  >
-                    <Icon icon="mdi:email" className="text-secondary flex-shrink-0 text-base" />
-                    <span>{email.value}</span>
-                  </Link>
-                ))
-              ) : (
-                <Link
-                  href={`mailto:${siteConfig.email}`}
-                  className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
-                >
-                  <Icon icon="mdi:email" className="text-secondary flex-shrink-0 text-base" />
-                  <span>{siteConfig.email}</span>
-                </Link>
-              )}
+              {(() => {
+                const activeEmails = footer?.emails ? footer.emails.filter((e: any) => e.isActive !== false) : []
+                if (activeEmails.length > 0) {
+                  return activeEmails.map((email: any) => (
+                    <Link
+                      key={email.id}
+                      href={`mailto:${email.value}`}
+                      className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                    >
+                      <Icon icon="mdi:email" className="text-secondary flex-shrink-0 text-base" />
+                      <span>{email.value}</span>
+                    </Link>
+                  ))
+                }
+                if (!footer?.emails && siteConfig.email) {
+                  return (
+                    <Link
+                      href={`mailto:${siteConfig.email}`}
+                      className="flex items-center gap-3 text-sm text-white/80 hover:text-secondary transition-colors"
+                    >
+                      <Icon icon="mdi:email" className="text-secondary flex-shrink-0 text-base" />
+                      <span>{siteConfig.email}</span>
+                    </Link>
+                  )
+                }
+                return null
+              })()}
             </div>
           </div>
 
