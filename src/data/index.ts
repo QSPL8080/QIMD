@@ -54,9 +54,9 @@ export const headerData: NavItem[] = [
     label: "Courses",
     href: "/courses",
     submenu: [
-      { label: "AI Powered Digital Marketing Course", href: "/courses/ai-powered-digital-marketing-course" },
-      { label: "AI Powered Graphic Design Course", href: "/courses/ai-powered-graphic-design-course" },
-      { label: "AI Powered Video Editing Course", href: "/courses/ai-powered-video-editing-course" },
+      { label: "AI Powered Digital Marketing Course", href: "/courses/ai-digital-marketing" },
+      { label: "AI Powered Graphic Design Course", href: "/courses/ai-graphic-design" },
+      { label: "AI Powered Video Editing Course", href: "/courses/ai-video-editing" },
     ],
   },
   {
@@ -93,9 +93,9 @@ export const headerData: NavItem[] = [
 // ─── Footer Links ────────────────────────────────────────────
 export const footerLinks = {
   popularCourses: [
-    { label: "AI Digital Marketing Course", href: "/courses/ai-powered-digital-marketing-course" },
-    { label: "AI Graphic Design Course", href: "/courses/ai-powered-graphic-design-course" },
-    { label: "AI Video Editing Course", href: "/courses/ai-powered-video-editing-course" },
+    { label: "AI Digital Marketing Course", href: "/courses/ai-digital-marketing" },
+    { label: "AI Graphic Design Course", href: "/courses/ai-graphic-design" },
+    { label: "AI Video Editing Course", href: "/courses/ai-video-editing" },
   ],
   quickLinks: [
     { label: "Home", href: "/" },
@@ -838,10 +838,10 @@ export const faqsData: FAQ[] = [
 
 // ─── EMI Partners ────────────────────────────────────────────
 export const emiPartnersData: EmiPartner[] = [
-  { id: "emi-001", name: "Bajaj Finance", logo: "/images/emi/BAJAJ.svg" },
-  { id: "emi-002", name: "HDFC Bank", logo: "/images/emi/HDFC.svg" },
-  { id: "emi-003", name: "IDFC First Bank", logo: "/images/emi/IDFC.svg" },
-  { id: "emi-004", name: "Kotak Mahindra Bank", logo: "/images/emi/KOTAK.svg" },
+  { id: "emi-001", name: "Bajaj Finance", logo: "/images/emi/bajaj.svg" },
+  { id: "emi-002", name: "HDFC Bank", logo: "/images/emi/hdfc.svg" },
+  { id: "emi-003", name: "IDFC First Bank", logo: "/images/emi/idfc.svg" },
+  { id: "emi-004", name: "Kotak Mahindra Bank", logo: "/images/emi/kotak.svg" },
 ];
 
 // ─── Job Openings ────────────────────────────────────────────

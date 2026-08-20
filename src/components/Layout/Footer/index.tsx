@@ -275,9 +275,9 @@ const Footer: React.FC = () => {
                   <span className="absolute bottom-[-8px] left-0 w-10 h-0.5 bg-secondary rounded-full" />
                 </h4>
                 <ul className="mt-4 space-y-3">
-                  <li><Link href="/courses/ai-powered-digital-marketing-course" className="text-sm text-white/70 hover:text-secondary">AI Powered Digital Marketing Course</Link></li>
-                  <li><Link href="/courses/ai-powered-graphic-design-course" className="text-sm text-white/70 hover:text-secondary">AI Powered Graphic Design Course</Link></li>
-                  <li><Link href="/courses/ai-powered-video-editing-course" className="text-sm text-white/70 hover:text-secondary">AI Powered Video Editing Course</Link></li>
+                  <li><Link href="/courses/ai-digital-marketing" className="text-sm text-white/70 hover:text-secondary">AI Powered Digital Marketing Course</Link></li>
+                  <li><Link href="/courses/ai-graphic-design" className="text-sm text-white/70 hover:text-secondary">AI Powered Graphic Design Course</Link></li>
+                  <li><Link href="/courses/ai-video-editing" className="text-sm text-white/70 hover:text-secondary">AI Powered Video Editing Course</Link></li>
                 </ul>
               </div>
 
