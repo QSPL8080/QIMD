@@ -224,4 +224,4 @@ ADMIN_DEFAULT_PASSWORD="your_secure_admin_password"
 - **Prisma Client Generation Locking DLL**:
   Stop the running Next.js dev server first, then run `npx prisma generate`.
 - **Local pgAdmin Table Viewing**:
-  Ensure local PostgreSQL service is running on `localhost:5432` with database `qimd_db`. Look under **Schemas** -> **public** -> **Tables** -> **`banners`**.
+  Ensure local PostgreSQL service is running on `localhost:5432` with database `qimd_db`. Look under **Schemas** -> **public** -> **Tables** 
