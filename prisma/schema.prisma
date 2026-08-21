@@ -691,7 +691,13 @@ model FooterColumnLink {
 
 model Banner {
   id           String   @id @default(uuid()) @db.Uuid
+  badge        String?  @default("CAREER BOOSTER") @db.VarChar(100)
   title        String?  @db.VarChar(200)
+  titleAccent  String?  @map("title_accent") @db.VarChar(200)
+  subtitle     String?
+  tag          String?  @db.VarChar(150)
+  accentColor  String?  @default("#764DFF") @map("accent_color") @db.VarChar(50)
+  icon         String?  @default("mdi:rocket-launch") @db.VarChar(100)
   imageUrl     String   @map("image_url")
   displayOrder Int      @default(0) @map("display_order")
   isActive     Boolean  @default(true) @map("is_active")

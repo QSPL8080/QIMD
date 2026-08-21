@@ -91,7 +91,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this banner record?')) return
+    if (!confirm('Are you sure you want to delete this banner image?')) return
     const res = await deleteBannerPermanentlyAction(id)
     if (res.success) window.location.reload()
     else alert(res.error)
@@ -100,9 +100,6 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
   const handleToggleActive = async (item: BannerItem) => {
     const res = await saveBannerAction(
       {
-        title: item.title || undefined,
-        imageUrl: item.imageUrl,
-        displayOrder: item.displayOrder,
         isActive: !item.isActive,
       },
       item.id
@@ -112,15 +109,15 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
   }
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
           <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
             <Icon icon="ion:images-outline" className="w-6 h-6 text-purple-600" />
-            Homepage Banner Management
+            Homepage Banner CMS Management
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Manage, upload, reorder, activate or deactivate hero banner images displayed on the homepage carousel.
+            Upload and manage banner images (PNG/JPG) displayed on the homepage carousel.
           </p>
         </div>
 
@@ -129,7 +126,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
           className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
         >
           <Icon icon="ion:add-circle-outline" className="w-4 h-4" />
-          Upload New Banner
+          Upload New Banner Image
         </button>
       </div>
 
@@ -149,7 +146,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {banners.length === 0 ? (
           <div className="col-span-full bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 text-xs">
-            No banners found. Click "Upload New Banner" to add one.
+            No banners found in database. Click "Upload New Banner Image" to add one.
           </div>
         ) : (
           banners.map((item) => (
@@ -160,7 +157,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
               } rounded-2xl p-4 space-y-3 shadow-xs flex flex-col justify-between transition-all`}
             >
               <div className="space-y-3">
-                {/* Banner Image Card Container */}
+                {/* Banner Image Preview Container */}
                 <div className="relative group h-44 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center">
                   <img
                     src={item.imageUrl}
@@ -173,7 +170,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                       className="p-2 bg-white/90 hover:bg-white text-slate-800 rounded-lg text-xs font-bold shadow-md flex items-center gap-1"
                     >
                       <Icon icon="ion:eye-outline" className="w-4 h-4" />
-                      Preview
+                      Preview Image
                     </button>
                   </div>
                   <div className="absolute top-2 left-2">
@@ -196,13 +193,9 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
 
                 <div>
                   <h3 className="font-bold text-slate-900 text-sm truncate">
-                    {item.title || 'Untitled Banner'}
+                    {item.title || 'Untitled Banner Image'}
                   </h3>
                   <p className="text-[11px] text-slate-400 truncate mt-0.5 font-mono">{item.imageUrl}</p>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 pt-2 border-t border-slate-100">
-                    <span>Created: {new Date(item.createdAt).toLocaleDateString()}</span>
-                    <span>Updated: {new Date(item.updatedAt).toLocaleDateString()}</span>
-                  </div>
                 </div>
               </div>
 
@@ -235,13 +228,13 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
         )}
       </div>
 
-      {/* Save / Edit Modal */}
+      {/* Upload / Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="text-base font-bold text-slate-900">
-                {editingItem ? 'Edit / Replace Banner' : 'Upload New Banner'}
+                {editingItem ? 'Edit / Replace Banner Image' : 'Upload New Banner Image'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <Icon icon="ion:close" className="w-5 h-5" />
@@ -255,15 +248,15 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                   type="text"
                   name="title"
                   defaultValue={editingItem?.title || ''}
-                  placeholder="e.g. AI-Powered Marketing Special Batch"
+                  placeholder="e.g. Special Batch Offer Banner"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-medium"
                 />
               </div>
 
-              {/* Banner Image Upload & Preview Box */}
+              {/* Banner Image Upload Box */}
               <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl space-y-3">
                 <label className="block text-slate-700 font-semibold">
-                  Banner Image (Upload Image File or Enter Path) *
+                  Banner Image File (PNG / JPG) *
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -271,7 +264,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                     name="imageUrl"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="Upload file or enter /images/Banner/... path"
+                    placeholder="Upload image or enter /images/Banner/... path"
                     className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                     required
                   />
@@ -287,21 +280,18 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                   </label>
                 </div>
 
-                {/* Preview Box with [ X ] Remove button */}
-                {imageUrl ? (
+                {imageUrl && (
                   <div className="relative w-full h-36 bg-white rounded-xl border border-slate-300 p-2 flex items-center justify-center shadow-xs overflow-hidden">
                     <img src={imageUrl} alt="Banner Preview" className="w-full h-full object-cover rounded-lg" />
                     <button
                       type="button"
                       onClick={() => setImageUrl('')}
                       className="absolute top-3 right-3 bg-rose-600 text-white p-1.5 rounded-full hover:bg-rose-700 shadow-md transition-transform hover:scale-110"
-                      title="Remove Image Reference"
+                      title="Remove Image"
                     >
                       <Icon icon="ion:close" className="w-4 h-4" />
                     </button>
                   </div>
-                ) : (
-                  <p className="text-slate-400 text-xs italic">No image attached. Upload image file to proceed.</p>
                 )}
               </div>
 
@@ -311,7 +301,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                   <input
                     type="number"
                     name="displayOrder"
-                    defaultValue={editingItem?.displayOrder || 0}
+                    defaultValue={editingItem?.displayOrder || 1}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-medium"
                   />
                 </div>
@@ -323,7 +313,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                     defaultValue={editingItem ? String(editingItem.isActive) : 'true'}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-medium"
                   >
-                    <option value="true">Active (Visible in Homepage Carousel)</option>
+                    <option value="true">Active (Visible in Carousel)</option>
                     <option value="false">Inactive (Hidden)</option>
                   </select>
                 </div>
@@ -342,7 +332,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                   disabled={loading}
                   className="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-xs"
                 >
-                  {loading ? 'Saving...' : 'Save Banner'}
+                  {loading ? 'Saving...' : 'Save Banner Image'}
                 </button>
               </div>
             </form>
