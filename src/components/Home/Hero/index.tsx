@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { statsData, heroBadges, siteConfig, coursesData } from "@/data";
 import EnquiryForm from "@/components/Common/EnquiryForm";
+import HeroBannerCarousel from "./HeroBannerCarousel";
 
 function CounterItem({ stat, index }: { stat: { value: string; label: string }, index: number }) {
   const [count, setCount] = useState(0);
@@ -215,41 +216,8 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
           {/* RIGHT COLUMN */}
           <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-3.5">
             
-            {/* Promotional Banner */}
-            <div className="hero-card-slide-right">
-              <div className="relative overflow-hidden rounded-xl border border-white/60 shadow-xl p-4 sm:p-5 text-[#111827] transition-all duration-300"
-                style={{ background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(20px)' }}
-              >
-                <div className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-                
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 border border-[#764DFF]/20 text-[#764DFF] text-xs font-bold px-3 py-1 rounded-lg tracking-wider uppercase">
-                      <Icon icon="mdi:lightning-bolt" className="text-sm animate-pulse" />
-                      New Batch Starting Soon
-                    </span>
-                    <span className="text-[11px] font-semibold text-[#374151] bg-[#764DFF]/10 border border-[#764DFF]/20 px-2.5 py-0.5 rounded-full">
-                      Offline Courses
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl sm:text-2xl font-black text-[#111827] leading-tight mb-2">
-                    AI-Powered Courses <br />
-                    <span className="text-[#764DFF] font-black">100% Job Assistance</span>
-                  </h3>
-
-                  <p className="text-[#374151] text-xs sm:text-sm leading-relaxed mb-4">
-                    Join India&apos;s First Industry-Oriented AI Powered Marketing &amp; Design Institute. Hands-on practical live projects &amp; career guidance.
-                  </p>
-
-                  <div className="flex items-center gap-2 pt-1 border-t border-white/20">
-                    <Icon icon="mdi:shield-check" className="text-[#764DFF] text-lg" />
-                    <span className="text-xs font-semibold text-[#374151]">Limited Seats Available</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Promotional Banner Carousel */}
+            <HeroBannerCarousel />
 
             {/* ADMISSION FORM - Perfectly aligned with counter cards bottom */}
             <div className="bg-white dark:bg-dark rounded-xl shadow-xl p-5 sm:p-6 lg:p-7 border border-white/20 flex-1 flex items-center justify-center">

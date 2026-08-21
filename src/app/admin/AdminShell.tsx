@@ -174,6 +174,17 @@ export default function AdminShell({ session, children }: AdminShellProps) {
                 Courses
               </Link>
               <Link
+                href="/admin/banners"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  pathname === '/admin/banners'
+                    ? 'bg-purple-50 text-purple-800 font-semibold'
+                    : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                }`}
+              >
+                <Icon icon="ion:images-outline" className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                Homepage Banners
+              </Link>
+              <Link
                 href="/admin/course-categories"
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   pathname === '/admin/course-categories'

@@ -114,6 +114,15 @@ export async function isFileReferencedInDb(
     if (u.profileImage === cleanUrl) return true
   }
 
+  // 12. Check Banners (imageUrl)
+  const banners = await db.banner.findMany({
+    where: excludeRecord?.table === 'banner' ? { id: { not: excludeRecord.id } } : {},
+    select: { id: true, imageUrl: true },
+  })
+  for (const b of banners) {
+    if (b.imageUrl === cleanUrl) return true
+  }
+
   return false
 }
 
