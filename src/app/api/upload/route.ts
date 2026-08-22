@@ -6,6 +6,9 @@ import fs from 'fs'
 
 const BUCKET_NAME = 'qimd-media'
 
+const isSupabaseConfigured =
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getAdminSession()
@@ -33,8 +36,8 @@ export async function POST(req: NextRequest) {
 
     let fileUrl = ''
 
-    // If Supabase Storage keys are configured, upload directly to Cloud Storage
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    // If Supabase Storage is configured, upload to cloud (permanent storage)
+    if (isSupabaseConfigured) {
       const { data, error } = await supabaseAdmin.storage
         .from(BUCKET_NAME)
         .upload(uniqueName, buffer, {
@@ -44,23 +47,24 @@ export async function POST(req: NextRequest) {
 
       if (error) {
         console.error('Supabase Storage Upload Error:', error)
-        // If bucket doesn't exist yet, fallback to local storage safely
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true })
-        }
-        const filePath = path.join(uploadsDir, uniqueName)
-        fs.writeFileSync(filePath, buffer)
-        fileUrl = `/uploads/${uniqueName}`
-      } else {
-        const { data: publicUrlData } = supabaseAdmin.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(uniqueName)
-
-        fileUrl = publicUrlData.publicUrl
+        // When Supabase is configured but fails, return an error — do NOT silently fall
+        // back to local storage because production servers (Vercel, etc.) have ephemeral
+        // filesystem and locally-saved files will not persist across deployments.
+        return NextResponse.json(
+          {
+            error: `Cloud storage upload failed: ${error.message}. Please check your Supabase storage configuration and bucket permissions.`,
+          },
+          { status: 500 }
+        )
       }
+
+      const { data: publicUrlData } = supabaseAdmin.storage
+        .from(BUCKET_NAME)
+        .getPublicUrl(uniqueName)
+
+      fileUrl = publicUrlData.publicUrl
     } else {
-      // Fallback to local storage
+      // Local fallback — only used in development when Supabase is NOT configured
       const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
       if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true })

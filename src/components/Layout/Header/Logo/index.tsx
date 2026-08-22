@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { siteConfig } from '@/data'
 
@@ -20,16 +20,25 @@ const Logo: React.FC<LogoProps> = ({
   customSrc,
 }) => {
   const defaultLogo = variant === 'white' ? '/images/logo/qimd-logo-white.png' : '/images/logo/qimd-logo.png'
-  const logoSrc = customSrc || defaultLogo
+  const [imgSrc, setImgSrc] = useState<string>(customSrc || defaultLogo)
+
+  useEffect(() => {
+    setImgSrc(customSrc || defaultLogo)
+  }, [customSrc, defaultLogo])
 
   return (
     <Link href="/" aria-label={`${siteConfig.name} – Home`} className={`inline-flex items-center flex-shrink-0 ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={logoSrc}
+        src={imgSrc}
         alt={`${siteConfig.name} Logo`}
         width={width}
         height={height}
+        onError={() => {
+          if (imgSrc !== defaultLogo) {
+            setImgSrc(defaultLogo)
+          }
+        }}
         className="h-12 sm:h-14 md:h-16 w-auto object-contain block transition-all"
       />
     </Link>

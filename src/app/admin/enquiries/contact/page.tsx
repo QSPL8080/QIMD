@@ -4,6 +4,7 @@ import React, { useState, useEffect, useTransition } from 'react'
 import {
   updateEnquiryStatusAction,
   deleteEnquiryAction,
+  bulkDeleteEnquiryAction,
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 
@@ -16,6 +17,8 @@ export default function AdminContactLeadsPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false)
 
   const fetchLeads = async () => {
     setLoading(true)
@@ -52,6 +55,8 @@ export default function AdminContactLeadsPage() {
     return matchesSearch && matchesStatus
   })
 
+  const closedLeads = filteredLeads.filter(l => l.status === 'CLOSED')
+
   const handleStatusChange = async (id: string, newStatus: string) => {
     startTransition(async () => {
       const res = await updateEnquiryStatusAction('contact', id, newStatus)
@@ -79,8 +84,36 @@ export default function AdminContactLeadsPage() {
         setConfirmDeleteId(null)
       } else {
         setStatusMsg({ type: 'error', text: res.error || 'Failed to delete lead' })
+        setConfirmDeleteId(null)
       }
     })
+  }
+
+  const handleBulkDelete = async () => {
+    startTransition(async () => {
+      const res = await bulkDeleteEnquiryAction('contact', selectedIds)
+      if (res.success) {
+        setStatusMsg({ type: 'success', text: res.message || 'Selected records deleted' })
+        setLeads((prev) => prev.filter((item) => !selectedIds.includes(item.id)))
+        setSelectedIds([])
+        setBulkDeleteConfirm(false)
+      } else {
+        setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk delete' })
+        setBulkDeleteConfirm(false)
+      }
+    })
+  }
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === closedLeads.length) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(closedLeads.map(l => l.id))
+    }
   }
 
   const getStatusBadge = (status: string) => {
@@ -172,6 +205,34 @@ export default function AdminContactLeadsPage() {
         </div>
       </div>
 
+      {/* Bulk delete bar — shows only when viewing CLOSED tab and closed records exist */}
+      {statusFilter === 'CLOSED' && closedLeads.length > 0 && (
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === closedLeads.length && closedLeads.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded cursor-pointer"
+            />
+            <span className="text-xs font-semibold text-slate-700">
+              {selectedIds.length > 0
+                ? `${selectedIds.length} of ${closedLeads.length} selected`
+                : `Select all closed (${closedLeads.length})`}
+            </span>
+          </div>
+          {selectedIds.length > 0 && (
+            <button
+              onClick={() => setBulkDeleteConfirm(true)}
+              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+            >
+              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+              Delete Selected ({selectedIds.length})
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Contact Leads List View */}
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         {loading ? (
@@ -183,6 +244,7 @@ export default function AdminContactLeadsPage() {
             <table className="w-full text-left text-sm min-w-[650px]">
             <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
               <tr>
+                {statusFilter === 'CLOSED' && <th className="p-4 w-10"></th>}
                 <th className="p-4">Name</th>
                 <th className="p-4">Email</th>
                 <th className="p-4">Subject</th>
@@ -197,10 +259,28 @@ export default function AdminContactLeadsPage() {
                   onClick={() => setSelectedLead(lead)}
                   className="hover:bg-blue-50/50 cursor-pointer transition-colors group"
                 >
+                  {statusFilter === 'CLOSED' && (
+                    <td className="p-4" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(lead.id)}
+                        onChange={() => toggleSelectId(lead.id)}
+                        className="w-4 h-4 rounded cursor-pointer"
+                      />
+                    </td>
+                  )}
                   <td className="p-4 font-bold text-slate-900 text-base group-hover:text-blue-600">
                     {lead.fullName}
                   </td>
-                  <td className="p-4 text-slate-600 font-medium text-sm">{lead.email}</td>
+                  <td className="p-4 text-slate-600 font-medium text-sm">
+                    <a
+                      href={`mailto:${lead.email}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {lead.email}
+                    </a>
+                  </td>
                   <td className="p-4 text-slate-800 font-medium text-sm truncate max-w-xs">
                     {lead.subject || 'General Enquiry'}
                   </td>
@@ -247,11 +327,19 @@ export default function AdminContactLeadsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-0">
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Email</span>
-                  <span className="text-slate-900 font-bold block truncate break-all" title={selectedLead.email}>{selectedLead.email}</span>
+                  <a
+                    href={`mailto:${selectedLead.email}`}
+                    className="text-blue-600 hover:underline font-bold block truncate break-all"
+                    title={selectedLead.email}
+                  >
+                    {selectedLead.email}
+                  </a>
                 </div>
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Phone</span>
-                  <span className="text-slate-900 font-bold block truncate">{selectedLead.phone || 'N/A'}</span>
+                  <a href={`tel:${selectedLead.phone}`} className="text-slate-900 font-bold block truncate hover:text-blue-600">
+                    {selectedLead.phone || 'N/A'}
+                  </a>
                 </div>
               </div>
 
@@ -288,13 +376,19 @@ export default function AdminContactLeadsPage() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-              <button
-                onClick={() => setConfirmDeleteId(selectedLead.id)}
-                className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
-              >
-                <Icon icon="ion:trash-outline" className="w-4 h-4" />
-                Delete Lead
-              </button>
+              {selectedLead.status === 'CLOSED' ? (
+                <button
+                  onClick={() => setConfirmDeleteId(selectedLead.id)}
+                  className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
+                >
+                  <Icon icon="ion:trash-outline" className="w-4 h-4" />
+                  Delete Lead
+                </button>
+              ) : (
+                <span className="text-[11px] text-slate-400 italic">
+                  Only CLOSED enquiries can be deleted
+                </span>
+              )}
 
               <button
                 onClick={() => setSelectedLead(null)}
@@ -316,7 +410,7 @@ export default function AdminContactLeadsPage() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900 text-sm">Delete this enquiry?</h3>
-              <p className="text-xs text-slate-500 mt-1">This lead will be permanently deleted.</p>
+              <p className="text-xs text-slate-500 mt-1">This lead will be permanently deleted and cannot be recovered.</p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <button
@@ -330,6 +424,35 @@ export default function AdminContactLeadsPage() {
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Confirmation Modal */}
+      {bulkDeleteConfirm && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} closed enquiries?</h3>
+              <p className="text-xs text-slate-500 mt-1">These records will be permanently deleted and cannot be recovered.</p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkDeleteConfirm(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDelete}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete All
               </button>
             </div>
           </div>

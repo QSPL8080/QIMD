@@ -20,6 +20,39 @@ const StarRating: React.FC<{ rating: number }> = ({ rating = 5 }) => (
   </div>
 )
 
+const PlacementPartnerLogo: React.FC<{ partner: any }> = ({ partner }) => {
+  const fallback = placementPartnersData.find(
+    (p) => p.name.toLowerCase() === (partner.name || '').toLowerCase()
+  )?.logo || ''
+
+  const [src, setSrc] = useState<string>(partner.logo || fallback)
+  const [hasError, setHasError] = useState(false)
+
+  if (hasError || !src) {
+    return (
+      <span className="text-xs font-extrabold text-slate-800 dark:text-white/90 px-2.5 py-1 bg-slate-100 dark:bg-darklight rounded-lg">
+        {partner.name}
+      </span>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={partner.name}
+      onError={() => {
+        if (fallback && src !== fallback) {
+          setSrc(fallback)
+        } else {
+          setHasError(true)
+        }
+      }}
+      className="max-h-10 max-w-full object-contain transition-transform duration-300 hover:scale-110"
+    />
+  )
+}
+
+
 export default function PlacementsPage() {
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
   const [hiringPartners, setHiringPartners] = useState(placementPartnersData)
@@ -500,15 +533,7 @@ export default function PlacementsPage() {
                   key={`${partner.id || i}-${i}`}
                   className="flex items-center justify-center h-12 w-32 sm:w-40 shrink-0"
                 >
-                  {partner.logo ? (
-                    <img
-                      src={partner.logo}
-                      alt={partner.name}
-                      className="max-h-10 max-w-full object-contain transition-transform duration-300 hover:scale-110"
-                    />
-                  ) : (
-                    <span className="text-xs font-extrabold text-slate-800 dark:text-white/90">{partner.name}</span>
-                  )}
+                  <PlacementPartnerLogo partner={partner} />
                 </div>
               ))}
             </div>

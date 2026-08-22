@@ -156,7 +156,18 @@ export async function safeDeleteUnusedFile(
         console.error('Error unlinking physical file:', e)
       }
     }
+  } else if (cleanUrl.includes('/qimd-media/')) {
+    try {
+      const { supabaseAdmin } = await import('@/lib/supabase')
+      const pathPart = cleanUrl.split('/qimd-media/')[1]
+      if (pathPart && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        await supabaseAdmin.storage.from('qimd-media').remove([pathPart])
+      }
+    } catch (e) {
+      console.error('Error removing file from Supabase storage:', e)
+    }
   }
 
   return true
 }
+

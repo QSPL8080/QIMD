@@ -1,40 +1,49 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { placementPartnersData } from "@/data";
+import PhoneInput from "@/components/Common/PhoneInput";
+
+const defaultFormData = {
+  companyName: "",
+  contactPersonName: "",
+  officialEmail: "",
+  mobileNumber: "",
+  website: "",
+  numEmployees: "1–10 Employees",
+  jobRole: "",
+  department: "Digital Marketing",
+  numVacancies: "1",
+  jobLocation: "Pune",
+  experienceRequired: "Fresher",
+  employmentType: "Full-Time",
+  remuneration: "",
+  jobDescription: "",
+  agreeContact: true,
+};
 
 export default function HireFromUsContent() {
   const [formStep, setFormStep] = useState(1);
-  const [formData, setFormData] = useState({
-    // Company Information
-    companyName: "",
-    contactPersonName: "",
-    officialEmail: "",
-    mobileNumber: "",
-    website: "",
-    numEmployees: "1–10 Employees",
-
-    // Hiring Requirements
-    jobRole: "",
-    department: "Digital Marketing",
-    numVacancies: "1",
-    jobLocation: "Pune",
-    experienceRequired: "Fresher",
-    employmentType: "Full-Time",
-    remuneration: "",
-
-    // Job Details
-    jobDescription: "",
-
-    // Agreement
-    agreeContact: true,
-  });
+  const [formData, setFormData] = useState(defaultFormData);
 
   const [jdFile, setJdFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Auto-reset success message after 3 seconds
+  useEffect(() => {
+    if (submitSuccess) {
+      const timer = setTimeout(() => {
+        setSubmitSuccess(false);
+        setFormData(defaultFormData);
+        setFormStep(1);
+        setJdFile(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitSuccess]);
 
   const equippedSkills = [
     "AI-Powered Industry Skills",
@@ -425,13 +434,12 @@ export default function HireFromUsContent() {
                       </div>
                       <div>
                         <label className="block font-bold text-midnight_text dark:text-white mb-1">Mobile Number *</label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="+91 00000 00000"
+                        <PhoneInput
                           value={formData.mobileNumber}
-                          onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
-                          className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-[#764DFF] font-medium text-xs"
+                          onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
+                          required
+                          placeholder="Enter mobile number"
+                          inputClassName="text-xs"
                         />
                       </div>
                     </div>

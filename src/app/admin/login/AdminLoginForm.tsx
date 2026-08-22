@@ -8,20 +8,21 @@ export default function AdminLoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(true)
-  const [email, setEmail] = useState('admin@qimd.in')
+  const [rememberMe, setRememberMe] = useState(false)
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   useEffect(() => {
     try {
       const savedRemember = localStorage.getItem('qimd_remember_me')
       if (savedRemember === 'true') {
-        setRememberMe(true)
         const savedEmail = localStorage.getItem('qimd_saved_email')
-        if (savedEmail) setEmail(savedEmail)
-      } else if (savedRemember === 'false') {
-        setRememberMe(false)
+        if (savedEmail) {
+          setRememberMe(true)
+          setEmail(savedEmail)
+        }
       }
+      // If not 'true', leave defaults: rememberMe=false, email=''
     } catch (e) {
       console.error('LocalStorage error:', e)
     }

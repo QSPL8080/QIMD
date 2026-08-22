@@ -1,9 +1,41 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { placedStudentsData, placementPartnersData } from '@/data'
 import PlacementCard from '@/components/Common/PlacementCard'
+
+const PartnerLogoItem: React.FC<{ partner: any }> = ({ partner }) => {
+  const fallback = placementPartnersData.find(
+    (p) => p.name.toLowerCase() === (partner.name || '').toLowerCase()
+  )?.logo || ''
+
+  const [src, setSrc] = useState<string>(partner.logo || fallback)
+  const [hasError, setHasError] = useState(false)
+
+  if (hasError || !src) {
+    return (
+      <span className="text-xs sm:text-sm font-bold text-[#374151] px-3 py-1.5 bg-white/70 rounded-lg border border-slate-200 shadow-2xs">
+        {partner.name}
+      </span>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={partner.name}
+      onError={() => {
+        if (fallback && src !== fallback) {
+          setSrc(fallback)
+        } else {
+          setHasError(true)
+        }
+      }}
+      className="max-h-12 max-w-full object-contain filter drop-shadow-xs transition-transform duration-300 hover:scale-105"
+    />
+  )
+}
 
 const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[] }> = ({ placements, partners }) => {
   const displayPlacements = placements && placements.length > 0 ? placements.slice(0, 4) : placedStudentsData.slice(0, 4)
@@ -68,15 +100,7 @@ const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[] }> = ({
                   key={`${partner.id || i}-${i}`}
                   className="flex items-center justify-center h-16 w-36 sm:w-44 flex-shrink-0"
                 >
-                  {partner.logo ? (
-                    <img
-                      src={partner.logo}
-                      alt={partner.name}
-                      className="max-h-12 max-w-full object-contain filter drop-shadow-xs transition-transform duration-300 hover:scale-105"
-                    />
-                  ) : (
-                    <span className="text-sm font-bold text-[#374151]">{partner.name}</span>
-                  )}
+                  <PartnerLogoItem partner={partner} />
                 </div>
               ))}
             </div>
@@ -86,6 +110,5 @@ const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[] }> = ({
     </section>
   )
 }
-
 
 export default PlacementsSection

@@ -37,7 +37,7 @@ export const jobOpeningSchema = z.object({
 export const contactEnquirySchema = z.object({
   fullName: z.string().min(2, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  phone: z.string().min(5, 'Valid phone number is required').max(20, 'Phone number too long'),
   subject: z.string().optional(),
   message: z.string().min(5, 'Message must be at least 5 characters'),
 })
@@ -45,7 +45,7 @@ export const contactEnquirySchema = z.object({
 export const admissionEnquirySchema = z.object({
   studentName: z.string().min(2, 'Student name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  phone: z.string().min(5, 'Valid phone number is required').max(20, 'Phone number too long'),
   courseId: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   qualification: z.string().optional().nullable(),
@@ -55,7 +55,7 @@ export const admissionEnquirySchema = z.object({
 export const careerApplicationSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  phone: z.string().min(5, 'Valid phone number is required').max(20, 'Phone number too long'),
   jobTitle: z.string().min(2, 'Job title is required'),
   jobOpeningId: z.string().uuid().optional().nullable(),
   resume: z.string().min(1, 'Resume file is required'),
@@ -66,7 +66,7 @@ export const franchiseEnquirySchema = z.object({
   fullName: z.string().min(2, 'Name is required'),
   companyName: z.string().optional().nullable(),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  phone: z.string().min(5, 'Valid phone number is required').max(20, 'Phone number too long'),
   city: z.string().optional().nullable(),
   state: z.string().optional().nullable(),
   investmentCapacity: z.string().optional().nullable(),
@@ -77,7 +77,7 @@ export const hireRequestSchema = z.object({
   companyName: z.string().min(2, 'Company name is required'),
   contactPerson: z.string().min(2, 'Contact person name is required'),
   email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  phone: z.string().min(5, 'Valid phone number is required').max(20, 'Phone number too long'),
   jobRole: z.string().min(2, 'Job role is required'),
   requiredSkills: z.string().optional().nullable(),
   vacancies: z.number().int().positive().optional().default(1),

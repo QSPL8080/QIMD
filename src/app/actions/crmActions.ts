@@ -340,6 +340,35 @@ export async function deleteEnquiryAction(
   const session = await requireAdminSession()
 
   try {
+    // Server-side: enforce that only CLOSED enquiries can be deleted
+    let currentStatus: string | null = null
+
+    if (type === 'contact') {
+      const rec = await db.contactEnquiry.findUnique({ where: { id }, select: { status: true } })
+      currentStatus = rec?.status || null
+    } else if (type === 'admission') {
+      const rec = await db.admissionEnquiry.findUnique({ where: { id }, select: { status: true } })
+      currentStatus = rec?.status || null
+    } else if (type === 'career') {
+      const rec = await db.careerEnquiry.findUnique({ where: { id }, select: { status: true } })
+      currentStatus = rec?.status || null
+    } else if (type === 'franchise') {
+      const rec = await db.franchisePartnerEnquiry.findUnique({ where: { id }, select: { status: true } })
+      currentStatus = rec?.status || null
+    } else if (type === 'hire') {
+      const rec = await db.companyPlacementEnquiry.findUnique({ where: { id }, select: { status: true } })
+      currentStatus = rec?.status || null
+    }
+
+    // Only allow deletion if status is CLOSED or REJECTED
+    const allowedStatuses = ['CLOSED', 'REJECTED']
+    if (!currentStatus || !allowedStatuses.includes(currentStatus)) {
+      return {
+        success: false,
+        error: `Only CLOSED enquiries can be deleted. Current status: ${currentStatus || 'unknown'}`
+      }
+    }
+
     if (type === 'contact') await db.contactEnquiry.delete({ where: { id } })
     else if (type === 'admission') await db.admissionEnquiry.delete({ where: { id } })
     else if (type === 'career') await db.careerEnquiry.delete({ where: { id } })
@@ -361,3 +390,69 @@ export async function deleteEnquiryAction(
 }
 
 export const deleteEnquiryPermanentlyAction = deleteEnquiryAction
+
+/**
+ * Bulk delete CLOSED enquiries only.
+ * Server enforces that only records with CLOSED/REJECTED status are deleted.
+ */
+export async function bulkDeleteEnquiryAction(
+  type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
+  ids: string[]
+) {
+  const session = await requireAdminSession()
+
+  if (!ids || ids.length === 0) {
+    return { success: false, error: 'No IDs provided' }
+  }
+
+  try {
+    const allowedStatuses = ['CLOSED', 'REJECTED']
+    let deletedCount = 0
+
+    for (const id of ids) {
+      let currentStatus: string | null = null
+
+      if (type === 'contact') {
+        const rec = await db.contactEnquiry.findUnique({ where: { id }, select: { status: true } })
+        currentStatus = rec?.status || null
+      } else if (type === 'admission') {
+        const rec = await db.admissionEnquiry.findUnique({ where: { id }, select: { status: true } })
+        currentStatus = rec?.status || null
+      } else if (type === 'career') {
+        const rec = await db.careerEnquiry.findUnique({ where: { id }, select: { status: true } })
+        currentStatus = rec?.status || null
+      } else if (type === 'franchise') {
+        const rec = await db.franchisePartnerEnquiry.findUnique({ where: { id }, select: { status: true } })
+        currentStatus = rec?.status || null
+      } else if (type === 'hire') {
+        const rec = await db.companyPlacementEnquiry.findUnique({ where: { id }, select: { status: true } })
+        currentStatus = rec?.status || null
+      }
+
+      // Skip non-CLOSED records silently (server enforcement)
+      if (!currentStatus || !allowedStatuses.includes(currentStatus)) {
+        continue
+      }
+
+      if (type === 'contact') await db.contactEnquiry.delete({ where: { id } })
+      else if (type === 'admission') await db.admissionEnquiry.delete({ where: { id } })
+      else if (type === 'career') await db.careerEnquiry.delete({ where: { id } })
+      else if (type === 'franchise') await db.franchisePartnerEnquiry.delete({ where: { id } })
+      else if (type === 'hire') await db.companyPlacementEnquiry.delete({ where: { id } })
+
+      deletedCount++
+    }
+
+    await createAuditLog({
+      userId: session.id,
+      module: `CRM_${type.toUpperCase()}`,
+      action: 'BULK_DELETE_CLOSED_RECORDS',
+    })
+
+    revalidatePath(`/admin/enquiries/${type}`)
+    return { success: true, message: `${deletedCount} record(s) permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to bulk delete records' }
+  }
+}
+

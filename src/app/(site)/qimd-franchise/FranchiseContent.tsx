@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import PhoneInput from "@/components/Common/PhoneInput";
 
 export default function FranchiseContent() {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     fullName: "",
     mobileNumber: "",
     email: "",
@@ -15,9 +16,21 @@ export default function FranchiseContent() {
     preferredCity: "",
     interestDetails: "",
     agreeContact: true,
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  useEffect(() => {
+    if (submitSuccess) {
+      const timer = setTimeout(() => {
+        setSubmitSuccess(false);
+        setFormData(initialFormData);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitSuccess]);
 
   const whyPartnerReasons = [
     {
@@ -298,13 +311,12 @@ export default function FranchiseContent() {
                     <label className="block font-bold text-midnight_text dark:text-white mb-1">
                       Mobile Number *
                     </label>
-                    <input
-                      type="tel"
+                    <PhoneInput
+                      value={formData.mobileNumber}
+                      onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
                       required
                       placeholder="Enter mobile number"
-                      value={formData.mobileNumber}
-                      onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      inputClassName="text-xs"
                     />
                   </div>
                   <div>

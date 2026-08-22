@@ -3,7 +3,10 @@ import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { db } from './db'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'qimd_super_secret_jwt_key_2026_secure'
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not set. Please configure it in your .env file.')
+}
 const COOKIE_NAME = 'qimd_admin_token'
 
 export interface SessionUser {
@@ -24,12 +27,12 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function signJwtToken(payload: { userId: string }): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
+  return jwt.sign(payload, JWT_SECRET!, { expiresIn: '7d' })
 }
 
 export function verifyJwtToken(token: string): { userId: string } | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string }
+    return jwt.verify(token, JWT_SECRET!) as { userId: string }
   } catch {
     return null
   }
@@ -92,9 +95,11 @@ export async function requireContentManagerSession(): Promise<SessionUser> {
 
 export async function setAdminSessionCookie(token: string) {
   const cookieStore = await cookies()
+  const isProduction = process.env.NODE_ENV === 'production'
+  
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isProduction,
     sameSite: 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60, // 7 days
@@ -103,5 +108,14 @@ export async function setAdminSessionCookie(token: string) {
 
 export async function clearAdminSessionCookie() {
   const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  cookieStore.set(COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+    expires: new Date(0),
+  })
 }

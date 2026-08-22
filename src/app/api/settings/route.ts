@@ -74,7 +74,7 @@ export async function GET() {
 
       // Footer CMS
       footer: {
-        logo: footerSettings?.logo || websiteSettings?.favicon || '/images/logo/qimd-logo-white.png',
+        logo: footerSettings?.logo || '/images/logo/qimd-logo-white.png',
         logoAltText: footerSettings?.logoAltText || 'QIMD Footer Logo',
         logoLink: footerSettings?.logoLink || '/',
         logoActive: footerSettings?.logoActive ?? true,

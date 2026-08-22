@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { submitCareerApplicationAction } from "@/app/actions/crmActions";
+import PhoneInput from "@/components/Common/PhoneInput";
 
 export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) {
   const defaultPos = jobOpenings && jobOpenings.length > 0 ? (jobOpenings[0].title || jobOpenings[0].name) : "Digital Marketing Trainer";
@@ -19,6 +20,25 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Auto-reset success message after 3 seconds
+  useEffect(() => {
+    if (submitSuccess) {
+      const timer = setTimeout(() => {
+        setSubmitSuccess(false);
+        setFormData({
+          fullName: "",
+          mobileNumber: "",
+          email: "",
+          position: defaultPos,
+          experience: "1-3 Years",
+          agreeContact: true,
+        });
+        setResumeFile(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitSuccess, defaultPos]);
 
   const openPositions = [
     "Digital Marketing Trainer",
@@ -56,12 +76,38 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      let resumeUrl = "";
+
+      // Upload the resume file first
+      if (resumeFile) {
+        const uploadForm = new FormData();
+        uploadForm.append("file", resumeFile);
+        try {
+          const uploadRes = await fetch("/api/upload/career-resume", {
+            method: "POST",
+            body: uploadForm,
+          });
+          if (uploadRes.ok) {
+            const uploadData = await uploadRes.json();
+            resumeUrl = uploadData.url || resumeFile.name;
+          } else {
+            resumeUrl = resumeFile.name;
+          }
+        } catch {
+          resumeUrl = resumeFile.name;
+        }
+      } else {
+        setIsSubmitting(false);
+        alert("Please upload your resume.");
+        return;
+      }
+
       const res = await submitCareerApplicationAction({
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.mobileNumber,
         jobTitle: formData.position,
-        resume: resumeFile ? resumeFile.name : "Resume_Uploaded.pdf",
+        resume: resumeUrl,
         coverLetter: `Experience: ${formData.experience}`,
       });
       setIsSubmitting(false);
@@ -75,6 +121,7 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
       alert("Submission error. Please try again.");
     }
   };
+
 
   return (
     <div className="bg-grey dark:bg-dark min-h-screen">
@@ -318,13 +365,11 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                     <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
                       Mobile Number *
                     </label>
-                    <input
-                      type="tel"
+                    <PhoneInput
+                      value={formData.mobileNumber}
+                      onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
                       required
                       placeholder="Enter mobile number"
-                      value={formData.mobileNumber}
-                      onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
-                      className="w-full bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-xl p-3 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium"
                     />
                   </div>
                   <div>

@@ -124,8 +124,13 @@ export default function AdminFooterCMSPage() {
       const res = await fetch('/api/upload', { method: 'POST', body: formData })
       const data = await res.json()
       if (data.success && data.url) {
-        setSettings((prev: any) => ({ ...prev, logo: data.url }))
-        setStatusMsg({ type: 'success', text: 'Footer logo uploaded to Media Library successfully' })
+        const newSettings = { ...settings, logo: data.url }
+        setSettings(newSettings)
+        await updateFooterSettingsAction(newSettings)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('websiteSettingsUpdated'))
+        }
+        setStatusMsg({ type: 'success', text: 'Footer logo uploaded and saved successfully' })
       } else {
         setStatusMsg({ type: 'error', text: data.error || 'Logo upload failed' })
       }
@@ -416,19 +421,53 @@ export default function AdminFooterCMSPage() {
               <div className="space-y-3">
                 <div>
                   <label className="block text-slate-300 font-semibold mb-1">Upload / Select Image</label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                     <input
                       type="text"
                       value={settings.logo || ''}
                       onChange={(e) => setSettings({ ...settings, logo: e.target.value })}
                       placeholder="/images/logo/qimd-logo-white.png"
-                      className="flex-1 bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-white"
+                      className="flex-1 min-w-[140px] bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-white"
                     />
                     <label className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg cursor-pointer transition-colors shrink-0 flex items-center gap-1">
                       <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
                       {uploadingLogo ? 'Uploading...' : 'Upload'}
                       <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
                     </label>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const newSettings = { ...settings, logo: '/images/logo/qimd-logo-white.png' }
+                        setSettings(newSettings)
+                        await updateFooterSettingsAction(newSettings)
+                        if (typeof window !== 'undefined') {
+                          window.dispatchEvent(new Event('websiteSettingsUpdated'))
+                        }
+                        setStatusMsg({ type: 'success', text: 'Reset to default white logo' })
+                      }}
+                      className="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-semibold shrink-0"
+                      title="Reset to default white logo"
+                    >
+                      Default
+                    </button>
+                    {settings.logo && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const newSettings = { ...settings, logo: '' }
+                          setSettings(newSettings)
+                          await updateFooterSettingsAction(newSettings)
+                          if (typeof window !== 'undefined') {
+                            window.dispatchEvent(new Event('websiteSettingsUpdated'))
+                          }
+                          setStatusMsg({ type: 'success', text: 'Logo removed' })
+                        }}
+                        className="px-2.5 py-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 rounded-lg text-[11px] font-semibold shrink-0"
+                        title="Remove logo"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 </div>
 

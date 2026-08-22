@@ -1,8 +1,9 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import type { EnquiryFormData } from "@/types";
 import { coursesData, siteConfig } from "@/data";
+import PhoneInput from "@/components/Common/PhoneInput";
 
 interface EnquiryFormProps {
   title?: string;
@@ -40,11 +41,21 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        setSubmitted(false);
+        setForm(INITIAL_FORM);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [submitted]);
+
   const validate = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
-    if (!form.phone.trim() || !/^[0-9]{10,13}$/.test(form.phone.replace(/\s+/g, '')))
-      newErrors.phone = "Valid 10-digit phone number required";
+    if (!form.phone.trim() || form.phone.replace(/[^\d]/g, '').length < 5)
+      newErrors.phone = "Valid phone number required";
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       newErrors.email = "Valid email address required";
     
@@ -185,22 +196,18 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
 
           {/* Phone */}
           <div>
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon icon="mdi:phone-outline" className="text-lg" />
-              </div>
-              <input
-                id="enquiry-phone"
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="Phone Number *"
-                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium ${
-                  errors.phone ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
-                }`}
-              />
-            </div>
+            <PhoneInput
+              id="enquiry-phone"
+              value={form.phone}
+              onChange={(val) => {
+                setForm((prev) => ({ ...prev, phone: val }));
+                if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+              }}
+              placeholder="Phone Number *"
+              inputClassName={`text-xs sm:text-sm ${
+                errors.phone ? 'border-red-500 bg-red-50/50' : ''
+              }`}
+            />
             {errors.phone && (
               <p className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.phone}</p>
             )}
