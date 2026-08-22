@@ -120,7 +120,7 @@ export default function PartnerManagementClient({
       setMsg({ type: 'success', text: res.message || 'Saved successfully' })
       setModalOpen(false)
       const updatedItem: PartnerItem = {
-        id: editingItem?.id || (res.partner?.id ? String(res.partner.id) : Date.now().toString()),
+        id: editingItem?.id || ((res as any).partner?.id ? String((res as any).partner.id) : Date.now().toString()),
         name: rawData.name,
         logo: rawData.logo,
         type: rawData.type,
@@ -161,8 +161,7 @@ export default function PartnerManagementClient({
   }
 
   const handleBulkDelete = async () => {
-    const isEmi = tab === 'EMI'
-    const res = await bulkDeletePartnersAction(selectedIds, isEmi)
+    const res = await bulkDeletePartnersAction(selectedIds, tab)
     if (res.success) {
       if (tab === 'HIRING') {
         setHiringPartners((prev) => prev.filter((p) => !selectedIds.includes(p.id)))

@@ -1442,6 +1442,40 @@ export async function bulkDeletePartnersAction(ids: string[], type: 'HIRING' | '
 }
 
 // 9. Gallery Bulk Actions
+export async function bulkTrashGalleryItemsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.gallery.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_TRASH_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/gallery')
+    revalidatePath('/admin/gallery')
+    return { success: true, message: `${ids.length} gallery items moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash gallery items' }
+  }
+}
+
+export async function bulkRestoreGalleryItemsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.gallery.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_RESTORE_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/gallery')
+    revalidatePath('/admin/gallery')
+    return { success: true, message: `${ids.length} gallery items restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore gallery items' }
+  }
+}
+
 export async function bulkDeleteGalleryItemsAction(ids: string[]) {
   const session = await requireAdminSession()
   try {
@@ -1461,4 +1495,5 @@ export async function bulkDeleteGalleryItemsAction(ids: string[]) {
     return { success: false, error: err.message || 'Failed to delete gallery items' }
   }
 }
+
 
