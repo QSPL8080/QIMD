@@ -15,7 +15,22 @@ import { requireAdminSession } from '@/lib/auth'
 import { createAuditLog } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 // --- COURSE CATEGORIES CMS ---
+export async function getCategoriesAction() {
+  const session = await requireAdminSession()
+  try {
+    const categories = await db.courseCategory.findMany({
+      include: { courses: true },
+      orderBy: { displayOrder: 'asc' },
+    })
+    return { success: true, categories: JSON.parse(JSON.stringify(categories)) }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to fetch categories' }
+  }
+}
+
 export async function saveCategoryAction(data: any, id?: string) {
   const session = await requireAdminSession()
   try {
@@ -25,8 +40,9 @@ export async function saveCategoryAction(data: any, id?: string) {
     }
 
     const categoryData = { ...validated.data }
+    let resultCategory: any = null
 
-    if (id) {
+    if (id && UUID_REGEX.test(id)) {
       const oldCat = await db.courseCategory.findUnique({ where: { id } })
       if (oldCat && oldCat.slug !== categoryData.slug) {
         const existing = await db.courseCategory.findUnique({ where: { slug: categoryData.slug } })
@@ -34,7 +50,7 @@ export async function saveCategoryAction(data: any, id?: string) {
           return { success: false, error: `A category with slug '${categoryData.slug}' already exists.` }
         }
       }
-      await db.courseCategory.update({
+      resultCategory = await db.courseCategory.update({
         where: { id },
         data: categoryData,
       })
@@ -48,16 +64,16 @@ export async function saveCategoryAction(data: any, id?: string) {
       }
       categoryData.slug = uniqueSlug
 
-      const created = await db.courseCategory.create({
+      resultCategory = await db.courseCategory.create({
         data: categoryData,
       })
-      await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'CREATE_CATEGORY', recordId: created.id })
+      await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'CREATE_CATEGORY', recordId: resultCategory.id })
     }
 
     revalidatePath('/courses')
     revalidatePath('/admin/course-categories')
     revalidatePath('/admin/courses')
-    return { success: true, message: 'Category saved successfully' }
+    return { success: true, message: 'Category saved successfully', category: JSON.parse(JSON.stringify(resultCategory)) }
   } catch (err: any) {
     if (err?.code === 'P2002' || err?.message?.includes('Unique constraint failed')) {
       return { success: false, error: 'A category with this slug already exists.' }
@@ -69,6 +85,9 @@ export async function saveCategoryAction(data: any, id?: string) {
 export async function trashCategoryAction(id: string) {
   const session = await requireAdminSession()
   try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid category ID' }
+    }
     await db.courseCategory.update({ where: { id }, data: { isDeleted: true } })
     await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'TRASH_CATEGORY', recordId: id })
     revalidatePath('/admin/course-categories')
@@ -81,6 +100,9 @@ export async function trashCategoryAction(id: string) {
 export async function restoreCategoryAction(id: string) {
   const session = await requireAdminSession()
   try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid category ID' }
+    }
     await db.courseCategory.update({ where: { id }, data: { isDeleted: false } })
     await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'RESTORE_CATEGORY', recordId: id })
     revalidatePath('/admin/course-categories')
@@ -93,6 +115,9 @@ export async function restoreCategoryAction(id: string) {
 export async function deleteCategoryPermanentlyAction(id: string) {
   const session = await requireAdminSession()
   try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid category ID' }
+    }
     await db.courseCategory.delete({ where: { id } })
     await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'PERMANENT_DELETE_CATEGORY', recordId: id })
     revalidatePath('/admin/course-categories')
@@ -1033,14 +1058,15 @@ export async function deleteStudentReviewAction(id: string) {
 export async function bulkTrashCategoriesAction(ids: string[]) {
   const session = await requireAdminSession()
   try {
-    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid categories selected' }
     await db.courseCategory.updateMany({
-      where: { id: { in: ids } },
+      where: { id: { in: validIds } },
       data: { isDeleted: true },
     })
-    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_TRASH_CATEGORIES', recordId: ids.join(',') })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_TRASH_CATEGORIES', recordId: validIds.join(',') })
     revalidatePath('/admin/course-categories')
-    return { success: true, message: `${ids.length} categories moved to Trash` }
+    return { success: true, message: `${validIds.length} categories moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash categories' }
   }
@@ -1049,14 +1075,15 @@ export async function bulkTrashCategoriesAction(ids: string[]) {
 export async function bulkRestoreCategoriesAction(ids: string[]) {
   const session = await requireAdminSession()
   try {
-    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid categories selected' }
     await db.courseCategory.updateMany({
-      where: { id: { in: ids } },
+      where: { id: { in: validIds } },
       data: { isDeleted: false },
     })
-    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_RESTORE_CATEGORIES', recordId: ids.join(',') })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_RESTORE_CATEGORIES', recordId: validIds.join(',') })
     revalidatePath('/admin/course-categories')
-    return { success: true, message: `${ids.length} categories restored` }
+    return { success: true, message: `${validIds.length} categories restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore categories' }
   }
@@ -1065,13 +1092,14 @@ export async function bulkRestoreCategoriesAction(ids: string[]) {
 export async function bulkDeleteCategoriesPermanentlyAction(ids: string[]) {
   const session = await requireAdminSession()
   try {
-    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid categories selected' }
     await db.courseCategory.deleteMany({
-      where: { id: { in: ids } },
+      where: { id: { in: validIds } },
     })
-    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_PERMANENT_DELETE_CATEGORIES', recordId: ids.join(',') })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_PERMANENT_DELETE_CATEGORIES', recordId: validIds.join(',') })
     revalidatePath('/admin/course-categories')
-    return { success: true, message: `${ids.length} categories permanently deleted` }
+    return { success: true, message: `${validIds.length} categories permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to permanently delete categories' }
   }

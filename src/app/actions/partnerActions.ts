@@ -6,6 +6,8 @@ import { revalidatePath } from 'next/cache'
 
 import { safeDeleteUnusedFile } from '@/lib/mediaService'
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export async function savePartnerAction(data: {
   name: string
   logo: string
@@ -22,15 +24,16 @@ export async function savePartnerAction(data: {
 
   try {
     const isEmi = data.type === 'EMI'
+    let resultPartner: any = null
 
     if (isEmi) {
-      if (id) {
+      if (id && UUID_REGEX.test(id)) {
         const existing = await db.emiPartner.findUnique({ where: { id } })
         if (existing && existing.logo && existing.logo !== data.logo) {
           await safeDeleteUnusedFile(existing.logo, { table: 'emiPartner', id })
         }
 
-        await db.emiPartner.update({
+        resultPartner = await db.emiPartner.update({
           where: { id },
           data: {
             name: data.name,
@@ -41,7 +44,7 @@ export async function savePartnerAction(data: {
           },
         })
       } else {
-        await db.emiPartner.create({
+        resultPartner = await db.emiPartner.create({
           data: {
             name: data.name,
             logo: data.logo,
@@ -52,13 +55,13 @@ export async function savePartnerAction(data: {
         })
       }
     } else {
-      if (id) {
+      if (id && UUID_REGEX.test(id)) {
         const existing = await db.partner.findUnique({ where: { id } })
         if (existing && existing.logo && existing.logo !== data.logo) {
           await safeDeleteUnusedFile(existing.logo, { table: 'partner', id })
         }
 
-        await db.partner.update({
+        resultPartner = await db.partner.update({
           where: { id },
           data: {
             name: data.name,
@@ -70,7 +73,7 @@ export async function savePartnerAction(data: {
           },
         })
       } else {
-        await db.partner.create({
+        resultPartner = await db.partner.create({
           data: {
             name: data.name,
             logo: data.logo,
@@ -87,7 +90,7 @@ export async function savePartnerAction(data: {
     revalidatePath('/')
     revalidatePath('/placements')
     revalidatePath('/courses')
-    return { success: true, message: 'Partner saved successfully' }
+    return { success: true, message: 'Partner saved successfully', partner: JSON.parse(JSON.stringify(resultPartner)) }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to save partner' }
   }
@@ -96,6 +99,9 @@ export async function savePartnerAction(data: {
 export async function deletePartnerPermanentlyAction(id: string, isEmi: boolean) {
   await requireContentManagerSession()
   try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid partner ID' }
+    }
     if (isEmi) {
       const existing = await db.emiPartner.findUnique({ where: { id } })
       await db.emiPartner.delete({ where: { id } })

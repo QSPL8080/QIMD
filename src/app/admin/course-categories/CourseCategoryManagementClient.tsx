@@ -9,6 +9,7 @@ import {
   bulkTrashCategoriesAction,
   bulkRestoreCategoriesAction,
   bulkDeleteCategoriesPermanentlyAction,
+  getCategoriesAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
 
@@ -103,29 +104,20 @@ export default function CourseCategoryManagementClient({
     if (res.success) {
       setMsg({ type: 'success', text: res.message || 'Category saved successfully' })
       setModalOpen(false)
-      // Update locally or refetch
-      if (editingCat) {
-        setCategories((prev) =>
-          prev.map((c) =>
-            c.id === editingCat.id
-              ? { ...c, ...rawData, status: rawData.status }
-              : c
-          )
-        )
+      if ((res as any).category) {
+        const returnedCat = (res as any).category as CategoryItem
+        setCategories((prev) => {
+          const exists = prev.some((c) => c.id === returnedCat.id)
+          if (exists) {
+            return prev.map((c) => (c.id === returnedCat.id ? { ...c, ...returnedCat } : c))
+          }
+          return [returnedCat, ...prev]
+        })
       } else {
-        // Add new category to list
-        const newCat: CategoryItem = {
-          id: 'temp-' + Date.now(),
-          name: rawData.name,
-          slug: rawData.slug,
-          description: rawData.description,
-          displayOrder: rawData.displayOrder,
-          status: rawData.status,
-          isDeleted: false,
-          courses: [],
-          createdAt: new Date().toISOString(),
+        const fresh = await getCategoriesAction()
+        if (fresh.success && fresh.categories) {
+          setCategories(fresh.categories)
         }
-        setCategories((prev) => [newCat, ...prev])
       }
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to save' })
