@@ -6,6 +6,9 @@ import {
   trashJobOpeningAction,
   restoreJobOpeningAction,
   deleteJobOpeningPermanentlyAction,
+  bulkTrashJobOpeningsAction,
+  bulkRestoreJobOpeningsAction,
+  bulkDeleteJobOpeningsPermanentlyAction,
 } from '@/app/actions/careerActions'
 import { Icon } from '@iconify/react'
 
@@ -34,13 +37,41 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const filteredJobs = jobs.filter((j) => {
+  // Multi-select & Bulk operations
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
+
+  const activeJobs = jobs.filter((j) => !j.isDeleted)
+  const trashJobs = jobs.filter((j) => j.isDeleted)
+
+  const currentList = showTrash ? trashJobs : activeJobs
+
+  const filteredJobs = currentList.filter((j) => {
     const matchesSearch =
       j.title.toLowerCase().includes(search.toLowerCase()) ||
       (j.department && j.department.toLowerCase().includes(search.toLowerCase()))
-    const matchesTrash = showTrash ? j.isDeleted : !j.isDeleted
-    return matchesSearch && matchesTrash
+    return matchesSearch
   })
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredJobs.length && filteredJobs.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filteredJobs.map((j) => j.id))
+    }
+  }
+
+  const handleTabChange = (trash: boolean) => {
+    setShowTrash(trash)
+    setSelectedIds([])
+    setMsg(null)
+  }
 
   const handleOpenAdd = () => {
     setEditingJob(null)
@@ -78,7 +109,16 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
     if (res.success) {
       setMsg({ type: 'success', text: res.message || 'Saved successfully' })
       setModalOpen(false)
-      window.location.reload()
+      if ((res as any).job) {
+        const savedJob = (res as any).job as JobOpeningItem
+        setJobs((prev) => {
+          const exists = prev.some((j) => j.id === savedJob.id)
+          if (exists) {
+            return prev.map((j) => (j.id === savedJob.id ? { ...j, ...savedJob } : j))
+          }
+          return [savedJob, ...prev]
+        })
+      }
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to save' })
     }
@@ -87,21 +127,72 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
   const handleTrash = async (id: string) => {
     if (!confirm('Move job opening to Trash?')) return
     const res = await trashJobOpeningAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
+    if (res.success) {
+      setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, isDeleted: true } : j)))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
+      setMsg({ type: 'success', text: 'Job opening moved to Trash' })
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to trash job opening' })
+    }
   }
 
   const handleRestore = async (id: string) => {
     const res = await restoreJobOpeningAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
+    if (res.success) {
+      setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, isDeleted: false } : j)))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
+      setMsg({ type: 'success', text: 'Job opening restored' })
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to restore job opening' })
+    }
   }
 
   const handleDeletePermanently = async (id: string) => {
     if (!confirm('Permanently delete this job opening?')) return
     const res = await deleteJobOpeningPermanentlyAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
+    if (res.success) {
+      setJobs((prev) => prev.filter((j) => j.id !== id))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
+      setMsg({ type: 'success', text: 'Job opening permanently deleted' })
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to delete job opening' })
+    }
+  }
+
+  const handleBulkTrash = async () => {
+    if (!confirm(`Move ${selectedIds.length} job openings to Trash?`)) return
+    const res = await bulkTrashJobOpeningsAction(selectedIds)
+    if (res.success) {
+      setJobs((prev) => prev.map((j) => (selectedIds.includes(j.id) ? { ...j, isDeleted: true } : j)))
+      setSelectedIds([])
+      setMsg({ type: 'success', text: `${selectedIds.length} job openings moved to Trash` })
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to bulk trash job openings' })
+    }
+  }
+
+  const handleBulkRestore = async () => {
+    const res = await bulkRestoreJobOpeningsAction(selectedIds)
+    if (res.success) {
+      setJobs((prev) => prev.map((j) => (selectedIds.includes(j.id) ? { ...j, isDeleted: false } : j)))
+      setSelectedIds([])
+      setMsg({ type: 'success', text: `${selectedIds.length} job openings restored` })
+    } else {
+      setMsg({ type: 'error', text: res.error || 'Failed to restore job openings' })
+    }
+  }
+
+  const handleBulkDeletePermanently = async () => {
+    const res = await bulkDeleteJobOpeningsPermanentlyAction(selectedIds)
+    if (res.success) {
+      setJobs((prev) => prev.filter((j) => !selectedIds.includes(j.id)))
+      setSelectedIds([])
+      setBulkConfirmModal(false)
+      setMsg({ type: 'success', text: `${selectedIds.length} job openings permanently deleted` })
+    } else {
+      setBulkConfirmModal(false)
+      setMsg({ type: 'error', text: res.error || 'Failed to delete job openings' })
+    }
   }
 
   return (
@@ -114,30 +205,45 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
             Job Openings
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Manage active career opportunities, department listings & candidate applications
+            Manage active career opportunities, department listings &amp; candidate applications
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
-              showTrash
-                ? 'bg-amber-50 border-amber-300 text-amber-800'
-                : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            <Icon icon="ion:trash-outline" className="w-4 h-4" />
-            {showTrash ? 'View Active Openings' : 'View Job Trash'}
-          </button>
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button
+              onClick={() => handleTabChange(false)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                !showTrash
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:briefcase-outline" className="w-4 h-4 text-[#764DFF]" />
+              Active ({activeJobs.length})
+            </button>
+            <button
+              onClick={() => handleTabChange(true)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                showTrash
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:trash-outline" className="w-4 h-4" />
+              Trash ({trashJobs.length})
+            </button>
+          </div>
 
-          <button
-            onClick={handleOpenAdd}
-            className="px-4 py-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
-          >
-            <Icon icon="ion:add-circle" className="w-4.5 h-4.5" />
-            + Add Job Opening
-          </button>
+          {!showTrash && (
+            <button
+              onClick={handleOpenAdd}
+              className="px-4 py-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+            >
+              <Icon icon="ion:add-circle" className="w-4.5 h-4.5" />
+              + Add Job Opening
+            </button>
+          )}
         </div>
       </div>
 
@@ -153,7 +259,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
         </div>
       )}
 
-      {/* SEARCH & FILTER TOOLBAR (FLAT COMPACT BAR) */}
+      {/* SEARCH & FILTER TOOLBAR */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
           <input
@@ -167,14 +273,72 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
         </div>
       </div>
 
-      {/* JOB OPENINGS TABLE (FLAT CLEAN CMS TABLE) */}
+      {/* Bulk Action Bar */}
+      {filteredJobs.length > 0 && (
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === filteredJobs.length && filteredJobs.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded cursor-pointer"
+            />
+            <span className="text-xs font-semibold text-slate-700">
+              {selectedIds.length > 0
+                ? `${selectedIds.length} of ${filteredJobs.length} selected`
+                : `Select all (${filteredJobs.length})`}
+            </span>
+          </div>
+
+          {selectedIds.length > 0 && (
+            <div className="flex items-center gap-2">
+              {showTrash ? (
+                <>
+                  <button
+                    onClick={handleBulkRestore}
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                  >
+                    <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
+                    Restore Selected ({selectedIds.length})
+                  </button>
+                  <button
+                    onClick={() => setBulkConfirmModal(true)}
+                    className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+                    Permanently Delete ({selectedIds.length})
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleBulkTrash}
+                  className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                >
+                  <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+                  Move Selected to Trash ({selectedIds.length})
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* JOB OPENINGS TABLE */}
       <div className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs min-w-[700px]">
             <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold text-[11px] border-b border-slate-200/80">
               <tr>
+                <th className="py-3 px-4 w-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.length === filteredJobs.length && filteredJobs.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded cursor-pointer"
+                  />
+                </th>
                 <th className="py-3 px-4">Job Title</th>
-                <th className="py-3 px-4">Department & Location</th>
+                <th className="py-3 px-4">Department &amp; Location</th>
                 <th className="py-3 px-4">Type</th>
                 <th className="py-3 px-4">Applications</th>
                 <th className="py-3 px-4">Status</th>
@@ -184,13 +348,21 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
             <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
               {filteredJobs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400 font-semibold text-xs">
-                    No job openings found. Click &quot;+ Add Job Opening&quot; to create one.
+                  <td colSpan={7} className="py-8 text-center text-slate-400 font-semibold text-xs">
+                    {showTrash ? 'No job openings in Trash' : 'No job openings found. Click "+ Add Job Opening" to create one.'}
                   </td>
                 </tr>
               ) : (
                 filteredJobs.map((j) => (
-                  <tr key={j.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={j.id} className={`hover:bg-slate-50/80 transition-colors ${selectedIds.includes(j.id) ? 'bg-indigo-50/20' : ''}`}>
+                    <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(j.id)}
+                        onChange={() => toggleSelectId(j.id)}
+                        className="w-4 h-4 rounded cursor-pointer"
+                      />
+                    </td>
                     <td className="py-3.5 px-4">
                       <p className="font-bold text-slate-900 text-sm leading-snug">{j.title}</p>
                       <p className="text-[11px] text-slate-400 truncate max-w-xs">{j.description}</p>
@@ -398,6 +570,39 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Permanently Confirmation Modal */}
+      {bulkConfirmModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Permanently delete {selectedIds.length} job openings?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These job opening records will be permanently removed from the database and cannot be recovered.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkConfirmModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDeletePermanently}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete Permanently
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1524,4 +1524,77 @@ export async function bulkDeleteGalleryItemsAction(ids: string[]) {
   }
 }
 
+// 10. Trainers & Team Bulk Actions
+export async function bulkTrashTrainersAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid trainers/team members selected' }
+    await db.trainer.updateMany({
+      where: { id: { in: validIds } },
+      data: { isDeleted: true },
+    })
+    await db.teamMember.updateMany({
+      where: { id: { in: validIds } },
+      data: { isDeleted: true },
+    }).catch(() => null)
+    await createAuditLog({ userId: session.id, module: 'CMS_TRAINERS', action: 'BULK_TRASH_TRAINERS', recordId: validIds.join(',') })
+    revalidatePath('/trainers')
+    revalidatePath('/about/our-team')
+    revalidatePath('/admin/trainers')
+    revalidatePath('/admin/team')
+    return { success: true, message: `${validIds.length} members moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash trainers' }
+  }
+}
+
+export async function bulkRestoreTrainersAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid trainers/team members selected' }
+    await db.trainer.updateMany({
+      where: { id: { in: validIds } },
+      data: { isDeleted: false },
+    })
+    await db.teamMember.updateMany({
+      where: { id: { in: validIds } },
+      data: { isDeleted: false },
+    }).catch(() => null)
+    await createAuditLog({ userId: session.id, module: 'CMS_TRAINERS', action: 'BULK_RESTORE_TRAINERS', recordId: validIds.join(',') })
+    revalidatePath('/trainers')
+    revalidatePath('/about/our-team')
+    revalidatePath('/admin/trainers')
+    revalidatePath('/admin/team')
+    return { success: true, message: `${validIds.length} members restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore trainers' }
+  }
+}
+
+export async function bulkDeleteTrainersPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
+    if (validIds.length === 0) return { success: false, error: 'No valid trainers/team members selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const trainers = await db.trainer.findMany({ where: { id: { in: validIds } } })
+    for (const t of trainers) {
+      if (t.photo) await safeDeleteUnusedFile(t.photo, { table: 'trainer', id: t.id })
+    }
+    await db.trainer.deleteMany({ where: { id: { in: validIds } } })
+    await db.teamMember.deleteMany({ where: { id: { in: validIds } } }).catch(() => null)
+    await createAuditLog({ userId: session.id, module: 'CMS_TRAINERS', action: 'BULK_PERMANENT_DELETE_TRAINERS', recordId: validIds.join(',') })
+    revalidatePath('/trainers')
+    revalidatePath('/about/our-team')
+    revalidatePath('/admin/trainers')
+    revalidatePath('/admin/team')
+    return { success: true, message: `${validIds.length} members permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete trainers' }
+  }
+}
+
+
 

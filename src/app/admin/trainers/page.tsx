@@ -7,6 +7,9 @@ import {
   restoreTrainerAction,
   deleteTrainerAction,
   updateWebsiteSettingsAction,
+  bulkTrashTrainersAction,
+  bulkRestoreTrainersAction,
+  bulkDeleteTrainersPermanentlyAction,
 } from '@/app/actions/cmsActions'
 import { useWebsiteSettings } from '@/app/context/WebsiteSettingsContext'
 import { Icon } from '@iconify/react'
@@ -19,6 +22,10 @@ export default function AdminTrainersPage() {
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [showTrash, setShowTrash] = useState(false)
   const [search, setSearch] = useState('')
+
+  // Multi-select & Bulk operations
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
 
   const fetchTrainers = async () => {
     setLoading(true)
@@ -37,13 +44,73 @@ export default function AdminTrainersPage() {
     fetchTrainers()
   }, [])
 
-  const filteredTrainers = trainers.filter((t) => {
+  const activeTrainers = trainers.filter((t) => !t.isDeleted)
+  const trashTrainers = trainers.filter((t) => t.isDeleted)
+
+  const currentList = showTrash ? trashTrainers : activeTrainers
+
+  const filteredTrainers = currentList.filter((t) => {
     const matchesSearch =
       t.fullName.toLowerCase().includes(search.toLowerCase()) ||
       (t.designation && t.designation.toLowerCase().includes(search.toLowerCase()))
-    const matchesTrash = showTrash ? t.isDeleted : !t.isDeleted
-    return matchesSearch && matchesTrash
+    return matchesSearch
   })
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredTrainers.length && filteredTrainers.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filteredTrainers.map((t) => t.id))
+    }
+  }
+
+  const handleTabChange = (trash: boolean) => {
+    setShowTrash(trash)
+    setSelectedIds([])
+    setStatusMsg(null)
+  }
+
+  const handleBulkTrash = async () => {
+    if (!confirm(`Move ${selectedIds.length} trainers to Trash?`)) return
+    const res = await bulkTrashTrainersAction(selectedIds)
+    if (res.success) {
+      setTrainers((prev) => prev.map((t) => (selectedIds.includes(t.id) ? { ...t, isDeleted: true } : t)))
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} trainers moved to Trash` })
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk trash trainers' })
+    }
+  }
+
+  const handleBulkRestore = async () => {
+    const res = await bulkRestoreTrainersAction(selectedIds)
+    if (res.success) {
+      setTrainers((prev) => prev.map((t) => (selectedIds.includes(t.id) ? { ...t, isDeleted: false } : t)))
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} trainers restored` })
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk restore trainers' })
+    }
+  }
+
+  const handleBulkDeletePermanently = async () => {
+    const res = await bulkDeleteTrainersPermanentlyAction(selectedIds)
+    if (res.success) {
+      setTrainers((prev) => prev.filter((t) => !selectedIds.includes(t.id)))
+      setSelectedIds([])
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} trainers permanently deleted` })
+    } else {
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to delete trainers' })
+    }
+  }
 
   const [photoUrl, setPhotoUrl] = useState<string>('')
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
@@ -121,8 +188,9 @@ export default function AdminTrainersPage() {
     if (!confirm('Move trainer to Trash?')) return
     const res = await trashTrainerAction(id)
     if (res.success) {
+      setTrainers((prev) => prev.map((t) => (t.id === id ? { ...t, isDeleted: true } : t)))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
       setStatusMsg({ type: 'success', text: 'Trainer moved to Trash' })
-      fetchTrainers()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to trash trainer' })
     }
@@ -131,8 +199,9 @@ export default function AdminTrainersPage() {
   const handleRestore = async (id: string) => {
     const res = await restoreTrainerAction(id)
     if (res.success) {
+      setTrainers((prev) => prev.map((t) => (t.id === id ? { ...t, isDeleted: false } : t)))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
       setStatusMsg({ type: 'success', text: 'Trainer restored from Trash' })
-      fetchTrainers()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to restore trainer' })
     }
@@ -142,8 +211,9 @@ export default function AdminTrainersPage() {
     if (!confirm('WARNING: Permanently delete this trainer profile?')) return
     const res = await deleteTrainerAction(id)
     if (res.success) {
+      setTrainers((prev) => prev.filter((t) => t.id !== id))
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
       setStatusMsg({ type: 'success', text: 'Trainer permanently deleted' })
-      fetchTrainers()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to delete trainer' })
     }
@@ -227,25 +297,40 @@ export default function AdminTrainersPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
-              showTrash
-                ? 'bg-amber-50 border-amber-300 text-amber-800'
-                : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            <Icon icon="ion:trash-outline" className="w-4 h-4" />
-            {showTrash ? 'View Active Trainers' : 'View Trainer Trash'}
-          </button>
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button
+              onClick={() => handleTabChange(false)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                !showTrash
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:school-outline" className="w-4 h-4 text-[#764DFF]" />
+              Active ({activeTrainers.length})
+            </button>
+            <button
+              onClick={() => handleTabChange(true)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                showTrash
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:trash-outline" className="w-4 h-4" />
+              Trash ({trashTrainers.length})
+            </button>
+          </div>
 
-          <button
-            onClick={() => openForm()}
-            className="px-4 py-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
-          >
-            <Icon icon="ion:add-circle" className="w-4.5 h-4.5" />
-            + Add Trainer Profile
-          </button>
+          {!showTrash && (
+            <button
+              onClick={() => openForm()}
+              className="px-4 py-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+            >
+              <Icon icon="ion:add-circle" className="w-4.5 h-4.5" />
+              + Add Trainer Profile
+            </button>
+          )}
         </div>
       </div>
 
@@ -264,7 +349,7 @@ export default function AdminTrainersPage() {
           <button
             onClick={handleSaveBanner}
             disabled={savingBanner}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
             <Icon icon="ion:checkmark-circle" className="w-4 h-4" />
             {savingBanner ? 'Saving Banner...' : 'Save Trainer Banner'}
@@ -331,17 +416,77 @@ export default function AdminTrainersPage() {
         </div>
       </div>
 
+      {/* Bulk Action Bar */}
+      {filteredTrainers.length > 0 && (
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === filteredTrainers.length && filteredTrainers.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded cursor-pointer"
+            />
+            <span className="text-xs font-semibold text-slate-700">
+              {selectedIds.length > 0
+                ? `${selectedIds.length} of ${filteredTrainers.length} selected`
+                : `Select all (${filteredTrainers.length})`}
+            </span>
+          </div>
+
+          {selectedIds.length > 0 && (
+            <div className="flex items-center gap-2">
+              {showTrash ? (
+                <>
+                  <button
+                    onClick={handleBulkRestore}
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
+                    Restore Selected ({selectedIds.length})
+                  </button>
+                  <button
+                    onClick={() => setBulkConfirmModal(true)}
+                    className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                  >
+                    <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+                    Permanently Delete ({selectedIds.length})
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleBulkTrash}
+                  className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+                  Move Selected to Trash ({selectedIds.length})
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* TRAINERS & TEAM TABLE */}
       <div className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs">
         {loading ? (
           <div className="p-8 text-center text-slate-400 text-xs font-semibold">Loading team members...</div>
         ) : filteredTrainers.length === 0 ? (
-          <div className="p-8 text-center text-slate-400 text-xs font-semibold">No team profiles found matching criteria.</div>
+          <div className="p-8 text-center text-slate-400 text-xs font-semibold">
+            {showTrash ? 'No trainers in Trash' : 'No team profiles found matching criteria.'}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs min-w-[700px]">
               <thead className="bg-slate-50/80 text-slate-500 uppercase tracking-wider font-bold text-[11px] border-b border-slate-200/80">
                 <tr>
+                  <th className="py-3 px-4 w-10">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.length === filteredTrainers.length && filteredTrainers.length > 0}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                  </th>
                   <th className="py-3 px-4">Profile &amp; Name</th>
                   <th className="py-3 px-4">Domain Category</th>
                   <th className="py-3 px-4">Qualification</th>
@@ -352,7 +497,15 @@ export default function AdminTrainersPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
                 {filteredTrainers.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={t.id} className={`hover:bg-slate-50/80 transition-colors ${selectedIds.includes(t.id) ? 'bg-indigo-50/20' : ''}`}>
+                    <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(t.id)}
+                        onChange={() => toggleSelectId(t.id)}
+                        className="w-4 h-4 rounded cursor-pointer"
+                      />
+                    </td>
                     <td className="py-3.5 px-4 font-bold text-slate-900 flex items-center gap-3">
                       {t.photo ? (
                         <img src={t.photo} alt={t.fullName} className="w-9 h-9 rounded-full object-cover border border-slate-200 bg-slate-100 flex-shrink-0" />
@@ -611,6 +764,39 @@ export default function AdminTrainersPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Permanently Confirmation Modal */}
+      {bulkConfirmModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Permanently delete {selectedIds.length} trainers?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These trainer profiles will be permanently removed from the database and cannot be recovered.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkConfirmModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDeletePermanently}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete Permanently
+              </button>
+            </div>
           </div>
         </div>
       )}

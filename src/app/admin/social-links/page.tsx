@@ -95,6 +95,8 @@ export default function AdminSocialLinksPage() {
   })
 
   const [customLinks, setCustomLinks] = useState<CustomSocialLink[]>([])
+  const [selectedCustomIds, setSelectedCustomIds] = useState<string[]>([])
+  const [bulkCustomModal, setBulkCustomModal] = useState(false)
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -149,6 +151,27 @@ export default function AdminSocialLinksPage() {
     fetchSettings()
   }, [])
 
+  const toggleSelectCustomId = (id: string) => {
+    setSelectedCustomIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAllCustom = () => {
+    if (selectedCustomIds.length === customLinks.length && customLinks.length > 0) {
+      setSelectedCustomIds([])
+    } else {
+      setSelectedCustomIds(customLinks.map((item) => item.id))
+    }
+  }
+
+  const handleBulkDeleteCustomLinks = () => {
+    setCustomLinks((prev) => prev.filter((item) => !selectedCustomIds.includes(item.id)))
+    setSelectedCustomIds([])
+    setBulkCustomModal(false)
+    setStatusMsg({ type: 'success', text: `${selectedCustomIds.length} custom social links removed. Click 'Save All Social Links' to persist.` })
+  }
+
   const handleChange = (field: keyof SocialLinksState, value: string) => {
     setLinks((prev) => ({ ...prev, [field]: value }))
   }
@@ -193,6 +216,7 @@ export default function AdminSocialLinksPage() {
 
   const handleDeleteCustomLink = (id: string) => {
     setCustomLinks((prev) => prev.filter((item) => item.id !== id))
+    setSelectedCustomIds((prev) => prev.filter((x) => x !== id))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -488,6 +512,35 @@ export default function AdminSocialLinksPage() {
               })}
 
               {/* Custom Social Link Cards */}
+              {customLinks.length > 0 && (
+                <div className="col-span-full bg-slate-50 p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedCustomIds.length === customLinks.length && customLinks.length > 0}
+                      onChange={toggleSelectAllCustom}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                    <span className="text-xs font-semibold text-slate-700">
+                      {selectedCustomIds.length > 0
+                        ? `${selectedCustomIds.length} of ${customLinks.length} custom links selected`
+                        : `Select all custom links (${customLinks.length})`}
+                    </span>
+                  </div>
+
+                  {selectedCustomIds.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setBulkCustomModal(true)}
+                      className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                    >
+                      <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+                      Delete Selected ({selectedCustomIds.length})
+                    </button>
+                  )}
+                </div>
+              )}
+
               {customLinks.map((item, idx) => {
                 const isActive = item.active !== false
                 const isHeader = item.showHeader !== false
@@ -497,11 +550,21 @@ export default function AdminSocialLinksPage() {
                   <div
                     key={item.id || idx}
                     className={`bg-white border rounded-2xl p-5 shadow-xs transition-all duration-200 flex flex-col justify-between space-y-4 ${
-                      isActive ? 'border-blue-200 hover:border-blue-300' : 'border-slate-200 opacity-70 bg-slate-50/50'
+                      selectedCustomIds.includes(item.id)
+                        ? 'border-indigo-500 bg-indigo-50/20'
+                        : isActive
+                        ? 'border-blue-200 hover:border-blue-300'
+                        : 'border-slate-200 opacity-70 bg-slate-50/50'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 flex-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedCustomIds.includes(item.id)}
+                          onChange={() => toggleSelectCustomId(item.id)}
+                          className="w-4 h-4 rounded cursor-pointer"
+                        />
                         <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-2xs">
                           <Icon icon={item.icon || 'ion:share-social'} className="w-5 h-5" />
                         </div>
@@ -654,12 +717,48 @@ export default function AdminSocialLinksPage() {
               ) : (
                 <>
                   <Icon icon="ion:save" className="w-4.5 h-4.5" />
-                  <span>Save All Social Links</span>
-                </>
-              )}
-            </button>
+              <Icon icon="ion:save" className="w-4.5 h-4.5" />
+              <span>Save All Social Links</span>
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  )}
+
+  {/* Bulk Delete Custom Social Links Modal */}
+      {bulkCustomModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Delete {selectedCustomIds.length} custom social links?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These selected custom links will be removed from your social links list.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setBulkCustomModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleBulkDeleteCustomLinks}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs cursor-pointer"
+              >
+                Delete Selected
+              </button>
+            </div>
           </div>
-        </form>
+        </div>
       )}
     </div>
   )
