@@ -717,11 +717,10 @@ export default function AdminSocialLinksPage() {
               ) : (
                 <>
                   <Icon icon="ion:save" className="w-4.5 h-4.5" />
-              <Icon icon="ion:save" className="w-4.5 h-4.5" />
-              <span>Save All Social Links</span>
-            </>
-          )}
-        </button>
+                  <span>Save All Social Links</span>
+                </>
+              )}
+            </button>
       </div>
     </form>
   )}
