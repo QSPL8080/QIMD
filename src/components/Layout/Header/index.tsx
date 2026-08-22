@@ -69,10 +69,18 @@ const Header: React.FC = () => {
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 flex items-center justify-between">
           {/* Contact Phones & Emails */}
           <div className="flex items-center gap-6 text-white font-medium text-sm">
-            <Link href={`tel:${phone}`} className="flex items-center gap-2 hover:text-white/80 transition-colors">
-              <Icon icon="mdi:phone" className="text-white text-base" />
-              <span>{phone}</span>
-            </Link>
+            {header?.phones && header.phones.length > 0 ? (
+              header.phones.map((phoneItem) => (
+                <Link
+                  key={phoneItem.id}
+                  href={`tel:${phoneItem.value.replace(/[^\d+]/g, '')}`}
+                  className="flex items-center gap-2 hover:text-white/80 transition-colors"
+                >
+                  <Icon icon="mdi:phone" className="text-white text-base" />
+                  <span>{phoneItem.value}</span>
+                </Link>
+              ))
+            ) : null}
 
             {header?.emails && header.emails.length > 0 ? (
               header.emails.map((emailItem) => (
@@ -85,12 +93,7 @@ const Header: React.FC = () => {
                   <span>{emailItem.value}</span>
                 </Link>
               ))
-            ) : (
-              <Link href={`mailto:${siteConfig.email}`} className="flex items-center gap-2 hover:text-white/80 transition-colors">
-                <Icon icon="mdi:email" className="text-white text-base" />
-                <span>{siteConfig.email}</span>
-              </Link>
-            )}
+            ) : null}
           </div>
 
             {/* Right Side: Hire From Us, Extra Top Bar Buttons & Social Icons */}

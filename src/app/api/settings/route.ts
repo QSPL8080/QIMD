@@ -59,15 +59,11 @@ export async function GET() {
         },
         whatsapp: {
           text: headerSettings?.whatsappText || 'WhatsApp',
-          number: websiteSettings?.whatsappNumber || siteConfig.whatsapp,
+          number: headerSettings?.whatsappNumber || websiteSettings?.whatsappNumber || siteConfig.whatsapp,
           active: headerSettings?.whatsappActive ?? true,
         },
-        phones: headerPhones.length > 0 ? headerPhones : [
-          { id: 'h-phone-1', label: 'Primary', value: websiteSettings?.contactPhone || siteConfig.phone, displayOrder: 1 }
-        ],
-        emails: headerEmails.length > 0 ? headerEmails : [
-          { id: 'h-email-1', label: 'Official Email', value: websiteSettings?.contactEmail || siteConfig.email, displayOrder: 1 }
-        ],
+        phones: headerPhones,
+        emails: headerEmails,
         extraTopBarButtons: (websiteSettings?.homepageSections as any)?.extraTopBarButtons || [],
         extraHeaderCtaButtons: (websiteSettings?.homepageSections as any)?.extraHeaderCtaButtons || [],
       },
@@ -87,7 +83,7 @@ export async function GET() {
         },
         whatsapp: {
           text: footerSettings?.whatsappText || 'Chat with Us on WhatsApp',
-          number: websiteSettings?.whatsappNumber || siteConfig.whatsapp,
+          number: footerSettings?.whatsappNumber || websiteSettings?.whatsappNumber || siteConfig.whatsapp,
           active: footerSettings?.whatsappActive ?? true,
         },
         showScrollToTop: footerSettings?.showScrollToTop ?? true,

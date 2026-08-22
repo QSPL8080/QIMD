@@ -249,9 +249,19 @@ export async function updateFooterSettingsAction(data: {
     if (data.whatsappNumber !== undefined) {
       const ws = await db.websiteSettings.findFirst()
       if (ws) {
+        const currentSocial: any = ws.socialLinks || {}
+        const waNum = data.whatsappNumber || ''
         await db.websiteSettings.update({
           where: { id: ws.id },
-          data: { whatsappNumber: data.whatsappNumber },
+          data: {
+            whatsappNumber: data.whatsappNumber,
+            socialLinks: {
+              ...currentSocial,
+              whatsapp: waNum
+                ? (waNum.startsWith('http') ? waNum : `https://wa.me/${waNum.replace(/[^\d]/g, '')}`)
+                : (currentSocial.whatsapp || ''),
+            },
+          },
         })
       }
     }

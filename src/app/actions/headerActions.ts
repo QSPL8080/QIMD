@@ -184,6 +184,14 @@ export async function updateHeaderSettingsAction(data: {
       const updatePayload: any = {}
       if (data.whatsappNumber !== undefined) {
         updatePayload.whatsappNumber = data.whatsappNumber
+        const currentSocial: any = ws.socialLinks || {}
+        const waNum = data.whatsappNumber || ''
+        updatePayload.socialLinks = {
+          ...currentSocial,
+          whatsapp: waNum
+            ? (waNum.startsWith('http') ? waNum : `https://wa.me/${waNum.replace(/[^\d]/g, '')}`)
+            : (currentSocial.whatsapp || ''),
+        }
       }
       if (data.contactPhone !== undefined && data.contactPhone !== null) {
         updatePayload.contactPhone = data.contactPhone

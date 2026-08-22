@@ -553,15 +553,15 @@ export default function AdminFooterCMSPage() {
               </div>
             </div>
 
-            {/* FOOTER WHATSAPP CTA CARD */}
+            {/* FOOTER WHATSAPP CONFIGURATION CARD */}
             <div className="bg-white border border-slate-200 p-5 rounded-2xl space-y-4 text-xs shadow-xs">
               <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                 <div>
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     <Icon icon="ion:logo-whatsapp" className="w-4 h-4 text-emerald-600" />
-                    Footer WhatsApp Button
+                    Footer WhatsApp Configuration
                   </h3>
-                  <p className="text-[11px] text-slate-500">Green button under Information column</p>
+                  <p className="text-[11px] text-slate-500">WhatsApp icon in footer &amp; floating action</p>
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -576,7 +576,21 @@ export default function AdminFooterCMSPage() {
 
               <div className="space-y-3">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">Button Text</label>
+                  <label className="block text-slate-700 font-semibold mb-1">WhatsApp Number</label>
+                  <input
+                    type="text"
+                    value={settings.whatsappNumber || '+91 90000 00000'}
+                    onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
+                    placeholder="+91 90000 00000"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-slate-900"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Direct phone number or international format (e.g. +91 90000 00000). Updates WhatsApp icon across desktop, tablet, and mobile.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-semibold mb-1">Tooltip / Label</label>
                   <input
                     type="text"
                     value={settings.whatsappText || 'Chat with Us on WhatsApp'}
@@ -585,84 +599,7 @@ export default function AdminFooterCMSPage() {
                     className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-900 font-semibold"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-slate-700 font-semibold mb-1">WhatsApp Number</label>
-                  <input
-                    type="text"
-                    value={settings.whatsappNumber || '+91 91300 00000'}
-                    onChange={(e) => setSettings({ ...settings, whatsappNumber: e.target.value })}
-                    placeholder="+91 91300 00000"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 font-mono text-slate-900"
-                  />
-                </div>
               </div>
-
-              {/* Direct + Add Button Action */}
-              <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSettings((prev: any) => ({
-                      ...prev,
-                      extraCtaButtons: [
-                        ...(prev.extraCtaButtons || []),
-                        { id: Date.now().toString(), text: 'Contact Us', url: '/contact', active: true },
-                      ],
-                    }))
-                  }}
-                  className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer"
-                >
-                  <Icon icon="ion:add-circle-outline" className="w-4 h-4" />
-                  <span>+ Add Button</span>
-                </button>
-
-                <span className="text-[11px] text-slate-500 font-medium">Add extra CTA buttons directly</span>
-              </div>
-
-              {/* Extra CTA Buttons list */}
-              {settings.extraCtaButtons && settings.extraCtaButtons.length > 0 && (
-                <div className="space-y-2 pt-2">
-                  {settings.extraCtaButtons.map((btn: any, idx: number) => (
-                    <div key={btn.id || idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-2">
-                      <div className="flex-1 grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          value={btn.text}
-                          onChange={(e) => {
-                            const updated = [...settings.extraCtaButtons]
-                            updated[idx].text = e.target.value
-                            setSettings({ ...settings, extraCtaButtons: updated })
-                          }}
-                          placeholder="Button Label"
-                          className="bg-white border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 font-semibold"
-                        />
-                        <input
-                          type="text"
-                          value={btn.url}
-                          onChange={(e) => {
-                            const updated = [...settings.extraCtaButtons]
-                            updated[idx].url = e.target.value
-                            setSettings({ ...settings, extraCtaButtons: updated })
-                          }}
-                          placeholder="/link-url"
-                          className="bg-white border border-slate-200 rounded-lg p-1.5 text-xs text-slate-900 font-mono"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const updated = settings.extraCtaButtons.filter((_: any, i: number) => i !== idx)
-                          setSettings({ ...settings, extraCtaButtons: updated })
-                        }}
-                        className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
-                      >
-                        <Icon icon="ion:trash-outline" className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* FOOTER SOCIAL ICONS DISPLAY CARD */}

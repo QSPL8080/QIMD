@@ -148,6 +148,9 @@ export default function AdminHeaderCMSPage() {
     if (res.success) {
       setStatusMsg({ type: 'success', text: res.message || 'Contact item saved' })
       setItemModalOpen(false)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+      }
       fetchData()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to save contact item' })
@@ -166,7 +169,12 @@ export default function AdminHeaderCMSPage() {
       },
       item.id
     )
-    if (res.success) fetchData()
+    if (res.success) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+      }
+      fetchData()
+    }
   }
 
   // Delete Contact Item
@@ -176,6 +184,9 @@ export default function AdminHeaderCMSPage() {
     setDeleteConfirm(null)
     if (res.success) {
       setStatusMsg({ type: 'success', text: 'Item deleted successfully' })
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+      }
       fetchData()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to delete item' })
@@ -193,7 +204,12 @@ export default function AdminHeaderCMSPage() {
 
     const reordered = newList.map((item, idx) => ({ id: item.id, displayOrder: idx + 1 }))
     const res = await reorderHeaderContactItemsAction(reordered)
-    if (res.success) fetchData()
+    if (res.success) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+      }
+      fetchData()
+    }
   }
 
   const generatedWaUrl = (settings?.whatsappNumber || '').replace(/[^\d+]/g, '')

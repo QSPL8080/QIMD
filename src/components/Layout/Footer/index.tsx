@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
 
   if (pathname?.startsWith('/admin')) return null
 
-  const whatsappNum = (socialLinks?.whatsapp || siteConfig.whatsapp || '').replace(/[^\d+]/g, '')
+  const whatsappNum = (footer?.whatsapp?.number || socialLinks?.whatsapp || siteConfig.whatsapp || '').replace(/[^\d+]/g, '')
   const whatsappUrl = whatsappNum.startsWith('+')
     ? `https://wa.me/${whatsappNum.replace('+', '')}`
     : `https://wa.me/${whatsappNum}`
@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Instagram"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
                   >
                     <Icon icon="skill-icons:instagram" className="text-xl" />
                   </Link>
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Facebook"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
                   >
                     <Icon icon="logos:facebook" className="text-lg" />
                   </Link>
@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD YouTube"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
                   >
                     <Icon icon="logos:youtube-icon" className="text-lg" />
                   </Link>
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD LinkedIn"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
                   >
                     <Icon icon="logos:linkedin-icon" className="text-lg" />
                   </Link>
@@ -111,15 +111,17 @@ const Footer: React.FC = () => {
                   </Link>
                 )}
                 {/* WhatsApp Icon */}
-                <Link
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="QIMD WhatsApp"
-                  className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-110 transition-all duration-200"
-                >
-                  <Icon icon="logos:whatsapp-icon" className="text-xl" />
-                </Link>
+                {footer?.whatsapp?.active !== false && socialLinks.activeStatus?.whatsapp !== false && socialLinks.footerStatus?.whatsapp !== false && (
+                  <Link
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="QIMD WhatsApp"
+                    className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-110 transition-all duration-200 border border-white/15"
+                  >
+                    <Icon icon="logos:whatsapp-icon" className="text-xl" />
+                  </Link>
+                )}
                 {socialLinks.customLinks && socialLinks.customLinks.length > 0 && (
                   socialLinks.customLinks.map((customBtn) => (
                     customBtn.active !== false && customBtn.showFooter !== false && (
