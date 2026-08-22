@@ -1010,6 +1010,11 @@ export async function restoreStudentReviewAction(id: string) {
 export async function deleteStudentReviewAction(id: string) {
   const session = await requireAdminSession()
   try {
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const item = await db.studentReview.findUnique({ where: { id } })
+    if (item?.photo) {
+      await safeDeleteUnusedFile(item.photo, { table: 'studentReview', id })
+    }
     await db.studentReview.delete({ where: { id } })
     await createAuditLog({ userId: session.id, module: 'CMS_REVIEWS', action: 'PERMANENT_DELETE_REVIEW', recordId: id })
     revalidatePath('/placements')
@@ -1019,3 +1024,441 @@ export async function deleteStudentReviewAction(id: string) {
     return { success: false, error: err.message || 'Failed to delete review' }
   }
 }
+
+// ==========================================
+// UNIFIED BULK OPERATIONS FOR ALL CMS MODULES
+// ==========================================
+
+// 1. Course Categories Bulk Actions
+export async function bulkTrashCategoriesAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.courseCategory.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_TRASH_CATEGORIES', recordId: ids.join(',') })
+    revalidatePath('/admin/course-categories')
+    return { success: true, message: `${ids.length} categories moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash categories' }
+  }
+}
+
+export async function bulkRestoreCategoriesAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.courseCategory.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_RESTORE_CATEGORIES', recordId: ids.join(',') })
+    revalidatePath('/admin/course-categories')
+    return { success: true, message: `${ids.length} categories restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore categories' }
+  }
+}
+
+export async function bulkDeleteCategoriesPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.courseCategory.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'BULK_PERMANENT_DELETE_CATEGORIES', recordId: ids.join(',') })
+    revalidatePath('/admin/course-categories')
+    return { success: true, message: `${ids.length} categories permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to permanently delete categories' }
+  }
+}
+
+// 2. Courses Bulk Actions
+export async function bulkTrashCoursesAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.course.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'BULK_TRASH_COURSES', recordId: ids.join(',') })
+    revalidatePath('/courses')
+    revalidatePath('/admin/courses')
+    return { success: true, message: `${ids.length} courses moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash courses' }
+  }
+}
+
+export async function bulkRestoreCoursesAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.course.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'BULK_RESTORE_COURSES', recordId: ids.join(',') })
+    revalidatePath('/courses')
+    revalidatePath('/admin/courses')
+    return { success: true, message: `${ids.length} courses restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore courses' }
+  }
+}
+
+export async function bulkDeleteCoursesPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const courses = await db.course.findMany({ where: { id: { in: ids } } })
+    for (const c of courses) {
+      if (c.bannerImage) {
+        await safeDeleteUnusedFile(c.bannerImage, { table: 'course', id: c.id })
+      }
+    }
+    await db.course.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'BULK_PERMANENT_DELETE_COURSES', recordId: ids.join(',') })
+    revalidatePath('/courses')
+    revalidatePath('/admin/courses')
+    return { success: true, message: `${ids.length} courses permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete courses' }
+  }
+}
+
+// 3. Blogs Bulk Actions
+export async function bulkTrashBlogsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.blog.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_BLOGS', action: 'BULK_TRASH_BLOGS', recordId: ids.join(',') })
+    revalidatePath('/blog')
+    revalidatePath('/admin/blogs')
+    return { success: true, message: `${ids.length} blogs moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash blogs' }
+  }
+}
+
+export async function bulkRestoreBlogsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.blog.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_BLOGS', action: 'BULK_RESTORE_BLOGS', recordId: ids.join(',') })
+    revalidatePath('/blog')
+    revalidatePath('/admin/blogs')
+    return { success: true, message: `${ids.length} blogs restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore blogs' }
+  }
+}
+
+export async function bulkDeleteBlogsPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const blogs = await db.blog.findMany({ where: { id: { in: ids } } })
+    for (const b of blogs) {
+      if (b.featuredImage) {
+        await safeDeleteUnusedFile(b.featuredImage, { table: 'blog', id: b.id })
+      }
+    }
+    await db.blog.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_BLOGS', action: 'BULK_PERMANENT_DELETE_BLOGS', recordId: ids.join(',') })
+    revalidatePath('/blog')
+    revalidatePath('/admin/blogs')
+    return { success: true, message: `${ids.length} blogs permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete blogs' }
+  }
+}
+
+// 4. Testimonials Bulk Actions
+export async function bulkTrashTestimonialsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.testimonial.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_TESTIMONIALS', action: 'BULK_TRASH_TESTIMONIALS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/testimonials')
+    return { success: true, message: `${ids.length} testimonials moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash testimonials' }
+  }
+}
+
+export async function bulkRestoreTestimonialsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.testimonial.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_TESTIMONIALS', action: 'BULK_RESTORE_TESTIMONIALS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/testimonials')
+    return { success: true, message: `${ids.length} testimonials restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore testimonials' }
+  }
+}
+
+export async function bulkDeleteTestimonialsPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const items = await db.testimonial.findMany({ where: { id: { in: ids } } })
+    for (const item of items) {
+      if (item.photo) await safeDeleteUnusedFile(item.photo, { table: 'testimonial', id: item.id })
+    }
+    await db.testimonial.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_TESTIMONIALS', action: 'BULK_PERMANENT_DELETE_TESTIMONIALS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/testimonials')
+    return { success: true, message: `${ids.length} testimonials permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete testimonials' }
+  }
+}
+
+// 5. Student Reviews Bulk Actions
+export async function bulkTrashReviewsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.studentReview.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_REVIEWS', action: 'BULK_TRASH_REVIEWS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/reviews')
+    return { success: true, message: `${ids.length} reviews moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash reviews' }
+  }
+}
+
+export async function bulkRestoreReviewsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.studentReview.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_REVIEWS', action: 'BULK_RESTORE_REVIEWS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/reviews')
+    return { success: true, message: `${ids.length} reviews restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore reviews' }
+  }
+}
+
+export async function bulkDeleteReviewsPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const items = await db.studentReview.findMany({ where: { id: { in: ids } } })
+    for (const item of items) {
+      if (item.photo) await safeDeleteUnusedFile(item.photo, { table: 'studentReview', id: item.id })
+    }
+    await db.studentReview.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_REVIEWS', action: 'BULK_PERMANENT_DELETE_REVIEWS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/reviews')
+    return { success: true, message: `${ids.length} reviews permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete reviews' }
+  }
+}
+
+// 6. Placements Bulk Actions
+export async function bulkTrashPlacementsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.placement.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_PLACEMENTS', action: 'BULK_TRASH_PLACEMENTS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/placements')
+    return { success: true, message: `${ids.length} placement records moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash placements' }
+  }
+}
+
+export async function bulkRestorePlacementsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.placement.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_PLACEMENTS', action: 'BULK_RESTORE_PLACEMENTS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/placements')
+    return { success: true, message: `${ids.length} placement records restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore placements' }
+  }
+}
+
+export async function bulkDeletePlacementsPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const items = await db.placement.findMany({ where: { id: { in: ids } } })
+    for (const item of items) {
+      if (item.studentPhoto) await safeDeleteUnusedFile(item.studentPhoto, { table: 'placement', id: item.id })
+      if (item.companyLogo) await safeDeleteUnusedFile(item.companyLogo, { table: 'placement', id: item.id })
+    }
+    await db.placement.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_PLACEMENTS', action: 'BULK_PERMANENT_DELETE_PLACEMENTS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/placements')
+    return { success: true, message: `${ids.length} placement records permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete placements' }
+  }
+}
+
+// 7. FAQs Bulk Actions
+export async function bulkTrashFaqsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.faq.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_FAQS', action: 'BULK_TRASH_FAQS', recordId: ids.join(',') })
+    revalidatePath('/faqs')
+    revalidatePath('/admin/faqs')
+    return { success: true, message: `${ids.length} FAQs moved to Trash` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash FAQs' }
+  }
+}
+
+export async function bulkRestoreFaqsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.faq.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_FAQS', action: 'BULK_RESTORE_FAQS', recordId: ids.join(',') })
+    revalidatePath('/faqs')
+    revalidatePath('/admin/faqs')
+    return { success: true, message: `${ids.length} FAQs restored` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore FAQs' }
+  }
+}
+
+export async function bulkDeleteFaqsPermanentlyAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    await db.faq.deleteMany({
+      where: { id: { in: ids } },
+    })
+    await createAuditLog({ userId: session.id, module: 'CMS_FAQS', action: 'BULK_PERMANENT_DELETE_FAQS', recordId: ids.join(',') })
+    revalidatePath('/faqs')
+    revalidatePath('/admin/faqs')
+    return { success: true, message: `${ids.length} FAQs permanently deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete FAQs' }
+  }
+}
+
+// 8. Partners Bulk Actions
+export async function bulkDeletePartnersAction(ids: string[], type: 'HIRING' | 'EMI' = 'HIRING') {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    if (type === 'EMI') {
+      const items = await db.emiPartner.findMany({ where: { id: { in: ids } } })
+      for (const item of items) {
+        if (item.logo) await safeDeleteUnusedFile(item.logo, { table: 'emiPartner', id: item.id })
+      }
+      await db.emiPartner.deleteMany({ where: { id: { in: ids } } })
+    } else {
+      const items = await db.partner.findMany({ where: { id: { in: ids } } })
+      for (const item of items) {
+        if (item.logo) await safeDeleteUnusedFile(item.logo, { table: 'partner', id: item.id })
+      }
+      await db.partner.deleteMany({ where: { id: { in: ids } } })
+    }
+    await createAuditLog({ userId: session.id, module: 'CMS_PARTNERS', action: 'BULK_DELETE_PARTNERS', recordId: ids.join(',') })
+    revalidatePath('/placements')
+    revalidatePath('/admin/partners')
+    return { success: true, message: `${ids.length} partners deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete partners' }
+  }
+}
+
+// 9. Gallery Bulk Actions
+export async function bulkDeleteGalleryItemsAction(ids: string[]) {
+  const session = await requireAdminSession()
+  try {
+    if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const items = await db.gallery.findMany({ where: { id: { in: ids } } })
+    for (const item of items) {
+      if (item.fileUrl) await safeDeleteUnusedFile(item.fileUrl, { table: 'gallery', id: item.id })
+      if (item.thumbnail) await safeDeleteUnusedFile(item.thumbnail, { table: 'gallery', id: item.id })
+    }
+    await db.gallery.deleteMany({ where: { id: { in: ids } } })
+    await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_DELETE_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/gallery')
+    revalidatePath('/admin/gallery')
+    return { success: true, message: `${ids.length} gallery items deleted` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete gallery items' }
+  }
+}
+

@@ -6,6 +6,9 @@ import {
   trashGalleryItemAction,
   restoreGalleryItemAction,
   deleteGalleryItemAction,
+  bulkTrashGalleryItemsAction,
+  bulkRestoreGalleryItemsAction,
+  bulkDeleteGalleryItemsAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
 
@@ -33,6 +36,8 @@ export default function AdminGalleryPage() {
   const [showModal, setShowModal] = useState(false)
   const [editItem, setEditItem] = useState<GalleryItem | null>(null)
   const [brokenIds, setBrokenIds] = useState<Set<string>>(new Set())
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
 
   // Form State
   const [selectedCategory, setSelectedCategory] = useState('Classroom')
@@ -173,6 +178,65 @@ export default function AdminGalleryPage() {
     }
   }
 
+  const activeGallery = gallery.filter((g) => !g.isDeleted && !brokenIds.has(g.id))
+  const trashGallery = gallery.filter((g) => g.isDeleted && !brokenIds.has(g.id))
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredGallery.length && filteredGallery.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filteredGallery.map((g) => g.id))
+    }
+  }
+
+  const handleTabChange = (trash: boolean) => {
+    setShowTrash(trash)
+    setSelectedIds([])
+    setStatusMsg(null)
+  }
+
+  const handleBulkTrash = async () => {
+    if (!confirm(`Move ${selectedIds.length} gallery items to Trash?`)) return
+    const res = await bulkTrashGalleryItemsAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} gallery items moved to Trash` })
+      fetchGallery()
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk trash gallery items' })
+    }
+  }
+
+  const handleBulkRestore = async () => {
+    const res = await bulkRestoreGalleryItemsAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} gallery items restored` })
+      fetchGallery()
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk restore items' })
+    }
+  }
+
+  const handleBulkDeletePermanently = async () => {
+    const res = await bulkDeleteGalleryItemsAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} gallery items permanently deleted` })
+      fetchGallery()
+    } else {
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to delete gallery items' })
+    }
+  }
+
   return (
     <div className="space-y-6 font-sans">
       {/* Header Bar */}
@@ -188,17 +252,30 @@ export default function AdminGalleryPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-colors flex items-center gap-1.5 cursor-pointer ${
-              showTrash
-                ? 'bg-amber-50 border-amber-300 text-amber-800'
-                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Icon icon="ion:trash-outline" className="w-4 h-4" />
-            {showTrash ? 'View Active Media' : 'View Trash'}
-          </button>
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button
+              onClick={() => handleTabChange(false)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                !showTrash
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:list-outline" className="w-4 h-4 text-blue-600" />
+              Active ({activeGallery.length})
+            </button>
+            <button
+              onClick={() => handleTabChange(true)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                showTrash
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:trash-outline" className="w-4 h-4" />
+              Trash ({trashGallery.length})
+            </button>
+          </div>
 
           {!showTrash && (
             <button
@@ -227,6 +304,56 @@ export default function AdminGalleryPage() {
         </div>
       )}
 
+      {/* Bulk Action Bar */}
+      {filteredGallery.length > 0 && (
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === filteredGallery.length && filteredGallery.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded cursor-pointer"
+            />
+            <span className="text-xs font-semibold text-slate-700">
+              {selectedIds.length > 0
+                ? `${selectedIds.length} of ${filteredGallery.length} selected`
+                : `Select all (${filteredGallery.length})`}
+            </span>
+          </div>
+
+          {selectedIds.length > 0 && (
+            <div className="flex items-center gap-2">
+              {showTrash ? (
+                <>
+                  <button
+                    onClick={handleBulkRestore}
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                  >
+                    <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
+                    Restore Selected ({selectedIds.length})
+                  </button>
+                  <button
+                    onClick={() => setBulkConfirmModal(true)}
+                    className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+                    Permanently Delete ({selectedIds.length})
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleBulkTrash}
+                  className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                >
+                  <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+                  Move Selected to Trash ({selectedIds.length})
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Media Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {loading ? (
@@ -237,17 +364,23 @@ export default function AdminGalleryPage() {
         ) : filteredGallery.length === 0 ? (
           <div className="col-span-full py-12 text-center space-y-3">
             <Icon icon="ion:images-outline" className="w-10 h-10 text-slate-300 mx-auto" />
-            <p className="text-sm font-bold text-slate-700">Gallery Panel is Blank</p>
-            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-              No gallery images or videos exist in database. Upload photos/videos above to publish them live on the website.
+            <p className="text-sm font-bold text-slate-700">
+              {showTrash ? 'No media items in Trash' : 'Gallery Panel is Blank'}
             </p>
-            <button
-              onClick={() => handleOpenUpload()}
-              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer"
-            >
-              <Icon icon="ion:add-circle-outline" className="w-4 h-4" />
-              Upload First Media Item
-            </button>
+            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+              {showTrash
+                ? 'Deleted media will appear here.'
+                : 'No gallery images or videos exist in database. Upload photos/videos above to publish them live on the website.'}
+            </p>
+            {!showTrash && (
+              <button
+                onClick={() => handleOpenUpload()}
+                className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+              >
+                <Icon icon="ion:add-circle-outline" className="w-4 h-4" />
+                Upload First Media Item
+              </button>
+            )}
           </div>
         ) : (
           filteredGallery.map((item) => {
@@ -256,8 +389,18 @@ export default function AdminGalleryPage() {
             return (
               <div
                 key={item.id}
-                className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                className={`group relative bg-white border rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${
+                  selectedIds.includes(item.id) ? 'border-blue-500 ring-2 ring-blue-400/50' : 'border-slate-200'
+                }`}
               >
+                <div className="absolute top-2 left-2 z-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(item.id)}
+                    onChange={() => toggleSelectId(item.id)}
+                    className="w-4 h-4 rounded cursor-pointer accent-blue-600 shadow-sm"
+                  />
+                </div>
                 <div className="h-36 bg-slate-900 relative overflow-hidden flex items-center justify-center">
                   {isVideo ? (
                     <div className="text-center p-2 text-white">
@@ -413,6 +556,39 @@ export default function AdminGalleryPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Permanently Confirmation Modal */}
+      {bulkConfirmModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Permanently delete {selectedIds.length} gallery items?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These media files and records will be permanently removed from the database and storage and cannot be recovered.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkConfirmModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDeletePermanently}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete Permanently
+              </button>
+            </div>
           </div>
         </div>
       )}

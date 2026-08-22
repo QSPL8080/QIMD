@@ -54,16 +54,16 @@ const Footer: React.FC = () => {
 
             {/* Social Links — controlled by Footer CMS "Show Social Icons" toggle */}
             {footer?.showSocialIcons !== false && socialLinks && (
-              <div className="flex items-center gap-3 pt-1">
+              <div className="flex items-center gap-3 pt-1 flex-wrap">
                 {socialLinks.activeStatus?.instagram !== false && socialLinks.footerStatus?.instagram !== false && socialLinks.instagram && (
                   <Link
                     href={socialLinks.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Instagram"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
                   >
-                    <Icon icon="mdi:instagram" className="text-lg" />
+                    <Icon icon="skill-icons:instagram" className="text-xl" />
                   </Link>
                 )}
                 {socialLinks.activeStatus?.facebook !== false && socialLinks.footerStatus?.facebook !== false && socialLinks.facebook && (
@@ -72,9 +72,9 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Facebook"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
                   >
-                    <Icon icon="ri:facebook-fill" className="text-lg" />
+                    <Icon icon="logos:facebook" className="text-lg" />
                   </Link>
                 )}
                 {socialLinks.activeStatus?.youtube !== false && socialLinks.footerStatus?.youtube !== false && socialLinks.youtube && (
@@ -83,9 +83,9 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD YouTube"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
                   >
-                    <Icon icon="mdi:youtube" className="text-lg" />
+                    <Icon icon="logos:youtube-icon" className="text-lg" />
                   </Link>
                 )}
                 {socialLinks.activeStatus?.linkedin !== false && socialLinks.footerStatus?.linkedin !== false && socialLinks.linkedin && (
@@ -94,9 +94,9 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD LinkedIn"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs"
                   >
-                    <Icon icon="ri:linkedin-fill" className="text-lg" />
+                    <Icon icon="logos:linkedin-icon" className="text-lg" />
                   </Link>
                 )}
                 {socialLinks.activeStatus?.twitter !== false && socialLinks.footerStatus?.twitter !== false && socialLinks.twitter && (
@@ -105,20 +105,20 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Twitter/X"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                    className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20"
                   >
                     <Icon icon="line-md:twitter-x-alt" className="text-base" />
                   </Link>
                 )}
-                {/* WhatsApp Icon aligned with social icons */}
+                {/* WhatsApp Icon */}
                 <Link
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="QIMD WhatsApp"
-                  className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-105 transition-all duration-200"
+                  className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-110 transition-all duration-200"
                 >
-                  <Icon icon="mdi:whatsapp" className="text-xl" />
+                  <Icon icon="logos:whatsapp-icon" className="text-xl" />
                 </Link>
                 {socialLinks.customLinks && socialLinks.customLinks.length > 0 && (
                   socialLinks.customLinks.map((customBtn) => (
@@ -129,7 +129,7 @@ const Footer: React.FC = () => {
                         target={customBtn.url && customBtn.url.startsWith('http') ? '_blank' : '_self'}
                         rel={customBtn.url && customBtn.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                         aria-label={customBtn.name}
-                        className="w-9 h-9 rounded-full bg-white/10 hover:bg-primary hover:text-white flex items-center justify-center transition-all duration-200"
+                        className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110"
                       >
                         <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-lg" />
                       </Link>

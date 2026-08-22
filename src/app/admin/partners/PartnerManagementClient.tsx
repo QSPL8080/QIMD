@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { savePartnerAction, deletePartnerPermanentlyAction } from '@/app/actions/partnerActions'
+import { bulkDeletePartnersAction } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
 
 interface PartnerItem {
@@ -16,13 +17,15 @@ interface PartnerItem {
 }
 
 export default function PartnerManagementClient({
-  hiringPartners,
-  emiPartners,
+  hiringPartners: initialHiringPartners,
+  emiPartners: initialEmiPartners,
 }: {
   hiringPartners: PartnerItem[]
   emiPartners: PartnerItem[]
 }) {
   const [tab, setTab] = useState<'HIRING' | 'EMI'>('HIRING')
+  const [hiringPartners, setHiringPartners] = useState<PartnerItem[]>(initialHiringPartners)
+  const [emiPartners, setEmiPartners] = useState<PartnerItem[]>(initialEmiPartners)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<PartnerItem | null>(null)
   const [loading, setLoading] = useState(false)
@@ -30,6 +33,30 @@ export default function PartnerManagementClient({
 
   const [logoUrl, setLogoUrl] = useState<string>('')
   const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
+
+  const currentList = tab === 'HIRING' ? hiringPartners : emiPartners
+
+  const handleTabChange = (newTab: 'HIRING' | 'EMI') => {
+    setTab(newTab)
+    setSelectedIds([])
+    setMsg(null)
+  }
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === currentList.length && currentList.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(currentList.map((p) => p.id))
+    }
+  }
 
   const handleOpenAdd = () => {
     setEditingItem(null)
@@ -92,7 +119,26 @@ export default function PartnerManagementClient({
     if (res.success) {
       setMsg({ type: 'success', text: res.message || 'Saved successfully' })
       setModalOpen(false)
-      window.location.reload()
+      const updatedItem: PartnerItem = {
+        id: editingItem?.id || (res.partner?.id ? String(res.partner.id) : Date.now().toString()),
+        name: rawData.name,
+        logo: rawData.logo,
+        type: rawData.type,
+        websiteUrl: rawData.websiteUrl,
+        description: rawData.websiteUrl,
+        displayOrder: rawData.displayOrder,
+        isActive: rawData.isActive,
+      }
+
+      if (tab === 'HIRING') {
+        setHiringPartners((prev) =>
+          editingItem ? prev.map((p) => (p.id === editingItem.id ? updatedItem : p)) : [updatedItem, ...prev]
+        )
+      } else {
+        setEmiPartners((prev) =>
+          editingItem ? prev.map((p) => (p.id === editingItem.id ? updatedItem : p)) : [updatedItem, ...prev]
+        )
+      }
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to save' })
     }
@@ -101,11 +147,36 @@ export default function PartnerManagementClient({
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this partner record permanently?')) return
     const res = await deletePartnerPermanentlyAction(id, tab === 'EMI')
-    if (res.success) window.location.reload()
-    else alert(res.error)
+    if (res.success) {
+      if (tab === 'HIRING') {
+        setHiringPartners((prev) => prev.filter((p) => p.id !== id))
+      } else {
+        setEmiPartners((prev) => prev.filter((p) => p.id !== id))
+      }
+      setSelectedIds((prev) => prev.filter((x) => x !== id))
+      setMsg({ type: 'success', text: 'Partner deleted permanently' })
+    } else {
+      alert(res.error)
+    }
   }
 
-  const currentList = tab === 'HIRING' ? hiringPartners : emiPartners
+  const handleBulkDelete = async () => {
+    const isEmi = tab === 'EMI'
+    const res = await bulkDeletePartnersAction(selectedIds, isEmi)
+    if (res.success) {
+      if (tab === 'HIRING') {
+        setHiringPartners((prev) => prev.filter((p) => !selectedIds.includes(p.id)))
+      } else {
+        setEmiPartners((prev) => prev.filter((p) => !selectedIds.includes(p.id)))
+      }
+      setSelectedIds([])
+      setBulkConfirmModal(false)
+      setMsg({ type: 'success', text: `${selectedIds.length} partner records permanently deleted` })
+    } else {
+      setBulkConfirmModal(false)
+      setMsg({ type: 'error', text: res.error || 'Failed to delete partners' })
+    }
+  }
 
   return (
     <div className="space-y-6 font-sans">
@@ -165,19 +236,62 @@ export default function PartnerManagementClient({
         </button>
       </div>
 
+      {/* Bulk Action Bar */}
+      {currentList.length > 0 && (
+        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === currentList.length && currentList.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 rounded cursor-pointer"
+            />
+            <span className="text-xs font-semibold text-slate-700">
+              {selectedIds.length > 0
+                ? `${selectedIds.length} of ${currentList.length} selected`
+                : `Select all (${currentList.length})`}
+            </span>
+          </div>
+
+          {selectedIds.length > 0 && (
+            <button
+              onClick={() => setBulkConfirmModal(true)}
+              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
+            >
+              <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+              Permanently Delete ({selectedIds.length})
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Partners Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {currentList.length === 0 ? (
           <div className="col-span-full bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 text-xs">
-            No partners found in this section. Click "Add Partner" to create one.
+            No partners found in this section. Click &quot;Add Partner&quot; to create one.
           </div>
         ) : (
           currentList.map((item) => (
             <div
               key={item.id}
-              className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3 shadow-xs flex flex-col justify-between"
+              className={`bg-white border rounded-2xl p-4 space-y-3 shadow-xs flex flex-col justify-between transition-colors ${
+                selectedIds.includes(item.id) ? 'border-indigo-500 bg-indigo-50/20' : 'border-slate-200'
+              }`}
             >
               <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(item.id)}
+                    onChange={() => toggleSelectId(item.id)}
+                    className="w-4 h-4 rounded cursor-pointer"
+                  />
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${item.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                    {item.isActive ? 'Active' : 'Hidden'}
+                  </span>
+                </div>
+
                 <div className="h-20 bg-slate-50 rounded-xl p-3 border border-slate-100 flex items-center justify-center">
                   <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
                 </div>
@@ -334,6 +448,39 @@ export default function PartnerManagementClient({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Permanently Confirmation Modal */}
+      {bulkConfirmModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Permanently delete {selectedIds.length} {tab === 'HIRING' ? 'hiring' : 'EMI'} partners?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These partner records and logos will be permanently removed from the database and cannot be recovered.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkConfirmModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDelete}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete Permanently
+              </button>
+            </div>
           </div>
         </div>
       )}

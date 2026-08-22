@@ -6,6 +6,9 @@ import {
   trashBlogAction,
   restoreBlogAction,
   deleteBlogAction,
+  bulkTrashBlogsAction,
+  bulkRestoreBlogsAction,
+  bulkDeleteBlogsPermanentlyAction,
 } from '@/app/actions/cmsActions'
 import { deleteUnusedImageAction } from '@/app/actions/mediaActions'
 import { Icon } from '@iconify/react'
@@ -21,6 +24,8 @@ export default function AdminBlogsPage() {
   const [contentImagesList, setContentImagesList] = useState<string[]>([])
   const [showTrash, setShowTrash] = useState(false)
   const [search, setSearch] = useState('')
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
 
   const fetchBlogs = async () => {
     setLoading(true)
@@ -200,6 +205,65 @@ export default function AdminBlogsPage() {
     }
   }
 
+  const activeBlogs = blogs.filter((b) => !b.isDeleted)
+  const trashBlogs = blogs.filter((b) => b.isDeleted)
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredBlogs.length && filteredBlogs.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(filteredBlogs.map((b) => b.id))
+    }
+  }
+
+  const handleTabChange = (trash: boolean) => {
+    setShowTrash(trash)
+    setSelectedIds([])
+    setStatusMsg(null)
+  }
+
+  const handleBulkTrash = async () => {
+    if (!confirm(`Move ${selectedIds.length} blogs to Trash?`)) return
+    const res = await bulkTrashBlogsAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} blogs moved to Trash` })
+      fetchBlogs()
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk trash blogs' })
+    }
+  }
+
+  const handleBulkRestore = async () => {
+    const res = await bulkRestoreBlogsAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} blogs restored` })
+      fetchBlogs()
+    } else {
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk restore blogs' })
+    }
+  }
+
+  const handleBulkDeletePermanently = async () => {
+    const res = await bulkDeleteBlogsPermanentlyAction(selectedIds)
+    if (res.success) {
+      setSelectedIds([])
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} blogs permanently deleted` })
+      fetchBlogs()
+    } else {
+      setBulkConfirmModal(false)
+      setStatusMsg({ type: 'error', text: res.error || 'Failed to delete blogs' })
+    }
+  }
+
   return (
     <div className="space-y-6 font-sans">
       {/* Header Bar */}
@@ -214,21 +278,34 @@ export default function AdminBlogsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center gap-2 ${
-              showTrash
-                ? 'bg-amber-50 border-amber-300 text-amber-800'
-                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Icon icon="ion:trash-outline" className="w-4.5 h-4.5" />
-            {showTrash ? 'View Active Blogs' : 'View Trash'}
-          </button>
+          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+            <button
+              onClick={() => handleTabChange(false)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                !showTrash
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:list-outline" className="w-4 h-4 text-teal-600" />
+              Active ({activeBlogs.length})
+            </button>
+            <button
+              onClick={() => handleTabChange(true)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                showTrash
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Icon icon="ion:trash-outline" className="w-4 h-4" />
+              Trash ({trashBlogs.length})
+            </button>
+          </div>
 
           <button
             onClick={() => openForm()}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl transition-colors shadow-xs flex items-center gap-2"
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
             Create Blog Post
@@ -248,35 +325,87 @@ export default function AdminBlogsPage() {
         </div>
       )}
 
-      {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full">
-          <input
-            type="text"
-            placeholder="Search blog title or slug..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
-          />
-          <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
+      {/* Filter Bar & Bulk Actions */}
+      <div className="space-y-3">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="relative flex-1 w-full">
+            <input
+              type="text"
+              placeholder="Search blog title or slug..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
+            />
+            <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <label className="text-xs font-bold text-slate-600 whitespace-nowrap">Filter Category:</label>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600 w-full sm:w-auto"
+            >
+              <option value="ALL">All Categories</option>
+              <option value="Digital Marketing">Digital Marketing</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Video Editing">Video Editing</option>
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+              <option value="Career Development">Career Development</option>
+              <option value="Industry Insights">Industry Insights</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <label className="text-xs font-bold text-slate-600 whitespace-nowrap">Filter Category:</label>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600 w-full sm:w-auto"
-          >
-            <option value="ALL">All Categories</option>
-            <option value="Digital Marketing">Digital Marketing</option>
-            <option value="Graphic Design">Graphic Design</option>
-            <option value="Video Editing">Video Editing</option>
-            <option value="Artificial Intelligence">Artificial Intelligence</option>
-            <option value="Career Development">Career Development</option>
-            <option value="Industry Insights">Industry Insights</option>
-          </select>
-        </div>
+        {/* Bulk Action Bar */}
+        {filteredBlogs.length > 0 && (
+          <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={selectedIds.length === filteredBlogs.length && filteredBlogs.length > 0}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded cursor-pointer"
+              />
+              <span className="text-xs font-semibold text-slate-700">
+                {selectedIds.length > 0
+                  ? `${selectedIds.length} of ${filteredBlogs.length} selected`
+                  : `Select all (${filteredBlogs.length})`}
+              </span>
+            </div>
+
+            {selectedIds.length > 0 && (
+              <div className="flex items-center gap-2">
+                {showTrash ? (
+                  <>
+                    <button
+                      onClick={handleBulkRestore}
+                      className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                    >
+                      <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
+                      Restore Selected ({selectedIds.length})
+                    </button>
+                    <button
+                      onClick={() => setBulkConfirmModal(true)}
+                      className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
+                    >
+                      <Icon icon="ion:trash-bin-outline" className="w-3.5 h-3.5" />
+                      Permanently Delete ({selectedIds.length})
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleBulkTrash}
+                    className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                  >
+                    <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+                    Move Selected to Trash ({selectedIds.length})
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Blogs List Table */}
@@ -285,13 +414,14 @@ export default function AdminBlogsPage() {
           <div className="p-8 text-center text-slate-500 text-sm font-medium">Loading blog articles...</div>
         ) : filteredBlogs.length === 0 ? (
           <div className="p-8 text-center text-slate-500 text-sm font-medium">
-            No blog posts found matching criteria. Click &quot;Create Blog Post&quot; above.
+            {showTrash ? 'No blogs currently in Trash.' : 'No active blog posts found.'}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm min-w-[750px]">
               <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
                 <tr>
+                  <th className="p-4 w-10"></th>
                   <th className="p-4">Title & Slug</th>
                   <th className="p-4">Category Tab</th>
                   <th className="p-4">Author</th>
@@ -302,7 +432,20 @@ export default function AdminBlogsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {filteredBlogs.map((b) => (
-                  <tr key={b.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={b.id}
+                    className={`hover:bg-slate-50 transition-colors ${
+                      selectedIds.includes(b.id) ? 'bg-blue-50/50' : ''
+                    }`}
+                  >
+                    <td className="p-4" onClick={(e) => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(b.id)}
+                        onChange={() => toggleSelectId(b.id)}
+                        className="w-4 h-4 rounded cursor-pointer"
+                      />
+                    </td>
                     <td className="p-4">
                       <p className="font-semibold text-slate-900 text-base leading-snug">{b.title}</p>
                       <p className="text-slate-400 text-xs font-medium">Slug: /{b.slug}</p>
@@ -670,6 +813,39 @@ export default function AdminBlogsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Delete Permanently Confirmation Modal */}
+      {bulkConfirmModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <Icon icon="ion:alert-circle" className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">
+                Permanently delete {selectedIds.length} blogs?
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                These blogs and their media references will be permanently deleted and cannot be recovered.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => setBulkConfirmModal(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDeletePermanently}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
+              >
+                Delete Permanently
+              </button>
+            </div>
           </div>
         </div>
       )}
