@@ -24,15 +24,32 @@ export async function saveCategoryAction(data: any, id?: string) {
       return { success: false, error: validated.error.issues[0].message }
     }
 
+    const categoryData = { ...validated.data }
+
     if (id) {
+      const oldCat = await db.courseCategory.findUnique({ where: { id } })
+      if (oldCat && oldCat.slug !== categoryData.slug) {
+        const existing = await db.courseCategory.findUnique({ where: { slug: categoryData.slug } })
+        if (existing) {
+          return { success: false, error: `A category with slug '${categoryData.slug}' already exists.` }
+        }
+      }
       await db.courseCategory.update({
         where: { id },
-        data: validated.data,
+        data: categoryData,
       })
       await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'UPDATE_CATEGORY', recordId: id })
     } else {
+      let uniqueSlug = categoryData.slug
+      let counter = 1
+      while (await db.courseCategory.findUnique({ where: { slug: uniqueSlug } })) {
+        uniqueSlug = `${categoryData.slug}-${counter}`
+        counter++
+      }
+      categoryData.slug = uniqueSlug
+
       const created = await db.courseCategory.create({
-        data: validated.data,
+        data: categoryData,
       })
       await createAuditLog({ userId: session.id, module: 'CMS_CATEGORIES', action: 'CREATE_CATEGORY', recordId: created.id })
     }
@@ -42,6 +59,9 @@ export async function saveCategoryAction(data: any, id?: string) {
     revalidatePath('/admin/courses')
     return { success: true, message: 'Category saved successfully' }
   } catch (err: any) {
+    if (err?.code === 'P2002' || err?.message?.includes('Unique constraint failed')) {
+      return { success: false, error: 'A category with this slug already exists.' }
+    }
     return { success: false, error: err.message || 'Failed to save category' }
   }
 }
@@ -107,6 +127,12 @@ export async function saveCourseAction(data: any, id?: string) {
 
     if (id) {
       const oldCourse = await db.course.findUnique({ where: { id } })
+      if (oldCourse && oldCourse.slug !== coursePayload.slug) {
+        const existing = await db.course.findUnique({ where: { slug: coursePayload.slug } })
+        if (existing) {
+          return { success: false, error: `A course with slug '${coursePayload.slug}' already exists.` }
+        }
+      }
       await db.course.update({
         where: { id },
         data: coursePayload,
@@ -118,13 +144,19 @@ export async function saveCourseAction(data: any, id?: string) {
         await safeDeleteUnusedFile(oldCourse.bannerImage, { table: 'course', id })
       }
     } else {
+      let uniqueSlug = coursePayload.slug
+      let counter = 1
+      while (await db.course.findUnique({ where: { slug: uniqueSlug } })) {
+        uniqueSlug = `${coursePayload.slug}-${counter}`
+        counter++
+      }
+      coursePayload.slug = uniqueSlug
+
       const created = await db.course.create({
         data: coursePayload,
       })
       await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'CREATE_COURSE', recordId: created.id })
     }
-
-
 
     revalidatePath('/')
     revalidatePath('/courses')
@@ -135,6 +167,9 @@ export async function saveCourseAction(data: any, id?: string) {
     revalidatePath('/courses/[slug]', 'page')
     return { success: true, message: 'Course saved successfully' }
   } catch (err: any) {
+    if (err?.code === 'P2002' || err?.message?.includes('Unique constraint failed')) {
+      return { success: false, error: 'A course with this slug already exists.' }
+    }
     return { success: false, error: err.message || 'Failed to save course' }
   }
 }
@@ -306,6 +341,12 @@ export async function saveBlogAction(data: any, id?: string) {
 
     if (id) {
       const oldBlog = await db.blog.findUnique({ where: { id } })
+      if (oldBlog && oldBlog.slug !== blogData.slug) {
+        const existingSlug = await db.blog.findUnique({ where: { slug: blogData.slug } })
+        if (existingSlug) {
+          return { success: false, error: `A blog post with slug '${blogData.slug}' already exists.` }
+        }
+      }
       await db.blog.update({
         where: { id },
         data: blogData,
@@ -328,6 +369,14 @@ export async function saveBlogAction(data: any, id?: string) {
         }
       }
     } else {
+      let uniqueSlug = blogData.slug
+      let counter = 1
+      while (await db.blog.findUnique({ where: { slug: uniqueSlug } })) {
+        uniqueSlug = `${blogData.slug}-${counter}`
+        counter++
+      }
+      blogData.slug = uniqueSlug
+
       const created = await db.blog.create({
         data: {
           ...blogData,
@@ -341,6 +390,9 @@ export async function saveBlogAction(data: any, id?: string) {
     revalidatePath('/admin/blogs')
     return { success: true, message: 'Blog post saved successfully' }
   } catch (err: any) {
+    if (err?.code === 'P2002' || err?.message?.includes('Unique constraint failed')) {
+      return { success: false, error: 'A blog post with this slug already exists. Please choose a unique slug or title.' }
+    }
     return { success: false, error: err.message || 'Failed to save blog' }
   }
 }
