@@ -48,9 +48,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       course = { title: dbCourse.courseName, description: dbCourse.shortDescription || dbCourse.description };
     }
   } catch (err) {}
-  if (!course) {
-    course = coursesData.find((c) => c.slug === slug || slug.includes(c.slug) || c.slug.includes(slug));
-  }
 
   if (!course) return { title: "Course Not Found" };
   return {
@@ -103,8 +100,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
     if (dbCourse) {
       const syllabusLines = dbCourse.syllabus ? dbCourse.syllabus.split('\n').filter(Boolean) : [];
-      const staticMatch = coursesData.find((c) => c.slug === slug || slug.includes(c.slug) || c.slug.includes(slug));
-      const fallbackImg = staticMatch?.image || '/images/courses/digital-marketing.jpg';
+      const courseImg = dbCourse.bannerImage || '/images/courses/digital-marketing.jpg';
 
       course = {
         id: dbCourse.id,
@@ -115,8 +111,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
         duration: dbCourse.duration || '6 Months',
         mode: dbCourse.courseMode || 'Offline',
         description: dbCourse.description || dbCourse.shortDescription || '',
-        bannerImage: dbCourse.bannerImage || fallbackImg,
-        image: dbCourse.bannerImage || fallbackImg,
+        bannerImage: courseImg,
+        image: courseImg,
         fees: dbCourse.fees ? Number(dbCourse.fees) : 45000,
         discountPrice: dbCourse.discountPrice ? Number(dbCourse.discountPrice) : 35000,
         eligibility: dbCourse.eligibility || 'Open for all',
@@ -129,10 +125,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
     }
   } catch (err) {
     console.error('Error loading dynamic course detail:', err);
-  }
-
-  if (!course) {
-    course = coursesData.find((c) => c.slug === slug || slug.includes(c.slug) || c.slug.includes(slug));
   }
 
   if (!course) notFound();

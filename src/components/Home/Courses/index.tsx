@@ -7,7 +7,8 @@ interface CoursesSectionProps {
   courses?: any[];
 }
 
-const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = coursesData }) => {
+const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
+  if (!courses || courses.length === 0) return null;
   return (
     <section className="section-py bg-grey dark:bg-dark" id="courses">
       <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">

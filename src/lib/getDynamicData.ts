@@ -24,8 +24,7 @@ export const getDynamicCourses = unstable_cache(
 
       if (dbCourses.length > 0) {
         return dbCourses.map((c) => {
-          const staticMatch = coursesData.find((sc) => sc.slug === c.slug || c.slug.includes(sc.slug) || sc.slug.includes(c.slug));
-          const courseImg = c.bannerImage || staticMatch?.image || '/images/courses/digital-marketing.jpg';
+          const courseImg = c.bannerImage || '/images/courses/digital-marketing.jpg';
           return {
             id: c.id,
             title: c.courseName,
@@ -40,9 +39,9 @@ export const getDynamicCourses = unstable_cache(
             fees: c.fees ? Number(c.fees) : 45000,
             discountPrice: c.discountPrice ? Number(c.discountPrice) : 35000,
             eligibility: c.eligibility || 'Open for all',
-            syllabus: c.syllabus ? c.syllabus.split('\n') : [],
-            learningOutcomes: c.learningOutcomes ? c.learningOutcomes.split('\n') : [],
-            outcomes: c.learningOutcomes ? c.learningOutcomes.split('\n') : [],
+            syllabus: c.syllabus ? c.syllabus.split('\n').filter(Boolean) : [],
+            learningOutcomes: c.learningOutcomes ? c.learningOutcomes.split('\n').filter(Boolean) : [],
+            outcomes: c.learningOutcomes ? c.learningOutcomes.split('\n').filter(Boolean) : [],
             featured: c.featured,
           }
         })
@@ -50,7 +49,7 @@ export const getDynamicCourses = unstable_cache(
     } catch (err) {
       console.error('Error fetching dynamic courses:', err)
     }
-    return coursesData
+    return []
   },
   ['dynamic-courses'],
   { revalidate: 60, tags: ['courses'] }
