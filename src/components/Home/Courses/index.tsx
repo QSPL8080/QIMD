@@ -10,18 +10,28 @@ interface CoursesSectionProps {
 const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
   if (!courses || courses.length === 0) return null;
   return (
-    <section className="section-py bg-grey dark:bg-dark" id="courses">
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
+    <section
+      className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-y border-slate-200/80 dark:border-dark_border"
+      id="courses"
+      style={{
+        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
+      }}
+    >
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#38bdf8]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
+      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-12" data-aos="fade-up">
-          <div className="badge-primary mb-3">
-            <Icon icon="mdi:book-open-page-variant" />
-            Our Programs
+          <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md mb-3 shadow-xs">
+            <Icon icon="mdi:book-open-page-variant" className="text-base text-[#764DFF]" />
+            <span>Our Programs</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-midnight_text dark:text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white mb-4 tracking-tight">
             Our Most In-Demand Training Programs
           </h2>
-          <p className="text-muted dark:text-white/60 text-base max-w-2xl mx-auto">
+          <p className="text-slate-700 dark:text-white/80 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium">
             Practical, AI-powered training programs designed to make you job-ready from day one.
             All courses are offline with live client projects and 100% placement support.
           </p>
@@ -40,9 +50,9 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
         <div className="text-center mt-12" data-aos="fade-up">
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-darkprimary text-white font-semibold px-8 py-4 rounded-xl text-base transition-all duration-200 hover:-translate-y-0.5 shadow-lg"
+            className="inline-flex items-center gap-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white font-extrabold px-8 py-4 rounded-xl text-sm sm:text-base transition-all duration-200 hover:scale-105 shadow-xl"
           >
-            View All Programs
+            <span>View All Programs</span>
             <Icon icon="mdi:arrow-right" className="text-lg" />
           </Link>
         </div>

@@ -161,15 +161,20 @@ export default function WhyQimdContent() {
         </div>
       </section>
 
-      {/* 2. WHY THOUSANDS OF STUDENTS CHOOSE QIMD (SMOOTH SLOW INFINITE CONTINUOUS MARQUEE) */}
-      <section className="py-16 lg:py-24 bg-grey dark:bg-darklight overflow-hidden">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
+      {/* 2. WHY THOUSANDS OF STUDENTS CHOOSE QIMD (DARK GRADIENT SLOW INFINITE MARQUEE) */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-2" data-aos="fade-up">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Key Advantages</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">Key Advantages</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Why Thousands of Students Choose QIMD
             </h2>
-            <p className="text-muted dark:text-white/70 text-xs sm:text-sm font-medium">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium">
               Every detail of our institute is engineered to bridge the gap between classroom education and high-growth industry careers.
             </p>
           </div>
@@ -178,8 +183,8 @@ export default function WhyQimdContent() {
         {/* FULL SCREEN EDGE-TO-EDGE INFINITE SLOW MARQUEE */}
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden select-none py-3 mt-8">
           {/* Edge Fade Shadows */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-grey dark:from-darklight to-transparent z-10" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-grey dark:from-darklight to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#180e29] to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#0284c7] to-transparent z-10" />
 
           <div
             className="flex animate-marquee-slow items-stretch gap-4 sm:gap-5 pr-4 sm:pr-5"
@@ -188,18 +193,18 @@ export default function WhyQimdContent() {
             {[...whyChoosePoints, ...whyChoosePoints].map((point, i) => (
               <div
                 key={`${point.title}-${i}`}
-                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-white dark:bg-dark rounded-2xl p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border-[1.5px] border-[#764DFF]/20 dark:border-dark_border flex flex-col justify-between shrink-0 h-[175px] sm:h-[185px] group hover:border-[#764DFF] hover:shadow-[0_15px_35px_rgba(118,77,255,0.14)] transition-all duration-300"
+                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-white/20 flex flex-col justify-between shrink-0 h-[175px] sm:h-[185px] group hover:border-cyan-300 hover:bg-white/15 transition-all duration-300"
               >
                 <div>
                   <div className="flex items-center gap-2.5 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-sm font-bold group-hover:bg-[#764DFF] group-hover:text-white transition-colors duration-300 shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-white/15 text-cyan-300 flex items-center justify-center text-sm font-bold border border-white/25 group-hover:bg-white group-hover:text-[#180e29] transition-colors duration-300 shrink-0">
                       <Icon icon={point.icon} />
                     </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white leading-tight tracking-tight group-hover:text-[#764DFF] transition-colors line-clamp-1">
+                    <h3 className="text-xs sm:text-sm font-bold text-white leading-tight tracking-tight group-hover:text-cyan-300 transition-colors line-clamp-1">
                       {point.title}
                     </h3>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-slate-600 dark:text-white/70 leading-relaxed font-medium line-clamp-4">
+                  <p className="text-[11px] sm:text-xs text-slate-200 leading-relaxed font-normal line-clamp-4">
                     {point.desc}
                   </p>
                 </div>
@@ -209,29 +214,37 @@ export default function WhyQimdContent() {
         </div>
       </section>
 
-      {/* 3 & 4. COMBINED METHODOLOGY & WHO CAN JOIN QIMD (SIDE-BY-SIDE 2-COLUMN WITH STAGGERED FADE-RIGHT / FADE-LEFT ANIMATIONS) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-y border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-8">
+      {/* 3 & 4. COMBINED METHODOLOGY & WHO CAN JOIN QIMD - LIGHT GRADIENT */}
+      <section
+        className="py-16 lg:py-24 border-y border-slate-200/80 dark:border-dark_border relative overflow-hidden text-midnight_text"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
+        }}
+      >
+        <div className="pointer-events-none absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#764DFF]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-[#38bdf8]/10 blur-3xl" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-8 relative z-10">
           <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
             <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Structured Framework</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight">
               Learning Journey &amp; Eligibility
             </h2>
-            <p className="text-muted dark:text-white/70 text-xs sm:text-sm font-medium">
+            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium">
               We ensure every student gains practical knowledge through continuous implementation.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch pt-2">
             
-            {/* Left Column: Our Learning Methodology (Fade-Right Staggered) */}
-            <div className="space-y-4 bg-slate-50/60 dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-2xs flex flex-col justify-between h-full">
-              <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60 dark:border-dark_border">
+            {/* Left Column: Our Learning Methodology */}
+            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full">
+              <div className="flex items-center gap-3 pb-2 border-b border-slate-100 dark:border-dark_border">
                 <div className="w-9 h-9 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-lg font-bold shrink-0">
                   <Icon icon="mdi:school-outline" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-midnight_text dark:text-white leading-tight">
+                  <h3 className="text-base sm:text-lg font-extrabold text-[#111827] dark:text-white leading-tight">
                     Our Learning Methodology
                   </h3>
                   <span className="text-[10px] font-bold text-[#764DFF] uppercase tracking-wider">6-Step Execution Flow</span>
@@ -251,13 +264,13 @@ export default function WhyQimdContent() {
                     key={i}
                     data-aos="fade-right"
                     data-aos-delay={i * 80}
-                    className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-dark border border-slate-200/70 dark:border-dark_border/60 hover:border-[#764DFF]/40 transition-all group min-h-[50px]"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-grey/50 dark:bg-dark border border-slate-200/60 dark:border-dark_border/60 hover:border-[#764DFF]/40 hover:bg-white dark:hover:bg-darklight transition-all group min-h-[50px]"
                   >
                     <div className="w-7 h-7 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs font-bold shrink-0 group-hover:bg-[#764DFF] group-hover:text-white transition-colors">
                       {m.step}
                     </div>
                     <div className="flex-1 flex items-center justify-between gap-2">
-                      <span className="text-xs font-extrabold text-midnight_text dark:text-white">
+                      <span className="text-xs font-extrabold text-slate-900 dark:text-white">
                         {m.title}
                       </span>
                       <span className="text-[11px] font-medium text-slate-500 dark:text-white/60">
@@ -269,14 +282,14 @@ export default function WhyQimdContent() {
               </div>
             </div>
 
-            {/* Right Column: Who Can Join QIMD? (Fade-Left Staggered) */}
-            <div className="space-y-4 bg-slate-50/60 dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-2xs flex flex-col justify-between h-full">
-              <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60 dark:border-dark_border">
+            {/* Right Column: Who Can Join QIMD? */}
+            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full">
+              <div className="flex items-center gap-3 pb-2 border-b border-slate-100 dark:border-dark_border">
                 <div className="w-9 h-9 rounded-xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-lg font-bold shrink-0">
                   <Icon icon="mdi:account-group-outline" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-extrabold text-midnight_text dark:text-white leading-tight">
+                  <h3 className="text-base sm:text-lg font-extrabold text-[#111827] dark:text-white leading-tight">
                     Who Can Join QIMD?
                   </h3>
                   <span className="text-[10px] font-bold text-[#BD69F2] uppercase tracking-wider">No Prior Experience Required</span>
@@ -297,13 +310,13 @@ export default function WhyQimdContent() {
                     key={i}
                     data-aos="fade-left"
                     data-aos-delay={i * 80}
-                    className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-dark border border-slate-200/70 dark:border-dark_border/60 hover:border-[#BD69F2]/40 transition-all group min-h-[50px]"
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-grey/50 dark:bg-dark border border-slate-200/60 dark:border-dark_border/60 hover:border-[#BD69F2]/40 hover:bg-white dark:hover:bg-darklight transition-all group min-h-[50px]"
                   >
                     <div className="w-6 h-6 rounded-lg bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#BD69F2] group-hover:text-white transition-colors">
                       <Icon icon={item.icon} />
                     </div>
                     <div className="flex-1 flex items-center justify-between gap-2">
-                      <span className="text-xs font-extrabold text-midnight_text dark:text-white">
+                      <span className="text-xs font-extrabold text-slate-900 dark:text-white">
                         {item.label}
                       </span>
                       <span className="text-[11px] font-medium text-slate-500 dark:text-white/60">
@@ -319,36 +332,41 @@ export default function WhyQimdContent() {
         </div>
       </section>
 
-      {/* 4. OUR PROMISE — PREMIUM HIGH-END GLASSMORPHIC DESIGN */}
-      <section className="py-16 bg-grey dark:bg-darklight overflow-hidden relative">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+      {/* 4. OUR PROMISE — DARK GRADIENT */}
+      <section
+        className="py-16 sm:py-24 text-white overflow-hidden relative border-y border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Soft Ambient Background Glows */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           <div
-            className="relative bg-white dark:bg-dark rounded-3xl p-8 sm:p-12 border border-slate-200/80 dark:border-dark_border shadow-xl max-w-5xl mx-auto overflow-hidden group"
+            className="relative bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-8 sm:p-12 border border-white/20 shadow-2xl max-w-5xl mx-auto overflow-hidden group text-white"
             data-aos="fade-up"
           >
-            {/* Soft Ambient Background Glows */}
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#764DFF]/15 dark:bg-[#764DFF]/25 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#BD69F2]/15 dark:bg-[#BD69F2]/25 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
-
             <div className="relative z-10 space-y-6 text-center">
               
               {/* Header Badge */}
-              <div className="inline-flex items-center gap-2 bg-[#764DFF]/10 text-[#764DFF] border border-[#764DFF]/20 text-xs font-extrabold px-4 py-1.5 rounded-full shadow-2xs">
-                <Icon icon="mdi:shield-check" className="text-base" />
+              <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 text-white text-xs font-extrabold px-4 py-1.5 rounded-full shadow-xs backdrop-blur-md">
+                <Icon icon="mdi:shield-check" className="text-base text-cyan-300" />
                 <span>The QIMD Commitment</span>
               </div>
 
               {/* Title */}
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
                 Our Promise to Every Student
               </h2>
 
               {/* Main Text Content Body */}
-              <div className="max-w-3xl mx-auto space-y-3 pt-1 text-[#374151] dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
+              <div className="max-w-3xl mx-auto space-y-3 pt-1 text-slate-200 text-xs sm:text-sm leading-relaxed font-normal">
                 <p>
                   At QIMD, we don&apos;t just teach software or concepts. We help you develop practical skills, build confidence, create a professional portfolio, and prepare for real career opportunities.
                 </p>
-                <p className="text-slate-800 dark:text-white font-bold text-sm sm:text-base pt-1">
+                <p className="text-white font-bold text-sm sm:text-base pt-1">
                   Our mission is to transform aspiring learners into industry-ready professionals through AI-powered education, practical implementation, and expert mentorship.
                 </p>
               </div>
@@ -363,9 +381,9 @@ export default function WhyQimdContent() {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-dark border border-slate-200/80 dark:border-dark_border text-[11px] font-bold text-slate-700 dark:text-white/90 shadow-2xs"
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/15 border border-white/25 text-[11px] font-bold text-white shadow-xs backdrop-blur-md"
                   >
-                    <Icon icon={item.icon} className="text-[#764DFF]" />
+                    <Icon icon={item.icon} className="text-cyan-300" />
                     <span>{item.label}</span>
                   </div>
                 ))}
@@ -376,17 +394,23 @@ export default function WhyQimdContent() {
         </div>
       </section>
 
-      {/* 5. WHY WAIT? CLOSING CTA BANNER */}
-      <section className="py-16 bg-white dark:bg-dark border-t border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 text-center space-y-4" data-aos="fade-up">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#764DFF]">
-            Start Today
+      {/* 5. WHY WAIT? CLOSING CTA BANNER - TOP-SIDE LIGHT GRADIENT */}
+      <section
+        className="py-16 sm:py-24 border-t border-slate-200/80 dark:border-dark_border relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #c8e0fe 0%, #e8dcff 25%, #f8f9ff 60%, #ffffff 100%)',
+        }}
+      >
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 text-center space-y-4 relative z-10" data-aos="fade-up">
+          <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
+            <Icon icon="mdi:rocket-launch-outline" className="text-sm text-[#764DFF]" />
+            <span>Start Today</span>
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight">
             Why Wait?
           </h2>
-          <div className="text-muted dark:text-white/80 text-xs sm:text-sm max-w-2xl mx-auto space-y-1.5 leading-relaxed font-medium">
-            <p className="font-bold text-midnight_text dark:text-white text-sm">
+          <div className="text-slate-700 dark:text-white/80 text-xs sm:text-sm max-w-2xl mx-auto space-y-2 leading-relaxed font-medium">
+            <p className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
               Your career deserves more than theoretical knowledge.
             </p>
             <p>
@@ -396,13 +420,13 @@ export default function WhyQimdContent() {
           <div className="pt-3 flex flex-wrap justify-center gap-4">
             <Link
               href="/courses"
-              className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all shadow-md"
+              className="bg-primary hover:bg-darkprimary text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               View All Courses
             </Link>
             <Link
               href="/contact"
-              className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all"
+              className="bg-white dark:bg-darklight hover:bg-slate-50 text-midnight_text dark:text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-xl border border-slate-200/80 shadow-xs hover:shadow-md hover:-translate-y-0.5"
             >
               Contact Admissions
             </Link>

@@ -266,27 +266,37 @@ export default function FranchiseContent() {
         </div>
       </section>
 
-      {/* 2. BECOME A QIMD FRANCHISE PARTNER & ENQUIRY FORM */}
-      <section className="section-py bg-white dark:bg-dark" id="enquiry-form">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          <div className="max-w-4xl mx-auto bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-10 border border-slate-200/80 dark:border-dark_border shadow-card" data-aos="fade-up">
+      {/* 2. BECOME A QIMD FRANCHISE PARTNER & ENQUIRY FORM (DARK GRADIENT) */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        id="enquiry-form"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
+          <div className="max-w-4xl mx-auto bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-white/20 shadow-2xl text-white" data-aos="fade-up">
             <div className="text-center mb-8">
-              <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
+              <span className="bg-white/15 border border-white/25 text-cyan-300 text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-3 shadow-xs">
                 Franchise Partner
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">
                 Start Your Own AI-Powered Training Institute
               </h2>
-              <p className="text-xs sm:text-sm text-muted dark:text-white/70">
+              <p className="text-xs sm:text-sm text-slate-200 font-medium">
                 Fill out the form below, and our Franchise Team will connect with you to discuss the business model, investment, operational support, and partnership process.
               </p>
             </div>
 
             {submitSuccess ? (
-              <div className="p-8 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl text-center space-y-3">
-                <Icon icon="mdi:check-circle" className="text-emerald-600 text-5xl mx-auto" />
-                <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100">Franchise Application Submitted!</h3>
-                <p className="text-xs text-emerald-700 dark:text-emerald-300">
+              <div className="p-8 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl text-center space-y-3 backdrop-blur-md">
+                <Icon icon="mdi:check-circle" className="text-emerald-400 text-5xl mx-auto" />
+                <h3 className="text-xl font-bold text-white">Franchise Application Submitted!</h3>
+                <p className="text-xs text-emerald-200 font-medium">
                   Thank you for your interest in QIMD Franchise. Our franchise development manager will contact you within 24 hours.
                 </p>
               </div>
@@ -295,7 +305,7 @@ export default function FranchiseContent() {
                 {/* Row 1: Name, Mobile, Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Full Name *
                     </label>
                     <input
@@ -304,11 +314,11 @@ export default function FranchiseContent() {
                       placeholder="Enter full name"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Mobile Number *
                     </label>
                     <PhoneInput
@@ -320,7 +330,7 @@ export default function FranchiseContent() {
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Email Address *
                     </label>
                     <input
@@ -329,7 +339,7 @@ export default function FranchiseContent() {
                       placeholder="Enter email address"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                 </div>
@@ -337,7 +347,7 @@ export default function FranchiseContent() {
                 {/* Row 2: City/State, Current Business, Commercial Space */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       City / State *
                     </label>
                     <input
@@ -346,11 +356,11 @@ export default function FranchiseContent() {
                       placeholder="e.g. Pune, Maharashtra"
                       value={formData.cityState}
                       onChange={(e) => setFormData({ ...formData, cityState: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Current Profession *
                     </label>
                     <input
@@ -359,20 +369,20 @@ export default function FranchiseContent() {
                       placeholder="e.g. Business Owner / Institute Owner"
                       value={formData.currentProfession}
                       onChange={(e) => setFormData({ ...formData, currentProfession: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Commercial Space? *
                     </label>
                     <select
                       value={formData.hasCommercialSpace}
                       onChange={(e) => setFormData({ ...formData, hasCommercialSpace: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs cursor-pointer"
                     >
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
+                      <option value="Yes" className="bg-white text-slate-900">Yes</option>
+                      <option value="No" className="bg-white text-slate-900">No</option>
                     </select>
                   </div>
                 </div>
@@ -380,7 +390,7 @@ export default function FranchiseContent() {
                 {/* Row 3: Preferred City & Interest Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Preferred City *
                     </label>
                     <input
@@ -389,11 +399,11 @@ export default function FranchiseContent() {
                       placeholder="e.g. Pune / Mumbai / Nashik"
                       value={formData.preferredCity}
                       onChange={(e) => setFormData({ ...formData, preferredCity: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1">
+                    <label className="block font-bold text-white mb-1.5">
                       Tell Us About Your Interest (Optional)
                     </label>
                     <input
@@ -401,14 +411,14 @@ export default function FranchiseContent() {
                       placeholder="Investment budget, space availability, timeline..."
                       value={formData.interestDetails}
                       onChange={(e) => setFormData({ ...formData, interestDetails: e.target.value })}
-                      className="w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl p-2.5 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium text-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
                     />
                   </div>
                 </div>
 
                 {/* Checkbox agreement & Submit */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <input
                       type="checkbox"
                       id="agreeContactFranchise"
@@ -416,7 +426,7 @@ export default function FranchiseContent() {
                       onChange={(e) => setFormData({ ...formData, agreeContact: e.target.checked })}
                       className="w-4 h-4 text-primary rounded cursor-pointer"
                     />
-                    <label htmlFor="agreeContactFranchise" className="text-xs text-midnight_text dark:text-white font-medium cursor-pointer">
+                    <label htmlFor="agreeContactFranchise" className="text-xs text-slate-200 font-medium cursor-pointer">
                       I agree to be contacted by the QIMD Franchise Team.
                     </label>
                   </div>
@@ -424,7 +434,7 @@ export default function FranchiseContent() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto bg-[#764DFF] hover:bg-[#5c38d6] text-white font-extrabold px-8 py-3 rounded-xl text-xs transition-all shadow-md cursor-pointer"
+                    className="w-full sm:w-auto bg-gradient-to-r from-primary via-[#8B5CF6] to-[#BD69F2] hover:opacity-95 text-white font-extrabold px-8 py-3.5 rounded-xl text-xs transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
                   >
                     {isSubmitting ? "Submitting Application..." : "Apply for Franchise"}
                   </button>
@@ -475,17 +485,26 @@ export default function FranchiseContent() {
         </div>
       </section>
 
-      {/* 4. COMPLETE FRANCHISE SUPPORT (MODERN 2x2 DETAILED PILLARS) */}
-      <section className="py-16 lg:py-20 bg-white dark:bg-dark">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12" data-aos="fade-up">
-            <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
+      {/* 4. COMPLETE FRANCHISE SUPPORT - DARK GRADIENT */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2" data-aos="fade-up">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">
               360° Operational Ecosystem
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Complete Franchise Support
             </h2>
-            <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium">
               As a QIMD Franchise Partner, you&apos;ll receive full end-to-end assistance across every operational pillar.
             </p>
           </div>
@@ -494,21 +513,21 @@ export default function FranchiseContent() {
             {supportPillars.map((pillar, i) => (
               <div
                 key={i}
-                className="bg-slate-50/70 dark:bg-darklight p-6 sm:p-7 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                className="bg-white/10 dark:bg-white/10 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-white/20 shadow-2xl flex flex-col justify-between text-white"
                 data-aos={i % 2 === 0 ? "fade-right" : "fade-left"}
                 data-aos-duration="800"
               >
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-dark_border">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/15">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-[#764DFF] text-white flex items-center justify-center text-xl font-bold shadow-sm">
+                      <div className="w-10 h-10 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-xl font-bold shadow-sm border border-white/25">
                         <Icon icon={pillar.icon} />
                       </div>
-                      <h3 className="text-base sm:text-lg font-extrabold text-midnight_text dark:text-white">
+                      <h3 className="text-base sm:text-lg font-extrabold text-white">
                         {pillar.category}
                       </h3>
                     </div>
-                    <span className="text-[10px] font-bold bg-[#764DFF]/10 text-[#764DFF] px-2.5 py-0.5 rounded-full border border-[#764DFF]/20">
+                    <span className="text-[10px] font-extrabold bg-white/15 text-cyan-300 px-2.5 py-0.5 rounded-full border border-white/25 backdrop-blur-md">
                       Pillar 0{i + 1}
                     </span>
                   </div>
@@ -519,10 +538,10 @@ export default function FranchiseContent() {
                         key={idx}
                         data-aos="fade-up"
                         data-aos-delay={idx * 100 + 150}
-                        className="flex items-center gap-2.5 bg-white dark:bg-dark px-3 py-2.5 rounded-xl border border-slate-200/70 dark:border-dark_border text-xs font-semibold text-midnight_text dark:text-white shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 hover:-translate-y-0.5 hover:bg-[#764DFF]/5 transition-all duration-300 group/pill cursor-default"
+                        className="flex items-center gap-2.5 bg-white/10 px-3 py-2.5 rounded-xl border border-white/20 text-xs font-semibold text-white shadow-2xs hover:shadow-md hover:border-cyan-300 hover:bg-white/20 transition-all duration-300 group/pill cursor-default"
                       >
-                        <Icon icon="mdi:check-circle" className="text-[#764DFF] text-sm shrink-0 group-hover/pill:scale-125 transition-transform duration-300" />
-                        <span className="leading-tight group-hover/pill:text-[#764DFF] transition-colors">{item}</span>
+                        <Icon icon="mdi:check-circle" className="text-cyan-300 text-sm shrink-0 group-hover/pill:scale-125 transition-transform duration-300" />
+                        <span className="leading-tight text-slate-100 group-hover/pill:text-cyan-300 transition-colors">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -607,17 +626,17 @@ export default function FranchiseContent() {
         </div>
       </section>
 
-      {/* 5.5. WHY CHOOSE QIMD? */}
-      <section className="py-16 lg:py-20 bg-white dark:bg-dark border-b border-slate-200/70 dark:border-dark_border">
+      {/* 5.5. WHY CHOOSE QIMD? (NORMAL WHITE) */}
+      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border">
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10" data-aos="fade-up">
-            <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
+            <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs mb-2">
               Core Benefits
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight">
               Why Choose QIMD?
             </h2>
-            <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
+            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
               Key pillars that make our franchise partnership model reliable, scalable, and practical.
             </p>
           </div>
@@ -626,12 +645,12 @@ export default function FranchiseContent() {
             {whyChoosePills.map((pill, i) => (
               <div
                 key={i}
-                className="bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border p-4 rounded-2xl flex items-center gap-3 shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 transition-all group"
+                className="bg-slate-50/90 dark:bg-darklight border border-slate-200/80 dark:border-dark_border p-4 rounded-2xl flex items-center gap-3 shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 transition-all group cursor-default"
               >
                 <div className="w-8 h-8 rounded-xl bg-[#764DFF]/10 text-[#764DFF] group-hover:bg-[#764DFF] group-hover:text-white transition-colors flex items-center justify-center text-sm font-bold shrink-0">
                   <Icon icon="mdi:star-four-points" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white group-hover:text-[#764DFF] transition-colors">
+                <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white group-hover:text-[#764DFF] transition-colors">
                   {pill}
                 </span>
               </div>
@@ -640,22 +659,26 @@ export default function FranchiseContent() {
         </div>
       </section>
 
-      {/* 6. OUR FRANCHISE PROCESS (SLEEK OPEN STEPPER PIPELINE) */}
+      {/* 6. OUR FRANCHISE PROCESS - DARK GRADIENT */}
       <section
-        className="py-16 lg:py-20 border-b border-slate-200/70 dark:border-dark_border overflow-hidden"
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
         style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
         }}
       >
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14" data-aos="fade-up">
-            <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-14 space-y-2" data-aos="fade-up">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">
               Onboarding Roadmap
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Our Franchise Process
             </h2>
-            <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium">
               A simple, structured 6-step process to launch your own QIMD practical training center.
             </p>
           </div>
@@ -671,21 +694,21 @@ export default function FranchiseContent() {
               >
                 {/* Horizontal Connector Arrow for Desktop */}
                 {i < franchiseSteps.length - 1 && (
-                  <div className="hidden lg:flex items-center justify-center absolute top-5 -right-3 w-6 h-6 text-slate-300 dark:text-white/20 z-10">
+                  <div className="hidden lg:flex items-center justify-center absolute top-5 -right-3 w-6 h-6 text-white/30 z-10">
                     <Icon icon="mdi:chevron-right" className="text-xl" />
                   </div>
                 )}
 
                 {/* Step Circle Icon Badge */}
-                <div className="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-darklight border border-slate-200 dark:border-dark_border text-[#764DFF] group-hover:bg-[#764DFF] group-hover:text-white group-hover:border-[#764DFF] transition-all duration-300 flex items-center justify-center text-xs font-black shadow-2xs group-hover:shadow-md shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-white/15 border border-white/25 text-cyan-300 group-hover:bg-white group-hover:text-[#180e29] group-hover:border-white transition-all duration-300 flex items-center justify-center text-sm font-black shadow-lg backdrop-blur-md shrink-0">
                   {s.step}
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="font-extrabold text-midnight_text dark:text-white text-xs group-hover:text-[#764DFF] transition-colors">
+                  <h4 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-cyan-300 transition-colors">
                     {s.title}
                   </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-white/60 leading-relaxed font-medium">
+                  <p className="text-[11px] text-slate-200 leading-relaxed font-medium">
                     {s.desc}
                   </p>
                 </div>

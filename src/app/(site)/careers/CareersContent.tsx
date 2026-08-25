@@ -195,17 +195,26 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
         </div>
       </section>
 
-      {/* 2. WHY JOIN QIMD & WHAT WE OFFER */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+      {/* 2. WHY JOIN QIMD & WHAT WE OFFER - DARK GRADIENT */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-2" data-aos="fade-up">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">
               Key Employee Benefits
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               Why Join QIMD?
             </h2>
-            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium leading-relaxed">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium leading-relaxed">
               Become part of a fast-growing institute where learning, creativity, and career growth go hand in hand.
             </p>
           </div>
@@ -216,12 +225,12 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                 key={i}
                 data-aos="fade-up"
                 data-aos-delay={i * 50}
-                className="bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border p-5 rounded-2xl shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 transition-all duration-300 flex items-center gap-4 h-[90px]"
+                className="bg-white/10 dark:bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl shadow-xl hover:border-cyan-300 hover:shadow-2xl transition-all duration-300 flex items-center gap-4 h-[90px] text-white group cursor-default"
               >
-                <div className="w-11 h-11 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xl font-bold shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-xl font-bold shrink-0 border border-white/25 group-hover:bg-white group-hover:text-[#180e29] transition-colors">
                   <Icon icon={offer.icon} />
                 </div>
-                <h3 className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white leading-snug tracking-tight">
+                <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-snug tracking-tight">
                   {offer.title}
                 </h3>
               </div>
@@ -230,18 +239,31 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
         </div>
       </section>
 
-      {/* 3. CURRENT OPEN POSITIONS & WHO CAN APPLY */}
-      <section className="section-py bg-grey dark:bg-darklight">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 space-y-12">
+      {/* 3. CURRENT OPEN POSITIONS & WHO CAN APPLY (DUAL TOP & BOTTOM LIGHT GRADIENT) */}
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border relative overflow-hidden text-midnight_text"
+        id="open-positions"
+        style={{
+          background: 'linear-gradient(180deg, #c8e0fe 0%, #e8dcff 15%, #ffffff 40%, #ffffff 65%, #e8dcff 85%, #c8e0fe 100%)',
+        }}
+      >
+        {/* Soft Ambient Floating Background Accents */}
+        <div className="pointer-events-none absolute -top-20 -left-20 w-80 h-80 rounded-full bg-[#764DFF]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-[#38bdf8]/10 blur-3xl" />
+
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 space-y-12 relative z-10">
           
           {/* Positions list */}
-          <div className="bg-white dark:bg-dark rounded-3xl p-8 lg:p-12 shadow-card border border-border dark:border-dark_border" data-aos="fade-up">
+          <div className="bg-white dark:bg-dark rounded-3xl p-8 lg:p-12 shadow-md border border-slate-200/80 dark:border-dark_border" data-aos="fade-up">
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-primary">Open Opportunities</span>
-              <h2 className="text-3xl font-extrabold text-midnight_text dark:text-white mt-1 mb-2">
+              <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs mb-2">
+                <Icon icon="mdi:briefcase-outline" className="text-sm" />
+                <span>Open Opportunities</span>
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight mt-1 mb-2">
                 Current Open Positions
               </h2>
-              <p className="text-muted dark:text-white/70 text-sm">
+              <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium">
                 Explore our active job openings and find the role that aligns with your experience and career goals.
               </p>
             </div>
@@ -251,14 +273,14 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                 ? jobOpenings.map((job: any) => job.title || job.name)
                 : openPositions
               ).map((posTitle: string, i: number) => (
-                <div key={i} className="p-4 rounded-2xl bg-grey dark:bg-darklight border border-border dark:border-dark_border/60 flex items-center justify-between gap-3">
+                <div key={i} className="p-4 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border/60 flex items-center justify-between gap-3 shadow-2xs hover:shadow-md hover:border-[#764DFF]/40 transition-all group">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 font-bold">
+                    <div className="w-8 h-8 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center flex-shrink-0 font-bold group-hover:bg-[#764DFF] group-hover:text-white transition-colors">
                       <Icon icon="mdi:briefcase-check" />
                     </div>
-                    <span className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white">{posTitle}</span>
+                    <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">{posTitle}</span>
                   </div>
-                  <a href="#apply-now" className="text-xs text-primary font-extrabold hover:underline">
+                  <a href="#apply-now" className="text-xs text-[#764DFF] font-extrabold hover:underline group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
                     Apply &rarr;
                   </a>
                 </div>
@@ -269,14 +291,14 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
           {/* Who Can Apply & Recruitment Process Side-by-Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch" data-aos="fade-up">
             {/* Left: Who Can Apply? */}
-            <div className="bg-white dark:bg-dark rounded-3xl p-6 sm:p-8 shadow-card border border-border dark:border-dark_border flex flex-col justify-between">
+            <div className="bg-white dark:bg-dark rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200/80 dark:border-dark_border flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-dark_border">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shrink-0">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200/60 dark:border-dark_border">
+                  <div className="w-10 h-10 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xl font-bold shrink-0">
                     <Icon icon="mdi:account-check-outline" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary block">Eligibility Criteria</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#764DFF] block">Eligibility Criteria</span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
                       Who Can Apply?
                     </h2>
@@ -292,9 +314,9 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                   ].map((criteria, i) => (
                     <div
                       key={i}
-                      className="p-3.5 px-4 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-center gap-3.5 shadow-2xs"
+                      className="p-3.5 px-4 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-center gap-3.5 shadow-2xs hover:border-[#764DFF]/30 transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-base font-bold shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-base font-bold shrink-0">
                         <Icon icon={criteria.icon} />
                       </div>
                       <div>
@@ -312,14 +334,14 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
             </div>
 
             {/* Right: Recruitment Process */}
-            <div className="bg-white dark:bg-dark rounded-3xl p-6 sm:p-8 shadow-card border border-border dark:border-dark_border flex flex-col justify-between">
+            <div className="bg-white dark:bg-dark rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200/80 dark:border-dark_border flex flex-col justify-between">
               <div>
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-dark_border">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shrink-0">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200/60 dark:border-dark_border">
+                  <div className="w-10 h-10 rounded-xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xl font-bold shrink-0">
                     <Icon icon="mdi:timeline-text-outline" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary block">Hiring Workflow</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#BD69F2] block">Hiring Workflow</span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
                       Recruitment Process
                     </h2>
@@ -337,9 +359,9 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                   ].map((step, i) => (
                     <div
                       key={i}
-                      className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-start gap-3 shadow-2xs min-h-[72px]"
+                      className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-start gap-3 shadow-2xs min-h-[72px] hover:border-[#BD69F2]/30 transition-colors"
                     >
-                      <span className="w-6 h-6 rounded-lg bg-primary/10 text-primary text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-6 h-6 rounded-lg bg-[#764DFF]/10 text-[#764DFF] text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
                         {step.step}
                       </span>
                       <div>
@@ -359,34 +381,44 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
         </div>
       </section>
 
-      {/* 5. APPLY NOW - CAREER APPLICATION FORM */}
-      <section className="section-py bg-grey dark:bg-darklight" id="apply-now">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          <div className="max-w-3xl mx-auto bg-white dark:bg-dark rounded-3xl p-8 sm:p-10 shadow-2xl border border-border dark:border-dark_border" data-aos="fade-up">
+      {/* 5. APPLY NOW - CAREER APPLICATION FORM (DARK GRADIENT) */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        id="apply-now"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
+          <div className="max-w-3xl mx-auto bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-8 sm:p-10 shadow-2xl border border-white/20 text-white" data-aos="fade-up">
             <div className="text-center mb-8">
-              <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
+              <span className="bg-white/15 border border-white/25 text-cyan-300 text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-3 shadow-xs">
                 Apply Now
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white mb-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">
                 Ready to Join QIMD?
               </h2>
-              <p className="text-xs sm:text-sm text-muted dark:text-white/70">
+              <p className="text-xs sm:text-sm text-slate-200 font-medium max-w-lg mx-auto leading-relaxed">
                 Fill out the form below, and our HR team will review your application. If your profile matches our requirements, we&apos;ll get in touch with you.
               </p>
             </div>
 
             {submitSuccess ? (
-              <div className="p-8 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl text-center space-y-3">
-                <Icon icon="mdi:check-circle" className="text-emerald-600 text-5xl mx-auto" />
-                <h3 className="text-xl font-bold text-emerald-900 dark:text-emerald-100">Application Submitted Successfully!</h3>
-                <p className="text-xs text-emerald-700 dark:text-emerald-300">
+              <div className="p-8 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl text-center space-y-3 backdrop-blur-md">
+                <Icon icon="mdi:check-circle" className="text-emerald-400 text-5xl mx-auto" />
+                <h3 className="text-xl font-bold text-white">Application Submitted Successfully!</h3>
+                <p className="text-xs text-emerald-200">
                   Thank you for applying to QIMD. Our HR recruitment team has received your details and will get in touch shortly.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5 text-xs sm:text-sm">
                 <div>
-                  <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                  <label className="block font-bold text-white mb-1.5">
                     Full Name *
                   </label>
                   <input
@@ -395,13 +427,13 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                     placeholder="Enter your full name"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-xl p-3 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium"
+                    className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-3 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium shadow-xs"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                    <label className="block font-bold text-white mb-1.5">
                       Mobile Number *
                     </label>
                     <PhoneInput
@@ -412,7 +444,7 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                     />
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                    <label className="block font-bold text-white mb-1.5">
                       Email Address *
                     </label>
                     <input
@@ -421,54 +453,54 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                       placeholder="Enter email address"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-xl p-3 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-3 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium shadow-xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                    <label className="block font-bold text-white mb-1.5">
                       Position Applying For *
                     </label>
                     <select
                       value={formData.position}
                       onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                      className="w-full bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-xl p-3 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium shadow-xs cursor-pointer"
                     >
                       {(jobOpenings && jobOpenings.length > 0
                         ? jobOpenings.map((job: any) => job.title || job.name)
                         : openPositions
                       ).map((posTitle: string) => (
-                        <option key={posTitle} value={posTitle}>
+                        <option key={posTitle} value={posTitle} className="bg-white text-slate-900 font-medium">
                           {posTitle}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                    <label className="block font-bold text-white mb-1.5">
                       Years of Experience *
                     </label>
                     <select
                       value={formData.experience}
                       onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                      className="w-full bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-xl p-3 text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium shadow-xs cursor-pointer"
                     >
-                      <option value="Fresher">Fresher (0 Years)</option>
-                      <option value="1-3 Years">1 - 3 Years</option>
-                      <option value="3-5 Years">3 - 5 Years</option>
-                      <option value="5+ Years">5+ Years</option>
+                      <option value="Fresher" className="bg-white text-slate-900 font-medium">Fresher (0 Years)</option>
+                      <option value="1-3 Years" className="bg-white text-slate-900 font-medium">1 - 3 Years</option>
+                      <option value="3-5 Years" className="bg-white text-slate-900 font-medium">3 - 5 Years</option>
+                      <option value="5+ Years" className="bg-white text-slate-900 font-medium">5+ Years</option>
                     </select>
                   </div>
                 </div>
 
                 {/* Upload Resume */}
                 <div>
-                  <label className="block font-bold text-midnight_text dark:text-white mb-1.5">
+                  <label className="block font-bold text-white mb-1.5">
                     Upload Resume * (PDF / DOC / DOCX)
                   </label>
-                  <div className="border-2 border-dashed border-border dark:border-dark_border bg-grey dark:bg-darklight p-4 rounded-xl text-center">
+                  <div className="border-2 border-dashed border-white/40 hover:border-cyan-300 bg-white/10 hover:bg-white/15 p-5 rounded-2xl text-center transition-all cursor-pointer">
                     <input
                       type="file"
                       accept=".pdf,.doc,.docx"
@@ -476,26 +508,26 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                       className="hidden"
                       onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
                     />
-                    <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center gap-1">
-                      <Icon icon="mdi:cloud-upload" className="text-primary text-3xl" />
-                      <span className="font-bold text-xs text-primary">
+                    <label htmlFor="resume-upload" className="cursor-pointer flex flex-col items-center gap-1.5">
+                      <Icon icon="mdi:cloud-upload" className="text-cyan-300 text-3xl" />
+                      <span className="font-extrabold text-xs text-white hover:text-cyan-300 transition-colors">
                         {resumeFile ? resumeFile.name : "Click to browse & upload resume file"}
                       </span>
-                      <span className="text-[11px] text-muted dark:text-white/60">Max file size 10MB</span>
+                      <span className="text-[11px] text-slate-200">Max file size 10MB</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Checkbox agreement */}
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex items-center gap-2.5 pt-1">
                   <input
                     type="checkbox"
                     id="agreeContact"
                     checked={formData.agreeContact}
                     onChange={(e) => setFormData({ ...formData, agreeContact: e.target.checked })}
-                    className="w-4 h-4 text-primary rounded"
+                    className="w-4 h-4 text-primary rounded cursor-pointer"
                   />
-                  <label htmlFor="agreeContact" className="text-xs text-midnight_text dark:text-white font-medium cursor-pointer">
+                  <label htmlFor="agreeContact" className="text-xs text-slate-200 font-medium cursor-pointer">
                     I agree to be contacted by the QIMD recruitment team regarding my application.
                   </label>
                 </div>
@@ -504,7 +536,7 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-darkprimary text-white font-extrabold py-4 rounded-xl text-sm transition-all shadow-md hover:-translate-y-0.5 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-primary via-[#8B5CF6] to-[#BD69F2] hover:opacity-95 text-white font-extrabold py-4 rounded-xl text-sm transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
                 >
                   {isSubmitting ? "Submitting Application..." : "Submit Application"}
                 </button>

@@ -60,40 +60,45 @@ export default function GalleryPage() {
 
   return (
     <>
-      <section className="section-py bg-grey dark:bg-dark min-h-[60vh]">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
+      <section
+        className="pt-20 sm:pt-28 pb-16 lg:pb-24 border-b border-slate-200/80 dark:border-dark_border relative overflow-hidden min-h-[60vh] text-midnight_text"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
+        }}
+      >
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="badge-primary mb-3">
-              <Icon icon="mdi:image-multiple" />
-              Campus &amp; Experiential Learning
-            </div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-midnight_text dark:text-white mb-2">
+          <div className="text-center mb-12" data-aos="fade-up">
+            <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs mb-3">
+              <Icon icon="mdi:image-multiple-outline" className="text-sm" />
+              <span>Campus &amp; Experiential Learning</span>
+            </span>
+            <h1 className="text-3xl lg:text-5xl font-extrabold text-[#111827] dark:text-white tracking-tight mb-2">
               Life at QIMD
             </h1>
-            <p className="text-primary font-extrabold text-base mb-4">
+            <p className="text-primary font-extrabold text-base sm:text-lg mb-4">
               Where Learning Meets Real-World Experience
             </p>
-            <div className="text-muted dark:text-white/70 text-xs sm:text-sm max-w-3xl mx-auto space-y-2 leading-relaxed font-medium">
+            <div className="text-slate-600 dark:text-white/70 text-xs sm:text-sm max-w-3xl mx-auto space-y-2 leading-relaxed font-medium">
               <p>
                 At QIMD (Quickupp Institute of Marketing &amp; Design), learning goes beyond the classroom. Every day is filled with interactive sessions, practical workshops, live client projects, brainstorming activities, and collaborative learning that prepare students for successful careers.
               </p>
-              <p className="text-slate-800 dark:text-white font-bold text-xs sm:text-sm">
+              <p className="text-slate-900 dark:text-white font-bold text-xs sm:text-sm">
                 Our campus is designed to create an engaging environment where students learn, practice, innovate, and grow together.
               </p>
             </div>
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-2.5 mb-10">
+          <div className="flex flex-wrap justify-center gap-2.5 mb-10" data-aos="fade-up">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border-2 transition-all duration-200 cursor-pointer ${
+                className={`px-5 py-2 text-xs sm:text-sm font-semibold rounded-full border transition-all duration-200 cursor-pointer shadow-xs ${
                   cat === activeCategory
                     ? 'bg-primary text-white border-primary shadow-md'
-                    : 'bg-white dark:bg-darklight text-muted dark:text-white/60 border-border dark:border-dark_border hover:border-primary hover:text-primary'
+                    : 'bg-white dark:bg-darklight text-slate-700 dark:text-white/70 border-slate-200/80 dark:border-dark_border hover:border-primary hover:text-primary hover:bg-slate-50'
                 }`}
               >
                 {cat}

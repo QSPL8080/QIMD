@@ -130,18 +130,28 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials 
   const itemsToDisplay = videoOnlyList.length > 0 ? videoOnlyList.slice(0, 3) : rawList.slice(0, 3)
 
   return (
-    <section className="section-py bg-grey dark:bg-darklight" id="testimonials">
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
+    <section
+      className="py-16 lg:py-24 relative overflow-hidden text-white border-y border-white/10"
+      id="testimonials"
+      style={{
+        background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+      }}
+    >
+      {/* Subtle Ambient Glow */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none -z-0" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#0284c7]/20 rounded-full blur-3xl pointer-events-none -z-0" />
+
+      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
         {/* Header */}
         <div className="text-center mb-10" data-aos="fade-up">
-          <div className="badge-primary mb-3">
-            <Icon icon="mdi:format-quote-open" />
-            Student Reviews Preview
+          <div className="inline-flex items-center gap-2 bg-white/15 text-white border border-white/25 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md mb-3 shadow-xs">
+            <Icon icon="mdi:format-quote-open" className="text-base text-cyan-300" />
+            <span>Student Reviews Preview</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-midnight_text dark:text-white mb-3">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-3 tracking-tight">
             What Our Students Say About QIMD
           </h2>
-          <p className="text-muted dark:text-white/60 text-sm max-w-xl mx-auto">
+          <p className="text-slate-200 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
             Hear directly from our students about their learning experience, practical training, and career growth.
           </p>
         </div>
@@ -161,11 +171,11 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials 
         {/* Premium CTA to view all reviews */}
         <div className="text-center" data-aos="fade-up">
           <Link
-            href="/placements#testimonials"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-darkprimary text-white font-bold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            href="/reviews-testimonials"
+            className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-[#180e29] font-extrabold px-8 py-3.5 rounded-full shadow-xl hover:scale-105 transition-all duration-300"
           >
             <span>View All Reviews</span>
-            <Icon icon="mdi:arrow-right" className="text-lg" />
+            <Icon icon="mdi:arrow-right" className="text-lg text-[#764DFF]" />
           </Link>
         </div>
       </div>

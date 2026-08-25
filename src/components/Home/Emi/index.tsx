@@ -8,18 +8,23 @@ const EmiSection: React.FC<{ emiPartners?: any[] }> = ({ emiPartners }) => {
   const loopPartners = [...partnersList, ...partnersList, ...partnersList, ...partnersList];
 
   return (
-    <section className="section-py bg-gradient-to-r from-primary/5 to-secondary/5 dark:bg-dark overflow-hidden">
+    <section
+      className="py-16 lg:py-20 overflow-hidden relative border-y border-white/10 text-white"
+      style={{
+        background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+      }}
+    >
       <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
         {/* Section Header */}
         <div className="text-center mb-10" data-aos="fade-up">
-          <div className="badge-secondary mb-3">
-            <Icon icon="mdi:credit-card" />
-            Flexible Payments
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/15 text-white border border-white/25 text-xs font-bold mb-3 backdrop-blur-md shadow-xs">
+            <Icon icon="mdi:credit-card" className="text-base text-cyan-300" />
+            <span>Flexible Payments</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-midnight_text dark:text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-3 tracking-tight">
             Start Your Learning Journey with Flexible Payments
           </h2>
-          <p suppressHydrationWarning className="text-muted dark:text-white/60 text-base max-w-2xl mx-auto">
+          <p suppressHydrationWarning className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto font-medium leading-relaxed">
             Choose your course and start your learning journey with easy EMI options.
           </p>
         </div>

@@ -119,16 +119,27 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
         </div>
       </section>
 
-      {/* 2. EXPLORE OUR LATEST ARTICLES & CATEGORY FILTERS */}
-      <section id="articles" className="section-py bg-white dark:bg-dark">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
+      {/* 2. EXPLORE OUR LATEST ARTICLES & CATEGORY FILTERS - DARK GRADIENT */}
+      <section
+        id="articles"
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
           
           {/* Section Sub-Header */}
           <div className="text-center max-w-3xl mx-auto mb-10" data-aos="fade-up">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white mb-3">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300 mb-2 inline-block">Curated Articles</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
               Explore Our Latest Articles
             </h2>
-            <p className="text-muted dark:text-white/70 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
               Discover expert-written content covering the latest technologies, marketing strategies, creative trends, AI innovations, and career opportunities. Whether you&apos;re beginning your journey or looking to advance your skills, our articles provide practical insights that you can apply in real-world scenarios.
             </p>
           </div>
@@ -142,13 +153,13 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
                 placeholder="Search articles by topic or keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-grey dark:bg-darklight border border-border dark:border-dark_border rounded-2xl text-xs sm:text-sm text-midnight_text dark:text-white focus:outline-none focus:border-primary transition-all font-medium"
+                className="w-full pl-11 pr-10 py-3.5 bg-white/10 dark:bg-white/10 border border-white/20 rounded-2xl text-xs sm:text-sm text-white placeholder-slate-300 focus:outline-none focus:border-cyan-300 transition-all font-medium backdrop-blur-md shadow-inner"
               />
-              <Icon icon="mdi:search" className="text-muted text-lg absolute left-3.5 top-3.5" />
+              <Icon icon="mdi:search" className="text-cyan-300 text-xl absolute left-3.5 top-3.5" />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3.5 top-3.5 text-muted hover:text-midnight_text"
+                  className="absolute right-3.5 top-3.5 text-slate-300 hover:text-white"
                 >
                   <Icon icon="mdi:close" className="text-base" />
                 </button>
@@ -163,8 +174,8 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                     selectedCategory === cat
-                      ? "bg-primary text-white shadow-md scale-105"
-                      : "bg-grey dark:bg-darklight text-midnight_text dark:text-white/80 border border-border dark:border-dark_border hover:bg-primary/10 hover:text-primary"
+                      ? "bg-white text-[#180e29] shadow-lg scale-105 border border-white"
+                      : "bg-white/10 text-white/90 border border-white/20 hover:border-cyan-300 hover:bg-white/20 backdrop-blur-md"
                   }`}
                 >
                   {cat}
@@ -175,15 +186,15 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
 
           {/* Articles Grid */}
           {filteredBlogs.length === 0 ? (
-            <div className="text-center py-12 bg-grey dark:bg-darklight rounded-3xl border border-border dark:border-dark_border">
-              <Icon icon="mdi:file-search-outline" className="text-primary text-5xl mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-midnight_text dark:text-white mb-1">No Articles Found</h3>
-              <p className="text-xs text-muted dark:text-white/60 mb-4">
+            <div className="text-center py-12 bg-white/10 dark:bg-white/10 rounded-3xl border border-white/20 backdrop-blur-md max-w-lg mx-auto">
+              <Icon icon="mdi:file-search-outline" className="text-cyan-300 text-5xl mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-white mb-1">No Articles Found</h3>
+              <p className="text-xs text-slate-200 mb-4">
                 No blog posts match your selected category or search keyword.
               </p>
               <button
                 onClick={() => { setSelectedCategory("All"); setSearchQuery(""); }}
-                className="bg-primary text-white text-xs font-bold px-4 py-2 rounded-xl"
+                className="bg-white text-[#180e29] text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors shadow-md"
               >
                 Reset Filters
               </button>

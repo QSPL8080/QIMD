@@ -79,39 +79,49 @@ const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ 
   ]
 
   return (
-    <section ref={sectionRef} className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border overflow-hidden">
-      <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+    <section
+      ref={sectionRef}
+      className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+      style={{
+        background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+      }}
+    >
+      {/* Subtle Ambient Decorative Glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+      <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
           
           {/* Left Column: Our Placement Philosophy */}
           <div
-            className={`bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full hover:shadow-lg transition-all duration-700 ${
+            className={`bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl space-y-5 flex flex-col justify-between h-full hover:border-cyan-300 hover:shadow-2xl transition-all duration-700 text-white ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <div className="space-y-4">
-              <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
-                <div className="w-10 h-10 rounded-2xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xl shrink-0">
+              <div className="flex items-center gap-3 pb-3 border-b border-white/15">
+                <div className="w-10 h-10 rounded-2xl bg-white/15 text-cyan-300 flex items-center justify-center text-xl shrink-0 border border-white/25">
                   <Icon icon="mdi:lightbulb-on-outline" />
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                     Our Placement Philosophy
                   </h2>
-                  <span className="text-[10px] font-bold text-[#764DFF] uppercase tracking-wider">Skill-First Approach</span>
+                  <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Skill-First Approach</span>
                 </div>
               </div>
 
-              <p className="text-midnight_text dark:text-white font-bold text-xs sm:text-sm">
+              <p className="text-white font-bold text-xs sm:text-sm">
                 We believe that practical skills create confident professionals.
               </p>
-              <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
+              <p className="text-slate-200 text-xs sm:text-sm leading-relaxed font-normal">
                 That&apos;s why our placement process focuses on developing not only technical expertise but also the communication, confidence, and professional readiness employers look for.
               </p>
             </div>
 
-            <div className="pt-3 border-t border-slate-200/60 dark:border-dark_border/60">
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#764DFF] mb-3">Our Students Graduate With:</p>
+            <div className="pt-3 border-t border-white/15">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300 mb-3">Our Students Graduate With:</p>
               <div className="grid grid-cols-2 gap-2.5">
                 {graduatePoints.map((item, idx) => (
                   <div
@@ -119,16 +129,16 @@ const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ 
                     style={{
                       transitionDelay: `${idx * 110 + 150}ms`,
                     }}
-                    className={`bg-white dark:bg-dark p-2.5 rounded-xl border border-slate-200/80 dark:border-dark_border text-[11px] font-bold text-slate-800 dark:text-white/90 flex items-center gap-2 shadow-2xs hover:border-[#764DFF]/50 hover:shadow-md hover:scale-[1.03] cursor-default group transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
+                    className={`bg-white/10 p-2.5 rounded-xl border border-white/15 text-[11px] font-bold text-white flex items-center gap-2 shadow-xs hover:border-cyan-300 hover:bg-white/20 hover:scale-[1.03] cursor-default group transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
                       inView
                         ? 'opacity-100 scale-100 translate-y-0 blur-none'
                         : 'opacity-0 scale-40 translate-y-6 blur-xs pointer-events-none'
                     }`}
                   >
-                    <div className="w-5 h-5 rounded-md bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#764DFF] group-hover:text-white group-hover:scale-110 transition-all duration-200">
+                    <div className="w-5 h-5 rounded-md bg-white/15 text-cyan-300 flex items-center justify-center text-xs shrink-0 group-hover:bg-white group-hover:text-[#180e29] group-hover:scale-110 transition-all duration-200">
                       <Icon icon="mdi:check-bold" />
                     </div>
-                    <span>{item}</span>
+                    <span className="group-hover:text-cyan-300 transition-colors">{item}</span>
                   </div>
                 ))}
               </div>
@@ -137,24 +147,24 @@ const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ 
 
           {/* Right Column: Hiring Opportunities Across Industries */}
           <div
-            className={`bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full hover:shadow-lg transition-all duration-700 delay-100 ${
+            className={`bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl space-y-5 flex flex-col justify-between h-full hover:border-cyan-300 hover:shadow-2xl transition-all duration-700 delay-100 text-white ${
               inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <div className="space-y-4">
-              <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
-                <div className="w-10 h-10 rounded-2xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xl shrink-0">
+              <div className="flex items-center gap-3 pb-3 border-b border-white/15">
+                <div className="w-10 h-10 rounded-2xl bg-white/15 text-cyan-300 flex items-center justify-center text-xl shrink-0 border border-white/25">
                   <Icon icon="mdi:domain" />
                 </div>
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
                     Hiring Opportunities Across Industries
                   </h2>
-                  <span className="text-[10px] font-bold text-[#BD69F2] uppercase tracking-wider">Diverse Career Reach</span>
+                  <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Diverse Career Reach</span>
                 </div>
               </div>
 
-              <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
+              <p className="text-slate-200 text-xs sm:text-sm leading-relaxed font-normal">
                 Our students are prepared for high-demand opportunities across diverse companies, agencies, and growing startups:
               </p>
             </div>
@@ -166,16 +176,16 @@ const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ 
                   style={{
                     transitionDelay: `${i * 80 + 200}ms`,
                   }}
-                  className={`bg-white dark:bg-dark p-3 rounded-2xl border border-slate-200/80 dark:border-dark_border text-xs font-bold text-slate-800 dark:text-white/90 flex items-center gap-2.5 shadow-2xs hover:border-[#BD69F2]/50 hover:shadow-md hover:scale-[1.03] group cursor-default transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
+                  className={`bg-white/10 p-3 rounded-2xl border border-white/15 text-xs font-bold text-white flex items-center gap-2.5 shadow-xs hover:border-cyan-300 hover:bg-white/20 hover:scale-[1.03] group cursor-default transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
                     inView
                       ? 'opacity-100 scale-100 translate-y-0 blur-none'
                       : 'opacity-0 scale-40 translate-y-6 blur-xs pointer-events-none'
                   }`}
                 >
-                  <div className="w-7 h-7 rounded-xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#BD69F2] group-hover:text-white group-hover:rotate-6 transition-all duration-200">
+                  <div className="w-7 h-7 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-xs shrink-0 border border-white/20 group-hover:bg-white group-hover:text-[#180e29] group-hover:rotate-6 transition-all duration-200">
                     <Icon icon="mdi:briefcase-outline" />
                   </div>
-                  <span className="leading-tight">{ind}</span>
+                  <span className="leading-tight group-hover:text-cyan-300 transition-colors">{ind}</span>
                 </div>
               ))}
             </div>
@@ -459,16 +469,25 @@ export default function PlacementsPage() {
         </div>
       </section>
 
-      {/* 4. JOB ROLES OUR STUDENTS PREPARE FOR (DYNAMIC & ATTRACTIVE STAGGERED POINTS) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-12">
+      {/* 4. JOB ROLES OUR STUDENTS PREPARE FOR (DARK GRADIENT & DYNAMIC STAGGERED POINTS) */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-12 relative z-10">
           
           <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Career Paths</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">Career Paths</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Job Roles Our Students Prepare For
             </h2>
-            <p className="text-muted dark:text-white/70 text-xs sm:text-sm font-medium">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium">
               Targeted role specializations engineered for fast-track career entry across marketing, design, and media.
             </p>
           </div>
@@ -479,19 +498,19 @@ export default function PlacementsPage() {
                 key={idx}
                 data-aos="fade-up"
                 data-aos-delay={idx * 120}
-                className="bg-slate-50/90 dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border space-y-6 shadow-xs hover:shadow-xl hover:border-[#764DFF]/40 transition-all flex flex-col justify-between group"
+                className="bg-white/10 dark:bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/20 space-y-6 shadow-2xl hover:border-cyan-300 transition-all flex flex-col justify-between group text-white"
               >
                 <div className="space-y-6">
                   {/* Category Header */}
-                  <div className="flex items-center gap-3.5 pb-4 border-b border-slate-200/80 dark:border-dark_border">
-                    <div className="w-12 h-12 rounded-2xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-2xl group-hover:bg-[#764DFF] group-hover:text-white transition-colors duration-300 shrink-0">
+                  <div className="flex items-center gap-3.5 pb-4 border-b border-white/15">
+                    <div className="w-12 h-12 rounded-2xl bg-white/15 text-cyan-300 flex items-center justify-center text-2xl border border-white/25 group-hover:bg-white group-hover:text-[#180e29] transition-colors duration-300 shrink-0">
                       <Icon icon={cat.icon} />
                     </div>
                     <div>
-                      <h3 className="text-lg sm:text-xl font-extrabold text-midnight_text dark:text-white leading-tight">
+                      <h3 className="text-lg sm:text-xl font-extrabold text-white leading-tight">
                         {cat.category}
                       </h3>
-                      <span className="text-[11px] font-extrabold text-[#764DFF] uppercase tracking-wider">
+                      <span className="text-[11px] font-extrabold text-cyan-300 uppercase tracking-wider">
                         {cat.roles.length} Specialized Roles
                       </span>
                     </div>
@@ -505,12 +524,12 @@ export default function PlacementsPage() {
                         data-aos="zoom-in"
                         data-aos-delay={rIdx * 50 + 50}
                         data-aos-duration="400"
-                        className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-dark border border-slate-200/60 dark:border-dark_border/60 hover:border-[#764DFF]/50 hover:bg-[#764DFF]/5 transition-all duration-200 shadow-2xs group/role"
+                        className="flex items-center gap-3 p-3 rounded-2xl bg-white/10 border border-white/15 hover:border-cyan-300 hover:bg-white/20 transition-all duration-200 shadow-xs group/role"
                       >
-                        <div className="w-7 h-7 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover/role:bg-[#764DFF] group-hover/role:text-white transition-colors">
+                        <div className="w-7 h-7 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-xs shrink-0 group-hover/role:bg-white group-hover/role:text-[#180e29] transition-colors">
                           <Icon icon="mdi:star-four-points" />
                         </div>
-                        <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white/90 leading-tight">
+                        <span className="text-xs sm:text-sm font-bold text-white leading-tight group-hover/role:text-cyan-300 transition-colors">
                           {role}
                         </span>
                       </div>
@@ -518,7 +537,7 @@ export default function PlacementsPage() {
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200/60 dark:border-dark_border/60 flex items-center justify-between text-xs font-bold text-[#764DFF]">
+                <div className="pt-4 border-t border-white/15 flex items-center justify-between text-xs font-bold text-cyan-300">
                   <span>Industry Ready Trainee</span>
                   <Icon icon="mdi:arrow-right" className="text-base group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -596,15 +615,21 @@ export default function PlacementsPage() {
         </div>
       </section>
 
-      {/* 6. STUDENT PLACEMENT GALLERY (STUDENT PLACED CARDS SAME AS EVERYWHERE) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border" id="success-stories">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
+      {/* 6. STUDENT PLACEMENT GALLERY (DARK GRADIENT) */}
+      <section
+        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
+        id="success-stories"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10 relative z-10">
           <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Placement Gallery</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">Placement Gallery</span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Student Placement Gallery
             </h2>
-            <p className="text-muted dark:text-white/70 text-xs sm:text-sm font-medium">
+            <p className="text-slate-200 text-xs sm:text-sm font-medium">
               Celebrate the achievements of our students who have successfully launched their careers.
             </p>
           </div>

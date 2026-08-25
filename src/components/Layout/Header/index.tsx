@@ -65,7 +65,12 @@ const Header: React.FC = () => {
   return (
     <>
       {/* ROW 1 — TOP BAR */}
-      <div className="bg-primary dark:bg-primary/95 py-2 hidden lg:block border-b border-white/10">
+      <div
+        className="py-2 hidden lg:block border-b border-white/10 text-white"
+        style={{
+          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
+        }}
+      >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 flex items-center justify-between">
           {/* Contact Phones & Emails */}
           <div className="flex items-center gap-6 text-white font-medium text-sm">
@@ -177,9 +182,12 @@ const Header: React.FC = () => {
 
       {/* ROW 2 — MAIN NAVIGATION */}
       <header
-        className={`sticky top-0 z-50 w-full transition-all duration-300 bg-white dark:bg-dark ${
-          sticky ? 'shadow-md dark:shadow-darkmd' : 'shadow-sm'
+        className={`sticky top-0 z-50 w-full transition-all duration-300 border-b border-slate-200/60 dark:border-dark_border ${
+          sticky ? 'shadow-md backdrop-blur-md' : 'shadow-xs'
         }`}
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f4eeff 85%, #e8f2fe 100%)',
+        }}
       >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
           <div className="flex items-center justify-between py-2 sm:py-2.5 lg:py-3">
