@@ -1,19 +1,23 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
   const [submenuOpen, setSubmenuOpen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const path = usePathname();
 
   const hrefTarget = item?.href || item?.url || '/';
 
-  const isActive =
-    path === hrefTarget ||
-    (hrefTarget !== '/' && path.startsWith(hrefTarget)) ||
-    item.submenu?.some((sub: any) => path === (sub.href || sub.url) || path.startsWith(sub.href || sub.url));
+  useEffect(() => {
+    const active =
+      path === hrefTarget ||
+      (hrefTarget !== '/' && path.startsWith(hrefTarget)) ||
+      item.submenu?.some((sub: any) => path === (sub.href || sub.url) || path.startsWith(sub.href || sub.url));
+    setIsActive(!!active);
+  }, [path, hrefTarget, item.submenu]);
 
   return (
     <div

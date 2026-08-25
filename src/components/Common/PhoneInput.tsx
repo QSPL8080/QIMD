@@ -148,6 +148,12 @@ export default function PhoneInput({
       )
     : COUNTRY_CODES
 
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const baseInput = `bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium`
 
   return (
@@ -168,10 +174,14 @@ export default function PhoneInput({
             title={`${selectedCountry.name} (${selectedCountry.dial})`}
             aria-label="Select Country"
           >
-            <Icon
-              icon={`circle-flags:${selectedCountry.code.toLowerCase()}`}
-              className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
-            />
+            {mounted ? (
+              <Icon
+                icon={`circle-flags:${selectedCountry.code.toLowerCase()}`}
+                className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
+              />
+            ) : (
+              <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 inline-block" />
+            )}
             <span className="text-slate-800 dark:text-white font-bold" suppressHydrationWarning>{selectedCountry.dial}</span>
             <Icon icon="mdi:chevron-down" className={`text-slate-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
           </button>

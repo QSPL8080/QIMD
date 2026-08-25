@@ -60,6 +60,59 @@ function CounterItem({ stat }: { stat: { value: string; label: string } }) {
   );
 }
 
+function StaggeredPopCard({ item, index }: { item: { title: string; icon: string }; index: number }) {
+  const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            setIsVisible(true);
+          }, index * 90);
+        } else {
+          setIsVisible(false);
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [index]);
+
+  return (
+    <div
+      ref={cardRef}
+      suppressHydrationWarning
+      style={{
+        transitionDuration: '500ms',
+        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      }}
+      className={`flex items-center gap-3 bg-grey/70 dark:bg-dark/70 hover:bg-white dark:hover:bg-dark p-3.5 rounded-2xl border border-border/60 dark:border-dark_border/60 hover:border-primary/40 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md transition-all group ${
+        mounted && isVisible
+          ? 'opacity-100 translate-y-0 scale-100'
+          : 'opacity-0 translate-y-8 scale-75'
+      }`}
+    >
+      <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-primary/25 flex items-center justify-center text-primary dark:text-white shrink-0 shadow-2xs border border-primary/20 group-hover:scale-110 transition-transform">
+        <Icon icon={item.icon} className="text-base text-primary dark:text-white" />
+      </div>
+
+      <span className="text-xs font-bold text-midnight_text dark:text-white leading-snug">
+        {item.title}
+      </span>
+    </div>
+  );
+}
+
 export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: any[] }) {
   const { phone } = useWebsiteSettings();
   const contactPhone = phone || "+91 80878 97288";
@@ -596,25 +649,14 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
             </p>
           </div>
 
-          <div className="bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-border/80 dark:border-dark_border shadow-xs space-y-6" data-aos="fade-up">
+          <div className="bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-border/80 dark:border-dark_border shadow-xs space-y-6">
             <h3 className="text-lg sm:text-xl font-extrabold text-midnight_text dark:text-white text-center">
               Why Students Choose QIMD
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {differPoints.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-3 bg-grey/70 dark:bg-dark/70 hover:bg-white dark:hover:bg-dark p-3.5 rounded-2xl border border-border/60 dark:border-dark_border/60 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-primary/25 flex items-center justify-center text-primary dark:text-white shrink-0 shadow-2xs border border-primary/20">
-                    <Icon icon={item.icon} className="text-base text-primary dark:text-white" />
-                  </div>
-
-                  <span className="text-xs font-bold text-midnight_text dark:text-white leading-snug">
-                    {item.title}
-                  </span>
-                </div>
+                <StaggeredPopCard key={idx} item={item} index={idx} />
               ))}
             </div>
 
