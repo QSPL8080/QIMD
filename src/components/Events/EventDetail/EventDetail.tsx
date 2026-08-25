@@ -1,5 +1,4 @@
 "use client";
-import Volunteer from "@/components/SharedComponent/Volunteer";
 import EventDetails from "@/components/Events/EventDetail";
 import { useParams } from "next/navigation";
 import { Eventdata } from "@/app/api/data";
@@ -21,7 +20,6 @@ const EventDetail = () => {
         entrants={item?.entrants}
         image={item?.image}
       />
-      <Volunteer />
     </>
   );
 };
