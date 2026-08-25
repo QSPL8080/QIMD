@@ -1,12 +1,11 @@
 'use client'
 import { useEffect, useState } from "react";
-import { useWebsiteSettings } from "@/app/context/WebsiteSettingsContext";
+import { usePathname } from "next/navigation";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
-  const { footer } = useWebsiteSettings();
-
-  const showScrollToTopSetting = footer?.showScrollToTop !== false;
+  const pathname = usePathname();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -17,33 +16,35 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      const scrolled = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      if (scrolled > 150) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility);
+    // Check immediately on mount and on route change
+    toggleVisibility();
 
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => window.removeEventListener("scroll", toggleVisibility);
-  }, []);
-
-  if (!showScrollToTopSetting) return null;
+  }, [pathname]);
 
   return (
-    <div className="fixed bottom-8 right-8 z-999">
-  <div className="flex items-center gap-2.5">
-    {isVisible && (
-      <div
+    <div
+      className={`fixed bottom-[5.25rem] right-6 z-[9999] transition-all duration-300 ${
+        isVisible ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-90 pointer-events-none"
+      }`}
+    >
+      <button
         onClick={scrollToTop}
-        aria-label="scroll to top"
-        className="back-to-top flex h-10 w-10 cursor-pointer items-center justify-center rounded-md bg-primary text-white shadow-md transition duration-300 ease-in-out hover:bg-primary/60"
+        type="button"
+        aria-label="Scroll back to top"
+        className="w-12 h-12 rounded-full bg-[#764DFF] hover:bg-[#5C38D6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-110 cursor-pointer border border-white/30"
       >
-        <span className="mt-[6px] h-3 w-3 rotate-45 border-l border-t border-white"></span>
-      </div>
-    )}
-  </div>
-</div>
+        <Icon icon="mdi:chevron-up" className="text-2xl" />
+      </button>
+    </div>
   );
 }

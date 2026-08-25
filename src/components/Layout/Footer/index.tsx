@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Instagram"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
                     <Icon icon="skill-icons:instagram" className="text-xl" />
                   </Link>
@@ -72,7 +72,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Facebook"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
                     <Icon icon="logos:facebook" className="text-lg" />
                   </Link>
@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD YouTube"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
                     <Icon icon="logos:youtube-icon" className="text-lg" />
                   </Link>
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD LinkedIn"
-                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/10"
+                    className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
                     <Icon icon="logos:linkedin-icon" className="text-lg" />
                   </Link>
@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD Twitter/X"
-                    className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20"
+                    className="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
                     <Icon icon="line-md:twitter-x-alt" className="text-base" />
                   </Link>
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="QIMD WhatsApp"
-                    className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-110 transition-all duration-200 border border-white/15"
+                    className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-md hover:bg-[#22c55e] hover:scale-110 transition-all duration-200 border-0 border-none"
                   >
                     <Icon icon="logos:whatsapp-icon" className="text-xl" />
                   </Link>
@@ -131,7 +131,7 @@ const Footer: React.FC = () => {
                         target={customBtn.url && customBtn.url.startsWith('http') ? '_blank' : '_self'}
                         rel={customBtn.url && customBtn.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                         aria-label={customBtn.name}
-                        className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110"
+                        className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 border-0 border-none"
                       >
                         <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-lg" />
                       </Link>

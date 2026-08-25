@@ -40,11 +40,8 @@ const WhyQimdSection: React.FC = () => {
           {loopFeatures.map((feature, index) => (
             <div
               key={`${feature.title}-${index}`}
-              className="group relative bg-white dark:bg-darklight border border-gray-100 dark:border-gray-800/80 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-md shadow-gray-200/40 dark:shadow-none hover:shadow-xl hover:shadow-primary/15 hover:border-primary/30 transition-all duration-300 w-64 sm:w-72 lg:w-80 flex-shrink-0 flex flex-col justify-between cursor-pointer hover:-translate-y-1"
+              className="group relative bg-white dark:bg-darklight border-[1.5px] border-[#764DFF]/20 dark:border-gray-800 rounded-2xl p-4 sm:p-5 lg:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_15px_35px_rgba(118,77,255,0.14)] hover:border-[#764DFF] dark:hover:border-[#764DFF] transition-all duration-300 w-64 sm:w-72 lg:w-80 flex-shrink-0 flex flex-col justify-between cursor-pointer hover:-translate-y-1"
             >
-              {/* Top gradient highlight on hover */}
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-primary rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
               <div>
                 {/* Header: Icon */}
                 <div className="mb-4">

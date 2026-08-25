@@ -127,7 +127,7 @@ export default async function RootLayout({
         <meta name="msapplication-TileImage" content={faviconUrl} />
       </head>
       <body className={`${plusJakartaSans.className} font-sans antialiased`} suppressHydrationWarning>
-        <NextTopLoader color="#F59E0B" showSpinner={false} />
+        <NextTopLoader color="#6366F1" showSpinner={false} height={2.5} crawl={true} speed={200} shadow="0 0 10px #6366F1,0 0 5px #6366F1" />
         <ThemeProvider
           attribute="class"
           enableSystem={true}

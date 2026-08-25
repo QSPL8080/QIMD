@@ -34,10 +34,17 @@ const CareerCounsellingCTA: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Column */}
             <div className="lg:col-span-7 space-y-5">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#764DFF]/10 text-[#764DFF] text-xs font-bold border border-[#764DFF]/20">
-                <Icon icon="mdi:sparkles" className="text-[#764DFF] text-sm" />
-                <span>India&apos;s #1 AI-Powered Marketing &amp; Design Institute</span>
+              {/* Badge - Highlighted & Radiant */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/15 via-[#764DFF]/15 to-[#BD69F2]/15 border border-primary/30 shadow-xs shadow-indigo-500/10 backdrop-blur-md transition-all duration-300 hover:shadow-md hover:border-primary/50 hover:scale-[1.02]">
+                <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <Icon icon="mdi:star-four-points" className="text-primary text-xs animate-pulse" />
+                </div>
+                <span className="text-xs sm:text-[13px] font-extrabold text-[#111827] dark:text-white tracking-tight">
+                  <span className="bg-gradient-to-r from-primary via-[#764DFF] to-[#BD69F2] bg-clip-text text-transparent font-black">
+                    India&apos;s #1
+                  </span>{" "}
+                  AI-Powered Marketing &amp; Design Institute
+                </span>
               </div>
 
               {/* Headline */}
@@ -53,14 +60,24 @@ const CareerCounsellingCTA: React.FC = () => {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
                 {[
-                  { icon: 'mdi:account-group', label: '10,000+', sub: 'Trained Students' },
-                  { icon: 'mdi:briefcase-check', label: '100%', sub: 'Job Assistance' },
-                  { icon: 'mdi:laptop-mac', label: '100%', sub: 'Live Client Work' },
-                  { icon: 'mdi:refresh-auto', label: '2 Years', sub: 'Repeat Access' },
+                  { icon: 'mdi:account-group-outline', label: '10,000+', sub: 'Trained Students', color: 'text-primary' },
+                  { icon: 'mdi:briefcase-check-outline', label: '100%', sub: 'Job Assistance', color: 'text-[#764DFF]' },
+                  { icon: 'mdi:laptop', label: '100%', sub: 'Live Client Work', color: 'text-[#4999D4]' },
+                  { icon: 'mdi:calendar-sync-outline', label: '2 Years', sub: 'Repeat Access', color: 'text-[#BD69F2]' },
                 ].map((item, i) => (
-                  <div key={i} className="bg-white/70 border border-white/80 rounded-xl p-2.5 text-center shadow-sm">
-                    <p className="text-base sm:text-lg font-bold text-[#764DFF]">{item.label}</p>
-                    <p className="text-[11px] text-[#374151] font-medium">{item.sub}</p>
+                  <div
+                    key={i}
+                    className="group bg-white/85 dark:bg-darklight/80 border-[1.5px] border-white dark:border-dark_border hover:border-primary/40 hover:bg-white dark:hover:bg-darklight rounded-2xl p-3 text-center shadow-xs hover:shadow-md hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-1.5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                      <Icon icon={item.icon} className="text-base" />
+                    </div>
+                    <p className="text-base sm:text-lg font-extrabold text-[#764DFF] group-hover:text-primary transition-colors">
+                      {item.label}
+                    </p>
+                    <p className="text-[11px] text-[#374151] dark:text-white/80 font-bold leading-tight mt-0.5">
+                      {item.sub}
+                    </p>
                   </div>
                 ))}
               </div>

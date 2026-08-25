@@ -162,7 +162,7 @@ export default function WhyQimdContent() {
             {[...whyChoosePoints, ...whyChoosePoints].map((point, i) => (
               <div
                 key={`${point.title}-${i}`}
-                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-white dark:bg-dark rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-dark_border flex flex-col justify-between shrink-0 h-[175px] sm:h-[185px] group hover:border-[#764DFF]/50 transition-all duration-300"
+                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-white dark:bg-dark rounded-2xl p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border-[1.5px] border-[#764DFF]/20 dark:border-dark_border flex flex-col justify-between shrink-0 h-[175px] sm:h-[185px] group hover:border-[#764DFF] hover:shadow-[0_15px_35px_rgba(118,77,255,0.14)] transition-all duration-300"
               >
                 <div>
                   <div className="flex items-center gap-2.5 mb-2">

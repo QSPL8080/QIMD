@@ -26,7 +26,7 @@ const TrainerCard: React.FC<{ trainer: any; index: number }> = ({
 
   return (
     <div
-      className="bg-white dark:bg-darklight rounded-2xl shadow-sm border border-slate-200/80 dark:border-dark_border hover:shadow-md transition-all overflow-hidden flex flex-col h-full"
+      className="bg-white dark:bg-darklight rounded-3xl border-[1.5px] border-[#764DFF]/25 dark:border-dark_border hover:border-[#764DFF] shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_15px_35px_rgba(118,77,255,0.18)] hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
       data-aos="fade-up"
       data-aos-delay={index * 80}
     >

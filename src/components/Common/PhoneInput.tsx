@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { Icon } from '@iconify/react/dist/iconify.js'
 
 export interface CountryCode {
   name: string
   code: string   // ISO 2-letter code
   dial: string   // e.g. "+91"
-  flag: string   // emoji flag
+  flag: string   // emoji flag fallback
   minLen: number // min digits (excluding dial code)
   maxLen: number // max digits (excluding dial code)
 }
@@ -142,64 +143,88 @@ export default function PhoneInput({
     ? COUNTRY_CODES.filter(
         c =>
           c.name.toLowerCase().includes(search.toLowerCase()) ||
-          c.dial.includes(search)
+          c.dial.includes(search) ||
+          c.code.toLowerCase().includes(search.toLowerCase())
       )
     : COUNTRY_CODES
 
   const baseInput = `bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium`
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={`w-full ${className}`} suppressHydrationWarning>
       {label && (
-        <label htmlFor={id} className="block font-bold text-midnight_text dark:text-white mb-1.5 text-xs sm:text-sm">
+        <label htmlFor={id} className="block font-bold text-midnight_text dark:text-white mb-1.5 text-xs sm:text-sm" suppressHydrationWarning>
           {label}
         </label>
       )}
-      <div className="flex items-stretch gap-0 w-full">
+      <div className="flex items-stretch gap-0 w-full relative" suppressHydrationWarning>
         {/* Country code selector */}
-        <div className="relative flex-shrink-0" ref={dropdownRef}>
+        <div className="relative flex-shrink-0" ref={dropdownRef} suppressHydrationWarning>
           <button
             type="button"
             onClick={() => setOpen(!open)}
-            className={`h-full flex items-center gap-1.5 px-2.5 py-2.5 text-xs font-bold border border-r-0 rounded-l-xl rounded-r-none ${baseInput} min-w-[80px] hover:bg-slate-50 dark:hover:bg-darklight transition-colors`}
+            suppressHydrationWarning
+            className={`h-full flex items-center gap-1.5 px-2.5 sm:px-3 py-2.5 text-xs sm:text-sm font-bold border border-r-0 rounded-l-xl rounded-r-none ${baseInput} hover:bg-slate-50 dark:hover:bg-darklight transition-colors cursor-pointer select-none`}
             title={`${selectedCountry.name} (${selectedCountry.dial})`}
+            aria-label="Select Country"
           >
-            <span className="text-base leading-none">{selectedCountry.flag}</span>
-            <span className="text-slate-700 dark:text-white/80 font-bold">{selectedCountry.dial}</span>
-            <span className="text-slate-400 text-[10px]">▼</span>
+            <Icon
+              icon={`circle-flags:${selectedCountry.code.toLowerCase()}`}
+              className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
+            />
+            <span className="text-slate-800 dark:text-white font-bold" suppressHydrationWarning>{selectedCountry.dial}</span>
+            <Icon icon="mdi:chevron-down" className={`text-slate-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
           </button>
+
           {open && (
-            <div className="absolute top-full left-0 z-50 mt-1 w-64 bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl shadow-xl overflow-hidden">
-              <div className="p-2 border-b border-slate-100 dark:border-dark_border">
-                <input
-                  autoFocus
-                  type="text"
-                  placeholder="Search country..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="w-full px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-darklight border border-slate-200 dark:border-dark_border rounded-lg text-midnight_text dark:text-white focus:outline-none focus:border-primary"
-                />
+            <div className="absolute top-full left-0 z-50 mt-1.5 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-dark border border-slate-100 dark:border-dark_border rounded-2xl shadow-lg overflow-hidden">
+              <div className="p-2 border-b border-slate-100 dark:border-dark_border bg-slate-50/50 dark:bg-darklight/40">
+                <div className="relative flex items-center">
+                  <Icon icon="mdi:magnify" className="absolute left-2.5 text-slate-400 text-sm pointer-events-none" />
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Search country or code..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm bg-white dark:bg-dark border border-slate-200/60 dark:border-dark_border rounded-xl text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium shadow-none"
+                  />
+                </div>
               </div>
-              <ul className="max-h-52 overflow-y-auto">
-                {filteredCountries.map(country => (
-                  <li key={country.code + country.dial}>
-                    <button
-                      type="button"
-                      onClick={() => handleCountrySelect(country)}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-slate-50 dark:hover:bg-darklight transition-colors ${
-                        selectedCountry.code === country.code && selectedCountry.dial === country.dial
-                          ? 'bg-primary/10 font-bold text-primary'
-                          : 'text-slate-700 dark:text-white'
-                      }`}
-                    >
-                      <span className="text-base">{country.flag}</span>
-                      <span className="flex-1 truncate">{country.name}</span>
-                      <span className="text-slate-400 font-medium ml-auto">{country.dial}</span>
-                    </button>
-                  </li>
-                ))}
+
+              <ul
+                className="max-h-60 overflow-y-auto no-scrollbar py-1"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {filteredCountries.map(country => {
+                  const isSelected = selectedCountry.code === country.code && selectedCountry.dial === country.dial
+                  return (
+                    <li key={country.code + country.dial}>
+                      <button
+                        type="button"
+                        onClick={() => handleCountrySelect(country)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm text-left hover:bg-slate-50 dark:hover:bg-darklight transition-colors cursor-pointer !border-0 !border-none !shadow-none ${
+                          isSelected
+                            ? 'bg-primary/5 font-bold text-primary'
+                            : 'text-slate-700 dark:text-white'
+                        }`}
+                      >
+                        <Icon
+                          icon={`circle-flags:${country.code.toLowerCase()}`}
+                          className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
+                        />
+                        <span className="flex-1 truncate font-medium">{country.name}</span>
+                        <span className={`text-xs font-semibold ${isSelected ? 'text-primary' : 'text-slate-400'}`}>
+                          {country.dial}
+                        </span>
+                      </button>
+                    </li>
+                  )
+                })}
                 {filteredCountries.length === 0 && (
-                  <li className="px-3 py-3 text-xs text-slate-400 text-center">No countries found</li>
+                  <li className="px-4 py-4 text-xs text-slate-400 text-center font-medium">
+                    No countries found
+                  </li>
                 )}
               </ul>
             </div>
@@ -214,8 +239,8 @@ export default function PhoneInput({
           value={localNumber}
           onChange={handleNumberChange}
           placeholder={placeholder || `e.g. ${selectedCountry.minLen === selectedCountry.maxLen ? '9'.repeat(selectedCountry.maxLen) : '9'.repeat(selectedCountry.minLen)}`}
-          maxLength={selectedCountry.maxLen + 5} // a bit lenient for formatting chars
-          className={`flex-1 min-w-0 px-3 py-2.5 text-xs sm:text-sm rounded-r-xl rounded-l-none border border-slate-200 dark:border-dark_border bg-white dark:bg-dark text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium ${inputClassName}`}
+          maxLength={selectedCountry.maxLen + 5}
+          className={`flex-1 min-w-0 px-3.5 py-2.5 text-xs sm:text-sm rounded-r-xl rounded-l-none border border-slate-200 dark:border-dark_border bg-white dark:bg-dark text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium ${inputClassName}`}
         />
       </div>
     </div>

@@ -261,56 +261,243 @@ body {
 .btn-gradient {
   background: linear-gradient(135deg, #4F46E5 0%, #6366F1 50%, #3B82F6 100%);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 4px 14px -2px rgba(79, 70, 229, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-gradient:hover {
-  opacity: 0.95;
+  opacity: 0.98;
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
-  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* ── Global Elegant Button System — Thin, Professional 1px Borders ──────────────── */
-button:not([class*="border-none"]):not([class*="border-0"]):not([class*="bg-transparent"]):not([class*="border-"]),
+/* ── Global Professional Button System — Brand-Coordinated Borders & Glow Shadows ─ */
 .btn,
 .btn-primary,
 .btn-secondary,
-a[class*="bg-primary"]:not([class*="border-"]),
-a[class*="bg-darkprimary"]:not([class*="border-"]),
-a[class*="bg-[#764DFF]"]:not([class*="border-"]),
-a[class*="bg-[#6366F1]"]:not([class*="border-"]),
-button[class*="bg-primary"]:not([class*="border-"]),
-button[class*="bg-darkprimary"]:not([class*="border-"]),
-button[class*="bg-[#764DFF]"]:not([class*="border-"]),
-button[class*="bg-[#6366F1]"]:not([class*="border-"]) {
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(255, 255, 255, 0.18);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+a[role="button"],
+a[class*="rounded-"][class*="px-"][class*="py-"],
+a[class*="rounded-full"][class*="px-"],
+a[class*="rounded-xl"][class*="px-"],
+a[class*="rounded-lg"][class*="px-"],
+a[class*="rounded-md"][class*="px-"],
+a[class*="bg-primary"],
+a[class*="bg-darkprimary"],
+a[class*="bg-[#764DFF]"],
+a[class*="bg-[#6366F1]"],
+a[class*="bg-[#4F46E5]"],
+a[class*="bg-[#BD69F2]"],
+a[class*="bg-[#25D366]"],
+a[class*="bg-white"],
+button[class*="rounded-"][class*="px-"][class*="py-"],
+button[class*="rounded-full"][class*="px-"],
+button[class*="rounded-xl"][class*="px-"],
+button[class*="rounded-lg"][class*="px-"],
+button[class*="rounded-md"][class*="px-"],
+button[class*="bg-primary"],
+button[class*="bg-darkprimary"],
+button[class*="bg-[#764DFF]"],
+button[class*="bg-[#6366F1]"],
+button[class*="bg-[#4F46E5]"],
+button[class*="bg-[#BD69F2]"],
+button[class*="bg-[#25D366]"],
+button[class*="bg-white"],
+input[type="submit"],
+input[type="button"] {
+  border-width: 1.5px !important;
+  border-style: solid !important;
+  box-sizing: border-box !important;
 }
 
-button:hover:not([class*="border-none"]):not([class*="border-0"]):not([class*="border-"]),
-.btn:hover,
-a[class*="bg-primary"]:hover:not([class*="border-"]),
-a[class*="bg-darkprimary"]:hover:not([class*="border-"]),
-a[class*="bg-[#764DFF]"]:hover:not([class*="border-"]),
-a[class*="bg-[#6366F1]"]:hover:not([class*="border-"]),
-button[class*="bg-primary"]:hover:not([class*="border-"]),
-button[class*="bg-[#764DFF]"]:hover:not([class*="border-"]) {
-  border-color: rgba(255, 255, 255, 0.35);
+/* Inline text buttons, links, and unstyled action triggers — Clean & Borderless */
+button:not([class*="px-"]):not([class*="bg-"]):not([class*="btn"]):not([class*="border"]),
+button[class*="hover:underline"],
+button[class*="text-"][class*="font-"]:not([class*="bg-"]):not([class*="rounded-"]),
+button.border-0,
+button.border-none {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
-/* Light background buttons subtle border */
-button[class*="bg-white"]:not([class*="border-"]),
-a[class*="bg-white"]:not([class*="border-"]) {
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(226, 232, 240, 0.8);
+/* 1. Primary Indigo / Purple Gradient Buttons — Vibrant Glow & Subtle Top Edge */
+button[class*="bg-primary"],
+button[class*="bg-darkprimary"],
+button[class*="bg-[#764DFF]"],
+button[class*="bg-[#6366F1]"],
+button[class*="bg-[#4F46E5]"],
+button[class*="bg-indigo-"],
+button[class*="bg-violet-"],
+a[class*="bg-primary"],
+a[class*="bg-darkprimary"],
+a[class*="bg-[#764DFF]"],
+a[class*="bg-[#6366F1]"],
+a[class*="bg-[#4F46E5]"],
+a[class*="bg-indigo-"],
+a[class*="bg-violet-"],
+.btn-primary {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 14px 0 rgba(118, 77, 255, 0.35) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-button[class*="bg-white"]:hover:not([class*="border-"]),
-a[class*="bg-white"]:hover:not([class*="border-"]) {
-  border-color: rgba(203, 213, 225, 1);
+
+button[class*="bg-primary"]:hover,
+button[class*="bg-darkprimary"]:hover,
+button[class*="bg-[#764DFF]"]:hover,
+button[class*="bg-[#6366F1]"]:hover,
+button[class*="bg-[#4F46E5]"]:hover,
+a[class*="bg-primary"]:hover,
+a[class*="bg-darkprimary"]:hover,
+a[class*="bg-[#764DFF]"]:hover,
+a[class*="bg-[#6366F1]"]:hover,
+a[class*="bg-[#4F46E5]"]:hover,
+.btn-primary:hover {
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 6px 22px 0 rgba(118, 77, 255, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* 2. Green / WhatsApp CTA buttons — Solid Dark Green Border */
+button[class*="bg-[#25D366]"],
+button[class*="bg-green-"],
+button[class*="bg-emerald-"],
+a[class*="bg-[#25D366]"],
+a[class*="bg-green-"],
+a[class*="bg-emerald-"],
+.whatsapp-float {
+  border-color: #15803D !important;
+  box-shadow: 0 3px 12px 0 rgba(37, 211, 102, 0.4) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button[class*="bg-[#25D366]"]:hover,
+a[class*="bg-[#25D366]"]:hover,
+.whatsapp-float:hover {
+  border-color: #14532D !important;
+  box-shadow: 0 6px 20px 0 rgba(37, 211, 102, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* 3. Magenta / Purple Accent Buttons — Solid Purple Border */
+button[class*="bg-[#BD69F2]"],
+button[class*="bg-purple-"],
+a[class*="bg-[#BD69F2]"],
+a[class*="bg-purple-"] {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 4px 14px 0 rgba(189, 105, 242, 0.35) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+button[class*="bg-[#BD69F2]"]:hover,
+a[class*="bg-[#BD69F2]"]:hover {
+  border-color: rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 6px 22px 0 rgba(189, 105, 242, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* 4. Solid White & Light Secondary Buttons — Elegant Brand Lavender Border & Soft Shadow */
+button[class*="bg-white"],
+button[class*="bg-slate-50"],
+button[class*="bg-gray-50"],
+button[class*="bg-gray-100"],
+button[class*="bg-light_grey"],
+a[class*="bg-white"],
+a[class*="bg-slate-50"],
+a[class*="bg-gray-50"],
+a[class*="bg-gray-100"],
+a[class*="bg-light_grey"],
+.btn-secondary {
+  border-color: rgba(118, 77, 255, 0.3) !important;
+  box-shadow: 0 2px 8px 0 rgba(118, 77, 255, 0.08) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button[class*="bg-white"]:hover,
+a[class*="bg-white"]:hover,
+.btn-secondary:hover {
+  border-color: #764DFF !important;
+  box-shadow: 0 4px 16px 0 rgba(118, 77, 255, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* 5. Translucent / Glass / White-alpha buttons (e.g. bg-white/10, bg-white/20, bg-white/30) */
+button[class*="bg-white/"],
+a[class*="bg-white/"] {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+button[class*="bg-white/"]:hover,
+a[class*="bg-white/"]:hover {
+  border-color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* 6. Dark / Slate / Midnight buttons */
+button[class*="bg-black"],
+button[class*="bg-slate-900"],
+button[class*="bg-slate-800"],
+button[class*="bg-dark"],
+button[class*="bg-midnight_text"],
+a[class*="bg-black"],
+a[class*="bg-slate-900"],
+a[class*="bg-slate-800"],
+a[class*="bg-dark"],
+a[class*="bg-midnight_text"] {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.3), 0 6px 18px 0 rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+button[class*="bg-black"]:hover,
+a[class*="bg-black"]:hover,
+button[class*="bg-slate-900"]:hover,
+a[class*="bg-slate-900"]:hover {
+  border-color: rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.4), 0 10px 24px 0 rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+/* 7. Dedicated Outline Buttons — Solid 2px Border & Distinct Shadow */
+a[class*="border-primary"]:not([class*="bg-primary"]) {
+  border-color: #4F46E5 !important;
+  box-shadow: 0 2px 6px 0 rgba(79, 70, 229, 0.12) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+a[class*="border-primary"]:hover:not([class*="bg-primary"]) {
+  border-color: #3730A3 !important;
+  background-color: rgba(79, 70, 229, 0.08) !important;
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.22) !important;
+  transform: translateY(-2px);
+}
+
+/* 8. Social Media Circular Icons — Simple & Borderless */
+footer a[class*="rounded-full"],
+a[aria-label*="Instagram"],
+a[aria-label*="Facebook"],
+a[aria-label*="YouTube"],
+a[aria-label*="LinkedIn"],
+a[aria-label*="Twitter"],
+a[aria-label*="WhatsApp"].w-9 {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+}
+
+/* 9. Header Dropdown Submenu Links — Simple & Borderless */
+header div[class*="absolute"] a,
+nav div[class*="absolute"] a,
+.dropdown-menu a {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  box-shadow: none !important;
 }
 
 /* Accessible focus ring for buttons */
@@ -346,24 +533,27 @@ a[role="button"]:focus-visible,
   box-shadow: 0 16px 48px 0 rgba(118, 77, 255, 0.13);
 }
 
-/* ── WhatsApp Floating Button ───────────────────── */
+/* ── WhatsApp Floating Button (Interchanged to Bottom) ───────── */
 .whatsapp-float {
   position: fixed;
-  bottom: 5rem;
-  right: 1.6rem;
+  bottom: 1.5rem;
+  right: 1.5rem;
   z-index: 999;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: #25D366;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 14px 0 rgba(37, 211, 102, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .whatsapp-float:hover {
   transform: scale(1.1);
-  box-shadow: 0 8px 30px 0 rgba(37, 211, 102, 0.5);
+  box-shadow: 0 8px 24px 0 rgba(37, 211, 102, 0.5);
 }
 
 /* ── Marquee / Scroll ───────────────────────────── */
@@ -435,6 +625,17 @@ a[role="button"]:focus-visible,
 /* ── Form Select Styling ────────────────────────────── */
 select.form-input {
   background-image: none;
+}
+
+/* ── Hide Scrollbar Utility ─────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 /* ── Hide Scrollbar Utility ────── */

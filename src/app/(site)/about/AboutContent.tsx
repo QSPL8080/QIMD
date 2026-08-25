@@ -132,28 +132,72 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
   ];
 
   const differPoints = [
-    "AI-Powered & Performance-Driven Curriculum",
-    "100% Live Project-Based Learning",
-    "Offline Practical Classroom Training",
-    "Industry Expert Mentors",
-    "Real Client Project Experience",
-    "Internship Opportunities",
-    "Portfolio Development",
-    "Career Counselling",
-    "Resume & Interview Preparation",
-    "Placement Assistance",
-    "Hiring Partner Opportunities",
-    "Small Batch Sizes for Better Mentorship",
-    "Modern Learning Infrastructure",
-    "Industry-Relevant Curriculum Updated Regularly",
+    {
+      title: "AI-Powered & Performance-Driven Curriculum",
+      icon: "mdi:robot",
+    },
+    {
+      title: "100% Live Project-Based Learning",
+      icon: "mdi:laptop",
+    },
+    {
+      title: "Offline Practical Classroom Training",
+      icon: "mdi:school",
+    },
+    {
+      title: "Industry Expert Mentors",
+      icon: "mdi:account-tie",
+    },
+    {
+      title: "Real Client Project Experience",
+      icon: "mdi:briefcase-check",
+    },
+    {
+      title: "Internship Opportunities",
+      icon: "mdi:certificate",
+    },
+    {
+      title: "Portfolio Development",
+      icon: "mdi:palette",
+    },
+    {
+      title: "Career Counselling",
+      icon: "mdi:headset",
+    },
+    {
+      title: "Resume & Interview Preparation",
+      icon: "mdi:file-document-outline",
+    },
+    {
+      title: "Placement Assistance",
+      icon: "mdi:handshake",
+    },
+    {
+      title: "Hiring Partner Opportunities",
+      icon: "mdi:domain",
+    },
+    {
+      title: "Small Batch Sizes for Better Mentorship",
+      icon: "mdi:account-group",
+    },
+    {
+      title: "Modern Learning Infrastructure",
+      icon: "mdi:monitor",
+    },
+    {
+      title: "Industry-Relevant Curriculum Updated Regularly",
+      icon: "mdi:sync",
+    },
   ];
 
   const programs = [
     {
       title: "AI-Powered Digital Marketing Program",
       icon: "mdi:bullhorn-outline",
+      watermarkIcon: "mdi:crosshairs-gps",
       color: "from-primary/10 to-primary/5",
-      borderColor: "border-primary/20",
+      borderColor: "border-primary/30 hover:border-primary",
+      shadowClass: "shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_rgba(118,77,255,0.18)]",
       iconColor: "text-primary",
       sub: "Master the complete digital marketing ecosystem with practical implementation.",
       skills: [
@@ -174,8 +218,10 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
     {
       title: "AI-Powered Graphic Design Program",
       icon: "mdi:palette-outline",
+      watermarkIcon: "mdi:vector-bezier",
       color: "from-[#BD69F2]/10 to-[#BD69F2]/5",
-      borderColor: "border-[#BD69F2]/20",
+      borderColor: "border-[#BD69F2]/35 hover:border-[#BD69F2]",
+      shadowClass: "shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_rgba(189,105,242,0.18)]",
       iconColor: "text-[#BD69F2]",
       sub: "Learn to create impactful visual designs using industry-leading software and AI-powered creative tools.",
       skills: [
@@ -194,8 +240,10 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
     {
       title: "AI-Powered Video Editing Program",
       icon: "mdi:video-film",
+      watermarkIcon: "mdi:filmstrip",
       color: "from-[#4999D4]/10 to-[#4999D4]/5",
-      borderColor: "border-[#4999D4]/20",
+      borderColor: "border-[#4999D4]/35 hover:border-[#4999D4]",
+      shadowClass: "shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_35px_rgba(73,153,212,0.18)]",
       iconColor: "text-[#4999D4]",
       sub: "Build professional video editing skills for social media, YouTube, brands, and businesses.",
       skills: [
@@ -273,7 +321,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
               </Link>
               <Link
                 href={`tel:${contactPhone.replace(/\s+/g, '')}`}
-                className="bg-white hover:bg-white/90 text-primary font-bold border border-primary/30 px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs"
+                className="bg-white hover:bg-slate-50 text-[#764DFF] font-extrabold border-[1.5px] border-[#764DFF]/40 hover:border-[#764DFF] px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-xs hover:-translate-y-0.5"
               >
                 Talk to Counselor
               </Link>
@@ -460,8 +508,12 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
       </section>
 
       {/* 6. AI-POWERED PROGRAMS CURRICULUM BREAKDOWN */}
-      <section className="section-py bg-white dark:bg-darklight">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 space-y-10">
+      <section className="section-py bg-white dark:bg-darklight relative overflow-hidden">
+        {/* Soft Ambient Floating Background Accents */}
+        <div className="pointer-events-none absolute -top-24 left-1/4 w-80 h-80 rounded-full bg-[#764DFF]/5 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 right-1/4 w-80 h-80 rounded-full bg-[#4999D4]/5 blur-3xl" />
+
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 space-y-10 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-2" data-aos="fade-up">
             <div className="badge-secondary mx-auto mb-1">
               <Icon icon="mdi:laptop" />
@@ -479,26 +531,33 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
             {programs.map((prog, idx) => (
               <div
                 key={idx}
-                className={`bg-gradient-to-b ${prog.color} dark:bg-dark border ${prog.borderColor} rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-xs card-hover`}
+                className={`group relative overflow-hidden bg-gradient-to-b ${prog.color} dark:bg-dark border-[1.5px] ${prog.borderColor} rounded-3xl p-6 sm:p-7 flex flex-col justify-between ${prog.shadowClass || 'shadow-md'} transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01]`}
                 data-aos="fade-up"
                 data-aos-delay={idx * 100}
               >
-                <div className="space-y-3">
-                  <div className={`w-10 h-10 rounded-xl bg-white dark:bg-darklight flex items-center justify-center text-xl font-bold ${prog.iconColor} shadow-xs`}>
+                {/* Large Background Watermark Icon in Middle-Right Open Space */}
+                <div className={`pointer-events-none absolute top-[52%] -translate-y-1/2 -right-3 ${prog.iconColor} opacity-10 dark:opacity-10 text-[155px] leading-none select-none transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:opacity-20`}>
+                  <Icon icon={prog.watermarkIcon || prog.icon} />
+                </div>
+
+                <div className="space-y-4 relative z-10">
+                  {/* Floating Icon with Gentle Wobble on Hover */}
+                  <div className={`w-12 h-12 rounded-2xl bg-white dark:bg-darklight flex items-center justify-center text-2xl font-bold ${prog.iconColor} shadow-xs border border-white/80 dark:border-dark_border group-hover:rotate-6 group-hover:scale-110 transition-transform duration-300`}>
                     <Icon icon={prog.icon} />
                   </div>
-                  <h3 className="text-lg font-bold text-midnight_text dark:text-white leading-tight">
+
+                  <h3 className="text-lg sm:text-xl font-bold text-midnight_text dark:text-white leading-tight group-hover:text-primary transition-colors">
                     {prog.title}
                   </h3>
-                  <p className="text-xs text-muted dark:text-white/70 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-muted dark:text-white/70 leading-relaxed font-medium">
                     {prog.sub}
                   </p>
 
-                  <div className="pt-3 border-t border-border/40 dark:border-dark_border/40">
-                    <p className="text-[11px] font-extrabold uppercase tracking-wider text-midnight_text dark:text-white mb-2">
+                  <div className="pt-3.5 border-t border-border/40 dark:border-dark_border/40">
+                    <p className="text-[11px] font-extrabold uppercase tracking-wider text-midnight_text dark:text-white mb-2.5">
                       You&apos;ll Learn:
                     </p>
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {prog.skills.map((skill, sIdx) => (
                         <li key={sIdx} className="flex items-center gap-2 text-xs font-semibold text-midnight_text dark:text-white/90">
                           <Icon icon="mdi:check" className={`${prog.iconColor} shrink-0 text-sm`} />
@@ -509,12 +568,13 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
                   </div>
                 </div>
 
-                <div className="pt-5 mt-5">
+                <div className="pt-6 mt-6 relative z-10">
                   <Link
                     href="/courses"
-                    className="block text-center w-full bg-white dark:bg-darklight hover:bg-primary hover:text-white text-midnight_text dark:text-white border border-border dark:border-dark_border font-bold text-xs py-2.5 rounded-xl transition-all shadow-xs"
+                    className="group/btn inline-flex items-center justify-center gap-2 text-center w-full bg-white dark:bg-darklight hover:bg-primary hover:text-white text-midnight_text dark:text-white border border-border/70 dark:border-dark_border font-bold text-xs sm:text-sm py-3 rounded-2xl transition-all duration-200 shadow-2xs hover:shadow-md hover:border-primary"
                   >
-                    View Program Details &rarr;
+                    <span>View Program Details</span>
+                    <Icon icon="mdi:arrow-right" className="text-base group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </div>
@@ -536,22 +596,30 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
             </p>
           </div>
 
-          <div className="bg-white dark:bg-darklight p-6 sm:p-8 rounded-2xl border border-border dark:border-dark_border shadow-xs space-y-6" data-aos="fade-up">
+          <div className="bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-border/80 dark:border-dark_border shadow-xs space-y-6" data-aos="fade-up">
             <h3 className="text-lg sm:text-xl font-extrabold text-midnight_text dark:text-white text-center">
               Why Students Choose QIMD
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {differPoints.map((point, idx) => (
-                <div key={idx} className="flex items-center gap-2.5 bg-grey dark:bg-dark p-3 rounded-xl border border-border/60 dark:border-dark_border/60">
-                  <Icon icon="mdi:shield-check" className="text-primary text-base shrink-0" />
-                  <span className="text-xs font-bold text-midnight_text dark:text-white">{point}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {differPoints.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-3 bg-grey/70 dark:bg-dark/70 hover:bg-white dark:hover:bg-dark p-3.5 rounded-2xl border border-border/60 dark:border-dark_border/60 hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 dark:bg-primary/25 flex items-center justify-center text-primary dark:text-white shrink-0 shadow-2xs border border-primary/20">
+                    <Icon icon={item.icon} className="text-base text-primary dark:text-white" />
+                  </div>
+
+                  <span className="text-xs font-bold text-midnight_text dark:text-white leading-snug">
+                    {item.title}
+                  </span>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-[#4999D4]/10 p-4 sm:p-5 rounded-xl border border-primary/20 text-center">
-              <p className="text-xs sm:text-sm font-extrabold text-midnight_text dark:text-white">
+            <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-[#4999D4]/10 p-5 sm:p-6 rounded-2xl border border-primary/20 text-center">
+              <p className="text-xs sm:text-sm font-extrabold text-midnight_text dark:text-white leading-relaxed">
                 At QIMD, you don&apos;t just earn a certificate—you graduate with practical experience, confidence, a professional portfolio, and the skills employers are looking for.
               </p>
             </div>

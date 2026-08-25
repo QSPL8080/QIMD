@@ -4,8 +4,16 @@ import { siteConfig } from '@/data'
 
 export const dynamic = 'force-dynamic'
 
+let cachedSettings: any = null
+let cacheTimestamp = 0
+const CACHE_TTL = 30000 // 30s cache for fast page loads
+
 export async function GET() {
   try {
+    if (cachedSettings && Date.now() - cacheTimestamp < CACHE_TTL) {
+      return NextResponse.json(cachedSettings)
+    }
+
     const [headerSettings, headerPhones, headerEmails, footerSettings, footerPhones, footerEmails, footerColumns, websiteSettings] = await Promise.all([
       db.headerSettings.findFirst(),
       db.headerContactItem.findMany({ where: { type: 'PHONE', isActive: true }, orderBy: { displayOrder: 'asc' } }),
@@ -28,7 +36,7 @@ export async function GET() {
 
     const socialLinksData: any = websiteSettings?.socialLinks || {}
 
-    return NextResponse.json({
+    const responseData = {
       // Global technical settings
       websiteName: websiteSettings?.websiteName || siteConfig.name,
       teamGroupPhoto: (websiteSettings?.homepageSections as any)?.teamGroupPhoto || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80',
@@ -132,7 +140,12 @@ export async function GET() {
         },
         customLinks: socialLinksData.customLinks || [],
       },
-    })
+    }
+
+    cachedSettings = responseData
+    cacheTimestamp = Date.now()
+
+    return NextResponse.json(responseData)
   } catch (err: any) {
     console.error('Failed to fetch public website settings:', err)
     return NextResponse.json({

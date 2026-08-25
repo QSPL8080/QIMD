@@ -10,7 +10,7 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, showBrochure = true }) => {
   return (
-    <div className="bg-white dark:bg-darklight rounded-2xl shadow-card border border-border dark:border-dark_border card-hover overflow-hidden flex flex-col h-full">
+    <div className="bg-white dark:bg-darklight rounded-3xl border-[1.5px] border-[#764DFF]/25 dark:border-dark_border hover:border-[#764DFF] shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_15px_35px_rgba(118,77,255,0.18)] transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
       {/* Course Image Banner */}
       <div className="relative overflow-hidden bg-gray-100 dark:bg-dark" style={{ height: '220px' }}>
         {(() => {
@@ -86,7 +86,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showBrochure = true }) 
           {showBrochure && (
             <Link
               href={`/courses/${course.slug}#download-brochure`}
-              className="w-full border border-primary/30 text-primary hover:bg-primary/5 text-sm font-medium py-3 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full border-[1.5px] border-[#764DFF]/35 hover:border-[#764DFF] bg-[#764DFF]/5 hover:bg-[#764DFF]/12 text-[#764DFF] text-sm font-semibold py-3 rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-2 shadow-xs"
             >
               <Icon icon="mdi:file-download" className="text-base" />
               Download Brochure

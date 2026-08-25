@@ -111,7 +111,7 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
         {isVideoTestimonial && (
           <button
             onClick={() => onOpenVideo(testimonial.videoUrl!, testimonial.studentName)}
-            className="text-[#764DFF] dark:text-[#BD69F2] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-[#764DFF] dark:text-[#BD69F2] font-bold hover:underline flex items-center gap-1 cursor-pointer !border-0 !border-none !shadow-none !bg-transparent p-0"
           >
             <span>Watch Video</span>
             <Icon icon="mdi:play-circle" className="text-sm" />

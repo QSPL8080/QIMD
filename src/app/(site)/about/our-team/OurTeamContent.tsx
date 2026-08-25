@@ -374,7 +374,7 @@ export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: 
             {teamList.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-darklight rounded-3xl border border-[#764DFF]/20 dark:border-dark_border overflow-hidden shadow-lg hover:shadow-xl transition-all flex flex-col h-full"
+                className="bg-white dark:bg-darklight rounded-3xl border-[1.5px] border-[#764DFF]/25 dark:border-dark_border hover:border-[#764DFF] shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_15px_35px_rgba(118,77,255,0.18)] hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col h-full"
                 data-aos="fade-up"
                 data-aos-delay={idx * 80}
               >
@@ -434,16 +434,16 @@ export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: 
           <div className="pt-3 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"
-              className="bg-white text-[#764DFF] hover:bg-slate-100 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              className="bg-white hover:bg-slate-100 text-[#764DFF] font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
               Get Enrolled Today
             </Link>
             <Link
               href={`tel:${contactPhone.replace(/\s+/g, '')}`}
-              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl border border-white/30 transition-all"
+              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/35 text-white font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-xl border border-white/40 hover:border-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              <Icon icon="mdi:phone" className="text-base" />
-              <span>{contactPhone}</span>
+              <Icon icon="mdi:phone" className="text-base text-white" />
+              <span className="text-white font-extrabold tracking-wide">{contactPhone}</span>
             </Link>
           </div>
         </div>
