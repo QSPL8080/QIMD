@@ -174,7 +174,7 @@ export default function FranchiseContent() {
       <section
         className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/60 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f0e8ff 0%, #f7ebff 30%, #ffffff 55%, #e8f4fd 80%, #e2eeff 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
@@ -534,7 +534,12 @@ export default function FranchiseContent() {
       </section>
 
       {/* 5. PROGRAMS YOU CAN OFFER & WHO CAN BECOME A PARTNER (SIDE BY SIDE WITH MIDDLE DIVIDER) */}
-      <section className="py-16 lg:py-20 bg-slate-50/70 dark:bg-darklight border-y border-slate-200/70 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-20 border-y border-slate-200/70 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
             
@@ -636,7 +641,12 @@ export default function FranchiseContent() {
       </section>
 
       {/* 6. OUR FRANCHISE PROCESS (SLEEK OPEN STEPPER PIPELINE) */}
-      <section className="py-16 lg:py-20 bg-white dark:bg-dark border-b border-slate-200/70 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-20 border-b border-slate-200/70 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14" data-aos="fade-up">
             <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">

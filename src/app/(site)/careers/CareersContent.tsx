@@ -125,34 +125,73 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
 
   return (
     <div className="bg-grey dark:bg-dark min-h-screen">
-      {/* 1. HERO SECTION WITH QIMD SOFT PASTEL GRADIENT */}
+      {/* 1. HERO SECTION: UNIQUE CENTRIC EDITORIAL HERO WITH LIGHT GRADIENT */}
       <section
-        className="section-py relative overflow-hidden text-midnight_text border-b border-white/60"
+        className="py-14 sm:py-18 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #c4b0ff 0%, #ddb8f8 28%, #ffffff 50%, #b8d9f0 72%, #a8c4e8 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto space-y-5" data-aos="fade-up">
-            <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-2 rounded-full shadow-xs backdrop-blur-md">
-              <Icon icon="mdi:briefcase-account" className="text-primary animate-pulse" />
-              Careers at QIMD
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#764DFF]/8 rounded-full blur-3xl pointer-events-none -z-0" />
+
+        <div className="container mx-auto max-w-4xl px-4 lg:px-8 relative z-10 space-y-6 text-center" data-aos="fade-up">
+          
+          {/* Top Pill Badge */}
+          <div className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 text-[#5c38d6] dark:text-[#a78bfa] border border-[#764DFF]/25 text-xs font-bold px-3.5 py-1 rounded-full shadow-2xs backdrop-blur-md">
+            <Icon icon="mdi:briefcase-account" className="text-[#764DFF] animate-pulse text-sm" />
+            <span>Careers at QIMD</span>
+          </div>
+
+          {/* Main Typography */}
+          <div className="space-y-2 max-w-2xl mx-auto">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
+              Join Our Team.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#764DFF] via-[#9055ff] to-[#BD69F2]">
+                Shape the Future.
+              </span>
+            </h1>
+          </div>
+
+          {/* Elevated Centric Statement Bento Card */}
+          <div className="max-w-3xl mx-auto rounded-2xl sm:rounded-3xl bg-white/90 dark:bg-darklight/90 border border-slate-200/80 dark:border-dark_border shadow-lg backdrop-blur-md p-5 sm:p-7 space-y-4 text-left relative overflow-hidden">
+            {/* Ambient Watermark Icon */}
+            <div className="absolute top-3 right-5 text-slate-300/25 dark:text-white/5 text-6xl pointer-events-none select-none">
+              <Icon icon="mdi:briefcase-account-outline" />
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111827] leading-tight">
-              Join Our Team. <br />
-              <span className="text-[#5c38d6]">Shape the Future.</span>
-            </h1>
+            <p className="text-slate-700 dark:text-white/90 text-xs sm:text-sm leading-relaxed font-medium relative z-10">
+              At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we&apos;re building a team of passionate educators, creative professionals, marketers, and innovators dedicated to transforming digital education through practical, AI-powered learning.
+            </p>
 
-            <div className="space-y-3 text-[#374151] text-base sm:text-lg leading-relaxed font-medium">
-              <p>
-                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we&apos;re building a team of passionate educators, creative professionals, marketers, and innovators dedicated to transforming digital education through practical, AI-powered learning.
-              </p>
-              <p className="text-base text-[#111827] font-bold">
+            <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#764DFF]/5 dark:bg-[#764DFF]/15 border border-[#764DFF]/20 relative z-10 flex items-start gap-3">
+              <div className="w-7 h-7 rounded-lg bg-[#764DFF] text-white flex items-center justify-center text-sm shrink-0 mt-0.5 shadow-xs">
+                <Icon icon="mdi:lightbulb-on-outline" />
+              </div>
+              <p className="text-slate-800 dark:text-white text-xs leading-relaxed font-semibold">
                 If you&apos;re enthusiastic about teaching, mentoring, creating, or driving innovation, we&apos;d love to hear from you.
               </p>
             </div>
           </div>
+
+          {/* Bottom Action Buttons */}
+          <div className="pt-1 flex flex-wrap justify-center gap-3.5">
+            <a
+              href="#open-positions"
+              className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs px-6 py-2.5 rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-[1.02] flex items-center gap-2"
+            >
+              <Icon icon="mdi:account-search-outline" className="text-sm" />
+              <span>Explore Open Positions</span>
+            </a>
+            <a
+              href="#apply"
+              className="bg-white/90 dark:bg-darklight border border-[#764DFF]/40 text-[#764DFF] hover:bg-[#764DFF]/10 font-bold text-xs px-6 py-2.5 rounded-xl transition-all flex items-center gap-2 hover:scale-[1.02] shadow-2xs"
+            >
+              <Icon icon="mdi:file-document-edit-outline" className="text-sm" />
+              <span>Apply Now</span>
+            </a>
+          </div>
+
         </div>
       </section>
 

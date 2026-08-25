@@ -214,15 +214,14 @@ body {
    Use DIAGONALLY (135deg). White must appear in the middle.
 ══════════════════════════════════════════════════════════════ */
 
-/* The hero/section-level QIMD brand gradient — LIGHT PASTEL with white in middle */
+/* The hero/section-level QIMD brand gradient — White at top blending to subtle pastel lavender & sky blue */
 .qimd-gradient {
   background: linear-gradient(
-    135deg,
-    #c4b0ff 0%,
-    #ddb8f8 28%,
-    #ffffff 50%,
-    #b8d9f0 72%,
-    #a8c4e8 100%
+    180deg,
+    #ffffff 0%,
+    #ffffff 40%,
+    #f0e8ff 70%,
+    #dcecfe 100%
   );
 }
 
@@ -241,11 +240,11 @@ body {
 /* Soft background tint for accent sections */
 .qimd-gradient-soft {
   background: linear-gradient(
-    135deg,
-    rgba(196, 176, 255, 0.18) 0%,
-    rgba(221, 184, 248, 0.10) 40%,
-    rgba(184, 217, 240, 0.10) 75%,
-    rgba(168, 196, 232, 0.18) 100%
+    180deg,
+    #ffffff 0%,
+    #ffffff 20%,
+    rgba(230, 217, 255, 0.75) 60%,
+    rgba(205, 228, 253, 0.85) 100%
   );
 }
 
@@ -510,13 +509,13 @@ a[role="button"]:focus-visible,
 
 /* ── Gradient Background Utilities ─────────────── */
 .gradient-bg {
-  background: linear-gradient(135deg, #c4b0ff 0%, #ddb8f8 28%, #ffffff 50%, #b8d9f0 72%, #a8c4e8 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%);
 }
 .gradient-bg-rich {
   background: linear-gradient(135deg, #764DFF 0%, #BD69F2 35%, #ffffff 50%, #4999D4 75%, #557CBE 100%);
 }
 .gradient-bg-soft {
-  background: linear-gradient(135deg, rgba(196,176,255,0.12) 0%, rgba(184,217,240,0.12) 100%);
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 40%, rgba(240, 232, 255, 0.6) 70%, rgba(220, 236, 254, 0.7) 100%);
 }
 
 /* ── Section Padding Utility ────────────────────── */

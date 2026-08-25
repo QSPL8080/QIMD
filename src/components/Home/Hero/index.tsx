@@ -77,7 +77,7 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
     <section
       className="relative overflow-hidden text-white pt-2 sm:pt-3 lg:pt-4 pb-6 sm:pb-8 lg:pb-10"
       style={{
-        background: 'linear-gradient(135deg, #9b7bff 0%, #d4a0f7 30%, #ffffff 50%, #88c4e8 70%, #7aaad8 100%)',
+        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 15%, #e6d9ff 55%, #cde4fd 100%)',
       }}
     >
       {/* Subtle noise / depth overlay */}

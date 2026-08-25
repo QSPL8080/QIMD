@@ -20,7 +20,7 @@ const CareerCounsellingCTA: React.FC = () => {
     <section
       className="py-12 sm:py-16 relative overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #c4b0ff 0%, #ddb8f8 28%, #ffffff 50%, #b8d9f0 72%, #a8c4e8 100%)',
+        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f4efff 82%, #e9f3fd 100%)',
       }}
     >
       {/* Soft decorative blobs */}

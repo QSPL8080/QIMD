@@ -13,8 +13,11 @@ const Aoscompo: React.FC<AoscompoProps> = ({ children }) => {
       AOS.init({
         duration: 700,
         once: false,
+        mirror: true,
         easing: 'ease-out-cubic',
+        offset: 80,
       })
+      AOS.refresh()
     }, 100)
     return () => clearTimeout(timer)
   }, [])

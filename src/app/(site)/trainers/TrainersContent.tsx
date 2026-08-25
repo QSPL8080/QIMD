@@ -80,60 +80,69 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
   ].filter(item => item.trainer);
 
   return (
-    <section className="section-py bg-grey dark:bg-dark min-h-screen">
-      <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-20 sm:space-y-24">
-        
-        {/* HERO HEADER & BANNER */}
-        <div className="text-center space-y-4" data-aos="fade-up">
-          <div className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
-            <Icon icon="mdi:account-group-outline" className="text-base" />
-            Learn From Industry Experts
-          </div>
+    <div className="bg-grey dark:bg-dark min-h-screen text-midnight_text dark:text-white">
+      
+      {/* 1. HERO HEADER & BANNER */}
+      <section className="py-14 sm:py-20 border-b border-border dark:border-dark_border">
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="text-center space-y-4" data-aos="fade-up">
+            <div className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+              <Icon icon="mdi:account-group-outline" className="text-base" />
+              Learn From Industry Experts
+            </div>
 
-          <div className="max-w-3xl mx-auto space-y-3 text-muted dark:text-white/70 text-sm sm:text-base leading-relaxed font-medium">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-              Learn from Industry Experts Who Practice What They Teach
-            </h1>
-            <p className="text-slate-700 dark:text-white/80 text-sm sm:text-base leading-relaxed">
-              At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our trainers are more than educators—they are experienced professionals actively working in the fields of Digital Marketing, Graphic Design, and Video Editing.
-            </p>
-            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm leading-relaxed">
-              With hands-on industry experience, they bring real business challenges, live client projects, and the latest AI-powered tools into every classroom session, ensuring students learn skills that are relevant, practical, and job-ready.
-            </p>
-          </div>
+            <div className="max-w-3xl mx-auto space-y-3 text-muted dark:text-white/70 text-sm sm:text-base leading-relaxed font-medium">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+                Learn from Industry Experts Who Practice What They Teach
+              </h1>
+              <p className="text-slate-700 dark:text-white/80 text-sm sm:text-base leading-relaxed">
+                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our trainers are more than educators—they are experienced professionals actively working in the fields of Digital Marketing, Graphic Design, and Video Editing.
+              </p>
+              <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm leading-relaxed">
+                With hands-on industry experience, they bring real business challenges, live client projects, and the latest AI-powered tools into every classroom session, ensuring students learn skills that are relevant, practical, and job-ready.
+              </p>
+            </div>
 
-          {/* Group Photo Card (Clean without text overlay) */}
-          <div className="relative rounded-3xl overflow-hidden shadow-xl border border-border dark:border-dark_border max-w-6xl mx-auto bg-white dark:bg-darklight mt-8">
-            <div className="relative h-56 sm:h-80 md:h-[420px] w-full bg-slate-900">
-              <img
-                src={teamGroupPhoto || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80"}
-                alt="QIMD Trainers Group Photo"
-                className="w-full h-full object-cover"
-              />
+            {/* Group Photo Card (Clean without text overlay) */}
+            <div className="relative rounded-3xl overflow-hidden shadow-xl border border-border dark:border-dark_border max-w-6xl mx-auto bg-white dark:bg-darklight mt-8">
+              <div className="relative h-56 sm:h-80 md:h-[420px] w-full bg-slate-900">
+                <img
+                  src={teamGroupPhoto || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80"}
+                  alt="QIMD Trainers Group Photo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* MEET OUR EXPERT TRAINERS - 3 DOMAIN LEADS IN 1 SPACIOUS ROW */}
-        <div className="space-y-8">
-          <div className="text-center">
+      {/* 2. MEET OUR EXPERT TRAINERS - FULL FLEDGED GRADIENT SECTION */}
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f4efff 82%, #e9f3fd 100%)',
+        }}
+      >
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
+          <div className="text-center" data-aos="fade-up">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#764DFF]">Faculty Roster</span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white mt-1">
               Meet Our Expert Trainers
             </h2>
-            <p className="text-muted dark:text-white/70 text-sm mt-1.5 max-w-lg mx-auto">
+            <p className="text-slate-600 dark:text-white/70 text-sm mt-1.5 max-w-lg mx-auto">
               Our 3 domain leads guiding students across Digital Marketing, Graphic Design, and Video Editing.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
             {trainers.map((t: any, index: number) => (
-              <div key={t.id || index} className="flex flex-col h-full space-y-3">
+              <div key={t.id || index} className="flex flex-col h-full space-y-3" data-aos="fade-up" data-aos-delay={index * 100}>
                 <div className="border-l-4 border-[#764DFF] pl-3 py-0.5">
                   <h3 className="text-base font-bold text-midnight_text dark:text-white">
                     {t.category === 'MARKETING' ? 'Digital Marketing Lead' : t.category === 'DESIGN' ? 'Graphic Design Lead' : t.category === 'VIDEO' ? 'Video Editing Lead' : 'Faculty Lead'}
                   </h3>
-                  <p className="text-xs text-muted dark:text-white/60 font-medium">
+                  <p className="text-xs text-slate-500 dark:text-white/60 font-medium">
                     {t.designation || 'Specialist Trainer'}
                   </p>
                 </div>
@@ -144,9 +153,11 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
             ))}
           </div>
         </div>
+      </section>
 
-        {/* OUR TRAINING APPROACH — FULL SCREEN EDGE-TO-EDGE INFINITE MARQUEE */}
-        <div className="space-y-6 py-4" data-aos="fade-up">
+      {/* 3. OUR TRAINING APPROACH — FULL SCREEN EDGE-TO-EDGE INFINITE MARQUEE */}
+      <section className="py-12 sm:py-16 bg-grey dark:bg-dark border-b border-border dark:border-dark_border overflow-hidden">
+        <div className="container mx-auto max-w-7xl px-4 space-y-6" data-aos="fade-up">
           <div className="text-center max-w-xl mx-auto mb-2 px-4">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#764DFF]">Hands-on Learning</span>
             <h2 className="text-2xl sm:text-3xl font-bold text-midnight_text dark:text-white mt-1 mb-1">
@@ -207,25 +218,32 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
             </div>
           </div>
         </div>
+      </section>
 
-        {/* UNIFIED TRAINER VALUE PROPOSITION — 2-COLUMN SIDE-BY-SIDE WITH STAGGERED FADE-RIGHT / FADE-LEFT ANIMATIONS */}
-        <div className="max-w-6xl mx-auto pt-4 space-y-8" data-aos="fade-up">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
+      {/* 4. WHY OUR TRAINERS STAND OUT - FULL FLEDGED GRADIENT SECTION */}
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f4efff 82%, #e9f3fd 100%)',
+        }}
+      >
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
             <span className="text-xs font-extrabold uppercase tracking-widest text-[#764DFF]">
               The QIMD Advantage
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-midnight_text dark:text-white tracking-tight">
               Why Our Trainers Stand Out
             </h2>
-            <p className="text-muted dark:text-white/70 text-xs sm:text-sm font-medium leading-relaxed">
+            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium leading-relaxed">
               Combining industry expertise with practical teaching methodologies to help students gain real-world confidence.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch pt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch max-w-6xl mx-auto">
             
             {/* Left Column: What Makes Our Trainers Different? (Fade-Right Staggered) */}
-            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full">
+            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full" data-aos="fade-right">
               <div className="flex items-center gap-3 pb-2 border-b border-slate-100 dark:border-dark_border min-h-[54px]">
                 <div className="w-9 h-9 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-lg font-bold shrink-0">
                   <Icon icon="mdi:star-outline" />
@@ -252,7 +270,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
                   <div
                     key={i}
                     data-aos="fade-right"
-                    data-aos-delay={i * 80}
+                    data-aos-delay={i * 60}
                     className="flex items-center gap-3 p-3 rounded-2xl bg-grey/60 dark:bg-dark/60 border border-slate-200/60 dark:border-dark_border/60 hover:border-[#764DFF]/40 hover:bg-white dark:hover:bg-darklight transition-all group min-h-[50px]"
                   >
                     <div className="w-6 h-6 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#764DFF] group-hover:text-white transition-colors">
@@ -267,7 +285,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
             </div>
 
             {/* Right Column: Why Learn from QIMD Trainers? (Fade-Left Staggered) */}
-            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full">
+            <div className="space-y-4 bg-white dark:bg-darklight p-6 sm:p-8 rounded-3xl border border-slate-200/80 dark:border-dark_border shadow-sm flex flex-col justify-between h-full" data-aos="fade-left">
               <div className="flex items-center gap-3 pb-2 border-b border-slate-100 dark:border-dark_border min-h-[54px]">
                 <div className="w-9 h-9 rounded-xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-lg font-bold shrink-0">
                   <Icon icon="mdi:target" />
@@ -294,7 +312,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
                   <div
                     key={i}
                     data-aos="fade-left"
-                    data-aos-delay={i * 80}
+                    data-aos-delay={i * 60}
                     className="flex items-center gap-3 p-3 rounded-2xl bg-grey/60 dark:bg-dark/60 border border-slate-200/60 dark:border-dark_border/60 hover:border-[#BD69F2]/40 hover:bg-white dark:hover:bg-darklight transition-all group min-h-[50px]"
                   >
                     <div className="w-6 h-6 rounded-lg bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#BD69F2] group-hover:text-white transition-colors">
@@ -310,40 +328,44 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
 
           </div>
         </div>
+      </section>
 
-        {/* CLOSING CALL TO ACTION BANNER */}
-        <div className="text-center bg-white dark:bg-darklight rounded-3xl p-8 sm:p-12 border border-slate-200/80 dark:border-dark_border shadow-card max-w-6xl mx-auto space-y-4" data-aos="fade-up">
-          <h2 className="text-2xl sm:text-3xl font-bold text-midnight_text dark:text-white">
-            Learn from Professionals. Grow with Confidence.
-          </h2>
-          <div className="text-muted dark:text-white/80 text-xs sm:text-sm max-w-2xl mx-auto space-y-1.5 leading-relaxed font-medium">
-            <p>
-              At QIMD, every trainer is committed to helping students build practical skills, industry knowledge, and the confidence to succeed in today&apos;s competitive digital world.
-            </p>
-            <p>
-              Our goal is simple—to ensure every student graduates with the experience, portfolio, and expertise needed to build a successful career.
-            </p>
-            <p className="text-[#764DFF] font-extrabold text-xs sm:text-sm pt-1">
-              Learn from experts. Practice on live projects. Become industry-ready with QIMD.
-            </p>
-          </div>
-          <div className="pt-3 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/courses"
-              className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all shadow-md"
-            >
-              Explore Courses
-            </Link>
-            <Link
-              href="/contact"
-              className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold text-sm px-8 py-3.5 rounded-xl transition-all"
-            >
-              Book Career Session
-            </Link>
+      {/* 5. CLOSING CALL TO ACTION BANNER */}
+      <section className="py-16 sm:py-20 bg-grey dark:bg-dark">
+        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+          <div className="text-center bg-white dark:bg-darklight rounded-3xl p-8 sm:p-12 border border-slate-200/80 dark:border-dark_border shadow-card max-w-6xl mx-auto space-y-4" data-aos="fade-up">
+            <h2 className="text-2xl sm:text-3xl font-bold text-midnight_text dark:text-white">
+              Learn from Professionals. Grow with Confidence.
+            </h2>
+            <div className="text-muted dark:text-white/80 text-xs sm:text-sm max-w-2xl mx-auto space-y-1.5 leading-relaxed font-medium">
+              <p>
+                At QIMD, every trainer is committed to helping students build practical skills, industry knowledge, and the confidence to succeed in today&apos;s competitive digital world.
+              </p>
+              <p>
+                Our goal is simple—to ensure every student graduates with the experience, portfolio, and expertise needed to build a successful career.
+              </p>
+              <p className="text-[#764DFF] font-extrabold text-xs sm:text-sm pt-1">
+                Learn from experts. Practice on live projects. Become industry-ready with QIMD.
+              </p>
+            </div>
+            <div className="pt-3 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/courses"
+                className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all shadow-md"
+              >
+                Explore Courses
+              </Link>
+              <Link
+                href="/contact"
+                className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold text-sm px-8 py-3.5 rounded-xl transition-all"
+              >
+                Connect with Mentors
+              </Link>
+            </div>
           </div>
         </div>
+      </section>
 
-      </div>
-    </section>
+    </div>
   );
 }

@@ -91,46 +91,72 @@ export default function WhyQimdContent() {
       
       {/* 1. HERO SECTION */}
       <section
-        className="py-16 lg:py-20 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
+        className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #c4b0ff 0%, #ddb8f8 28%, #ffffff 50%, #b8d9f0 72%, #a8c4e8 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
+        {/* Subtle Ambient Decorative Glow */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[#BD69F2]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto space-y-5" data-aos="fade-up">
-            <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-2xs backdrop-blur-md">
-              <Icon icon="mdi:star-four-points" className="text-[#764DFF] animate-pulse" />
-              Why Choose QIMD?
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            {/* Left Column (Heading, Highlight Box & Action Buttons) */}
+            <div className="lg:col-span-6 space-y-5 text-left" data-aos="fade-up">
+              <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] dark:text-[#a78bfa] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-2xs backdrop-blur-md">
+                <Icon icon="mdi:star-four-points" className="text-[#764DFF] animate-pulse" />
+                <span>Why Choose QIMD?</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
+                Build Your Career Through <br className="hidden sm:inline" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#764DFF] via-[#9055ff] to-[#BD69F2]">
+                  AI-Powered Practical Learning
+                </span>
+              </h1>
+
+              <div className="py-3.5 px-4 sm:px-5 rounded-2xl bg-white/90 dark:bg-darklight/90 border border-slate-200/80 dark:border-dark_border shadow-sm">
+                <p className="text-slate-700 dark:text-white/90 font-medium text-xs sm:text-sm leading-relaxed">
+                  Whether you&apos;re a student, graduate, job seeker, freelancer, entrepreneur, or working professional, our training prepares you to become confident, skilled, and industry-ready.
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-wrap gap-3.5">
+                <Link
+                  href="/courses"
+                  className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-[1.02] flex items-center gap-2"
+                >
+                  <Icon icon="mdi:compass-outline" className="text-base" />
+                  <span>Explore Our Programs</span>
+                </Link>
+                <Link
+                  href="/contact"
+                  className="bg-white/80 dark:bg-darklight border border-[#764DFF]/50 text-[#764DFF] hover:bg-[#764DFF]/10 font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all flex items-center gap-2 hover:scale-[1.02] shadow-2xs"
+                >
+                  <Icon icon="mdi:calendar-check-outline" className="text-base" />
+                  <span>Book Free Career Session</span>
+                </Link>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111827] leading-tight tracking-tight">
-              Build Your Career Through <br />
-              <span className="text-[#5c38d6]">AI-Powered Practical Learning</span>
-            </h1>
+            {/* Right Column (Elevated Philosophy / Statement Card) */}
+            <div className="lg:col-span-6" data-aos="fade-up" data-aos-delay="100">
+              <div className="relative p-6 sm:p-8 rounded-3xl bg-white/90 dark:bg-darklight/90 border border-slate-200/80 dark:border-dark_border shadow-xl backdrop-blur-md space-y-4">
+                {/* Decorative Icon Watermark */}
+                <div className="absolute top-4 right-6 text-slate-300/40 dark:text-white/5 text-6xl pointer-events-none select-none">
+                  <Icon icon="mdi:school-outline" />
+                </div>
 
-            <div className="space-y-3 text-[#374151] text-xs sm:text-sm leading-relaxed font-medium max-w-3xl mx-auto">
-              <p>
-                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we believe that successful careers are built through practical experience, not just theory. Our AI-powered, industry-driven programs are designed to help students develop real-world skills by working on live projects under the guidance of experienced professionals.
-              </p>
-              <p className="text-[#5c38d6] font-bold">
-                Whether you&apos;re a student, graduate, job seeker, freelancer, entrepreneur, or working professional, our training prepares you to become confident, skilled, and industry-ready.
-              </p>
+                <div className="space-y-4 text-slate-700 dark:text-white/90 text-sm sm:text-[15px] lg:text-base leading-relaxed font-medium relative z-10">
+                  <p>
+                    At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we believe that successful careers are built through practical experience, not just theory. Our AI-powered, industry-driven programs are designed to help students develop real-world skills by working on live projects under the guidance of experienced professionals.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-2 flex flex-wrap justify-center gap-4">
-              <Link
-                href="/courses"
-                className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all shadow-md"
-              >
-                Explore Our Programs
-              </Link>
-              <Link
-                href="/contact"
-                className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all"
-              >
-                Book Free Career Session
-              </Link>
-            </div>
           </div>
         </div>
       </section>

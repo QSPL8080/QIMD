@@ -52,6 +52,140 @@ const PlacementPartnerLogo: React.FC<{ partner: any }> = ({ partner }) => {
   )
 }
 
+const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ hiringIndustries }) => {
+  const [inView, setInView] = useState(false)
+  const sectionRef = React.useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting)
+      },
+      { threshold: 0.2 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const graduatePoints = [
+    "Industry-Relevant Skills",
+    "Live Project Experience",
+    "Professional Portfolio",
+    "Resume & LinkedIn Profile",
+    "Interview Preparation",
+    "Career Guidance",
+  ]
+
+  return (
+    <section ref={sectionRef} className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border overflow-hidden">
+      <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+          
+          {/* Left Column: Our Placement Philosophy */}
+          <div
+            className={`bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full hover:shadow-lg transition-all duration-700 ${
+              inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
+                <div className="w-10 h-10 rounded-2xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xl shrink-0">
+                  <Icon icon="mdi:lightbulb-on-outline" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+                    Our Placement Philosophy
+                  </h2>
+                  <span className="text-[10px] font-bold text-[#764DFF] uppercase tracking-wider">Skill-First Approach</span>
+                </div>
+              </div>
+
+              <p className="text-midnight_text dark:text-white font-bold text-xs sm:text-sm">
+                We believe that practical skills create confident professionals.
+              </p>
+              <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
+                That&apos;s why our placement process focuses on developing not only technical expertise but also the communication, confidence, and professional readiness employers look for.
+              </p>
+            </div>
+
+            <div className="pt-3 border-t border-slate-200/60 dark:border-dark_border/60">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#764DFF] mb-3">Our Students Graduate With:</p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {graduatePoints.map((item, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      transitionDelay: `${idx * 110 + 150}ms`,
+                    }}
+                    className={`bg-white dark:bg-dark p-2.5 rounded-xl border border-slate-200/80 dark:border-dark_border text-[11px] font-bold text-slate-800 dark:text-white/90 flex items-center gap-2 shadow-2xs hover:border-[#764DFF]/50 hover:shadow-md hover:scale-[1.03] cursor-default group transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
+                      inView
+                        ? 'opacity-100 scale-100 translate-y-0 blur-none'
+                        : 'opacity-0 scale-40 translate-y-6 blur-xs pointer-events-none'
+                    }`}
+                  >
+                    <div className="w-5 h-5 rounded-md bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#764DFF] group-hover:text-white group-hover:scale-110 transition-all duration-200">
+                      <Icon icon="mdi:check-bold" />
+                    </div>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Hiring Opportunities Across Industries */}
+          <div
+            className={`bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full hover:shadow-lg transition-all duration-700 delay-100 ${
+              inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
+                <div className="w-10 h-10 rounded-2xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xl shrink-0">
+                  <Icon icon="mdi:domain" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
+                    Hiring Opportunities Across Industries
+                  </h2>
+                  <span className="text-[10px] font-bold text-[#BD69F2] uppercase tracking-wider">Diverse Career Reach</span>
+                </div>
+              </div>
+
+              <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
+                Our students are prepared for high-demand opportunities across diverse companies, agencies, and growing startups:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 flex-1">
+              {hiringIndustries.map((ind, i) => (
+                <div
+                  key={i}
+                  style={{
+                    transitionDelay: `${i * 80 + 200}ms`,
+                  }}
+                  className={`bg-white dark:bg-dark p-3 rounded-2xl border border-slate-200/80 dark:border-dark_border text-xs font-bold text-slate-800 dark:text-white/90 flex items-center gap-2.5 shadow-2xs hover:border-[#BD69F2]/50 hover:shadow-md hover:scale-[1.03] group cursor-default transition-all duration-500 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${
+                    inView
+                      ? 'opacity-100 scale-100 translate-y-0 blur-none'
+                      : 'opacity-0 scale-40 translate-y-6 blur-xs pointer-events-none'
+                  }`}
+                >
+                  <div className="w-7 h-7 rounded-xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#BD69F2] group-hover:text-white group-hover:rotate-6 transition-all duration-200">
+                    <Icon icon="mdi:briefcase-outline" />
+                  </div>
+                  <span className="leading-tight">{ind}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function PlacementsPage() {
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
@@ -225,7 +359,7 @@ export default function PlacementsPage() {
       <section
         className="py-16 lg:py-20 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f5f2ff 0%, #f9f5ff 28%, #ffffff 50%, #f0f7fc 72%, #eef5fc 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 15%, #e6d9ff 55%, #cde4fd 100%)',
         }}
       >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
@@ -268,100 +402,15 @@ export default function PlacementsPage() {
       </section>
 
       {/* 2 & 3. OUR PLACEMENT PHILOSOPHY & HIRING OPPORTUNITIES (2-COLUMN SIDE-BY-SIDE) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-            
-            {/* Left Column: Our Placement Philosophy (Fade-Right) */}
-            <div
-              data-aos="fade-right"
-              className="bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
-                  <div className="w-10 h-10 rounded-2xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xl shrink-0">
-                    <Icon icon="mdi:lightbulb-on-outline" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-                      Our Placement Philosophy
-                    </h2>
-                    <span className="text-[10px] font-bold text-[#764DFF] uppercase tracking-wider">Skill-First Approach</span>
-                  </div>
-                </div>
-
-                <p className="text-midnight_text dark:text-white font-bold text-xs sm:text-sm">
-                  We believe that practical skills create confident professionals.
-                </p>
-                <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
-                  That&apos;s why our placement process focuses on developing not only technical expertise but also the communication, confidence, and professional readiness employers look for.
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-200/60 dark:border-dark_border/60">
-                <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#764DFF] mb-3">Our Students Graduate With:</p>
-                <div className="grid grid-cols-2 gap-2.5">
-                  {[
-                    "Industry-Relevant Skills",
-                    "Live Project Experience",
-                    "Professional Portfolio",
-                    "Resume & LinkedIn Profile",
-                    "Interview Preparation",
-                    "Career Guidance",
-                  ].map((item, idx) => (
-                    <div key={idx} className="bg-white dark:bg-dark p-2.5 rounded-xl border border-slate-200/80 dark:border-dark_border text-[11px] font-bold text-slate-800 dark:text-white/90 flex items-center gap-2 shadow-2xs">
-                      <Icon icon="mdi:check-circle" className="text-[#764DFF] text-sm shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Hiring Opportunities Across Industries (Fade-Left) */}
-            <div
-              data-aos="fade-left"
-              className="bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-5 flex flex-col justify-between h-full"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
-                  <div className="w-10 h-10 rounded-2xl bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xl shrink-0">
-                    <Icon icon="mdi:domain" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-                      Hiring Opportunities Across Industries
-                    </h2>
-                    <span className="text-[10px] font-bold text-[#BD69F2] uppercase tracking-wider">Diverse Career Reach</span>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
-                  Our students are prepared for high-demand opportunities across diverse companies, agencies, and growing startups:
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 flex-1">
-                {hiringIndustries.map((ind, i) => (
-                  <div
-                    key={i}
-                    className="bg-white dark:bg-dark p-3 rounded-2xl border border-slate-200/80 dark:border-dark_border text-xs font-bold text-slate-800 dark:text-white/90 flex items-center gap-2.5 shadow-2xs hover:border-[#BD69F2]/40 transition-all group"
-                  >
-                    <div className="w-6 h-6 rounded-lg bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#BD69F2] group-hover:text-white transition-colors">
-                      <Icon icon="mdi:briefcase-outline" />
-                    </div>
-                    <span className="leading-tight">{ind}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <PlacementPhilosophySection hiringIndustries={hiringIndustries} />
 
       {/* 3. PLACEMENT ASSISTANCE INCLUDES (INFINITE MARQUEE TICKER / ANIMATED LOOP - FULL SCREEN WIDTH & SLOW SPEED) */}
-      <section className="py-16 lg:py-24 bg-grey dark:bg-darklight border-b border-slate-200/80 dark:border-dark_border overflow-hidden">
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="space-y-10">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8 text-center space-y-2" data-aos="fade-up">
             <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">End-to-End Support</span>
@@ -453,8 +502,9 @@ export default function PlacementsPage() {
                     {cat.roles.map((role, rIdx) => (
                       <div
                         key={rIdx}
-                        data-aos="fade-left"
-                        data-aos-delay={rIdx * 50}
+                        data-aos="zoom-in"
+                        data-aos-delay={rIdx * 50 + 50}
+                        data-aos-duration="400"
                         className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-dark border border-slate-200/60 dark:border-dark_border/60 hover:border-[#764DFF]/50 hover:bg-[#764DFF]/5 transition-all duration-200 shadow-2xs group/role"
                       >
                         <div className="w-7 h-7 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover/role:bg-[#764DFF] group-hover/role:text-white transition-colors">
@@ -480,7 +530,12 @@ export default function PlacementsPage() {
       </section>
 
       {/* 5. OUR PLACEMENT PROCESS (6 STEPS) */}
-      <section className="py-16 lg:py-24 bg-grey dark:bg-darklight border-b border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
             <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Execution Roadmap</span>
@@ -563,7 +618,12 @@ export default function PlacementsPage() {
       </section>
 
       {/* 9. PLACEMENT SUCCESS BEGINS WITH PRACTICAL LEARNING */}
-      <section className="py-16 lg:py-20 bg-grey dark:bg-darklight border-b border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-20 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 text-center space-y-4 max-w-3xl" data-aos="fade-up">
           <div className="w-12 h-12 rounded-2xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center mx-auto text-2xl font-bold">
             <Icon icon="mdi:star-circle-outline" />

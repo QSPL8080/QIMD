@@ -112,7 +112,7 @@ export default function HireFromUsContent() {
       <section
         className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/60 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f5f0ff 0%, #ffffff 50%, #f0f7ff 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 15%, #e6d9ff 55%, #cde4fd 100%)',
         }}
       >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
@@ -244,7 +244,12 @@ export default function HireFromUsContent() {
       </section>
 
       {/* WHY COMPANIES CHOOSE QIMD */}
-      <section className="py-16 lg:py-24 bg-grey dark:bg-darklight border-t border-b border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-24 border-t border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2" data-aos="fade-up">
             <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Employer Advantage</span>
@@ -702,7 +707,12 @@ export default function HireFromUsContent() {
       </section>
 
       {/* NEED HIRING SUPPORT */}
-      <section className="py-12 sm:py-16 bg-white dark:bg-dark border-t border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-12 sm:py-16 border-t border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-4xl px-4 text-center space-y-4" data-aos="fade-up">
           <div className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 text-[#764DFF] text-xs font-bold px-3 py-1 rounded-full">
             <Icon icon="mdi:headset" className="text-sm" />

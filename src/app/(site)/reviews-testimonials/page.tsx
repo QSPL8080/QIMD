@@ -110,48 +110,75 @@ export default function ReviewsTestimonialsPage() {
       
       {/* 1. HERO HEADER: REVIEWS & TESTIMONIALS */}
       <section
-        className="py-16 lg:py-20 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
+        className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f5f2ff 0%, #f9f5ff 28%, #ffffff 50%, #f0f7fc 72%, #eef5fc 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
+        {/* Ambient Decorative Background Elements */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[#BD69F2]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto space-y-5" data-aos="fade-up">
-            <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-2xs backdrop-blur-md">
-              <Icon icon="mdi:star-circle-outline" className="text-[#764DFF]" />
-              Student Voice &amp; Feedback
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            {/* Left Column (Heading, Subtitle & CTAs) */}
+            <div className="lg:col-span-6 space-y-5 text-left" data-aos="fade-up">
+              <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] dark:text-[#a78bfa] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-2xs backdrop-blur-md">
+                <Icon icon="mdi:star-circle-outline" className="text-[#764DFF] text-base" />
+                <span>Student Voice &amp; Feedback</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
+                Hear Directly{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#764DFF] via-[#9055ff] to-[#BD69F2]">
+                  From Our Students
+                </span>
+              </h1>
+
+              <div className="py-3 px-4 rounded-2xl bg-white/90 dark:bg-darklight/90 border border-slate-200/80 dark:border-dark_border shadow-sm">
+                <p className="font-medium text-slate-700 dark:text-white/90 text-xs sm:text-sm leading-relaxed">
+                  The true measure of an institute is the success and satisfaction of its students.
+                </p>
+              </div>
+
+              <div className="pt-1 flex flex-wrap gap-3.5">
+                <a
+                  href="#video-testimonials"
+                  className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-[1.02] flex items-center gap-2"
+                >
+                  <Icon icon="mdi:play-circle-outline" className="text-lg" />
+                  <span>Watch Video Testimonials</span>
+                </a>
+                <a
+                  href="#text-reviews"
+                  className="bg-white/80 dark:bg-darklight border border-[#764DFF]/50 text-[#764DFF] hover:bg-[#764DFF]/10 font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all flex items-center gap-2 hover:scale-[1.02] shadow-2xs"
+                >
+                  <Icon icon="mdi:comment-text-multiple-outline" className="text-base" />
+                  <span>Read Text Reviews</span>
+                </a>
+              </div>
             </div>
 
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
-              Hear Directly From Our Students
-            </h1>
+            {/* Right Column (Elevated Content Card) */}
+            <div className="lg:col-span-6" data-aos="fade-up" data-aos-delay="100">
+              <div className="relative p-6 sm:p-8 rounded-3xl bg-white/90 dark:bg-darklight/90 border border-slate-200/80 dark:border-dark_border shadow-xl backdrop-blur-md space-y-4">
+                {/* Decorative Quote Icon in Top Right */}
+                <div className="absolute top-3 right-5 text-slate-300/40 dark:text-white/5 text-7xl pointer-events-none select-none">
+                  <Icon icon="mdi:format-quote-close" />
+                </div>
 
-            <div className="space-y-3 text-[#374151] text-xs sm:text-sm leading-relaxed font-medium max-w-3xl mx-auto">
-              <p className="font-bold text-slate-800 dark:text-white text-sm sm:text-base">
-                The true measure of an institute is the success and satisfaction of its students.
-              </p>
-              <p>
-                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we take pride in helping students build practical skills, gain real industry experience, and confidently begin their professional careers.
-              </p>
-              <p>
-                Our students come from different educational and professional backgrounds, but they all share one common goal—to become industry-ready through practical learning. Their success stories and feedback inspire us to continuously deliver high-quality, AI-powered education.
-              </p>
+                <div className="space-y-4 text-slate-700 dark:text-white/90 text-sm sm:text-[15px] lg:text-base leading-relaxed font-medium relative z-10">
+                  <p>
+                    At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, we take pride in helping students build practical skills, gain real industry experience, and confidently begin their professional careers.
+                  </p>
+                  <p>
+                    Our students come from different educational and professional backgrounds, but they all share one common goal—to become industry-ready through practical learning. Their success stories and feedback inspire us to continuously deliver high-quality, AI-powered education.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <div className="pt-2 flex flex-wrap justify-center gap-4">
-              <a
-                href="#video-testimonials"
-                className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all shadow-md"
-              >
-                Watch Video Testimonials
-              </a>
-              <a
-                href="#text-reviews"
-                className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold text-xs sm:text-sm px-7 py-3 rounded-xl transition-all"
-              >
-                Read Text Reviews
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -197,7 +224,13 @@ export default function ReviewsTestimonialsPage() {
 
       {/* 3. STUDENT VIDEO TESTIMONIALS */}
       {videoReviews.length > 0 && (
-        <section className="py-16 lg:py-24 bg-grey dark:bg-darklight border-b border-slate-200/80 dark:border-dark_border" id="video-testimonials">
+        <section
+          className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+          id="video-testimonials"
+          style={{
+            background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+          }}
+        >
           <div className="container mx-auto max-w-7xl px-4 lg:px-8 space-y-10">
             <div className="text-center max-w-2xl mx-auto space-y-3" data-aos="fade-up">
               <span className="text-xs font-bold uppercase tracking-widest text-[#764DFF]">Real Experiences</span>
@@ -340,14 +373,19 @@ export default function ReviewsTestimonialsPage() {
       </section>
 
       {/* 6 & 7. OUR LEARNING EXPERIENCE & SHARE YOUR EXPERIENCE (2-COLUMN SIDE-BY-SIDE) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-24 border-b border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             
             {/* Left Column: Our Learning Experience (Fade-Right) */}
             <div
               data-aos="fade-right"
-              className="bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-6 flex flex-col justify-between h-full"
+              className="bg-white dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-sm space-y-6 flex flex-col justify-between h-full"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">
@@ -373,7 +411,7 @@ export default function ReviewsTestimonialsPage() {
                 {learningExperiencePoints.map((point, idx) => (
                   <div
                     key={idx}
-                    className="bg-white dark:bg-dark p-3 rounded-2xl border border-slate-200/80 dark:border-dark_border text-xs font-bold text-slate-800 dark:text-white/90 flex items-center gap-2.5 shadow-2xs hover:border-[#764DFF]/40 transition-all group"
+                    className="bg-slate-50/80 dark:bg-dark p-3 rounded-2xl border border-slate-200/80 dark:border-dark_border text-xs font-bold text-slate-800 dark:text-white/90 flex items-center gap-2.5 shadow-2xs hover:border-[#764DFF]/40 transition-all group"
                   >
                     <div className="w-6 h-6 rounded-lg bg-[#764DFF]/15 text-[#764DFF] flex items-center justify-center text-xs shrink-0 group-hover:bg-[#764DFF] group-hover:text-white transition-colors">
                       <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -389,7 +427,7 @@ export default function ReviewsTestimonialsPage() {
             {/* Right Column: Share Your Experience (Fade-Left) */}
             <div
               data-aos="fade-left"
-              className="bg-slate-50/80 dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-2xs space-y-6 flex flex-col justify-between h-full"
+              className="bg-white dark:bg-darklight rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-dark_border shadow-sm space-y-6 flex flex-col justify-between h-full"
             >
               <div className="space-y-4">
                 <div className="flex items-center gap-3 pb-3 border-b border-slate-200/60 dark:border-dark_border">

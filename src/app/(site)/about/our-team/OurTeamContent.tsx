@@ -126,7 +126,12 @@ export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: 
       </section>
 
       {/* 2 & 3. COMBINED SIDE-BY-SIDE SECTION: LEARN FROM INDUSTRY PROFESSIONALS & WHAT MAKES OUR TEAM DIFFERENT */}
-      <section className="py-12 sm:py-16 bg-white dark:bg-darklight border-b border-border dark:border-dark_border overflow-hidden">
+      <section
+        className="py-12 sm:py-16 border-b border-border dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 60%, #f4efff 82%, #e9f3fd 100%)',
+        }}
+      >
         <div className="container mx-auto max-w-6xl px-4 lg:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             

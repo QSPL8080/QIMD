@@ -51,7 +51,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
       <section
         className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f5f2ff 0%, #f9f5ff 28%, #ffffff 50%, #f0f7fc 72%, #eef5fc 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
@@ -200,7 +200,12 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
       </section>
 
       {/* 3. LEARN. STAY UPDATED. STAY AHEAD. (CLEAN FULL-WIDTH SECTION) */}
-      <section className="py-16 lg:py-24 bg-[#764DFF]/5 dark:bg-darklight border-t border-slate-200/80 dark:border-dark_border">
+      <section
+        className="py-16 lg:py-24 border-t border-slate-200/80 dark:border-dark_border overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
           <div className="text-center space-y-6 max-w-4xl mx-auto" data-aos="fade-up">
             <div className="inline-flex items-center gap-2 bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-4 py-1.5 rounded-full">

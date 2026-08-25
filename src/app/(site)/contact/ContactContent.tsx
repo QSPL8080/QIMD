@@ -93,7 +93,7 @@ export default function ContactContent() {
       <section
         className="py-14 lg:py-18 relative overflow-hidden text-midnight_text border-b border-slate-200/60 dark:border-dark_border"
         style={{
-          background: 'linear-gradient(135deg, #f0e8ff 0%, #ffffff 50%, #e8f4fd 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">

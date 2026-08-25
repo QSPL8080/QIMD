@@ -327,7 +327,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
       <section
         className="relative overflow-hidden py-10 sm:py-14 lg:py-16"
         style={{
-          background: 'linear-gradient(135deg, #e4d8ff 0%, #f3e5fe 20%, #ffffff 38%, #ffffff 62%, #e2f1fc 82%, #d4e8f8 100%)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
         }}
       >
         {/* Subtle glow / depth overlays */}
@@ -395,7 +395,12 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
       </section>
 
       {/* 3. OUR MOTIVE & OUR DREAM - DISTINCT & PREMIUM DESIGN */}
-      <section className="section-py bg-grey dark:bg-dark relative overflow-hidden">
+      <section
+        className="section-py relative overflow-hidden border-b border-slate-200/80 dark:border-dark_border"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             
@@ -637,7 +642,12 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
       </section>
 
       {/* 7. WHERE DO WE DIFFER FROM OTHERS? / WHY STUDENTS CHOOSE QIMD */}
-      <section className="section-py bg-grey dark:bg-dark">
+      <section
+        className="section-py relative overflow-hidden border-b border-slate-200/80 dark:border-dark_border"
+        style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
+        }}
+      >
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 space-y-10">
           
           <div className="text-center max-w-3xl mx-auto space-y-2" data-aos="fade-up">
