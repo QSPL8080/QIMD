@@ -145,11 +145,11 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials 
         {/* Header */}
         <div className="text-center mb-10" data-aos="fade-up">
           <div className="inline-flex items-center gap-2 bg-white/15 text-white border border-white/25 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md mb-3 shadow-xs">
-            <Icon icon="mdi:format-quote-open" className="text-base text-cyan-300" />
-            <span>Student Reviews Preview</span>
+            <Icon icon="mdi:video-outline" className="text-base text-cyan-300" />
+            <span>Real Student Stories</span>
           </div>
           <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-3 tracking-tight">
-            What Our Students Say About QIMD
+            Student Video Testimonials
           </h2>
           <p className="text-slate-200 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
             Hear directly from our students about their learning experience, practical training, and career growth.

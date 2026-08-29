@@ -56,7 +56,7 @@ export default async function HomePage() {
       {isEnabled("COURSES") && <CoursesSection courses={courses} />}
       {isEnabled("WHY_QIMD") && <WhyQimdSection />}
       {isEnabled("TESTIMONIALS") && <TestimonialsSection testimonials={testimonials} />}
-      {isEnabled("PLACEMENT") && <PlacementsSection placements={placements} partners={hiringPartners} />}
+      {isEnabled("PLACEMENT") && <PlacementsSection testimonials={testimonials} partners={hiringPartners} />}
       {isEnabled("EMI_PARTNERS") && <EmiSection emiPartners={emiPartners} />}
       {isEnabled("GALLERY") && <GalleryPreviewSection items={galleryItems} />}
       {isEnabled("ENQUIRY_FORM") && <CareerCounsellingCTA />}

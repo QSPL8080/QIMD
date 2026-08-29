@@ -202,3 +202,11 @@ export const websiteSettingsSchema = z.object({
   robotsTxt: z.string().optional().nullable(),
   theme: z.enum(['LIGHT', 'DARK']).default('LIGHT'),
 })
+
+export const brochureSchema = z.object({
+  title: z.string().min(2, 'Brochure name is required'),
+  courseId: z.string().uuid('Please select a valid course'),
+  fileUrl: z.string().min(1, 'PDF file is required'),
+  fileSize: z.string().optional().nullable(),
+  isActive: z.boolean().default(true),
+})

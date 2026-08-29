@@ -153,15 +153,15 @@ export default async function AdminDashboardPage() {
 
       {/* CRM Quick Actions & Leads Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Contact Enquiries */}
+        {/* Recent Admission Enquiries */}
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Icon icon="ion:mail-outline" className="w-5 h-5 text-emerald-600" />
-              Recent Contact Enquiries
+              <Icon icon="ion:school-outline" className="w-5 h-5 text-amber-600" />
+              Recent Admission Enquiries
             </h2>
-            <Link href="/admin/enquiries/contact" className="text-xs text-blue-600 font-semibold hover:underline">
-              View All CRM Enquiries
+            <Link href="/admin/enquiries/admission" className="text-xs text-blue-600 font-semibold hover:underline">
+              View All Admission Leads
             </Link>
           </div>
 
@@ -169,29 +169,29 @@ export default async function AdminDashboardPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-y border-slate-200">
                 <tr>
-                  <th className="p-3">Name</th>
+                  <th className="p-3">Student Name</th>
                   <th className="p-3">Contact</th>
-                  <th className="p-3">Subject</th>
+                  <th className="p-3">Target Course</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
-                {recentContacts.length === 0 ? (
+                {recentAdmissions.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="p-4 text-center text-slate-400">
-                      No contact enquiries submitted yet.
+                      No admission enquiries submitted yet.
                     </td>
                   </tr>
                 ) : (
-                  recentContacts.map((c) => (
+                  recentAdmissions.map((c) => (
                     <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="p-3 font-semibold text-slate-900">{c.fullName}</td>
+                      <td className="p-3 font-semibold text-slate-900">{c.studentName}</td>
                       <td className="p-3">{c.email}<br/><span className="text-slate-400">{c.phone}</span></td>
-                      <td className="p-3 truncate max-w-[180px]">{c.subject || 'General'}</td>
+                      <td className="p-3 font-medium text-slate-800">{c.course?.courseName || 'AI Practical Program'}</td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          c.status === 'NEW' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                          c.status === 'NEW' || c.status === 'PENDING' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                           c.status === 'CONTACTED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
                           'bg-slate-100 text-slate-600 border border-slate-200'
                         }`}>
@@ -214,16 +214,16 @@ export default async function AdminDashboardPage() {
             Quick Admin Tools & Export
           </h2>
           <div className="space-y-2.5 text-xs">
-            <a
-              href="/api/export?type=contact"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-700 transition-colors"
+            <Link
+              href="/admin/brochures"
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-purple-50/70 border border-slate-200 text-slate-700 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Icon icon="ion:download-outline" className="w-4 h-4 text-emerald-600" />
-                <span className="font-medium">Export Contact Leads (CSV)</span>
+                <Icon icon="ion:document-attach-outline" className="w-4 h-4 text-purple-600" />
+                <span className="font-medium">Manage Course Brochures</span>
               </div>
               <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
-            </a>
+            </Link>
 
             <a
               href="/api/export?type=admission"

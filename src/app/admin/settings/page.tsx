@@ -33,44 +33,115 @@ export default function AdminSettingsPage() {
     fetchSettings()
   }, [])
 
-  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  // Converts any uploaded image of any size or aspect ratio into a standard, crisp 256x256 square favicon
+  const standardizeFaviconImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      if (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.ico')) {
+        return resolve(file);
+      }
 
-    setUploadingFavicon(true)
-    const formData = new FormData()
-    formData.append('file', file)
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.onload = () => {
+          const size = 256;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return resolve(file);
+
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+
+          const w = img.width;
+          const h = img.height;
+
+          let sx = 0;
+          let sy = 0;
+          let sWidth = w;
+          let sHeight = h;
+
+          // If the user uploads a wide horizontal banner/logo, crop the emblem/mark from the left
+          if (w > h * 1.3) {
+            sWidth = h;
+            sHeight = h;
+            sx = 0;
+            sy = 0;
+          } else if (h > w * 1.3) {
+            sWidth = w;
+            sHeight = w;
+            sx = 0;
+            sy = (h - w) / 2;
+          } else {
+            const minDim = Math.min(w, h);
+            sx = (w - minDim) / 2;
+            sy = (h - minDim) / 2;
+            sWidth = minDim;
+            sHeight = minDim;
+          }
+
+          ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, size, size);
+
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            const standardizedFile = new File([blob], `favicon_${Date.now()}.png`, {
+              type: 'image/png',
+            });
+            resolve(standardizedFile);
+          }, 'image/png');
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawFile = e.target.files?.[0];
+    if (!rawFile) return;
+
+    setUploadingFavicon(true);
 
     try {
+      // Auto-standardize any image to 1:1 high-res square favicon
+      const file = await standardizeFaviconImage(rawFile);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (data.success && data.url) {
-        const prev = faviconUrl
-        setFaviconUrl(data.url)
+        const prev = faviconUrl;
+        setFaviconUrl(data.url);
         
         // Auto-save setting to DB immediately
         const payload = {
           ...settings,
           favicon: data.url,
-        }
-        await updateWebsiteSettingsAction(payload)
-        window.dispatchEvent(new Event('websiteSettingsUpdated'))
+        };
+        await updateWebsiteSettingsAction(payload);
+        window.dispatchEvent(new Event('websiteSettingsUpdated'));
 
         if (prev && prev !== data.url && prev.startsWith('/uploads/')) {
-          deleteUnusedImageAction(prev)
+          deleteUnusedImageAction(prev);
         }
       } else {
-        alert(data.error || 'Failed to upload favicon')
+        alert(data.error || 'Failed to upload favicon');
       }
     } catch (err) {
-      alert('Error uploading favicon file')
+      alert('Error uploading favicon file');
     } finally {
-      setUploadingFavicon(false)
+      setUploadingFavicon(false);
     }
-  }
+  };
 
   const handleRemoveFavicon = async () => {
     if (!faviconUrl) return

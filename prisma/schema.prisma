@@ -141,6 +141,7 @@ model Course {
   createdAt          DateTime           @default(now()) @map("created_at")
   updatedAt          DateTime           @updatedAt @map("updated_at")
   admissionEnquiries AdmissionEnquiry[]
+  brochures          Brochure[]
   category           CourseCategory     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   trainer            Trainer?           @relation(fields: [trainerId], references: [id])
   placements         Placement[]
@@ -707,6 +708,23 @@ model Banner {
 
   @@index([isActive, isDeleted])
   @@map("banners")
+}
+
+model Brochure {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String   @db.VarChar(255)
+  courseId  String   @map("course_id") @db.Uuid
+  fileUrl   String   @map("file_url")
+  fileSize  String?  @map("file_size") @db.VarChar(50)
+  isActive  Boolean  @default(true) @map("is_active")
+  isDeleted Boolean  @default(false) @map("is_deleted")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([isActive, isDeleted])
+  @@map("brochures")
 }
 
 enum ContentStatus {

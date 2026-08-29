@@ -1,9 +1,54 @@
 'use client'
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { placedStudentsData, placementPartnersData } from '@/data'
-import PlacementCard from '@/components/Common/PlacementCard'
+import { placementPartnersData } from '@/data'
+
+const studentReviewsList = [
+  {
+    name: "Rohan V.",
+    initial: "R",
+    company: "Growth Media Agency",
+    program: "Digital Marketing Master Program",
+    rating: 5,
+    review: "The practical training and live client projects helped me build confidence and prepare for interviews. The trainers were supportive throughout my learning journey."
+  },
+  {
+    name: "Sneha M.",
+    initial: "S",
+    company: "Creative Studio",
+    program: "UI/UX & Graphic Design Course",
+    rating: 5,
+    review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence."
+  },
+  {
+    name: "Aniket K.",
+    initial: "A",
+    company: "Media House",
+    program: "Video Editing & Content Creation",
+    rating: 5,
+    review: "Unlike traditional institutes, QIMD focuses on practical implementation. Every assignment and project helped me understand how the industry actually works."
+  },
+  {
+    name: "Pooja S.",
+    initial: "P",
+    company: "Tech Agency",
+    program: "Full-Stack Digital Marketing & AI",
+    rating: 5,
+    review: "From zero experience to working on real client projects, the journey at QIMD has been truly rewarding. I highly recommend it to anyone looking to build a career in the digital industry."
+  }
+]
+
+const StarRating: React.FC<{ rating?: number }> = ({ rating = 5 }) => (
+  <div className="flex items-center gap-1 flex-shrink-0">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <Icon
+        key={i}
+        icon="mdi:star"
+        className="text-amber-400 text-sm"
+      />
+    ))}
+  </div>
+)
 
 const PartnerLogoItem: React.FC<{ partner: any }> = ({ partner }) => {
   const fallback = placementPartnersData.find(
@@ -37,58 +82,77 @@ const PartnerLogoItem: React.FC<{ partner: any }> = ({ partner }) => {
   )
 }
 
-const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[] }> = ({ placements, partners }) => {
-  const displayPlacements = placements && placements.length > 0 ? placements.slice(0, 4) : placedStudentsData.slice(0, 4)
+const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[]; testimonials?: any[] }> = ({
+  partners,
+}) => {
   const displayPartners = partners && partners.length > 0 ? partners : placementPartnersData
 
   return (
     <section
-      className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-y border-slate-200/80 dark:border-dark_border"
-      id="placements"
+      className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-y border-slate-100 dark:border-dark_border"
+      id="student-reviews"
       style={{
-        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
+        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f1ecff 75%, #e0edfe 100%)',
       }}
     >
-      {/* Subtle background decoration */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-[#764DFF]/10 blur-3xl" />
-        <div className="absolute bottom-0 -left-20 w-72 h-72 rounded-full bg-[#38bdf8]/10 blur-3xl" />
-      </div>
-
       <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12" data-aos="fade-up">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs font-bold mb-3 shadow-xs">
-            <Icon icon="mdi:briefcase-check" className="text-[#764DFF] text-sm" />
-            <span>Career Success Stories</span>
+        <div className="text-center mb-10" data-aos="fade-up">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EDE9FE] text-[#6366F1] text-[11px] font-bold tracking-wide uppercase mb-3">
+            <Icon icon="mdi:star-check" className="text-[#6366F1] text-sm" />
+            <span>VERIFIED RATINGS</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white mb-4 tracking-tight">
-            Meet Our Recently Placed Students
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white mb-2 tracking-tight">
+            What Our Students Say
           </h2>
-          <p suppressHydrationWarning className="text-slate-700 dark:text-white/80 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium">
-            See how QIMD&apos;s practical training, internships, and placement support helped students launch successful careers.
+          <p suppressHydrationWarning className="text-slate-500 dark:text-white/70 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+            Authentic feedback from graduates who transformed their skills and careers with us.
           </p>
         </div>
 
-        {/* Placed Students Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {displayPlacements.map((student, index) => (
-            <PlacementCard key={student.id} student={student} index={index} />
+        {/* 2x2 Reviews Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto mb-16">
+          {studentReviewsList.map((item, index) => (
+            <div
+              key={index}
+              data-aos="fade-up"
+              data-aos-delay={index * 80}
+              className="bg-white dark:bg-darklight rounded-2xl p-5 sm:p-6 border border-slate-100 dark:border-dark_border shadow-xs hover:shadow-md transition-all flex flex-col justify-between h-full"
+            >
+              <div>
+                {/* Header: 5 Stars + Course Badge */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <StarRating rating={item.rating} />
+                  <span className="bg-[#EDE9FE] text-[#6366F1] font-semibold text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                    {item.program}
+                  </span>
+                </div>
+
+                {/* Review Text */}
+                <p className="text-xs sm:text-[13px] text-slate-700 dark:text-white/80 leading-relaxed italic mb-4 font-normal">
+                  &quot;{item.review}&quot;
+                </p>
+              </div>
+
+              {/* Student Details Footer */}
+              <div className="flex items-center gap-2.5 pt-3 border-t border-slate-50 dark:border-dark_border/50">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#EDE9FE] text-[#6366F1] font-bold text-xs flex items-center justify-center shrink-0">
+                  {item.initial}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs leading-tight">
+                    {item.name}
+                  </h4>
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
+                    @ {item.company}
+                  </p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* View All Button */}
-        <div className="text-center mb-16" data-aos="fade-up">
-          <Link
-            href="/placements#success-stories"
-            className="inline-flex items-center gap-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white font-extrabold px-8 py-3.5 rounded-full shadow-xl hover:scale-105 transition-all duration-300"
-          >
-            <span>View All Placement Success Stories</span>
-            <Icon icon="mdi:arrow-right" className="text-lg" />
-          </Link>
-        </div>
-
-        {/* Placement Partners */}
+        {/* Placement Partners / Hiring Companies Logo Section */}
         <div className="mt-4 text-center" data-aos="fade-up">
           <p className="text-xs font-bold text-slate-700 dark:text-white/80 uppercase tracking-widest mb-6">
             Trusted Hiring Partners &amp; Recruiters

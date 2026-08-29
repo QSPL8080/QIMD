@@ -309,10 +309,74 @@ input[type="button"] {
   box-sizing: border-box !important;
 }
 
-/* Inline text buttons, links, and unstyled action triggers — Clean & Borderless */
+/* Inline text buttons, links, form control addons, and unstyled action triggers — Clean & Borderless */
 button:not([class*="px-"]):not([class*="bg-"]):not([class*="btn"]):not([class*="border"]),
 button[class*="hover:underline"],
 button[class*="text-"][class*="font-"]:not([class*="bg-"]):not([class*="rounded-"]),
+button.border-0,
+button.border-none,
+.phone-country-btn,
+button.phone-country-btn,
+.course-dropdown-btn,
+button.course-dropdown-btn,
+.dropdown-item-btn,
+button.dropdown-item-btn {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+button.course-dropdown-btn {
+  box-shadow: none !important;
+  transform: none !important;
+  border: 1px solid #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  background-color: rgba(249, 250, 251, 0.8) !important;
+  box-sizing: border-box !important;
+}
+
+.dark button.course-dropdown-btn {
+  border-color: #332D55 !important;
+  background-color: #1A1730 !important;
+}
+
+button.course-dropdown-btn:hover {
+  box-shadow: none !important;
+  transform: none !important;
+  border-color: #d1d5db !important;
+}
+
+button.course-dropdown-btn:focus,
+button.course-dropdown-btn[aria-expanded="true"] {
+  box-shadow: none !important;
+  transform: none !important;
+  border-color: #6366F1 !important;
+  background-color: #ffffff !important;
+}
+
+button.phone-country-btn {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: #e2e8f0 !important;
+  border-right-width: 0px !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.phone-country-btn:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: #cbd5e1 !important;
+}
+
+button.dropdown-item-btn {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
 button.border-0,
 button.border-none {
   border: 0 !important;

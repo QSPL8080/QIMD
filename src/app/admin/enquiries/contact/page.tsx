@@ -5,6 +5,7 @@ import {
   updateEnquiryStatusAction,
   deleteEnquiryAction,
   bulkDeleteEnquiryAction,
+  bulkUpdateEnquiryStatusAction,
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 
@@ -55,8 +56,6 @@ export default function AdminContactLeadsPage() {
     return matchesSearch && matchesStatus
   })
 
-  const closedLeads = filteredLeads.filter(l => l.status === 'CLOSED')
-
   const handleStatusChange = async (id: string, newStatus: string) => {
     startTransition(async () => {
       const res = await updateEnquiryStatusAction('contact', id, newStatus)
@@ -68,6 +67,27 @@ export default function AdminContactLeadsPage() {
         if (selectedLead?.id === id) {
           setSelectedLead((prev: any) => ({ ...prev, status: newStatus }))
         }
+      } else {
+        setStatusMsg({ type: 'error', text: res.error || 'Failed to update status' })
+      }
+    })
+  }
+
+  const handleBulkStatusChange = async (newStatus: string) => {
+    if (selectedIds.length === 0) return
+    startTransition(async () => {
+      const res = await bulkUpdateEnquiryStatusAction('contact', selectedIds, newStatus)
+      if (res.success) {
+        setStatusMsg({ type: 'success', text: res.message || `Selected leads marked as ${newStatus}` })
+        setLeads((prev) =>
+          prev.map((item) =>
+            selectedIds.includes(item.id) ? { ...item, status: newStatus } : item
+          )
+        )
+        if (selectedLead && selectedIds.includes(selectedLead.id)) {
+          setSelectedLead((prev: any) => ({ ...prev, status: newStatus }))
+        }
+        setSelectedIds([])
       } else {
         setStatusMsg({ type: 'error', text: res.error || 'Failed to update status' })
       }
@@ -105,14 +125,16 @@ export default function AdminContactLeadsPage() {
   }
 
   const toggleSelectId = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
   }
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === closedLeads.length) {
+    if (selectedIds.length === filteredLeads.length) {
       setSelectedIds([])
     } else {
-      setSelectedIds(closedLeads.map(l => l.id))
+      setSelectedIds(filteredLeads.map((l) => l.id))
     }
   }
 
@@ -147,7 +169,7 @@ export default function AdminContactLeadsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
           <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Icon icon="ion:mail-unread-outline" className="w-6 h-6 text-emerald-600" />
+            <Icon icon="ion:mail-unread-outline" className="w-6 h-6 text-blue-600" />
             Contact Enquiry CMS
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -194,7 +216,10 @@ export default function AdminContactLeadsPage() {
           <label className="text-sm font-semibold text-slate-600 whitespace-nowrap">Status Filter:</label>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value)
+              setSelectedIds([])
+            }}
             className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-600 w-full sm:w-auto"
           >
             <option value="ALL">All Statuses</option>
@@ -205,31 +230,61 @@ export default function AdminContactLeadsPage() {
         </div>
       </div>
 
-      {/* Bulk delete bar — shows only when viewing CLOSED tab and closed records exist */}
-      {statusFilter === 'CLOSED' && closedLeads.length > 0 && (
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3">
+      {/* Bulk Action Bar — Shows whenever 1 or more leads are selected */}
+      {selectedIds.length > 0 && (
+        <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={selectedIds.length === closedLeads.length && closedLeads.length > 0}
-              onChange={toggleSelectAll}
-              className="w-4 h-4 rounded cursor-pointer"
-            />
-            <span className="text-xs font-semibold text-slate-700">
-              {selectedIds.length > 0
-                ? `${selectedIds.length} of ${closedLeads.length} selected`
-                : `Select all closed (${closedLeads.length})`}
+            <span className="bg-white px-3 py-1 rounded-lg border border-slate-200 text-xs font-semibold text-slate-800 flex items-center gap-1.5 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+              {selectedIds.length} of {filteredLeads.length} Selected
             </span>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="text-xs text-slate-500 hover:text-slate-800 font-medium hover:underline cursor-pointer"
+            >
+              Clear Selection
+            </button>
           </div>
-          {selectedIds.length > 0 && (
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500 font-medium hidden md:inline">Change Status:</span>
+
+            <button
+              onClick={() => handleBulkStatusChange('CONTACTED')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-blue-50 text-blue-700 border border-slate-200 hover:border-blue-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:call-outline" className="w-3.5 h-3.5 text-blue-600" />
+              Mark Contacted
+            </button>
+
+            <button
+              onClick={() => handleBulkStatusChange('CLOSED')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:checkmark-done-outline" className="w-3.5 h-3.5 text-slate-600" />
+              Mark Closed
+            </button>
+
+            <button
+              onClick={() => handleBulkStatusChange('PENDING')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-800 border border-slate-200 hover:border-amber-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:time-outline" className="w-3.5 h-3.5 text-amber-600" />
+              Mark Pending
+            </button>
+
             <button
               onClick={() => setBulkDeleteConfirm(true)}
-              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
             >
-              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
-              Delete Selected ({selectedIds.length})
+              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
+              Delete
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -242,64 +297,72 @@ export default function AdminContactLeadsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm min-w-[650px]">
-            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
-              <tr>
-                {statusFilter === 'CLOSED' && <th className="p-4 w-10"></th>}
-                <th className="p-4">Name</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Subject</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
-              {filteredLeads.map((lead) => (
-                <tr
-                  key={lead.id}
-                  onClick={() => setSelectedLead(lead)}
-                  className="hover:bg-blue-50/50 cursor-pointer transition-colors group"
-                >
-                  {statusFilter === 'CLOSED' && (
-                    <td className="p-4" onClick={(e) => e.stopPropagation()}>
+              <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
+                <tr>
+                  <th className="p-4 w-10">
+                    <input
+                      type="checkbox"
+                      checked={filteredLeads.length > 0 && selectedIds.length === filteredLeads.length}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded cursor-pointer accent-blue-600"
+                      title={selectedIds.length === filteredLeads.length ? 'Deselect all' : 'Select all'}
+                    />
+                  </th>
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Email</th>
+                  <th className="p-4">Subject</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {filteredLeads.map((lead) => (
+                  <tr
+                    key={lead.id}
+                    onClick={() => setSelectedLead(lead)}
+                    className={`hover:bg-blue-50/50 cursor-pointer transition-colors group ${
+                      selectedIds.includes(lead.id) ? 'bg-blue-50/30' : ''
+                    }`}
+                  >
+                    <td className="p-4 w-10" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={selectedIds.includes(lead.id)}
                         onChange={() => toggleSelectId(lead.id)}
-                        className="w-4 h-4 rounded cursor-pointer"
+                        className="w-4 h-4 rounded cursor-pointer accent-blue-600"
                       />
                     </td>
-                  )}
-                  <td className="p-4 font-bold text-slate-900 text-base group-hover:text-blue-600">
-                    {lead.fullName}
-                  </td>
-                  <td className="p-4 text-slate-600 font-medium text-sm">
-                    <a
-                      href={`mailto:${lead.email}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {lead.email}
-                    </a>
-                  </td>
-                  <td className="p-4 text-slate-800 font-medium text-sm truncate max-w-xs">
-                    {lead.subject || 'General Enquiry'}
-                  </td>
-                  <td className="p-4">{getStatusBadge(lead.status)}</td>
-                  <td className="p-4 text-right">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedLead(lead)
-                      }}
-                      className="px-3.5 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors"
-                    >
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <td className="p-4 font-bold text-slate-900 text-base group-hover:text-blue-600">
+                      {lead.fullName}
+                    </td>
+                    <td className="p-4 text-slate-600 font-medium text-sm">
+                      <a
+                        href={`mailto:${lead.email}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {lead.email}
+                      </a>
+                    </td>
+                    <td className="p-4 text-slate-800 font-medium text-sm truncate max-w-xs">
+                      {lead.subject || 'General Enquiry'}
+                    </td>
+                    <td className="p-4">{getStatusBadge(lead.status)}</td>
+                    <td className="p-4 text-right">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedLead(lead)
+                        }}
+                        className="px-3.5 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

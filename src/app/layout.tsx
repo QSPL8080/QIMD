@@ -82,13 +82,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/images/logo/qimd-logo.png", type: "image/png" },
-      { url: "/images/logo/qimd-logo.png", sizes: "32x32", type: "image/png" },
-      { url: "/images/logo/qimd-logo.png", sizes: "192x192", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.svg", sizes: "32x32", type: "image/svg+xml" },
+      { url: "/favicon.svg", sizes: "48x48", type: "image/svg+xml" },
+      { url: "/favicon.svg", sizes: "96x96", type: "image/svg+xml" },
+      { url: "/favicon.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/favicon.svg", sizes: "512x512", type: "image/svg+xml" },
     ],
-    shortcut: ["/images/logo/qimd-logo.png"],
+    shortcut: ["/favicon.svg"],
     apple: [
-      { url: "/images/logo/qimd-logo.png", sizes: "180x180", type: "image/png" },
+      { url: "/favicon.svg", sizes: "180x180", type: "image/svg+xml" },
     ],
   },
   manifest: "/site.webmanifest",
@@ -104,22 +107,27 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let faviconUrl = "/images/logo/qimd-logo.png";
+  let faviconUrl = "/favicon.svg";
   try {
     const ws = await db.websiteSettings.findFirst({ select: { favicon: true } });
-    if (ws?.favicon) {
+    if (ws?.favicon && ws.favicon.trim()) {
       faviconUrl = ws.favicon;
     }
   } catch (err) {
     console.error("Layout favicon load error:", err);
   }
 
+  const isSvg = faviconUrl.endsWith(".svg");
+
   return (
     <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" type="image/png" href={faviconUrl} />
-        <link rel="icon" type="image/png" sizes="32x32" href={faviconUrl} />
-        <link rel="icon" type="image/png" sizes="192x192" href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="32x32" href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="48x48" href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="96x96" href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="192x192" href={faviconUrl} />
+        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="512x512" href={faviconUrl} />
         <link rel="shortcut icon" href={faviconUrl} />
         <link rel="apple-touch-icon" sizes="180x180" href={faviconUrl} />
         <meta name="apple-mobile-web-app-title" content="QIMD" />

@@ -10,6 +10,7 @@ import {
   faqSchema,
   categorySchema,
   websiteSettingsSchema,
+  brochureSchema,
 } from '@/lib/validations'
 import { requireAdminSession } from '@/lib/auth'
 import { createAuditLog } from '@/lib/audit'
@@ -183,14 +184,45 @@ export async function saveCourseAction(data: any, id?: string) {
       await createAuditLog({ userId: session.id, module: 'CMS_COURSES', action: 'CREATE_COURSE', recordId: created.id })
     }
 
-    revalidatePath('/')
-    revalidatePath('/courses')
-    revalidatePath('/admin/courses')
-    if (validated.data.slug) {
-      revalidatePath(`/courses/${validated.data.slug}`)
+    // Sync active brochure if provided
+    const targetCourseId = id || (await db.course.findFirst({ where: { slug: coursePayload.slug } }))?.id
+    if (targetCourseId && validated.data.brochure && validated.data.brochure.trim()) {
+      const brochureUrl = validated.data.brochure.trim()
+      await db.brochure.updateMany({
+        where: { courseId: targetCourseId },
+        data: { isActive: false },
+      })
+      const existing = await db.brochure.findFirst({
+        where: { courseId: targetCourseId, fileUrl: brochureUrl, isDeleted: false },
+      })
+      if (existing) {
+        await db.brochure.update({
+          where: { id: existing.id },
+          data: { isActive: true },
+        })
+      } else {
+        await db.brochure.create({
+          data: {
+            title: `${validated.data.courseName} Brochure`,
+            courseId: targetCourseId,
+            fileUrl: brochureUrl,
+            isActive: true,
+          },
+        })
+      }
     }
-    revalidatePath('/courses/[slug]', 'page')
-    return { success: true, message: 'Course saved successfully' }
+
+    try {
+      revalidatePath('/')
+      revalidatePath('/courses')
+      revalidatePath('/admin/courses')
+      revalidatePath('/admin/brochures')
+      if (validated.data.slug) {
+        revalidatePath(`/courses/${validated.data.slug}`)
+      }
+      revalidatePath('/courses/[slug]', 'page')
+    } catch {}
+    return { success: true, message: 'Course and brochure saved successfully' }
   } catch (err: any) {
     if (err?.code === 'P2002' || err?.message?.includes('Unique constraint failed')) {
       return { success: false, error: 'A course with this slug already exists.' }
@@ -1593,6 +1625,219 @@ export async function bulkDeleteTrainersPermanentlyAction(ids: string[]) {
     return { success: true, message: `${validIds.length} members permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete trainers' }
+  }
+}
+
+// --- BROCHURES CMS ---
+export async function getBrochuresAction() {
+  const session = await requireAdminSession()
+  try {
+    const brochures = await db.brochure.findMany({
+      include: {
+        course: {
+          select: { id: true, courseName: true, slug: true },
+        },
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    })
+    return { success: true, brochures: JSON.parse(JSON.stringify(brochures)) }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to fetch brochures' }
+  }
+}
+
+export async function saveBrochureAction(data: any, id?: string) {
+  const session = await requireAdminSession()
+  try {
+    const validated = brochureSchema.safeParse(data)
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message }
+    }
+
+    const { title, courseId, fileUrl, fileSize, isActive } = validated.data
+
+    // If activating this brochure, ensure only 1 active brochure per course
+    if (isActive) {
+      await db.brochure.updateMany({
+        where: {
+          courseId,
+          ...(id && UUID_REGEX.test(id) ? { id: { not: id } } : {}),
+        },
+        data: { isActive: false },
+      })
+    }
+
+    let savedBrochure: any = null
+
+    if (id && UUID_REGEX.test(id)) {
+      savedBrochure = await db.brochure.update({
+        where: { id },
+        data: {
+          title,
+          courseId,
+          fileUrl,
+          fileSize: fileSize || null,
+          isActive,
+        },
+        include: { course: true },
+      })
+      await createAuditLog({
+        userId: session.id,
+        module: 'CMS_BROCHURES',
+        action: 'UPDATE_BROCHURE',
+        recordId: id,
+      })
+    } else {
+      savedBrochure = await db.brochure.create({
+        data: {
+          title,
+          courseId,
+          fileUrl,
+          fileSize: fileSize || null,
+          isActive,
+        },
+        include: { course: true },
+      })
+      await createAuditLog({
+        userId: session.id,
+        module: 'CMS_BROCHURES',
+        action: 'CREATE_BROCHURE',
+        recordId: savedBrochure.id,
+      })
+    }
+
+    try {
+      revalidatePath('/')
+      revalidatePath('/courses')
+      revalidatePath('/admin/brochures')
+    } catch {}
+    return { success: true, message: 'Brochure saved successfully', brochure: JSON.parse(JSON.stringify(savedBrochure)) }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to save brochure' }
+  }
+}
+
+export async function toggleBrochureStatusAction(id: string, isActive: boolean) {
+  const session = await requireAdminSession()
+  try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid brochure ID' }
+    }
+
+    const target = await db.brochure.findUnique({ where: { id } })
+    if (!target) return { success: false, error: 'Brochure not found' }
+
+    if (isActive) {
+      // Deactivate all other brochures for this course
+      await db.brochure.updateMany({
+        where: {
+          courseId: target.courseId,
+          id: { not: id },
+        },
+        data: { isActive: false },
+      })
+    }
+
+    const updated = await db.brochure.update({
+      where: { id },
+      data: { isActive },
+      include: { course: true },
+    })
+
+    await createAuditLog({
+      userId: session.id,
+      module: 'CMS_BROCHURES',
+      action: isActive ? 'ACTIVATE_BROCHURE' : 'DEACTIVATE_BROCHURE',
+      recordId: id,
+    })
+
+    try {
+      revalidatePath('/')
+      revalidatePath('/courses')
+      revalidatePath('/admin/brochures')
+    } catch {}
+    return { success: true, message: `Brochure ${isActive ? 'activated' : 'deactivated'} successfully`, brochure: JSON.parse(JSON.stringify(updated)) }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to update brochure status' }
+  }
+}
+
+export async function trashBrochureAction(id: string) {
+  const session = await requireAdminSession()
+  try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid brochure ID' }
+    }
+    await db.brochure.update({
+      where: { id },
+      data: { isDeleted: true, isActive: false },
+    })
+    await createAuditLog({
+      userId: session.id,
+      module: 'CMS_BROCHURES',
+      action: 'TRASH_BROCHURE',
+      recordId: id,
+    })
+    try {
+      revalidatePath('/admin/brochures')
+    } catch {}
+    return { success: true, message: 'Brochure moved to Trash' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to trash brochure' }
+  }
+}
+
+export async function restoreBrochureAction(id: string) {
+  const session = await requireAdminSession()
+  try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid brochure ID' }
+    }
+    await db.brochure.update({
+      where: { id },
+      data: { isDeleted: false },
+    })
+    await createAuditLog({
+      userId: session.id,
+      module: 'CMS_BROCHURES',
+      action: 'RESTORE_BROCHURE',
+      recordId: id,
+    })
+    try {
+      revalidatePath('/admin/brochures')
+    } catch {}
+    return { success: true, message: 'Brochure restored successfully' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore brochure' }
+  }
+}
+
+export async function deleteBrochureAction(id: string) {
+  const session = await requireAdminSession()
+  try {
+    if (!id || !UUID_REGEX.test(id)) {
+      return { success: false, error: 'Invalid brochure ID' }
+    }
+    const brochure = await db.brochure.findUnique({ where: { id } })
+    if (!brochure) return { success: false, error: 'Brochure not found' }
+
+    await db.brochure.delete({ where: { id } })
+
+    await createAuditLog({
+      userId: session.id,
+      module: 'CMS_BROCHURES',
+      action: 'PERMANENT_DELETE_BROCHURE',
+      recordId: id,
+    })
+
+    try {
+      revalidatePath('/')
+      revalidatePath('/courses')
+      revalidatePath('/admin/brochures')
+    } catch {}
+    return { success: true, message: 'Brochure permanently deleted' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete brochure' }
   }
 }
 

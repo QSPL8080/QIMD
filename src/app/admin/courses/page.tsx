@@ -29,6 +29,8 @@ export default function AdminCoursesPage() {
   // File upload state & banner preview
   const [bannerImageUrl, setBannerImageUrl] = useState('')
   const [uploadingBanner, setUploadingBanner] = useState(false)
+  const [brochureUrl, setBrochureUrl] = useState('')
+  const [uploadingBrochure, setUploadingBrochure] = useState(false)
 
   const fetchData = async () => {
     setLoading(true)
@@ -53,9 +55,12 @@ export default function AdminCoursesPage() {
     if (course) {
       setEditingCourse(course)
       setBannerImageUrl(course.bannerImage || '')
+      const activeBrochure = course.brochures?.find((b: any) => b.isActive)?.fileUrl || course.brochure || ''
+      setBrochureUrl(activeBrochure)
     } else {
       setEditingCourse(null)
       setBannerImageUrl('')
+      setBrochureUrl('')
     }
     setIsFormOpen(true)
   }
@@ -99,6 +104,37 @@ export default function AdminCoursesPage() {
     await deleteUnusedImageAction(urlToRemove)
   }
 
+  const handleBrochureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Please select a valid PDF file.')
+      return
+    }
+
+    setUploadingBrochure(true)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.success && data.url) {
+        setBrochureUrl(data.url)
+      } else {
+        alert(data.error || 'Failed to upload PDF brochure')
+      }
+    } catch (err) {
+      alert('Error uploading PDF file')
+    } finally {
+      setUploadingBrochure(false)
+    }
+  }
+
   const filteredCourses = courses.filter((c) => {
     const matchesSearch =
       c.courseName.toLowerCase().includes(search.toLowerCase()) ||
@@ -113,6 +149,7 @@ export default function AdminCoursesPage() {
     const formData = new FormData(form)
 
     const finalBanner = bannerImageUrl.trim() || (formData.get('bannerImage') as string) || ''
+    const finalBrochure = brochureUrl.trim() || (formData.get('brochure') as string) || ''
 
     const rawCatId = formData.get('categoryId') as string
     const categoryId = rawCatId && rawCatId.trim() ? rawCatId.trim() : (categories[0]?.id || null)
@@ -134,7 +171,7 @@ export default function AdminCoursesPage() {
       syllabus: (formData.get('syllabus') as string) || '',
       learningOutcomes: (formData.get('learningOutcomes') as string) || '',
       certification: (formData.get('certification') as string) || '',
-      brochure: (formData.get('brochure') as string) || '',
+      brochure: finalBrochure || '',
       demoVideo: (formData.get('demoVideo') as string) || '',
       featured: formData.get('featured') === 'true',
       displayOrder: Number(formData.get('displayOrder') || 0),
@@ -389,13 +426,17 @@ export default function AdminCoursesPage() {
                 <th className="p-4 w-10"></th>
                 <th className="p-4">Course Banner & Name</th>
                 <th className="p-4">Category</th>
+                <th className="p-4">Brochure PDF</th>
                 <th className="p-4">Duration & Fees</th>
                 <th className="p-4">Status</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
-              {filteredCourses.map((course) => (
+              {filteredCourses.map((course) => {
+                const activeBrochure = course.brochures?.find((b: any) => b.isActive) || (course.brochures && course.brochures[0])
+                const brochureFile = activeBrochure?.fileUrl || course.brochure
+                return (
                 <tr
                   key={course.id}
                   className={`hover:bg-slate-50 transition-colors ${
@@ -422,6 +463,27 @@ export default function AdminCoursesPage() {
                     </div>
                   </td>
                   <td className="p-4 font-semibold text-slate-800 text-sm">{course.category?.name || 'General'}</td>
+                  <td className="p-4">
+                    {brochureFile ? (
+                      <a
+                        href={brochureFile}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-lg text-xs border border-purple-200 transition-colors"
+                        title="Click to view/download PDF"
+                      >
+                        <Icon icon="ion:document-text" className="text-sm" />
+                        <span>View PDF</span>
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => openForm(course)}
+                        className="text-[11px] font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded border border-amber-200"
+                      >
+                        + Add PDF
+                      </button>
+                    )}
+                  </td>
                   <td className="p-4">
                     <p className="font-semibold text-slate-900 text-sm">{course.duration || '6 Months'}</p>
                     <p className="text-emerald-700 font-bold text-xs">
@@ -477,7 +539,7 @@ export default function AdminCoursesPage() {
                     )}
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
           </div>
@@ -619,6 +681,63 @@ export default function AdminCoursesPage() {
                     >
                       <Icon icon="ion:close" className="w-4 h-4" />
                     </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Course PDF Brochure Document Section */}
+              <div className="bg-purple-50/70 p-4 border border-purple-200 rounded-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-purple-900 font-bold flex items-center gap-1.5">
+                    <Icon icon="ion:document-attach-outline" className="w-4 h-4 text-purple-600" />
+                    Course PDF Brochure (Automatically downloaded by students when form is submitted)
+                  </label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    name="brochure"
+                    value={brochureUrl}
+                    onChange={(e) => setBrochureUrl(e.target.value)}
+                    placeholder="/brochures/ai-digital-marketing-brochure.pdf or upload PDF"
+                    className="flex-1 bg-white border border-purple-200 rounded-xl p-2.5 text-slate-900 font-mono text-xs"
+                  />
+                  <label className="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl cursor-pointer font-bold transition-colors flex items-center gap-1.5 whitespace-nowrap text-xs shadow-xs">
+                    <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
+                    {uploadingBrochure ? 'Uploading PDF...' : 'Upload / Replace PDF'}
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      className="hidden"
+                      onChange={handleBrochureUpload}
+                    />
+                  </label>
+                </div>
+                {brochureUrl && (
+                  <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-purple-200">
+                    <div className="flex items-center gap-2 truncate">
+                      <Icon icon="ion:document-text" className="w-5 h-5 text-purple-600 shrink-0" />
+                      <span className="text-xs font-semibold text-purple-950 truncate">{brochureUrl}</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <a
+                        href={brochureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-lg text-xs flex items-center gap-1"
+                      >
+                        <Icon icon="ion:eye-outline" />
+                        Preview PDF
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setBrochureUrl('')}
+                        className="p-1 text-rose-500 hover:text-rose-700"
+                        title="Remove Brochure"
+                      >
+                        <Icon icon="ion:trash-outline" className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import type { EnquiryFormData } from "@/types";
 import { coursesData, siteConfig } from "@/data";
@@ -40,16 +40,47 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [downloadInfo, setDownloadInfo] = useState<{ url: string; title?: string } | null>(null);
+  const [courseOpen, setCourseOpen] = useState(false);
+  const courseDropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (selectedCourse) {
+      setForm(prev => ({ ...prev, courseInterest: selectedCourse }));
+    }
+  }, [selectedCourse]);
+
+  // Auto-reset form to original state after 3 seconds upon successful submission
   useEffect(() => {
     if (submitted) {
       const timer = setTimeout(() => {
         setSubmitted(false);
-        setForm(INITIAL_FORM);
+        setDownloadInfo(null);
+        setForm({
+          name: "",
+          phone: "",
+          email: "",
+          location: "",
+          courseInterest: selectedCourse,
+          message: "",
+          subject: "",
+        });
+        setErrors({});
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [submitted]);
+  }, [submitted, selectedCourse]);
+
+  // Close course dropdown on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (courseDropdownRef.current && !courseDropdownRef.current.contains(e.target as Node)) {
+        setCourseOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const validate = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
@@ -60,7 +91,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
       newErrors.email = "Valid email address required";
     
     if (formType === 'admission') {
-      if (!form.courseInterest) newErrors.courseInterest = "Please select a course";
+      if (!form.courseInterest && !selectedCourse) newErrors.courseInterest = "Please select a course";
     } else {
       if (!form.message?.trim()) newErrors.message = "Message is required";
     }
@@ -76,6 +107,35 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof EnquiryFormData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const downloadingRef = useRef(false);
+
+  const triggerBrochureDownload = (brochureUrl: string, courseParam: string, courseName?: string) => {
+    if (downloadingRef.current) return;
+    downloadingRef.current = true;
+    setTimeout(() => {
+      downloadingRef.current = false;
+    }, 3000);
+
+    const downloadApiUrl = `/api/public/brochures/download?file=${encodeURIComponent(brochureUrl)}&courseId=${encodeURIComponent(courseParam || '')}`;
+
+    // Single reliable download trigger using hidden <a> element
+    try {
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = downloadApiUrl;
+      a.setAttribute('download', '');
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        try {
+          document.body.removeChild(a);
+        } catch {}
+      }, 3000);
+    } catch (err) {
+      console.error('Error triggering brochure download:', err);
     }
   };
 
@@ -103,16 +163,26 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
         }
       } else {
         const { submitAdmissionEnquiryAction } = await import('@/app/actions/crmActions');
+        const effectiveCourse = form.courseInterest || selectedCourse;
         const res = await submitAdmissionEnquiryAction({
           studentName: form.name,
           email: form.email,
           phone: form.phone,
+          courseId: effectiveCourse,
           city: form.location,
-          message: `Course Interest: ${form.courseInterest}. Remarks: ${form.message || 'None'}`,
+          message: form.message ? `Remarks: ${form.message}` : undefined,
         });
         setLoading(false);
         if (res.success) {
           setSubmitted(true);
+          if (res.brochureUrl) {
+            const downloadApiUrl = `/api/public/brochures/download?file=${encodeURIComponent(res.brochureUrl)}&courseId=${encodeURIComponent(effectiveCourse || '')}`;
+            setDownloadInfo({
+              url: downloadApiUrl,
+              title: res.brochureTitle || res.courseName || 'Brochure',
+            });
+            triggerBrochureDownload(res.brochureUrl, effectiveCourse, (res.courseName || res.brochureTitle) ?? undefined);
+          }
           onSubmit?.(form);
         } else {
           alert(res.error || 'Failed to submit form');
@@ -134,11 +204,23 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
         <p className="text-muted dark:text-white/70 text-xs sm:text-sm max-w-xs leading-relaxed">
           {formType === 'contact' 
             ? "Your message has been sent successfully. Our team will get back to you shortly."
-            : "We've received your enquiry. Our admissions counsellor will get in touch with you shortly."}
+            : downloadInfo?.url
+              ? "Your course brochure download has started automatically! Our admissions counsellor will get in touch with you shortly."
+              : "We've received your admission enquiry. Our admissions counsellor will get in touch with you shortly."}
         </p>
+        {downloadInfo?.url && (
+          <a
+            href={downloadInfo.url}
+            download
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white bg-primary hover:bg-darkprimary px-4 py-2 rounded-xl transition-all shadow-md hover:-translate-y-0.5"
+          >
+            <Icon icon="mdi:download" className="text-base" />
+            Click here to download brochure
+          </a>
+        )}
         <button
-          onClick={() => { setSubmitted(false); setForm(INITIAL_FORM); }}
-          className="mt-5 text-primary text-xs font-bold hover:underline flex items-center gap-1"
+          onClick={() => { setSubmitted(false); setDownloadInfo(null); setForm(INITIAL_FORM); }}
+          className="mt-4 text-primary text-xs font-bold hover:underline flex items-center gap-1"
         >
           <Icon icon="mdi:arrow-left" className="text-sm" />
           Submit another response
@@ -168,83 +250,80 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
-        {/* Name & Phone in 2 columns on sm+ */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {/* Name */}
-          <div>
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon icon="mdi:account-outline" className="text-lg" />
-              </div>
-              <input
-                id="enquiry-name"
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Your Full Name *"
-                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium ${
-                  errors.name ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
-                }`}
-              />
+      <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-2.5">
+        {/* Full Name */}
+        <div>
+          <div className="relative">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <Icon icon="mdi:account-outline" className="text-lg" />
             </div>
-            {errors.name && (
-              <p className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.name}</p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div>
-            <PhoneInput
-              id="enquiry-phone"
-              value={form.phone}
-              onChange={(val) => {
-                setForm((prev) => ({ ...prev, phone: val }));
-                if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
-              }}
-              placeholder="Phone Number *"
-              inputClassName={`text-xs sm:text-sm ${
-                errors.phone ? 'border-red-500 bg-red-50/50' : ''
+            <input
+              id="enquiry-name"
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Your Full Name *"
+              className={`w-full pl-10 pr-4 py-2 sm:py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium ${
+                errors.name ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
               }`}
             />
-            {errors.phone && (
-              <p className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.phone}</p>
-            )}
           </div>
+          {errors.name && (
+            <p className="text-red-500 text-[11px] mt-0.5 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.name}</p>
+          )}
         </div>
 
-        {/* Email & Location in 2 columns on sm+ */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {/* Email */}
-          <div>
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon icon="mdi:email-outline" className="text-lg" />
-              </div>
-              <input
-                id="enquiry-email"
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="Email Address *"
-                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium ${
-                  errors.email ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
-                }`}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.email}</p>
-            )}
-          </div>
+        {/* Phone Number - Full Width */}
+        <div>
+          <PhoneInput
+            id="enquiry-phone"
+            value={form.phone}
+            onChange={(val) => {
+              setForm((prev) => ({ ...prev, phone: val }));
+              if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+            }}
+            placeholder="Phone Number *"
+            inputClassName={`text-xs sm:text-sm ${
+              errors.phone ? 'border-red-500 bg-red-50/50' : ''
+            }`}
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-[11px] mt-0.5 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.phone}</p>
+          )}
+        </div>
 
-          {/* Location (Only for Admission) */}
-          {formType === 'admission' && !compact && (
+        {/* Email Address - Full Width to prevent cut off */}
+        <div>
+          <div className="relative">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <Icon icon="mdi:email-outline" className="text-lg" />
+            </div>
+            <input
+              id="enquiry-email"
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Email Address *"
+              className={`w-full pl-10 pr-4 py-2 sm:py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium ${
+                errors.email ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
+              }`}
+            />
+          </div>
+          {errors.email && (
+            <p className="text-red-500 text-[11px] mt-0.5 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.email}</p>
+          )}
+        </div>
+
+        {/* Location & Course Interest side-by-side in one row */}
+        {formType === 'admission' && !compact ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+            {/* Location */}
             <div>
               <div className="relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Icon icon="mdi:map-marker-outline" className="text-lg" />
+                <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <Icon icon="mdi:map-marker-outline" className="text-base" />
                 </div>
                 <input
                   id="enquiry-location"
@@ -253,43 +332,170 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   value={form.location}
                   onChange={handleChange}
                   placeholder="Your City / Location"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark_border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none focus:border-primary focus:bg-white transition-all font-medium"
+                  className="w-full pl-8 sm:pl-9 pr-3 py-2 sm:py-2.5 rounded-xl border border-gray-200 dark:border-dark_border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none focus:border-primary focus:bg-white transition-all font-medium"
                 />
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Course Interest (Select a Course) */}
-        <div>
-          <div className="relative">
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-              <Icon icon="mdi:book-open-outline" className="text-lg" />
-            </div>
-            <select
-              id="enquiry-course"
-              name="courseInterest"
-              value={form.courseInterest}
-              onChange={handleChange}
-              className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-xs sm:text-sm text-midnight_text dark:text-white bg-gray-50/80 dark:bg-darklight focus:outline-none transition-all font-medium appearance-none cursor-pointer ${
-                errors.courseInterest ? 'border-red-500 bg-red-50/50' : 'border-gray-200 dark:border-dark_border focus:border-primary focus:bg-white'
-              } ${!form.courseInterest ? 'text-gray-400' : ''}`}
-            >
-              <option value="">{formType === 'contact' ? "Select Course of Interest (Optional)" : "Select a Course *"}</option>
-              {coursesData.map((course) => (
-                <option key={course.id} value={course.slug} className="text-midnight_text">
-                  {course.title}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-              <Icon icon="mdi:chevron-down" className="text-lg" />
+            {/* Course Interest (Custom Sleek Dropdown) */}
+            <div className="relative" ref={courseDropdownRef}>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setCourseOpen(!courseOpen)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setCourseOpen(!courseOpen);
+                  }
+                }}
+                className={`w-full flex items-center justify-between pl-8 sm:pl-9 pr-3 py-2 sm:py-2.5 rounded-xl border text-xs sm:text-sm text-left transition-all font-medium cursor-pointer relative select-none ${
+                  errors.courseInterest
+                    ? 'border-red-500 bg-red-50/50'
+                    : courseOpen
+                      ? 'border-primary bg-white'
+                      : 'border-gray-200 dark:border-dark_border bg-gray-50/80 dark:bg-darklight hover:border-gray-300 dark:hover:border-dark_border/80'
+                }`}
+                aria-haspopup="listbox"
+                aria-expanded={courseOpen}
+              >
+                <div className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <Icon icon="mdi:book-open-outline" className="text-base" />
+                </div>
+                <span className={`truncate mr-2 ${form.courseInterest ? 'text-midnight_text dark:text-white font-medium' : 'text-gray-400 font-normal'}`}>
+                  {coursesData.find(c => c.slug === form.courseInterest)?.title || "Select a Course *"}
+                </span>
+                <Icon
+                  icon="mdi:chevron-down"
+                  className={`text-gray-400 text-base shrink-0 transition-transform duration-200 ${courseOpen ? 'rotate-180 text-primary' : ''}`}
+                />
+              </div>
+
+              {/* Dropdown Menu - Aligned right & stays within form boundaries */}
+              {courseOpen && (
+                <div className="absolute top-full right-0 z-50 mt-1.5 w-full min-w-[210px] sm:min-w-[240px] max-w-[calc(100vw-2rem)] bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl shadow-xl overflow-hidden py-1">
+                  <div
+                    onClick={() => {
+                      setForm(prev => ({ ...prev, courseInterest: "" }));
+                      if (errors.courseInterest) setErrors(prev => ({ ...prev, courseInterest: undefined }));
+                      setCourseOpen(false);
+                    }}
+                    className={`px-3 py-2 text-xs sm:text-sm text-gray-400 hover:bg-slate-50 dark:hover:bg-darklight cursor-pointer transition-colors ${
+                      !form.courseInterest ? 'bg-primary/5 font-bold text-primary' : ''
+                    }`}
+                  >
+                    Select a Course *
+                  </div>
+                  {coursesData.map((course) => {
+                    const isSelected = form.courseInterest === course.slug;
+                    return (
+                      <div
+                        key={course.id}
+                        onClick={() => {
+                          setForm(prev => ({ ...prev, courseInterest: course.slug }));
+                          if (errors.courseInterest) setErrors(prev => ({ ...prev, courseInterest: undefined }));
+                          setCourseOpen(false);
+                        }}
+                        className={`flex items-center justify-between gap-2 px-3 py-2 text-xs sm:text-sm cursor-pointer transition-colors ${
+                          isSelected
+                            ? 'bg-primary/10 text-primary font-bold'
+                            : 'text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-darklight font-medium'
+                        }`}
+                      >
+                        <span className="truncate">{course.title}</span>
+                        {isSelected && (
+                          <Icon icon="mdi:check" className="text-primary text-sm shrink-0" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {errors.courseInterest && (
+                <p className="text-red-500 text-[11px] mt-0.5 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.courseInterest}</p>
+              )}
             </div>
           </div>
-          {errors.courseInterest && (
-            <p className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.courseInterest}</p>
-          )}
-        </div>
+        ) : (
+          /* Course Interest when compact or contact */
+          <div className="relative" ref={courseDropdownRef}>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setCourseOpen(!courseOpen)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setCourseOpen(!courseOpen);
+                }
+              }}
+              className={`w-full flex items-center justify-between pl-9 pr-3 py-2 sm:py-2.5 rounded-xl border text-xs sm:text-sm text-left transition-all font-medium cursor-pointer relative select-none ${
+                errors.courseInterest
+                  ? 'border-red-500 bg-red-50/50'
+                  : courseOpen
+                    ? 'border-primary bg-white'
+                    : 'border-gray-200 dark:border-dark_border bg-gray-50/80 dark:bg-darklight hover:border-gray-300 dark:hover:border-dark_border/80'
+              }`}
+              aria-haspopup="listbox"
+              aria-expanded={courseOpen}
+            >
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <Icon icon="mdi:book-open-outline" className="text-base" />
+              </div>
+              <span className={`truncate mr-2 ${form.courseInterest ? 'text-midnight_text dark:text-white font-medium' : 'text-gray-400 font-normal'}`}>
+                {coursesData.find(c => c.slug === form.courseInterest)?.title || (formType === 'contact' ? "Select Course (Optional)" : "Select a Course *")}
+              </span>
+              <Icon
+                icon="mdi:chevron-down"
+                className={`text-gray-400 text-base shrink-0 transition-transform duration-200 ${courseOpen ? 'rotate-180 text-primary' : ''}`}
+              />
+            </div>
+
+            {/* Dropdown Menu */}
+            {courseOpen && (
+              <div className="absolute top-full left-0 right-0 z-50 mt-1.5 w-full bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl shadow-xl overflow-hidden py-1">
+                <div
+                  onClick={() => {
+                    setForm(prev => ({ ...prev, courseInterest: "" }));
+                    if (errors.courseInterest) setErrors(prev => ({ ...prev, courseInterest: undefined }));
+                    setCourseOpen(false);
+                  }}
+                  className={`px-3 py-2 text-xs sm:text-sm text-gray-400 hover:bg-slate-50 dark:hover:bg-darklight cursor-pointer transition-colors ${
+                    !form.courseInterest ? 'bg-primary/5 font-bold text-primary' : ''
+                  }`}
+                >
+                  {formType === 'contact' ? "None (General Inquiry)" : "Select a Course *"}
+                </div>
+                {coursesData.map((course) => {
+                  const isSelected = form.courseInterest === course.slug;
+                  return (
+                    <div
+                      key={course.id}
+                      onClick={() => {
+                        setForm(prev => ({ ...prev, courseInterest: course.slug }));
+                        if (errors.courseInterest) setErrors(prev => ({ ...prev, courseInterest: undefined }));
+                        setCourseOpen(false);
+                      }}
+                      className={`flex items-center justify-between gap-2 px-3 py-2 text-xs sm:text-sm cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-primary/10 text-primary font-bold'
+                          : 'text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-darklight font-medium'
+                      }`}
+                    >
+                      <span className="truncate">{course.title}</span>
+                      {isSelected && (
+                        <Icon icon="mdi:check" className="text-primary text-sm shrink-0" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {errors.courseInterest && (
+              <p className="text-red-500 text-[11px] mt-0.5 flex items-center gap-1 font-medium"><Icon icon="mdi:alert-circle-outline" className="text-xs" />{errors.courseInterest}</p>
+            )}
+          </div>
+        )}
 
         {/* Message (Textarea) */}
         <div>

@@ -67,17 +67,76 @@ export async function submitAdmissionEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    await db.admissionEnquiry.create({
+    let resolvedCourseId: string | null = null
+    let activeBrochureUrl: string | null = null
+    let activeBrochureTitle: string | null = null
+    let courseName: string | null = null
+
+    if (validated.data.courseId && validated.data.courseId.trim() !== '') {
+      const rawInput = validated.data.courseId.trim()
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawInput)
+
+      let courseRecord = null
+      if (isUuid) {
+        courseRecord = await db.course.findFirst({
+          where: { id: rawInput, isDeleted: false },
+        })
+      }
+
+      if (!courseRecord) {
+        // Strip common prefix/suffixes if any
+        const coreKey = rawInput
+          .replace('ai-powered-', '')
+          .replace('ai-', '')
+          .replace('-course', '')
+
+        courseRecord = await db.course.findFirst({
+          where: {
+            OR: [
+              { slug: rawInput },
+              { slug: { contains: rawInput } },
+              { slug: { contains: coreKey } },
+              { courseName: { contains: rawInput, mode: 'insensitive' } },
+              { courseName: { contains: coreKey, mode: 'insensitive' } },
+            ],
+            isDeleted: false,
+          },
+        })
+      }
+
+      if (courseRecord) {
+        resolvedCourseId = courseRecord.id
+        courseName = courseRecord.courseName
+
+        // Find the active brochure associated with this specific course ID
+        const activeBrochure = await db.brochure.findFirst({
+          where: {
+            courseId: courseRecord.id,
+            isActive: true,
+            isDeleted: false,
+          },
+          orderBy: { updatedAt: 'desc' },
+        })
+
+        if (activeBrochure) {
+          activeBrochureUrl = activeBrochure.fileUrl
+          activeBrochureTitle = activeBrochure.title
+        }
+      }
+    }
+
+    const enquiry = await db.admissionEnquiry.create({
       data: {
         studentName: validated.data.studentName,
         email: validated.data.email,
         phone: validated.data.phone,
-        courseId: validated.data.courseId || null,
+        courseId: resolvedCourseId,
         city: validated.data.city || null,
         qualification: validated.data.qualification || null,
         message: validated.data.message || null,
         status: 'NEW',
       },
+      include: { course: true },
     })
 
     await createNotificationLog({
@@ -87,7 +146,18 @@ export async function submitAdmissionEnquiryAction(data: {
       deliveryStatus: 'SENT',
     })
 
-    return { success: true, message: 'Thank you! Brochure request and admission enquiry received.' }
+    try {
+      revalidatePath('/admin/enquiries/admission')
+    } catch {}
+
+    return {
+      success: true,
+      message: 'Thank you! Admission enquiry received.',
+      enquiryId: enquiry.id,
+      brochureUrl: activeBrochureUrl,
+      brochureTitle: activeBrochureTitle,
+      courseName: courseName,
+    }
   } catch (err: any) {
     console.error('Admission enquiry error:', err)
     return { success: false, error: 'Failed to submit admission enquiry. Please try again.' }
@@ -455,4 +525,62 @@ export async function bulkDeleteEnquiryAction(
     return { success: false, error: err.message || 'Failed to bulk delete records' }
   }
 }
+
+/**
+ * Bulk update status for enquiries.
+ * Supports updating multiple selected leads to CONTACTED, CLOSED, PENDING, etc.
+ */
+export async function bulkUpdateEnquiryStatusAction(
+  type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
+  ids: string[],
+  status: any
+) {
+  const session = await requireAdminSession()
+
+  if (!ids || ids.length === 0) {
+    return { success: false, error: 'No items selected' }
+  }
+
+  try {
+    if (type === 'contact') {
+      await db.contactEnquiry.updateMany({
+        where: { id: { in: ids } },
+        data: { status },
+      })
+    } else if (type === 'admission') {
+      await db.admissionEnquiry.updateMany({
+        where: { id: { in: ids } },
+        data: { status },
+      })
+    } else if (type === 'career') {
+      await db.careerEnquiry.updateMany({
+        where: { id: { in: ids } },
+        data: { status },
+      })
+    } else if (type === 'franchise') {
+      await db.franchisePartnerEnquiry.updateMany({
+        where: { id: { in: ids } },
+        data: { status },
+      })
+    } else if (type === 'hire') {
+      await db.companyPlacementEnquiry.updateMany({
+        where: { id: { in: ids } },
+        data: { status },
+      })
+    }
+
+    await createAuditLog({
+      userId: session.id,
+      module: `CRM_${type.toUpperCase()}`,
+      action: `BULK_SET_STATUS_${status.toUpperCase()}`,
+      recordId: ids.slice(0, 10).join(',') + (ids.length > 10 ? ` (+${ids.length - 10} more)` : ''),
+    })
+
+    revalidatePath(`/admin/enquiries/${type}`)
+    return { success: true, message: `Successfully marked ${ids.length} lead(s) as ${status}` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to update leads status' }
+  }
+}
+
 

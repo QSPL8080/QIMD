@@ -5,6 +5,7 @@ import {
   updateEnquiryStatusAction,
   deleteEnquiryAction,
   bulkDeleteEnquiryAction,
+  bulkUpdateEnquiryStatusAction,
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 
@@ -56,8 +57,6 @@ export default function AdminCorporateHirePage() {
     return matchesSearch && matchesStatus
   })
 
-  const closedReqs = filteredReqs.filter(r => r.status === 'CLOSED')
-
   const handleStatusChange = async (id: string, newStatus: string) => {
     startTransition(async () => {
       const res = await updateEnquiryStatusAction('hire', id, newStatus)
@@ -69,6 +68,27 @@ export default function AdminCorporateHirePage() {
         if (selectedReq?.id === id) {
           setSelectedReq((prev: any) => ({ ...prev, status: newStatus }))
         }
+      } else {
+        setStatusMsg({ type: 'error', text: res.error || 'Failed to update status' })
+      }
+    })
+  }
+
+  const handleBulkStatusChange = async (newStatus: string) => {
+    if (selectedIds.length === 0) return
+    startTransition(async () => {
+      const res = await bulkUpdateEnquiryStatusAction('hire', selectedIds, newStatus)
+      if (res.success) {
+        setStatusMsg({ type: 'success', text: res.message || `Selected requests marked as ${newStatus}` })
+        setRequests((prev) =>
+          prev.map((item) =>
+            selectedIds.includes(item.id) ? { ...item, status: newStatus } : item
+          )
+        )
+        if (selectedReq && selectedIds.includes(selectedReq.id)) {
+          setSelectedReq((prev: any) => ({ ...prev, status: newStatus }))
+        }
+        setSelectedIds([])
       } else {
         setStatusMsg({ type: 'error', text: res.error || 'Failed to update status' })
       }
@@ -106,14 +126,16 @@ export default function AdminCorporateHirePage() {
   }
 
   const toggleSelectId = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
   }
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === closedReqs.length) {
+    if (selectedIds.length === filteredReqs.length) {
       setSelectedIds([])
     } else {
-      setSelectedIds(closedReqs.map(r => r.id))
+      setSelectedIds(filteredReqs.map((r) => r.id))
     }
   }
 
@@ -186,17 +208,20 @@ export default function AdminCorporateHirePage() {
             placeholder="Search company, contact person, email, or role..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-rose-600 focus:bg-white transition-all"
           />
-          <Icon icon="ion:search-outline" className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+          <Icon icon="ion:search-outline" className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <label className="text-xs font-semibold text-slate-600 whitespace-nowrap">Status Filter:</label>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-600 w-full sm:w-auto"
+            onChange={(e) => {
+              setStatusFilter(e.target.value)
+              setSelectedIds([])
+            }}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold focus:outline-none focus:border-rose-600 w-full sm:w-auto"
           >
             <option value="ALL">All Statuses</option>
             <option value="PENDING">Pending</option>
@@ -206,31 +231,61 @@ export default function AdminCorporateHirePage() {
         </div>
       </div>
 
-      {/* Bulk delete bar — shows only when viewing CLOSED tab and items are selected */}
-      {statusFilter === 'CLOSED' && closedReqs.length > 0 && (
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between gap-3">
+      {/* Bulk Action Bar — Shows whenever 1 or more leads are selected */}
+      {selectedIds.length > 0 && (
+        <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-3 animate-fadeIn">
           <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={selectedIds.length === closedReqs.length && closedReqs.length > 0}
-              onChange={toggleSelectAll}
-              className="w-4 h-4 rounded cursor-pointer"
-            />
-            <span className="text-xs font-semibold text-slate-700">
-              {selectedIds.length > 0
-                ? `${selectedIds.length} of ${closedReqs.length} selected`
-                : `Select all closed (${closedReqs.length})`}
+            <span className="bg-white px-3 py-1 rounded-lg border border-slate-200 text-xs font-semibold text-slate-800 flex items-center gap-1.5 shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+              {selectedIds.length} of {filteredReqs.length} Selected
             </span>
+            <button
+              onClick={() => setSelectedIds([])}
+              className="text-xs text-slate-500 hover:text-slate-800 font-medium hover:underline cursor-pointer"
+            >
+              Clear Selection
+            </button>
           </div>
-          {selectedIds.length > 0 && (
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500 font-medium hidden md:inline">Change Status:</span>
+
+            <button
+              onClick={() => handleBulkStatusChange('CONTACTED')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:call-outline" className="w-3.5 h-3.5 text-rose-600" />
+              Mark Contacted
+            </button>
+
+            <button
+              onClick={() => handleBulkStatusChange('CLOSED')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 hover:border-slate-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:checkmark-done-outline" className="w-3.5 h-3.5 text-slate-600" />
+              Mark Closed
+            </button>
+
+            <button
+              onClick={() => handleBulkStatusChange('PENDING')}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-800 border border-slate-200 hover:border-amber-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:time-outline" className="w-3.5 h-3.5 text-amber-600" />
+              Mark Pending
+            </button>
+
             <button
               onClick={() => setBulkDeleteConfirm(true)}
-              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
             >
-              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
-              Delete Selected ({selectedIds.length})
+              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
+              Delete
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -243,62 +298,70 @@ export default function AdminCorporateHirePage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm min-w-[650px]">
-            <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200">
-              <tr>
-                {statusFilter === 'CLOSED' && <th className="p-3.5 w-10"></th>}
-                <th className="p-3.5">Company Name</th>
-                <th className="p-3.5">Contact Person</th>
-                <th className="p-3.5">Email</th>
-                <th className="p-3.5">Status</th>
-                <th className="p-3.5 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
-              {filteredReqs.map((req) => (
-                <tr
-                  key={req.id}
-                  onClick={() => setSelectedReq(req)}
-                  className="hover:bg-rose-50/50 cursor-pointer transition-colors group"
-                >
-                  {statusFilter === 'CLOSED' && (
-                    <td className="p-3.5" onClick={e => e.stopPropagation()}>
+              <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200 text-xs">
+                <tr>
+                  <th className="p-3.5 w-10">
+                    <input
+                      type="checkbox"
+                      checked={filteredReqs.length > 0 && selectedIds.length === filteredReqs.length}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded cursor-pointer accent-rose-600"
+                      title={selectedIds.length === filteredReqs.length ? 'Deselect all' : 'Select all'}
+                    />
+                  </th>
+                  <th className="p-3.5">Company Name</th>
+                  <th className="p-3.5">Contact Person</th>
+                  <th className="p-3.5">Email</th>
+                  <th className="p-3.5">Status</th>
+                  <th className="p-3.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {filteredReqs.map((req) => (
+                  <tr
+                    key={req.id}
+                    onClick={() => setSelectedReq(req)}
+                    className={`hover:bg-rose-50/50 cursor-pointer transition-colors group ${
+                      selectedIds.includes(req.id) ? 'bg-rose-50/30' : ''
+                    }`}
+                  >
+                    <td className="p-3.5 w-10" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={selectedIds.includes(req.id)}
                         onChange={() => toggleSelectId(req.id)}
-                        className="w-4 h-4 rounded cursor-pointer"
+                        className="w-4 h-4 rounded cursor-pointer accent-rose-600"
                       />
                     </td>
-                  )}
-                  <td className="p-3.5 font-bold text-slate-900 group-hover:text-rose-700">
-                    {req.companyName}
-                  </td>
-                  <td className="p-3.5 text-slate-800 font-semibold">{req.contactPerson}</td>
-                  <td className="p-3.5 text-slate-600">
-                    <a
-                      href={`mailto:${req.email}`}
-                      onClick={e => e.stopPropagation()}
-                      className="text-blue-600 hover:underline hover:text-blue-800 transition-colors"
-                    >
-                      {req.email}
-                    </a>
-                  </td>
-                  <td className="p-3.5">{getStatusBadge(req.status)}</td>
-                  <td className="p-3.5 text-right">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setSelectedReq(req)
-                      }}
-                      className="px-3 py-1.5 bg-rose-50 text-rose-800 hover:bg-rose-100 rounded-lg text-xs font-semibold transition-colors"
-                    >
-                      View Request
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <td className="p-3.5 font-bold text-slate-900 group-hover:text-rose-700">
+                      {req.companyName}
+                    </td>
+                    <td className="p-3.5 text-slate-800 font-semibold">{req.contactPerson}</td>
+                    <td className="p-3.5 text-slate-600">
+                      <a
+                        href={`mailto:${req.email}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 hover:underline hover:text-blue-800 transition-colors"
+                      >
+                        {req.email}
+                      </a>
+                    </td>
+                    <td className="p-3.5">{getStatusBadge(req.status)}</td>
+                    <td className="p-3.5 text-right">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedReq(req)
+                        }}
+                        className="px-3 py-1.5 bg-rose-50 text-rose-800 hover:bg-rose-100 rounded-lg text-xs font-semibold transition-colors"
+                      >
+                        View Request
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

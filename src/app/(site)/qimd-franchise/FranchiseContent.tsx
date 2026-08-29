@@ -302,21 +302,23 @@ export default function FranchiseContent() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
-                {/* Row 1: Name, Mobile, Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Enter full name"
-                      value={formData.fullName}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
-                    />
-                  </div>
+                {/* Full Name */}
+                <div>
+                  <label className="block font-bold text-white mb-1.5">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter your full name"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
+                  />
+                </div>
+
+                {/* Row: Mobile & Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block font-bold text-white mb-1.5">
                       Mobile Number *
@@ -326,7 +328,6 @@ export default function FranchiseContent() {
                       onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
                       required
                       placeholder="Enter mobile number"
-                      inputClassName="text-xs"
                     />
                   </div>
                   <div>
@@ -339,7 +340,7 @@ export default function FranchiseContent() {
                       placeholder="Enter email address"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
                     />
                   </div>
                 </div>

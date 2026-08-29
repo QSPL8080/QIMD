@@ -170,25 +170,25 @@ export default function PhoneInput({
             type="button"
             onClick={() => setOpen(!open)}
             suppressHydrationWarning
-            className={`h-full flex items-center gap-1.5 px-2.5 sm:px-3 py-2.5 text-xs sm:text-sm font-bold border border-r-0 rounded-l-xl rounded-r-none ${baseInput} hover:bg-slate-50 dark:hover:bg-darklight transition-colors cursor-pointer select-none`}
+            className="phone-country-btn h-full flex items-center gap-1 px-2 sm:px-2.5 py-2.5 text-xs sm:text-sm font-semibold border border-r-0 border-slate-200 dark:border-dark_border rounded-l-xl rounded-r-none bg-slate-50 dark:bg-darklight/60 text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-darklight transition-colors cursor-pointer select-none focus:outline-none !shadow-none !transform-none shrink-0"
             title={`${selectedCountry.name} (${selectedCountry.dial})`}
             aria-label="Select Country"
           >
             {mounted ? (
               <Icon
                 icon={`circle-flags:${selectedCountry.code.toLowerCase()}`}
-                className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
+                className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full shrink-0"
               />
             ) : (
-              <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 inline-block" />
+              <span className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0 inline-block" />
             )}
-            <span className="text-slate-800 dark:text-white font-bold" suppressHydrationWarning>{selectedCountry.dial}</span>
-            <Icon icon="mdi:chevron-down" className={`text-slate-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+            <span className="text-slate-800 dark:text-white font-semibold text-xs tracking-tight whitespace-nowrap" suppressHydrationWarning>{selectedCountry.dial}</span>
+            <Icon icon="mdi:chevron-down" className={`text-slate-400 text-[10px] sm:text-xs shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
           </button>
 
           {open && (
-            <div className="absolute top-full left-0 z-50 mt-1.5 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-dark border border-slate-100 dark:border-dark_border rounded-2xl shadow-lg overflow-hidden">
-              <div className="p-2 border-b border-slate-100 dark:border-dark_border bg-slate-50/50 dark:bg-darklight/40">
+            <div className="absolute top-full left-0 z-50 mt-1.5 w-72 sm:w-80 max-w-[calc(100vw-2rem)] bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-2xl shadow-xl overflow-hidden">
+              <div className="p-2 border-b border-slate-100 dark:border-dark_border bg-slate-50/70 dark:bg-darklight/40">
                 <div className="relative flex items-center">
                   <Icon icon="mdi:magnify" className="absolute left-2.5 text-slate-400 text-sm pointer-events-none" />
                   <input
@@ -197,7 +197,7 @@ export default function PhoneInput({
                     placeholder="Search country or code..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm bg-white dark:bg-dark border border-slate-200/60 dark:border-dark_border rounded-xl text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium shadow-none"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs sm:text-sm bg-white dark:bg-dark border border-slate-200 dark:border-dark_border rounded-xl text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium !shadow-none"
                   />
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default function PhoneInput({
                       <button
                         type="button"
                         onClick={() => handleCountrySelect(country)}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs sm:text-sm text-left hover:bg-slate-50 dark:hover:bg-darklight transition-colors cursor-pointer !border-0 !border-none !shadow-none ${
+                        className={`dropdown-item-btn w-full flex items-center gap-2 px-3 py-2 text-xs sm:text-sm text-left hover:bg-slate-50 dark:hover:bg-darklight transition-colors cursor-pointer !border-0 !border-none !shadow-none !transform-none ${
                           isSelected
                             ? 'bg-primary/5 font-bold text-primary'
                             : 'text-slate-700 dark:text-white'
@@ -221,7 +221,7 @@ export default function PhoneInput({
                       >
                         <Icon
                           icon={`circle-flags:${country.code.toLowerCase()}`}
-                          className="w-5 h-5 rounded-full shrink-0 shadow-2xs"
+                          className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full shrink-0"
                         />
                         <span className="flex-1 truncate font-medium">{country.name}</span>
                         <span className={`text-xs font-semibold ${isSelected ? 'text-primary' : 'text-slate-400'}`}>
@@ -250,7 +250,7 @@ export default function PhoneInput({
           onChange={handleNumberChange}
           placeholder={placeholder || `e.g. ${selectedCountry.minLen === selectedCountry.maxLen ? '9'.repeat(selectedCountry.maxLen) : '9'.repeat(selectedCountry.minLen)}`}
           maxLength={selectedCountry.maxLen + 5}
-          className={`flex-1 min-w-0 px-3.5 py-2.5 text-xs sm:text-sm rounded-r-xl rounded-l-none border border-slate-200 dark:border-dark_border bg-white dark:bg-dark text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium ${inputClassName}`}
+          className={`flex-1 min-w-0 w-full px-2.5 sm:px-3 py-2.5 text-xs sm:text-sm rounded-r-xl rounded-l-none border border-slate-200 dark:border-dark_border bg-white dark:bg-dark text-midnight_text dark:text-white focus:outline-none focus:border-primary font-medium tracking-normal ${inputClassName}`}
         />
       </div>
     </div>

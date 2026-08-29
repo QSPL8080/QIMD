@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import PhoneInput from "@/components/Common/PhoneInput";
@@ -10,12 +10,25 @@ export default function ContactContent() {
     fullName: "",
     mobileNumber: "",
     email: "",
-    course: "AI-Powered Digital Marketing",
+    course: "",
     message: "",
     agreeContact: true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [courseDropdownOpen, setCourseDropdownOpen] = useState(false);
+  const courseDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close course dropdown on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (courseDropdownRef.current && !courseDropdownRef.current.contains(e.target as Node)) {
+        setCourseDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Auto-reset success message after 3 seconds
   useEffect(() => {
@@ -26,7 +39,7 @@ export default function ContactContent() {
           fullName: "",
           mobileNumber: "",
           email: "",
-          course: "AI-Powered Digital Marketing",
+          course: "",
           message: "",
           agreeContact: true,
         });
@@ -215,9 +228,9 @@ export default function ContactContent() {
             </div>
 
             {/* Right Column: Form (7 cols - FROSTED GLASS CARD) */}
-            <div className="lg:col-span-7 bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-9 border border-white/20 shadow-2xl text-white" data-aos="fade-left">
-              <div className="mb-6 space-y-1">
-                <span className="bg-white/15 border border-white/25 text-cyan-300 text-[10px] font-extrabold px-3 py-1 rounded-full inline-block mb-1 shadow-xs">
+            <div className="lg:col-span-7 bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-2xl p-5 sm:p-6 lg:p-7 border border-white/20 shadow-2xl text-white" data-aos="fade-left">
+              <div className="mb-4 space-y-1">
+                <span className="bg-white/15 border border-white/25 text-cyan-300 text-[10px] font-extrabold px-3 py-0.5 rounded-full inline-block mb-1 shadow-xs">
                   Get In Touch
                 </span>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
@@ -229,46 +242,32 @@ export default function ContactContent() {
               </div>
 
               {submitSuccess ? (
-                <div className="p-8 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl text-center space-y-3 backdrop-blur-md">
-                  <Icon icon="mdi:check-circle" className="text-emerald-400 text-5xl mx-auto" />
-                  <h3 className="text-xl font-bold text-white">Enquiry Submitted Successfully!</h3>
+                <div className="p-6 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl text-center space-y-2 backdrop-blur-md">
+                  <Icon icon="mdi:check-circle" className="text-emerald-400 text-4xl mx-auto" />
+                  <h3 className="text-lg font-bold text-white">Enquiry Submitted Successfully!</h3>
                   <p className="text-xs text-emerald-200 font-medium">
                     Thank you for reaching out to QIMD. One of our senior admissions counsellors will contact you shortly.
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <form onSubmit={handleSubmit} className="space-y-3 text-xs sm:text-sm">
+                  {/* Row 1: Full Name & Email Address */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                     <div>
-                      <label className="block font-bold text-white mb-1.5">
+                      <label className="block font-semibold text-white mb-1 text-xs">
                         Full Name *
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="Enter full name"
+                        placeholder="Enter your full name"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
+                        className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl px-3 py-2 sm:py-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
                       />
                     </div>
                     <div>
-                      <label className="block font-bold text-white mb-1.5">
-                        Mobile Number *
-                      </label>
-                      <PhoneInput
-                        value={formData.mobileNumber}
-                        onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
-                        required
-                        placeholder="Enter mobile number"
-                        inputClassName="text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    <div>
-                      <label className="block font-bold text-white mb-1.5">
+                      <label className="block font-semibold text-white mb-1 text-xs">
                         Email Address *
                       </label>
                       <input
@@ -277,29 +276,88 @@ export default function ContactContent() {
                         placeholder="Enter email address"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
+                        className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl px-3 py-2 sm:py-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
                       />
-                    </div>
-                    <div>
-                      <label className="block font-bold text-white mb-1.5">
-                        Course Interested In *
-                      </label>
-                      <select
-                        value={formData.course}
-                        onChange={(e) => setFormData({ ...formData, course: e.target.value })}
-                        className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs cursor-pointer"
-                      >
-                        {coursesList.map((c) => (
-                          <option key={c} value={c} className="bg-white text-slate-900">
-                            {c}
-                          </option>
-                        ))}
-                      </select>
                     </div>
                   </div>
 
+                  {/* Row 2: Mobile Number & Course Interested In */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                    <div>
+                      <label className="block font-semibold text-white mb-1 text-xs">
+                        Mobile Number *
+                      </label>
+                      <PhoneInput
+                        value={formData.mobileNumber}
+                        onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
+                        required
+                        placeholder="Enter mobile number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-white mb-1 text-xs">
+                        Course Interested In *
+                      </label>
+                      <div className="relative" ref={courseDropdownRef}>
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => setCourseDropdownOpen(!courseDropdownOpen)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setCourseDropdownOpen(!courseDropdownOpen);
+                            }
+                          }}
+                          className={`w-full flex items-center justify-between bg-white border border-slate-200 rounded-xl px-3 py-2 sm:py-2.5 font-medium text-xs sm:text-sm shadow-xs cursor-pointer select-none transition-all ${
+                            courseDropdownOpen ? 'ring-2 ring-cyan-300 border-transparent' : 'hover:border-slate-300'
+                          }`}
+                        >
+                          <span className={`truncate mr-2 ${!formData.course ? 'text-slate-400 font-normal' : 'text-slate-900 font-semibold'}`}>
+                            {formData.course || "Select course of interest"}
+                          </span>
+                          <Icon
+                            icon="mdi:chevron-down"
+                            className={`text-slate-400 text-lg shrink-0 transition-transform duration-200 ${
+                              courseDropdownOpen ? 'rotate-180 text-primary' : ''
+                            }`}
+                          />
+                        </div>
+
+                        {/* Modern Popup Menu */}
+                        {courseDropdownOpen && (
+                          <div className="absolute top-full left-0 right-0 z-50 mt-1.5 bg-white border border-slate-100 rounded-xl shadow-2xl overflow-hidden py-1.5 animate-in fade-in zoom-in-95 duration-150">
+                            {coursesList.map((c) => {
+                              const isSelected = formData.course === c;
+                              return (
+                                <div
+                                  key={c}
+                                  onClick={() => {
+                                    setFormData({ ...formData, course: c });
+                                    setCourseDropdownOpen(false);
+                                  }}
+                                  className={`flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs sm:text-sm cursor-pointer transition-colors ${
+                                    isSelected
+                                      ? 'bg-primary/10 text-primary font-bold'
+                                      : 'text-slate-800 hover:bg-slate-50 font-medium'
+                                  }`}
+                                >
+                                  <span className="truncate">{c}</span>
+                                  {isSelected && (
+                                    <Icon icon="mdi:check" className="text-primary text-base shrink-0" />
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message - Generous height so typed message stays fully visible */}
                   <div>
-                    <label className="block font-bold text-white mb-1.5">
+                    <label className="block font-semibold text-white mb-1 text-xs">
                       Your Message (Optional)
                     </label>
                     <textarea
@@ -307,20 +365,20 @@ export default function ContactContent() {
                       placeholder="Tell us about your background, career goals, or any specific questions..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
+                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl px-3 py-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs min-h-[90px] leading-relaxed break-words"
                     />
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
                         id="agreeContactEnquiry"
                         checked={formData.agreeContact}
                         onChange={(e) => setFormData({ ...formData, agreeContact: e.target.checked })}
-                        className="w-4 h-4 text-primary rounded cursor-pointer"
+                        className="w-3.5 h-3.5 text-primary rounded cursor-pointer"
                       />
-                      <label htmlFor="agreeContactEnquiry" className="text-xs text-slate-200 font-medium cursor-pointer">
+                      <label htmlFor="agreeContactEnquiry" className="text-[11px] sm:text-xs text-slate-200 font-medium cursor-pointer">
                         I agree to be contacted by QIMD regarding my enquiry.
                       </label>
                     </div>
@@ -328,7 +386,7 @@ export default function ContactContent() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full sm:w-auto bg-gradient-to-r from-primary via-[#8B5CF6] to-[#BD69F2] hover:opacity-95 text-white font-extrabold px-8 py-3.5 rounded-xl text-xs transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer shrink-0"
+                      className="w-full sm:w-auto bg-gradient-to-r from-primary via-[#8B5CF6] to-[#BD69F2] hover:opacity-95 text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-lg hover:-translate-y-0.5 cursor-pointer shrink-0"
                     >
                       {isSubmitting ? "Submitting..." : "Submit Enquiry"}
                     </button>

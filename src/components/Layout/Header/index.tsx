@@ -17,7 +17,7 @@ const Header: React.FC = () => {
 
   const { header, socialLinks, phone } = useWebsiteSettings()
 
-  if (pathUrl?.startsWith('/admin')) return null
+  if (pathUrl?.startsWith('/admin') || pathUrl?.startsWith('/brochure')) return null
 
   const mobileMenuRef = useRef<HTMLDivElement>(null)
 
@@ -134,28 +134,28 @@ const Header: React.FC = () => {
               {header?.showSocialLinks !== false && socialLinks && (
                 <div className="flex items-center gap-3">
                   {socialLinks.activeStatus?.instagram !== false && socialLinks.headerStatus?.instagram !== false && socialLinks.instagram && (
-                    <Link href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:scale-110 transition-transform">
-                      <Icon icon="skill-icons:instagram" className="text-base" />
+                    <Link href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:scale-110 transition-transform duration-200">
+                      <Icon icon="mdi:instagram" className="text-[18px] text-[#E4405F]" />
                     </Link>
                   )}
                   {socialLinks.activeStatus?.facebook !== false && socialLinks.headerStatus?.facebook !== false && socialLinks.facebook && (
-                    <Link href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:scale-110 transition-transform">
-                      <Icon icon="logos:facebook" className="text-base" />
+                    <Link href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:scale-110 transition-transform duration-200">
+                      <Icon icon="mdi:facebook" className="text-[18px] text-[#4267B2]" />
                     </Link>
                   )}
                   {socialLinks.activeStatus?.youtube !== false && socialLinks.headerStatus?.youtube !== false && socialLinks.youtube && (
-                    <Link href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:scale-110 transition-transform">
-                      <Icon icon="logos:youtube-icon" className="text-base" />
+                    <Link href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:scale-110 transition-transform duration-200">
+                      <Icon icon="mdi:youtube" className="text-[18px] text-[#FF0000]" />
                     </Link>
                   )}
                   {socialLinks.activeStatus?.linkedin !== false && socialLinks.headerStatus?.linkedin !== false && socialLinks.linkedin && (
-                    <Link href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:scale-110 transition-transform">
-                      <Icon icon="logos:linkedin-icon" className="text-base" />
+                    <Link href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:scale-110 transition-transform duration-200">
+                      <Icon icon="mdi:linkedin" className="text-[18px] text-[#0A66C2]" />
                     </Link>
                   )}
                   {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
-                    <Link href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter (X)" className="hover:scale-110 transition-transform">
-                      <Icon icon="line-md:twitter-x-alt" className="text-sm text-slate-800 dark:text-white" />
+                    <Link href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter (X)" className="hover:scale-110 transition-transform duration-200">
+                      <Icon icon="ri:twitter-x-fill" className="text-[15px] text-white" />
                     </Link>
                   )}
                   {socialLinks.customLinks && socialLinks.customLinks.length > 0 && (
@@ -167,9 +167,9 @@ const Header: React.FC = () => {
                           target={customBtn.url && customBtn.url.startsWith('http') ? '_blank' : '_self'}
                           rel={customBtn.url && customBtn.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                           aria-label={customBtn.name}
-                          className="hover:scale-110 transition-transform"
+                          className="hover:scale-110 transition-transform duration-200"
                         >
-                          <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-base" />
+                          <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-base text-white" />
                         </Link>
                       )
                     ))

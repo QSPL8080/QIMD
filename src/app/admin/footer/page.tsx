@@ -426,7 +426,7 @@ export default function AdminFooterCMSPage() {
                       type="text"
                       value={settings.logo || ''}
                       onChange={(e) => setSettings({ ...settings, logo: e.target.value })}
-                      placeholder="/images/logo/qimd-logo-white.png"
+                      placeholder="/images/logo/footer-qimd.png"
                       className="flex-1 min-w-[140px] bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-white"
                     />
                     <label className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg cursor-pointer transition-colors shrink-0 flex items-center gap-1">
@@ -437,16 +437,16 @@ export default function AdminFooterCMSPage() {
                     <button
                       type="button"
                       onClick={async () => {
-                        const newSettings = { ...settings, logo: '/images/logo/qimd-logo-white.png' }
+                        const newSettings = { ...settings, logo: '/images/logo/footer-qimd.png' }
                         setSettings(newSettings)
                         await updateFooterSettingsAction(newSettings)
                         if (typeof window !== 'undefined') {
                           window.dispatchEvent(new Event('websiteSettingsUpdated'))
                         }
-                        setStatusMsg({ type: 'success', text: 'Reset to default white logo' })
+                        setStatusMsg({ type: 'success', text: 'Reset to footer-qimd.png logo' })
                       }}
                       className="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-semibold shrink-0"
-                      title="Reset to default white logo"
+                      title="Reset to default footer logo"
                     >
                       Default
                     </button>

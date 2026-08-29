@@ -41,7 +41,7 @@ export default function ScrollToTop() {
         onClick={scrollToTop}
         type="button"
         aria-label="Scroll back to top"
-        className="w-12 h-12 rounded-full bg-[#764DFF] hover:bg-[#5C38D6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-110 cursor-pointer border border-white/30"
+        className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-[#4F46E5] to-[#764DFF] hover:from-[#4338CA] hover:to-[#5C38D6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/20 active:scale-95"
       >
         <Icon icon="mdi:chevron-up" className="text-2xl" />
       </button>

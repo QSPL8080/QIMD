@@ -90,57 +90,13 @@ export default function AdminShell({ session, children }: AdminShellProps) {
             </div>
           </div>
 
-          {/* CRM / Enquiries Block - Hidden for Content Manager */}
+          {/* CRM / Leads Block - Hidden for Content Manager */}
           {session.roleName !== 'Content Manager' && session.roleName !== 'CONTENT_MANAGER' && (
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 px-3">
-                CRM / Enquiries
+                CRM / Leads
               </p>
               <div className="space-y-0.5">
-                <Link
-                  href="/admin/enquiries/contact"
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    pathname === '/admin/enquiries/contact'
-                      ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
-                  }`}
-                >
-                  <Icon icon="ion:mail-unread-outline" className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                  Contact Enquiry
-                </Link>
-                <Link
-                  href="/admin/enquiries/careers"
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    pathname === '/admin/enquiries/careers'
-                      ? 'bg-purple-50 text-purple-800 font-semibold'
-                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
-                  }`}
-                >
-                  <Icon icon="ion:briefcase-outline" className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                  Career Enquiry
-                </Link>
-                <Link
-                  href="/admin/enquiries/hire"
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    pathname === '/admin/enquiries/hire'
-                      ? 'bg-rose-50 text-rose-800 font-semibold'
-                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
-                  }`}
-                >
-                  <Icon icon="ion:people-outline" className="w-5 h-5 text-rose-600 flex-shrink-0" />
-                  Company Placement Enquiry
-                </Link>
-                <Link
-                  href="/admin/enquiries/franchise"
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    pathname === '/admin/enquiries/franchise'
-                      ? 'bg-indigo-50 text-indigo-800 font-semibold'
-                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
-                  }`}
-                >
-                  <Icon icon="ion:business-outline" className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                  Franchise/Partner Enquiry
-                </Link>
                 <Link
                   href="/admin/enquiries/admission"
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
@@ -150,7 +106,55 @@ export default function AdminShell({ session, children }: AdminShellProps) {
                   }`}
                 >
                   <Icon icon="ion:school-outline" className="w-5 h-5 text-amber-600 flex-shrink-0" />
-                  Admission Enquiry
+                  Admission Enquiries
+                </Link>
+
+                <Link
+                  href="/admin/enquiries/contact"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    pathname === '/admin/enquiries/contact'
+                      ? 'bg-blue-50 text-blue-800 font-semibold'
+                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                  }`}
+                >
+                  <Icon icon="ion:mail-outline" className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                  Contact Enquiries
+                </Link>
+
+                <Link
+                  href="/admin/enquiries/careers"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    pathname === '/admin/enquiries/careers'
+                      ? 'bg-violet-50 text-violet-800 font-semibold'
+                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                  }`}
+                >
+                  <Icon icon="ion:briefcase-outline" className="w-5 h-5 text-violet-600 flex-shrink-0" />
+                  Career Applications
+                </Link>
+
+                <Link
+                  href="/admin/enquiries/hire"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    pathname === '/admin/enquiries/hire'
+                      ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                  }`}
+                >
+                  <Icon icon="ion:business-outline" className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                  Placement / Hire Requests
+                </Link>
+
+                <Link
+                  href="/admin/enquiries/franchise"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    pathname === '/admin/enquiries/franchise'
+                      ? 'bg-rose-50 text-rose-800 font-semibold'
+                      : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                  }`}
+                >
+                  <Icon icon="ion:ribbon-outline" className="w-5 h-5 text-rose-600 flex-shrink-0" />
+                  Franchise Enquiries
                 </Link>
               </div>
             </div>
@@ -174,17 +178,6 @@ export default function AdminShell({ session, children }: AdminShellProps) {
                 Courses
               </Link>
               <Link
-                href="/admin/banners"
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  pathname === '/admin/banners'
-                    ? 'bg-purple-50 text-purple-800 font-semibold'
-                    : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
-                }`}
-              >
-                <Icon icon="ion:images-outline" className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                Homepage Banners
-              </Link>
-              <Link
                 href="/admin/course-categories"
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   pathname === '/admin/course-categories'
@@ -194,6 +187,28 @@ export default function AdminShell({ session, children }: AdminShellProps) {
               >
                 <Icon icon="ion:folder-open-outline" className="w-5 h-5 text-cyan-600 flex-shrink-0" />
                 Course Categories
+              </Link>
+              <Link
+                href="/admin/brochures"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  pathname === '/admin/brochures'
+                    ? 'bg-purple-50 text-purple-800 font-semibold'
+                    : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                }`}
+              >
+                <Icon icon="ion:document-attach-outline" className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                Brochures
+              </Link>
+              <Link
+                href="/admin/banners"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  pathname === '/admin/banners'
+                    ? 'bg-purple-50 text-purple-800 font-semibold'
+                    : 'text-slate-700 hover:text-blue-700 hover:bg-blue-50/70'
+                }`}
+              >
+                <Icon icon="ion:images-outline" className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                Homepage Banners
               </Link>
               <Link
                 href="/admin/careers"

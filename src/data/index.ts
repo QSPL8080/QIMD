@@ -26,12 +26,12 @@ import type {
 // ─── Site Configuration ──────────────────────────────────────
 export const siteConfig = {
   name: "QIMD Institute",
-  fullName: "Quality Institute of Modern Design",
+  fullName: "Quickupp Institute of Marketing and Design",
   tagline: "India's First Industry-Oriented & AI Powered Marketing & Design Institute",
   description:
     "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities. Offline Learning Only.",
   phone: "+91 90000 00000",
-  email: "info@qimd.in",
+  email: "info@quickuppinstitute.com",
   address: "Hinjewadi, Pune, Maharashtra, India",
   whatsapp: "+910000000000",
   socialLinks: {

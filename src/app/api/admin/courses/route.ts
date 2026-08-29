@@ -5,7 +5,14 @@ export async function GET() {
   try {
     const [courses, categories, trainers] = await Promise.all([
       db.course.findMany({
-        include: { category: true, trainer: true },
+        include: {
+          category: true,
+          trainer: true,
+          brochures: {
+            where: { isDeleted: false },
+            orderBy: [{ isActive: 'desc' }, { updatedAt: 'desc' }],
+          },
+        },
         orderBy: { displayOrder: 'asc' },
       }),
       db.courseCategory.findMany({ orderBy: { displayOrder: 'asc' } }),

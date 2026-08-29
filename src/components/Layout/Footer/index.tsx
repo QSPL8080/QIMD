@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear()
   const { footer, socialLinks, phone } = useWebsiteSettings()
 
-  if (pathname?.startsWith('/admin')) return null
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/brochure')) return null
 
   const whatsappNum = (footer?.whatsapp?.number || socialLinks?.whatsapp || siteConfig.whatsapp || '').replace(/[^\d+]/g, '')
   const whatsappUrl = whatsappNum.startsWith('+')
@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-midnight_text dark:bg-dark text-white font-sans">
       {/* Main Footer */}
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-16 pb-10">
+      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-16 pb-8 sm:pb-10 lg:pb-12">
         {/*
           Mobile: single column stack
           Tablet (sm): 2-column grid
@@ -34,23 +34,10 @@ const Footer: React.FC = () => {
           We use inline style to apply gridTemplateColumns only on lg via a scoped CSS var.
         */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.3fr_1fr] gap-8 lg:gap-12"
         >
           {/* Brand Column */}
           <div className="space-y-5">
-            {/* Dynamic Footer Logo */}
-            {footer?.logoActive !== false && (
-              <Logo
-                variant="white"
-                width={180}
-                height={58}
-                customSrc={footer?.logo || '/images/logo/qimd-logo-white.png'}
-              />
-            )}
-
-            <p className="text-sm text-white/70 leading-relaxed">
-              Practical training with AI-powered tools, live projects, and placement support.
-            </p>
 
             {/* Social Links — controlled by Footer CMS "Show Social Icons" toggle */}
             {footer?.showSocialIcons !== false && socialLinks && (
@@ -324,6 +311,24 @@ const Footer: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Large Wide Footer Brand Logo */}
+      {footer?.logoActive !== false && (
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-4 pb-14 sm:pb-16 flex items-center justify-center">
+          <Link
+            href={footer?.logoLink || '/'}
+            className="w-full flex items-center justify-center transition-transform duration-300 hover:scale-[1.01]"
+            aria-label="QIMD Home"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={footer?.logo || '/images/logo/footer-qimd.png'}
+              alt={footer?.logoAltText || 'Quickupp / QIMD'}
+              className="w-full max-w-5xl md:max-w-6xl h-auto max-h-[220px] sm:max-h-[280px] md:max-h-[340px] lg:max-h-[380px] object-contain mx-auto select-none drop-shadow-2xl brightness-105"
+            />
+          </Link>
+        </div>
+      )}
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">

@@ -510,7 +510,6 @@ export default function HireFromUsContent() {
                           onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
                           required
                           placeholder="Enter mobile number"
-                          inputClassName="text-xs"
                         />
                       </div>
                     </div>
