@@ -13,7 +13,7 @@ export async function GET() {
         favicon: settings?.favicon || '/images/logo/qimd-logo-white.png',
         footerLogo: settings?.favicon || '/images/logo/qimd-logo-white.png',
         websiteName: settings?.websiteName || 'QIMD Institute',
-        contactEmail: settings?.contactEmail || 'info@qimd.in',
+        contactEmail: settings?.contactEmail || 'info@quickuppinstitute.com',
         contactPhone: settings?.contactPhone || '+91 90000 00000',
         whatsappNumber: settings?.whatsappNumber || '+91 90000 00000',
         address: settings?.address || 'Hinjewadi Phase 1, Pune',

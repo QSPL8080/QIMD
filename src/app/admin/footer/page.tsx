@@ -968,7 +968,7 @@ export default function AdminFooterCMSPage() {
                   type={contactModalType === 'PHONE' ? 'text' : 'email'}
                   value={contactForm.value}
                   onChange={(e) => setContactForm({ ...contactForm, value: e.target.value })}
-                  placeholder={contactModalType === 'PHONE' ? '+91 91300 00000' : 'info@qimd.in'}
+                  placeholder={contactModalType === 'PHONE' ? '+91 91300 00000' : 'info@quickuppinstitute.com'}
                   required
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                 />

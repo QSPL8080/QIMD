@@ -278,11 +278,16 @@ export default function AdminAdmissionLeadsPage() {
 
             <button
               onClick={() => setBulkDeleteConfirm(true)}
-              disabled={isPending}
-              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+              disabled={isPending || closedSelectedCount === 0}
+              title={closedSelectedCount === 0 ? "Only CLOSED leads can be deleted." : `Delete ${closedSelectedCount} closed leads`}
+              className={`px-3 py-1.5 border text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs ${
+                closedSelectedCount > 0
+                  ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 hover:border-rose-300'
+                  : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+              }`}
             >
-              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
-              Delete
+              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
+              Delete {closedSelectedCount > 0 ? `(${closedSelectedCount})` : ''}
             </button>
           </div>
         </div>

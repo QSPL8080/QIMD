@@ -107,7 +107,7 @@ export default function WebsiteManagementClient({ session }: Props) {
   // Header State
   const [headerState, setHeaderState] = useState<any>({
     phone: '+91 91300 00000',
-    email: 'info@qimd.in',
+    email: 'info@quickuppinstitute.com',
     whatsappNumber: '+919130000000',
     logo: '/images/logo/qimd-logo.png',
     topBarConfig: {
@@ -119,7 +119,7 @@ export default function WebsiteManagementClient({ session }: Props) {
     },
     topBarItems: [
       { id: 'phone', label: 'Top Phone Number', value: '+91 91300 00000', icon: 'ion:call-outline', active: true, alignment: 'LEFT' },
-      { id: 'email', label: 'Top Email Address', value: 'info@qimd.in', icon: 'ion:mail-outline', active: true, alignment: 'LEFT' },
+      { id: 'email', label: 'Top Email Address', value: 'info@quickuppinstitute.com', icon: 'ion:mail-outline', active: true, alignment: 'LEFT' },
       { id: 'hireFromUs', label: '"Hire From Us" CTA Button', value: '/hire-from-us', icon: 'ion:briefcase-outline', active: true, alignment: 'RIGHT' },
     ],
     mainHeaderConfig: {
@@ -152,7 +152,7 @@ export default function WebsiteManagementClient({ session }: Props) {
     footerDescription: "India's premier AI-Powered Marketing & Design Institute offering practical agency-level training.",
     address: 'Office 301, Hinjewadi Phase 1, Near IT Park, Pune - 411057',
     phone: '+91 91300 00000',
-    email: 'info@qimd.in',
+    email: 'info@quickuppinstitute.com',
     copyrightText: '© 2026 QIMD Institute. All Rights Reserved.',
     quickLinks: [
       { label: 'About Us', url: '/about', active: true },
@@ -185,7 +185,7 @@ export default function WebsiteManagementClient({ session }: Props) {
         const res = await getHeaderSettingsAction()
         if (res.success && res.settings) {
           const dbPhone = res.settings.contactPhone || '+91 91300 00000'
-          const dbEmail = res.settings.contactEmail || 'info@qimd.in'
+          const dbEmail = res.settings.contactEmail || 'info@quickuppinstitute.com'
           const dbWhatsapp = res.settings.whatsappNumber || '+919130000000'
           const hp = res.settings.homepageSections as any
 

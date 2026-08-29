@@ -119,7 +119,7 @@ export const footerLinks = {
 // ─── Contact Info ────────────────────────────────────────────
 export const contactInfo: ContactInfo = {
   phone: "+91 90000 00000",
-  email: "info@qimd.in",
+  email: "info@quickuppinstitute.com",
   address: "Hinjewadi, Pune, Maharashtra, India",
   socialLinks: {
     instagram: "https://instagram.com/qimdinstitute",

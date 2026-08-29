@@ -939,7 +939,7 @@ export default function AdminHeaderCMSPage() {
                   type={itemModalType === 'PHONE' ? 'text' : 'email'}
                   value={itemForm.value}
                   onChange={(e) => setItemForm({ ...itemForm, value: e.target.value })}
-                  placeholder={itemModalType === 'PHONE' ? '+91 91300 00000' : 'info@qimd.in'}
+                  placeholder={itemModalType === 'PHONE' ? '+91 91300 00000' : 'info@quickuppinstitute.com'}
                   required
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                 />

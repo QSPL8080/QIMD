@@ -64,7 +64,7 @@ export async function getHeaderCMSData() {
         data: {
           type: 'EMAIL',
           label: 'Official Email',
-          value: ws?.contactEmail || 'info@qimd.in',
+          value: ws?.contactEmail || 'info@quickuppinstitute.com',
           displayOrder: 1,
           isActive: true,
         },

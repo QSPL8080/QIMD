@@ -48,15 +48,15 @@ export async function getFooterCMSData() {
 
     if (emails.length === 0) {
       const initialEmails = [
-        { type: 'EMAIL', label: 'General', value: 'info@qimd.in', displayOrder: 1, isActive: true },
-        { type: 'EMAIL', label: 'Admissions', value: 'admissions@qimd.in', displayOrder: 2, isActive: true },
-        { type: 'EMAIL', label: 'Careers', value: 'careers@qimd.in', displayOrder: 3, isActive: true },
+        { type: 'EMAIL', label: 'General', value: 'info@quickuppinstitute.com', displayOrder: 1, isActive: true },
+        { type: 'EMAIL', label: 'Admissions', value: 'admissions@quickuppinstitute.com', displayOrder: 2, isActive: true },
+        { type: 'EMAIL', label: 'Careers', value: 'careers@quickuppinstitute.com', displayOrder: 3, isActive: true },
       ]
       const initialEmail = await db.footerContactItem.create({
         data: {
           type: 'EMAIL',
           label: 'Email',
-          value: 'info@qimd.in',
+          value: 'info@quickuppinstitute.com',
           displayOrder: 1,
           isActive: true,
         },

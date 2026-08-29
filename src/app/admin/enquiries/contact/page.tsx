@@ -276,14 +276,28 @@ export default function AdminContactLeadsPage() {
               Mark Pending
             </button>
 
-            <button
-              onClick={() => setBulkDeleteConfirm(true)}
-              disabled={isPending}
-              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
-            >
-              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
-              Delete
-            </button>
+            {(() => {
+              const closedSelectedCount = selectedIds.filter((id) => {
+                const l = leads.find((item) => item.id === id)
+                return l?.status === 'CLOSED' || l?.status === 'REJECTED'
+              }).length
+
+              return (
+                <button
+                  onClick={() => setBulkDeleteConfirm(true)}
+                  disabled={isPending || closedSelectedCount === 0}
+                  title={closedSelectedCount === 0 ? "Only CLOSED enquiries can be deleted." : `Delete ${closedSelectedCount} closed enquiries`}
+                  className={`px-3 py-1.5 border text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs ${
+                    closedSelectedCount > 0
+                      ? 'bg-white hover:bg-rose-50 text-rose-700 border-slate-200 hover:border-rose-300 cursor-pointer'
+                      : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-60'
+                  }`}
+                >
+                  <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
+                  Delete {closedSelectedCount > 0 ? `(${closedSelectedCount})` : ''}
+                </button>
+              )
+            })()}
           </div>
         </div>
       )}
