@@ -39,38 +39,10 @@ export async function getHeaderCMSData() {
       orderBy: { displayOrder: 'asc' },
     })
 
-    if (phones.length === 0) {
-      const ws = await db.websiteSettings.findFirst()
-      const initialPhone = await db.headerContactItem.create({
-        data: {
-          type: 'PHONE',
-          label: 'Phone',
-          value: ws?.contactPhone || '+91 91300 00000',
-          displayOrder: 1,
-          isActive: true,
-        },
-      })
-      phones = [initialPhone]
-    }
-
     let emails = await db.headerContactItem.findMany({
       where: { type: 'EMAIL' },
       orderBy: { displayOrder: 'asc' },
     })
-
-    if (emails.length === 0) {
-      const ws = await db.websiteSettings.findFirst()
-      const initialEmail = await db.headerContactItem.create({
-        data: {
-          type: 'EMAIL',
-          label: 'Official Email',
-          value: ws?.contactEmail || 'info@quickuppinstitute.com',
-          displayOrder: 1,
-          isActive: true,
-        },
-      })
-      emails = [initialEmail]
-    }
 
     const ws = await db.websiteSettings.findFirst()
     const hpSections = (ws?.homepageSections as any) || {}

@@ -30,39 +30,10 @@ export async function getFooterCMSData() {
       orderBy: { displayOrder: 'asc' },
     })
 
-    if (phones.length === 0) {
-      const ws = await db.websiteSettings.findFirst()
-      const initialPhones = [
-        { type: 'PHONE', label: 'Phone', value: ws?.contactPhone || '+91 90000 00000', displayOrder: 1, isActive: true },
-      ]
-      for (const item of initialPhones) {
-        await db.footerContactItem.create({ data: item })
-      }
-      phones = await db.footerContactItem.findMany({ where: { type: 'PHONE' }, orderBy: { displayOrder: 'asc' } })
-    }
-
     let emails = await db.footerContactItem.findMany({
       where: { type: 'EMAIL' },
       orderBy: { displayOrder: 'asc' },
     })
-
-    if (emails.length === 0) {
-      const initialEmails = [
-        { type: 'EMAIL', label: 'General', value: 'info@quickuppinstitute.com', displayOrder: 1, isActive: true },
-        { type: 'EMAIL', label: 'Admissions', value: 'admissions@quickuppinstitute.com', displayOrder: 2, isActive: true },
-        { type: 'EMAIL', label: 'Careers', value: 'careers@quickuppinstitute.com', displayOrder: 3, isActive: true },
-      ]
-      const initialEmail = await db.footerContactItem.create({
-        data: {
-          type: 'EMAIL',
-          label: 'Email',
-          value: 'info@quickuppinstitute.com',
-          displayOrder: 1,
-          isActive: true,
-        },
-      })
-      emails = [initialEmail]
-    }
 
     let columns = await db.footerColumn.findMany({
       include: {
@@ -72,84 +43,6 @@ export async function getFooterCMSData() {
       },
       orderBy: { displayOrder: 'asc' },
     })
-
-    if (columns.length === 0) {
-      // Seed default 4 footer columns
-      const col1 = await db.footerColumn.create({
-        data: {
-          title: 'About QIMD',
-          description: 'Practical training with AI tools and live projects.',
-          displayOrder: 1,
-          isActive: true,
-          links: {
-            create: [
-              { title: 'Overview', url: '/about-us', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1, isActive: true },
-              { title: 'Why QIMD', url: '/why-qimd', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 2, isActive: true },
-              { title: 'Trainer Profiles', url: '/trainers', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3, isActive: true },
-            ],
-          },
-        },
-      })
-
-      const col2 = await db.footerColumn.create({
-        data: {
-          title: 'Quick Links',
-          displayOrder: 2,
-          isActive: true,
-          links: {
-            create: [
-              { title: 'Home', url: '/', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1, isActive: true },
-              { title: 'About Us', url: '/about-us', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 2, isActive: true },
-              { title: 'Courses', url: '/courses', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3, isActive: true },
-              { title: 'Blogs', url: '/blogs', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 4, isActive: true },
-              { title: 'Career', url: '/careers', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 5, isActive: true },
-              { title: 'Contact Us', url: '/contact', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 6, isActive: true },
-            ],
-          },
-        },
-      })
-
-      const col3 = await db.footerColumn.create({
-        data: {
-          title: 'Our Courses',
-          displayOrder: 3,
-          isActive: true,
-          links: {
-            create: [
-              { title: 'Digital Marketing', url: '/courses/digital-marketing', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1, isActive: true },
-              { title: 'UI/UX Design', url: '/courses/ui-ux-design', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 2, isActive: true },
-              { title: 'Full Stack Web Dev', url: '/courses/full-stack-web-development', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3, isActive: true },
-              { title: 'Data Science & AI', url: '/courses/data-science-ai', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 4, isActive: true },
-            ],
-          },
-        },
-      })
-
-      const col4 = await db.footerColumn.create({
-        data: {
-          title: 'Information',
-          displayOrder: 4,
-          isActive: true,
-          links: {
-            create: [
-              { title: 'Privacy Policy', url: '/privacy-policy', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1, isActive: true },
-              { title: 'Terms & Conditions', url: '/terms-and-conditions', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 2, isActive: true },
-              { title: 'Refund Policy', url: '/refund-policy', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3, isActive: true },
-              { title: 'Hire From Us', url: '/hire-from-us', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 4, isActive: true },
-            ],
-          },
-        },
-      })
-
-      columns = await db.footerColumn.findMany({
-        include: {
-          links: {
-            orderBy: { displayOrder: 'asc' },
-          },
-        },
-        orderBy: { displayOrder: 'asc' },
-      })
-    }
 
     const ws = await db.websiteSettings.findFirst()
     const activeWhatsapp = ws?.whatsappNumber || settings.whatsappNumber;

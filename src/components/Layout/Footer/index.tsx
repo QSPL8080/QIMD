@@ -151,8 +151,8 @@ const Footer: React.FC = () => {
               )}
 
               {(() => {
-                const activePhones = footer?.phones ? footer.phones.filter((p: any) => p.isActive !== false) : []
-                if (activePhones.length > 0) {
+                if (footer?.phones !== undefined) {
+                  const activePhones = footer.phones.filter((p: any) => p.isActive !== false)
                   return activePhones.map((phoneItem: any) => (
                     <Link
                       key={phoneItem.id}
@@ -164,7 +164,7 @@ const Footer: React.FC = () => {
                     </Link>
                   ))
                 }
-                if (!footer?.phones && phone) {
+                if (phone) {
                   return (
                     <Link
                       href={`tel:${phone.replace(/\s+/g, '')}`}
@@ -179,8 +179,8 @@ const Footer: React.FC = () => {
               })()}
 
               {(() => {
-                const activeEmails = footer?.emails ? footer.emails.filter((e: any) => e.isActive !== false) : []
-                if (activeEmails.length > 0) {
+                if (footer?.emails !== undefined) {
+                  const activeEmails = footer.emails.filter((e: any) => e.isActive !== false)
                   return activeEmails.map((email: any) => (
                     <Link
                       key={email.id}
@@ -192,7 +192,7 @@ const Footer: React.FC = () => {
                     </Link>
                   ))
                 }
-                if (!footer?.emails && siteConfig.email) {
+                if (siteConfig.email) {
                   return (
                     <Link
                       href={`mailto:${siteConfig.email}`}
