@@ -54,12 +54,12 @@ const WhyQimdSection: React.FC = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-sm sm:text-base font-bold text-midnight_text dark:text-white mb-2 group-hover:text-[#764DFF] transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-[#764DFF] transition-colors leading-snug">
                   {feature.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-xs text-slate-600 dark:text-white/60 leading-relaxed font-medium">
+                <p className="text-xs sm:text-[13.5px] text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                   {feature.description}
                 </p>
               </div>

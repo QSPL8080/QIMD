@@ -48,17 +48,9 @@ const TrainerCard: React.FC<{ trainer: any; index: number }> = ({
           {name}
         </h3>
         <p className="text-cyan-300 text-xs font-semibold mb-1 leading-snug">{role}</p>
-        <p className="text-[11px] text-slate-200 mb-2.5 font-medium leading-tight line-clamp-1">
+        <p className="text-[11px] text-slate-200 font-medium leading-tight line-clamp-1">
           {specialization}
         </p>
-
-        {experience && (
-          <div>
-            <span className="inline-block bg-white/15 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/25">
-              {experience.includes('+') ? experience : `${experience}+ Years`} Experience
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );

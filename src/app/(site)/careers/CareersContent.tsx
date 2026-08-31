@@ -314,16 +314,16 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                   ].map((criteria, i) => (
                     <div
                       key={i}
-                      className="p-3.5 px-4 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-center gap-3.5 shadow-2xs hover:border-[#764DFF]/30 transition-colors"
+                      className="p-4 px-4.5 rounded-2xl bg-slate-50/90 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-center gap-4 shadow-2xs hover:border-[#764DFF]/40 transition-colors"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-base font-bold shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-lg font-bold shrink-0">
                         <Icon icon={criteria.icon} />
                       </div>
                       <div>
-                        <h3 className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white leading-snug">
+                        <h3 className="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white leading-snug">
                           {criteria.title}
                         </h3>
-                        <p className="text-[11px] text-slate-500 dark:text-white/60 font-medium leading-tight">
+                        <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 font-normal leading-relaxed mt-0.5">
                           {criteria.desc}
                         </p>
                       </div>
@@ -341,14 +341,14 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                     <Icon icon="mdi:timeline-text-outline" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#BD69F2] block">Hiring Workflow</span>
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-[#BD69F2] block">Hiring Workflow</span>
                     <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white tracking-tight">
                       Recruitment Process
                     </h2>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
                   {[
                     { step: "01", title: "Application Submission", desc: "Submit your form & details", icon: "mdi:send-outline" },
                     { step: "02", title: "Profile Screening", desc: "Shortlisting candidate details", icon: "mdi:file-search-outline" },
@@ -359,16 +359,16 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
                   ].map((step, i) => (
                     <div
                       key={i}
-                      className="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-start gap-3 shadow-2xs min-h-[72px] hover:border-[#BD69F2]/30 transition-colors"
+                      className="p-3.5 sm:p-4 rounded-2xl bg-slate-50/90 dark:bg-darklight border border-slate-200/80 dark:border-dark_border flex items-start gap-3 shadow-2xs min-h-[80px] hover:border-[#BD69F2]/40 transition-colors"
                     >
-                      <span className="w-6 h-6 rounded-lg bg-[#764DFF]/10 text-[#764DFF] text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="w-7 h-7 rounded-lg bg-[#764DFF]/15 text-[#764DFF] text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
                         {step.step}
                       </span>
                       <div>
-                        <h4 className="font-bold text-midnight_text dark:text-white text-xs leading-snug">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug">
                           {step.title}
                         </h4>
-                        <p className="text-[10px] text-slate-500 dark:text-white/60 leading-tight font-medium mt-0.5">
+                        <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-normal font-normal mt-1">
                           {step.desc}
                         </p>
                       </div>

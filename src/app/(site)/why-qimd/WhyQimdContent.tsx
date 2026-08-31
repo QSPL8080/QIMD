@@ -193,18 +193,18 @@ export default function WhyQimdContent() {
             {[...whyChoosePoints, ...whyChoosePoints].map((point, i) => (
               <div
                 key={`${point.title}-${i}`}
-                className="w-[280px] sm:w-[320px] lg:w-[340px] bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 shadow-xl border border-white/20 flex flex-col justify-between shrink-0 h-[175px] sm:h-[185px] group hover:border-cyan-300 hover:bg-white/15 transition-all duration-300"
+                className="w-[290px] sm:w-[330px] lg:w-[350px] bg-[#22123d]/90 dark:bg-[#1a0e30]/90 backdrop-blur-md rounded-2xl p-5 sm:p-6 shadow-xl border border-white/25 flex flex-col justify-between shrink-0 min-h-[190px] group hover:border-cyan-300 hover:bg-[#2c184d] transition-all duration-300"
               >
                 <div>
-                  <div className="flex items-center gap-2.5 mb-2">
-                    <div className="w-7 h-7 rounded-lg bg-white/15 text-cyan-300 flex items-center justify-center text-sm font-bold border border-white/25 group-hover:bg-white group-hover:text-[#180e29] transition-colors duration-300 shrink-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-base font-bold border border-white/25 group-hover:bg-white group-hover:text-[#180e29] transition-colors duration-300 shrink-0">
                       <Icon icon={point.icon} />
                     </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-white leading-tight tracking-tight group-hover:text-cyan-300 transition-colors line-clamp-1">
+                    <h3 className="text-sm sm:text-base font-bold text-white leading-snug tracking-tight group-hover:text-cyan-300 transition-colors">
                       {point.title}
                     </h3>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-slate-200 leading-relaxed font-normal line-clamp-4">
+                  <p className="text-xs sm:text-[13px] text-slate-100/95 leading-relaxed font-normal">
                     {point.desc}
                   </p>
                 </div>

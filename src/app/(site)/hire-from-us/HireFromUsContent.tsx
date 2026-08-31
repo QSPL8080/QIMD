@@ -330,7 +330,7 @@ export default function HireFromUsContent() {
               {recruitmentSteps.map((step, i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-darklight border border-slate-200/80 dark:border-dark_border rounded-2xl p-5 text-center flex flex-col justify-between items-center space-y-3 shadow-md hover:shadow-xl hover:border-[#764DFF]/50 transition-all duration-300 group"
+                  className="bg-white dark:bg-darklight border border-slate-200/80 dark:border-dark_border rounded-2xl p-5 sm:p-6 text-center flex flex-col justify-between items-center space-y-3.5 shadow-md hover:shadow-xl hover:border-[#764DFF]/50 transition-all duration-300 group min-h-[170px]"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200/80 dark:border-dark_border text-[#764DFF] group-hover:bg-[#764DFF] group-hover:text-white flex items-center justify-center text-xl font-bold transition-colors shadow-2xs relative">
                     <Icon icon={step.icon} />
@@ -340,10 +340,10 @@ export default function HireFromUsContent() {
                   </div>
 
                   <div>
-                    <h4 className="font-extrabold text-[#111827] dark:text-white text-xs leading-snug mb-1 group-hover:text-[#764DFF] transition-colors">
+                    <h4 className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm leading-snug mb-1.5 group-hover:text-[#764DFF] transition-colors">
                       {step.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 dark:text-white/60 leading-tight font-medium">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                       {step.desc}
                     </p>
                   </div>
