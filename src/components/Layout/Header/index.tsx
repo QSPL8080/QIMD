@@ -64,27 +64,35 @@ const Header: React.FC = () => {
 
   return (
     <>
-      {/* ROW 1 — TOP BAR */}
+      {/* ROW 1 — TOP BAR (Responsive across Mobile, Tablet, and Desktop) */}
       <div
-        className="py-2 hidden lg:block border-b border-white/10 text-white"
+        className="py-1.5 sm:py-2 border-b border-white/10 text-white"
         style={{
           background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
         }}
       >
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 flex items-center justify-between">
+        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
           {/* Contact Phones & Emails */}
-          <div className="flex items-center gap-6 text-white font-medium text-sm">
+          <div className="flex items-center gap-3 sm:gap-6 text-white font-medium text-xs sm:text-sm overflow-hidden">
             {header?.phones && header.phones.length > 0 ? (
               header.phones.map((phoneItem) => (
                 <Link
                   key={phoneItem.id}
                   href={`tel:${phoneItem.value.replace(/[^\d+]/g, '')}`}
-                  className="flex items-center gap-2 hover:text-white/80 transition-colors"
+                  className="flex items-center gap-1.5 hover:text-white/80 transition-colors whitespace-nowrap"
                 >
-                  <Icon icon="mdi:phone" className="text-white text-base" />
-                  <span>{phoneItem.value}</span>
+                  <Icon icon="mdi:phone" className="text-cyan-300 text-sm sm:text-base flex-shrink-0" />
+                  <span className="font-semibold">{phoneItem.value}</span>
                 </Link>
               ))
+            ) : phone ? (
+              <Link
+                href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                className="flex items-center gap-1.5 hover:text-white/80 transition-colors whitespace-nowrap"
+              >
+                <Icon icon="mdi:phone" className="text-cyan-300 text-sm sm:text-base flex-shrink-0" />
+                <span className="font-semibold">{phone}</span>
+              </Link>
             ) : null}
 
             {header?.emails && header.emails.length > 0 ? (
@@ -92,93 +100,131 @@ const Header: React.FC = () => {
                 <Link
                   key={emailItem.id}
                   href={`mailto:${emailItem.value}`}
-                  className="flex items-center gap-2 hover:text-white/80 transition-colors"
+                  className="hidden md:flex items-center gap-1.5 hover:text-white/80 transition-colors whitespace-nowrap"
                 >
-                  <Icon icon="mdi:email" className="text-white text-base" />
+                  <Icon icon="mdi:email" className="text-cyan-300 text-sm sm:text-base flex-shrink-0" />
                   <span>{emailItem.value}</span>
                 </Link>
               ))
+            ) : siteConfig.email ? (
+              <Link
+                href={`mailto:${siteConfig.email}`}
+                className="hidden md:flex items-center gap-1.5 hover:text-white/80 transition-colors whitespace-nowrap"
+              >
+                <Icon icon="mdi:email" className="text-cyan-300 text-sm sm:text-base flex-shrink-0" />
+                <span>{siteConfig.email}</span>
+              </Link>
             ) : null}
           </div>
 
-            {/* Right Side: Hire From Us, Extra Top Bar Buttons & Social Icons */}
-            <div className="flex items-center gap-3 text-white">
-              {header?.hireFromUs?.active !== false && (
-                <Link
-                  href={header?.hireFromUs?.url || '/hire-from-us'}
-                  target={header?.hireFromUs?.openInNewTab ? '_blank' : '_self'}
-                  rel={header?.hireFromUs?.openInNewTab ? 'noopener noreferrer' : undefined}
-                  className="relative inline-flex items-center gap-1.5 px-3.5 py-1 text-xs font-black text-[#764DFF] bg-white hover:bg-slate-100 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ring-2 ring-white/60 animate-pulse"
-                >
-                  <Icon icon="mdi:briefcase-account" className="text-sm text-[#764DFF]" />
-                  <span>{header?.hireFromUs?.text || 'Hire From Us'}</span>
-                </Link>
-              )}
+          {/* Right Side: Hire From Us, Extra Buttons & High-Contrast Social Icons */}
+          <div className="flex items-center gap-2 sm:gap-3 text-white flex-shrink-0">
+            {header?.hireFromUs?.active !== false && (
+              <Link
+                href={header?.hireFromUs?.url || '/hire-from-us'}
+                target={header?.hireFromUs?.openInNewTab ? '_blank' : '_self'}
+                rel={header?.hireFromUs?.openInNewTab ? 'noopener noreferrer' : undefined}
+                className="relative inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1 text-[11px] sm:text-xs font-black text-[#764DFF] bg-white hover:bg-slate-100 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ring-2 ring-white/60"
+              >
+                <Icon icon="mdi:briefcase-account" className="text-xs sm:text-sm text-[#764DFF]" />
+                <span>{header?.hireFromUs?.text || 'Hire From Us'}</span>
+              </Link>
+            )}
 
-              {/* Extra Custom Top Bar Buttons */}
-              {header?.extraTopBarButtons && header.extraTopBarButtons.length > 0 && (
-                header.extraTopBarButtons.map((btn: any, i: number) => (
-                  btn.active !== false && (
-                    <Link
-                      key={btn.id || i}
-                      href={btn.url || '/contact'}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-white bg-white/10 hover:bg-white/20 rounded-full shadow-md transition-all border border-white/20"
-                    >
-                      <span>{btn.text}</span>
-                    </Link>
-                  )
-                ))
-              )}
+            {/* Extra Custom Top Bar Buttons */}
+            {header?.extraTopBarButtons && header.extraTopBarButtons.length > 0 && (
+              header.extraTopBarButtons.map((btn: any, i: number) => (
+                btn.active !== false && (
+                  <Link
+                    key={btn.id || i}
+                    href={btn.url || '/contact'}
+                    className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold text-white bg-white/10 hover:bg-white/20 rounded-full shadow-md transition-all border border-white/20"
+                  >
+                    <span>{btn.text}</span>
+                  </Link>
+                )
+              ))
+            )}
 
-              {/* Social Links from existing Social Links CMS */}
-              {header?.showSocialLinks !== false && socialLinks && (
-                <div className="flex items-center gap-3">
-                  {socialLinks.activeStatus?.instagram !== false && socialLinks.headerStatus?.instagram !== false && socialLinks.instagram && (
-                    <Link href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:scale-110 transition-transform duration-200">
-                      <Icon icon="mdi:instagram" className="text-[18px] text-[#E4405F]" />
-                    </Link>
-                  )}
-                  {socialLinks.activeStatus?.facebook !== false && socialLinks.headerStatus?.facebook !== false && socialLinks.facebook && (
-                    <Link href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:scale-110 transition-transform duration-200">
-                      <Icon icon="mdi:facebook" className="text-[18px] text-[#4267B2]" />
-                    </Link>
-                  )}
-                  {socialLinks.activeStatus?.youtube !== false && socialLinks.headerStatus?.youtube !== false && socialLinks.youtube && (
-                    <Link href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:scale-110 transition-transform duration-200">
-                      <Icon icon="mdi:youtube" className="text-[18px] text-[#FF0000]" />
-                    </Link>
-                  )}
-                  {socialLinks.activeStatus?.linkedin !== false && socialLinks.headerStatus?.linkedin !== false && socialLinks.linkedin && (
-                    <Link href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:scale-110 transition-transform duration-200">
-                      <Icon icon="mdi:linkedin" className="text-[18px] text-[#0A66C2]" />
-                    </Link>
-                  )}
-                  {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
-                    <Link href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter (X)" className="hover:scale-110 transition-transform duration-200">
-                      <Icon icon="ri:twitter-x-fill" className="text-[15px] text-white" />
-                    </Link>
-                  )}
-                  {socialLinks.customLinks && socialLinks.customLinks.length > 0 && (
-                    socialLinks.customLinks.map((customBtn) => (
-                      customBtn.active !== false && customBtn.showHeader !== false && (
-                        <Link
-                          key={customBtn.id}
-                          href={customBtn.url || '#'}
-                          target={customBtn.url && customBtn.url.startsWith('http') ? '_blank' : '_self'}
-                          rel={customBtn.url && customBtn.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                          aria-label={customBtn.name}
-                          className="hover:scale-110 transition-transform duration-200"
-                        >
-                          <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-base text-white" />
-                        </Link>
-                      )
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
+            {/* High-Visibility Official Social Icon Badges */}
+            {header?.showSocialLinks !== false && socialLinks && (
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                {socialLinks.activeStatus?.instagram !== false && socialLinks.headerStatus?.instagram !== false && socialLinks.instagram && (
+                  <Link
+                    href={socialLinks.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0"
+                  >
+                    <Icon icon="skill-icons:instagram" className="text-xs sm:text-sm" />
+                  </Link>
+                )}
+                {socialLinks.activeStatus?.facebook !== false && socialLinks.headerStatus?.facebook !== false && socialLinks.facebook && (
+                  <Link
+                    href={socialLinks.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0"
+                  >
+                    <Icon icon="logos:facebook" className="text-[11px] sm:text-xs" />
+                  </Link>
+                )}
+                {socialLinks.activeStatus?.youtube !== false && socialLinks.headerStatus?.youtube !== false && socialLinks.youtube && (
+                  <Link
+                    href={socialLinks.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="YouTube"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0"
+                  >
+                    <Icon icon="logos:youtube-icon" className="text-[11px] sm:text-xs" />
+                  </Link>
+                )}
+                {socialLinks.activeStatus?.linkedin !== false && socialLinks.headerStatus?.linkedin !== false && socialLinks.linkedin && (
+                  <Link
+                    href={socialLinks.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0"
+                  >
+                    <Icon icon="logos:linkedin-icon" className="text-[11px] sm:text-xs" />
+                  </Link>
+                )}
+                {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
+                  <Link
+                    href={socialLinks.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter (X)"
+                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-black/60 hover:bg-black/90 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/30 backdrop-blur-xs flex-shrink-0 text-white"
+                  >
+                    <Icon icon="line-md:twitter-x-alt" className="text-[10px] sm:text-xs" />
+                  </Link>
+                )}
+                {socialLinks.customLinks && socialLinks.customLinks.length > 0 && (
+                  socialLinks.customLinks.map((customBtn) => (
+                    customBtn.active !== false && customBtn.showHeader !== false && (
+                      <Link
+                        key={customBtn.id}
+                        href={customBtn.url || '#'}
+                        target={customBtn.url && customBtn.url.startsWith('http') ? '_blank' : '_self'}
+                        rel={customBtn.url && customBtn.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        aria-label={customBtn.name}
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0 text-white"
+                      >
+                        <Icon icon={customBtn.icon || 'ion:link-outline'} className="text-xs sm:text-sm" />
+                      </Link>
+                    )
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
       {/* ROW 2 — MAIN NAVIGATION */}
       <header
@@ -349,6 +395,70 @@ const Header: React.FC = () => {
                   </Link>
                 )
               ))
+            )}
+
+            {/* Social Links inside Mobile Drawer */}
+            {header?.showSocialLinks !== false && socialLinks && (
+              <div className="pt-3 border-t border-border dark:border-dark_border">
+                <p className="text-xs font-semibold text-slate-600 dark:text-white/70 mb-2">Connect with us</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {socialLinks.activeStatus?.instagram !== false && socialLinks.headerStatus?.instagram !== false && socialLinks.instagram && (
+                    <Link
+                      href={socialLinks.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Instagram"
+                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
+                    >
+                      <Icon icon="skill-icons:instagram" className="text-sm" />
+                    </Link>
+                  )}
+                  {socialLinks.activeStatus?.facebook !== false && socialLinks.headerStatus?.facebook !== false && socialLinks.facebook && (
+                    <Link
+                      href={socialLinks.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Facebook"
+                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
+                    >
+                      <Icon icon="logos:facebook" className="text-xs" />
+                    </Link>
+                  )}
+                  {socialLinks.activeStatus?.youtube !== false && socialLinks.headerStatus?.youtube !== false && socialLinks.youtube && (
+                    <Link
+                      href={socialLinks.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="YouTube"
+                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
+                    >
+                      <Icon icon="logos:youtube-icon" className="text-xs" />
+                    </Link>
+                  )}
+                  {socialLinks.activeStatus?.linkedin !== false && socialLinks.headerStatus?.linkedin !== false && socialLinks.linkedin && (
+                    <Link
+                      href={socialLinks.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="LinkedIn"
+                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
+                    >
+                      <Icon icon="logos:linkedin-icon" className="text-xs" />
+                    </Link>
+                  )}
+                  {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
+                    <Link
+                      href={socialLinks.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Twitter (X)"
+                      className="w-8 h-8 rounded-full bg-slate-900 text-white hover:bg-black flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
+                    >
+                      <Icon icon="line-md:twitter-x-alt" className="text-xs" />
+                    </Link>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>
