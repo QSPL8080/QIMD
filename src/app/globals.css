@@ -425,21 +425,21 @@ a[class*="bg-[#4F46E5]"]:hover,
 }
 
 /* 2. Green / WhatsApp CTA buttons — Solid Dark Green Border */
-button[class*="bg-[#25D366]"],
-button[class*="bg-green-"],
-button[class*="bg-emerald-"],
-a[class*="bg-[#25D366]"],
-a[class*="bg-green-"],
-a[class*="bg-emerald-"],
-.whatsapp-float {
+.btn-whatsapp,
+.whatsapp-float,
+a[href*="wa.me"],
+a[href*="whatsapp.com"],
+button.whatsapp-btn {
   border-color: #15803D !important;
   box-shadow: 0 3px 12px 0 rgba(37, 211, 102, 0.4) !important;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-button[class*="bg-[#25D366]"]:hover,
-a[class*="bg-[#25D366]"]:hover,
-.whatsapp-float:hover {
+.btn-whatsapp:hover,
+.whatsapp-float:hover,
+a[href*="wa.me"]:hover,
+a[href*="whatsapp.com"]:hover,
+button.whatsapp-btn:hover {
   border-color: #14532D !important;
   box-shadow: 0 6px 20px 0 rgba(37, 211, 102, 0.5) !important;
   transform: translateY(-2px);
