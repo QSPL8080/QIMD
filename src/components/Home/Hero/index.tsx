@@ -161,7 +161,10 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                 </div>
 
                 {/* Main Headline */}
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-extrabold text-white leading-snug tracking-tight drop-shadow-md">
+                <h1
+                  className="font-americana text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-bold text-white leading-snug tracking-tight drop-shadow-md"
+                  style={{ fontFamily: "'Americana', Georgia, serif" }}
+                >
                   {title}
                 </h1>
 

@@ -48,6 +48,50 @@
        url('https://fonts.cdnfonts.com/s/18906/Audrey-Bold.woff') format('woff');
 }
 
+/* ── Americana Display Font ─────────────────────────── */
+@font-face {
+  font-family: 'Americana';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/americana/Americana-Regular.woff2') format('woff2'),
+       url('https://db.onlinewebfonts.com/t/8f8380b35b1f35ce02c70ced2e0a202e.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Americana';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/americana/Americana-Bold.woff2') format('woff2'),
+       url('/fonts/americana/Americana-Bold.woff') format('woff'),
+       url('https://db.onlinewebfonts.com/t/84000e652b779c092d39d3f2e039adaf.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Americana';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/americana/Americana-Bold.woff2') format('woff2'),
+       url('/fonts/americana/Americana-Bold.woff') format('woff'),
+       url('https://db.onlinewebfonts.com/t/84000e652b779c092d39d3f2e039adaf.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Americana';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/americana/Americana-Bold.woff2') format('woff2'),
+       url('/fonts/americana/Americana-Bold.woff') format('woff'),
+       url('https://db.onlinewebfonts.com/t/84000e652b779c092d39d3f2e039adaf.woff2') format('woff2');
+}
+
+.font-americana {
+  font-family: 'Americana', Georgia, serif !important;
+}
+
 @theme {
   --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
@@ -55,6 +99,7 @@
   --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-libre-baskerville: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-audrey: 'Audrey', Georgia, serif;
+  --font-americana: 'Americana', Georgia, serif;
 
   --container-screen-xl: 75rem;
   --container-screen-2xl: 83.75rem;
