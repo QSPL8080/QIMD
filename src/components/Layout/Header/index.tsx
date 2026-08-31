@@ -190,10 +190,10 @@ const Header: React.FC = () => {
                     aria-label="LinkedIn"
                     className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border border-white/20 backdrop-blur-xs flex-shrink-0"
                   >
-                    <Icon icon="logos:linkedin-icon" className="text-[11px] sm:text-xs" />
+                    <Icon icon="skill-icons:linkedin" className="text-xs sm:text-sm" />
                   </Link>
                 )}
-                {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
+                {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && Boolean(socialLinks.twitter) && (
                   <Link
                     href={socialLinks.twitter}
                     target="_blank"
@@ -443,10 +443,10 @@ const Header: React.FC = () => {
                       aria-label="LinkedIn"
                       className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 flex items-center justify-center transition-transform hover:scale-110 shadow-xs"
                     >
-                      <Icon icon="logos:linkedin-icon" className="text-xs" />
+                      <Icon icon="skill-icons:linkedin" className="text-sm" />
                     </Link>
                   )}
-                  {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && socialLinks.twitter && (
+                  {socialLinks.activeStatus?.twitter !== false && socialLinks.headerStatus?.twitter !== false && Boolean(socialLinks.twitter) && (
                     <Link
                       href={socialLinks.twitter}
                       target="_blank"

@@ -106,10 +106,10 @@ const Footer: React.FC = () => {
                     aria-label="QIMD LinkedIn"
                     className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-xs border-0 border-none"
                   >
-                    <Icon icon="logos:linkedin-icon" className="text-lg" />
+                    <Icon icon="skill-icons:linkedin" className="text-xl" />
                   </Link>
                 )}
-                {socialLinks.activeStatus?.twitter !== false && socialLinks.footerStatus?.twitter !== false && socialLinks.twitter && (
+                {socialLinks.activeStatus?.twitter !== false && socialLinks.footerStatus?.twitter !== false && Boolean(socialLinks.twitter) && (
                   <Link
                     href={socialLinks.twitter}
                     target="_blank"
