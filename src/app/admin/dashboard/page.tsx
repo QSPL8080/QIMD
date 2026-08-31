@@ -27,6 +27,9 @@ export default async function AdminDashboardPage() {
     galleryCount,
     recentContacts,
     recentAdmissions,
+    recentFranchises,
+    recentBlogs,
+    recentReviews,
     recentLogs,
   ] = await Promise.all([
     db.contactEnquiry.count({ where: { isDeleted: false } }),
@@ -46,7 +49,10 @@ export default async function AdminDashboardPage() {
     db.gallery.count({ where: { isDeleted: false } }),
     db.contactEnquiry.findMany({ where: { isDeleted: false }, take: 5, orderBy: { createdAt: 'desc' } }),
     db.admissionEnquiry.findMany({ where: { isDeleted: false }, take: 5, orderBy: { createdAt: 'desc' }, include: { course: true } }),
-    db.auditLog.findMany({ take: 6, orderBy: { createdAt: 'desc' }, include: { user: true } }),
+    db.franchisePartnerEnquiry.findMany({ where: { isDeleted: false }, take: 4, orderBy: { createdAt: 'desc' } }),
+    db.blog.findMany({ where: { isDeleted: false }, take: 4, orderBy: { createdAt: 'desc' } }),
+    db.studentReview.findMany({ where: { isDeleted: false }, take: 4, orderBy: { createdAt: 'desc' } }),
+    db.auditLog.findMany({ take: 5, orderBy: { createdAt: 'desc' }, include: { user: true } }),
   ])
 
   return (
@@ -266,17 +272,18 @@ export default async function AdminDashboardPage() {
         </Link>
       </div>
 
-      {/* CRM Quick Actions & Leads Breakdown */}
+      {/* ─── MIDDLE SECTION: CRM LEADS & QUICK TOOLS ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Admission Enquiries */}
+        {/* Recent Admission Enquiries Table */}
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
               <Icon icon="ion:school-outline" className="w-5 h-5 text-amber-600" />
               Recent Admission Enquiries
             </h2>
-            <Link href="/admin/enquiries/admission" className="text-xs text-blue-600 font-semibold hover:underline">
-              View All Admission Leads
+            <Link href="/admin/enquiries/admission" className="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
+              <span>View All Leads</span>
+              <Icon icon="ion:arrow-forward" className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -300,10 +307,14 @@ export default async function AdminDashboardPage() {
                   </tr>
                 ) : (
                   recentAdmissions.map((c) => (
-                    <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="p-3 font-semibold text-slate-900">{c.studentName}</td>
-                      <td className="p-3">{c.email}<br/><span className="text-slate-400">{c.phone}</span></td>
-                      <td className="p-3 font-medium text-slate-800">{c.course?.courseName || 'AI Practical Program'}</td>
+                      <td className="p-3">
+                        <span className="font-medium text-slate-800">{c.email}</span>
+                        <br />
+                        <span className="text-slate-400 text-[11px]">{c.phone}</span>
+                      </td>
+                      <td className="p-3 font-medium text-slate-800">{c.course?.courseName || 'General Enquiry'}</td>
                       <td className="p-3">
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           c.status === 'NEW' || c.status === 'PENDING' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
@@ -322,13 +333,17 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Quick Actions Panel */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Icon icon="ion:flash-outline" className="w-5 h-5 text-amber-500" />
-            Quick Admin Tools & Export
-          </h2>
-          <div className="space-y-2.5 text-xs">
+        {/* Quick Tools & Shortcuts */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs flex flex-col justify-between">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Icon icon="ion:flash-outline" className="w-5 h-5 text-amber-500" />
+              Quick Admin Tools
+            </h2>
+            <p className="text-xs text-slate-500 mt-1">Frequently used platform actions and exports</p>
+          </div>
+
+          <div className="space-y-2 text-xs">
             <Link
               href="/admin/brochures"
               className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-purple-50/70 border border-slate-200 text-slate-700 transition-colors"
@@ -342,7 +357,7 @@ export default async function AdminDashboardPage() {
 
             <a
               href="/api/export?type=admission"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-700 transition-colors"
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-amber-50/70 border border-slate-200 text-slate-700 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <Icon icon="ion:download-outline" className="w-4 h-4 text-amber-600" />
@@ -351,18 +366,16 @@ export default async function AdminDashboardPage() {
               <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
             </a>
 
-            {session.roleName === 'Super Admin' && (
-              <Link
-                href="/admin/users"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-700 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Icon icon="ion:people-circle-outline" className="w-4 h-4 text-indigo-600" />
-                  <span className="font-medium">Manage Admin Users & Roles</span>
-                </div>
-                <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
-              </Link>
-            )}
+            <Link
+              href="/admin/media-library"
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-sky-50/70 border border-slate-200 text-slate-700 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Icon icon="ion:cloud-upload-outline" className="w-4 h-4 text-sky-600" />
+                <span className="font-medium">Media Library & Files</span>
+              </div>
+              <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
+            </Link>
 
             <Link
               href="/admin/settings"
@@ -374,46 +387,84 @@ export default async function AdminDashboardPage() {
               </div>
               <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
             </Link>
+          </div>
 
-            <Link
-              href="/admin/media-library"
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/70 border border-slate-200 text-slate-700 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Icon icon="ion:cloud-upload-outline" className="w-4 h-4 text-sky-600" />
-                <span className="font-medium">Media Library & Uploads</span>
-              </div>
-              <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
-            </Link>
+          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Next.js 15 App Router</span>
+            <span className="font-medium text-emerald-600 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> DB Healthy
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Recent Audit Log */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Icon icon="ion:shield-outline" className="w-5 h-5 text-blue-600" />
-            Security & Audit Activity Trail
-          </h2>
-          <Link href="/admin/audit-logs" className="text-xs text-blue-600 font-semibold hover:underline">
-            View All Logs
-          </Link>
+      {/* ─── BOTTOM SECTION: RECENT CONTENT & COMPACT SECURITY AUDIT ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Compact Security & Audit Activity Trail */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Icon icon="ion:shield-checkmark-outline" className="w-4.5 h-4.5 text-blue-600" />
+              Security & Audit Activity Trail
+            </h2>
+            <Link href="/admin/audit-logs" className="text-xs text-blue-600 font-semibold hover:underline">
+              View All Logs
+            </Link>
+          </div>
+
+          <div className="space-y-2">
+            {recentLogs.map((log) => (
+              <div key={log.id} className="flex items-center justify-between p-2.5 bg-slate-50/80 hover:bg-slate-50 border border-slate-200/80 rounded-xl text-xs transition-colors">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200/60 uppercase shrink-0">
+                    {log.module}
+                  </span>
+                  <span className="font-medium text-slate-800 truncate">{log.action}</span>
+                </div>
+                <div className="flex items-center gap-3 shrink-0 text-slate-400 text-[11px]">
+                  <span className="text-slate-500 font-medium hidden sm:inline">{log.user?.fullName || 'System'}</span>
+                  <span>{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {recentLogs.map((log) => (
-            <div key={log.id} className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-800">
-                <span className="text-blue-700 font-bold">{log.module}</span>
-                <span className="text-slate-400 text-[10px]">{new Date(log.createdAt).toLocaleTimeString()}</span>
-              </div>
-              <p className="text-xs text-slate-800 font-medium">{log.action}</p>
-              <p className="text-[10px] text-slate-500">By: {log.user?.fullName || 'System'}</p>
-            </div>
-          ))}
+        {/* Recent Blogs & Website Content Status */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Icon icon="ion:newspaper-outline" className="w-4.5 h-4.5 text-emerald-600" />
+              Recent Blogs & Published Updates
+            </h2>
+            <Link href="/admin/blogs" className="text-xs text-blue-600 font-semibold hover:underline">
+              Manage Blogs
+            </Link>
+          </div>
+
+          <div className="space-y-2">
+            {recentBlogs.length === 0 ? (
+              <p className="text-xs text-slate-400 p-4 text-center">No blogs published yet.</p>
+            ) : (
+              recentBlogs.map((b) => (
+                <div key={b.id} className="flex items-center justify-between p-2.5 bg-slate-50/80 hover:bg-slate-50 border border-slate-200/80 rounded-xl text-xs transition-colors">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Icon icon="ion:document-text-outline" className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="font-medium text-slate-800 truncate">{b.title}</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] text-slate-400">{new Date(b.createdAt).toLocaleDateString()}</span>
+                    <Link href={`/admin/blogs`} className="text-blue-600 hover:text-blue-700 font-semibold text-[11px]">
+                      Edit
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
 }
+
