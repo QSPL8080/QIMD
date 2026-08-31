@@ -12,14 +12,17 @@ export default async function AdminDashboardPage() {
   const [
     contactCount,
     admissionCount,
-    careerCount,
     franchiseCount,
+    careerCount,
     hireCount,
     courseCount,
     blogCount,
+    teamCount,
     trainerCount,
-    placementCount,
+    jobOpeningCount,
     testimonialCount,
+    placementCount,
+    reviewCount,
     faqCount,
     galleryCount,
     recentContacts,
@@ -28,14 +31,17 @@ export default async function AdminDashboardPage() {
   ] = await Promise.all([
     db.contactEnquiry.count({ where: { isDeleted: false } }),
     db.admissionEnquiry.count({ where: { isDeleted: false } }),
-    db.careerEnquiry.count({ where: { isDeleted: false } }),
     db.franchisePartnerEnquiry.count({ where: { isDeleted: false } }),
+    db.careerEnquiry.count({ where: { isDeleted: false } }),
     db.companyPlacementEnquiry.count({ where: { isDeleted: false } }),
     db.course.count({ where: { isDeleted: false } }),
     db.blog.count({ where: { isDeleted: false } }),
+    db.teamMember.count({ where: { isDeleted: false } }),
     db.trainer.count({ where: { isDeleted: false } }),
-    db.placement.count({ where: { isDeleted: false } }),
+    db.jobOpening.count({ where: { isDeleted: false } }),
     db.testimonial.count({ where: { isDeleted: false } }),
+    db.placement.count({ where: { isDeleted: false } }),
+    db.studentReview.count({ where: { isDeleted: false } }),
     db.faq.count({ where: { isDeleted: false } }),
     db.gallery.count({ where: { isDeleted: false } }),
     db.contactEnquiry.findMany({ where: { isDeleted: false }, take: 5, orderBy: { createdAt: 'desc' } }),
@@ -43,10 +49,8 @@ export default async function AdminDashboardPage() {
     db.auditLog.findMany({ take: 6, orderBy: { createdAt: 'desc' }, include: { user: true } }),
   ])
 
-  const totalLeads = contactCount + admissionCount + careerCount + franchiseCount + hireCount
-
   return (
-    <div className="space-y-8 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Light Mode Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-xs">
         <div>
@@ -76,79 +80,190 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-emerald-50/70 border border-emerald-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-emerald-300 transition-all">
+      {/* ─── ROW 1: ENQUIRIES (4 Cards) ─── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 1. Admission Enquiry */}
+        <Link
+          href="/admin/enquiries/admission"
+          className="bg-amber-50/70 border border-amber-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-amber-400 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800">Total Enquiries & CRM</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-              <Icon icon="ion:mail-unread" className="w-5.5 h-5.5" />
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-emerald-950">{totalLeads}</div>
-          <p className="text-xs sm:text-sm text-emerald-700/80 font-normal">Contact, admission, career & hiring requests</p>
-        </div>
-
-        <div className="bg-amber-50/70 border border-amber-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-amber-300 transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-800">Admission Enquiries</span>
-            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-800">Admission Enquiry</span>
+            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
               <Icon icon="ion:school" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-amber-950">{admissionCount}</div>
-          <p className="text-xs sm:text-sm text-amber-700/80 font-normal">Brochure downloads & course leads</p>
-        </div>
+          <div className="text-3xl font-extrabold text-amber-950">{admissionCount}</div>
+          <p className="text-xs text-amber-700/90 font-medium">Student leads & brochure downloads</p>
+        </Link>
 
-        <div className="bg-blue-50/70 border border-blue-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-blue-300 transition-all">
+        {/* 2. Franchise Enquiry */}
+        <Link
+          href="/admin/enquiries/franchise"
+          className="bg-orange-50/70 border border-orange-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-orange-400 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-blue-800">Active Courses</span>
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
-              <Icon icon="ion:book" className="w-5.5 h-5.5" />
+            <span className="text-xs font-bold uppercase tracking-wider text-orange-800">Franchise Enquiry</span>
+            <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Icon icon="ion:business" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-blue-950">{courseCount}</div>
-          <p className="text-xs sm:text-sm text-blue-700/80 font-normal">Managed in CMS database</p>
-        </div>
+          <div className="text-3xl font-extrabold text-orange-950">{franchiseCount}</div>
+          <p className="text-xs text-orange-700/90 font-medium">Franchise partner proposals & leads</p>
+        </Link>
 
-        <div className="bg-purple-50/70 border border-purple-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-purple-300 transition-all">
+        {/* 3. Career Enquiry */}
+        <Link
+          href="/admin/enquiries/careers"
+          className="bg-emerald-50/70 border border-emerald-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-emerald-400 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-purple-800">Placements Showcase</span>
-            <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-xs">
-              <Icon icon="ion:trophy" className="w-5.5 h-5.5" />
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">Career Enquiry</span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Icon icon="ion:briefcase" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-bold text-purple-950">{placementCount}</div>
-          <p className="text-xs sm:text-sm text-purple-700/80 font-normal">Student success records</p>
-        </div>
+          <div className="text-3xl font-extrabold text-emerald-950">{careerCount}</div>
+          <p className="text-xs text-emerald-700/90 font-medium">Job applicant submissions & resumes</p>
+        </Link>
+
+        {/* 4. Placement Enquiry */}
+        <Link
+          href="/admin/enquiries/hire"
+          className="bg-purple-50/70 border border-purple-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-purple-400 hover:shadow-md transition-all group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-purple-800">Placement Enquiry</span>
+            <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              <Icon icon="ion:people" className="w-5.5 h-5.5" />
+            </div>
+          </div>
+          <div className="text-3xl font-extrabold text-purple-950">{hireCount}</div>
+          <p className="text-xs text-purple-700/90 font-medium">Company hiring & recruiter requests</p>
+        </Link>
       </div>
 
-      {/* Secondary Metrics Summary Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3.5">
-        <div className="bg-teal-50/80 border border-teal-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-teal-700">Blogs</span>
-          <p className="text-xl font-bold text-teal-900 mt-0.5">{blogCount}</p>
-        </div>
-        <div className="bg-indigo-50/80 border border-indigo-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-indigo-700">Trainers</span>
-          <p className="text-xl font-bold text-indigo-900 mt-0.5">{trainerCount}</p>
-        </div>
-        <div className="bg-rose-50/80 border border-rose-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-rose-700">Testimonials</span>
-          <p className="text-xl font-bold text-rose-900 mt-0.5">{testimonialCount}</p>
-        </div>
-        <div className="bg-sky-50/80 border border-sky-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-sky-700">FAQs</span>
-          <p className="text-xl font-bold text-sky-900 mt-0.5">{faqCount}</p>
-        </div>
-        <div className="bg-violet-50/80 border border-violet-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-violet-700">Gallery Items</span>
-          <p className="text-xl font-bold text-violet-900 mt-0.5">{galleryCount}</p>
-        </div>
-        <div className="bg-amber-50/80 border border-amber-200/80 p-3.5 rounded-xl text-center">
-          <span className="text-xs uppercase font-bold tracking-wider text-amber-700">Franchise Proposals</span>
-          <p className="text-xl font-bold text-amber-900 mt-0.5">{franchiseCount}</p>
-        </div>
+      {/* ─── ROW 2: CMS ENTITIES (10 Cards in 1 Row) ─── */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5">
+        {/* 1. Courses */}
+        <Link
+          href="/admin/courses"
+          className="bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-blue-700 truncate">
+            <Icon icon="ion:book-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Courses</span>
+          </div>
+          <p className="text-xl font-extrabold text-blue-950 mt-1">{courseCount}</p>
+        </Link>
+
+        {/* 2. Blogs */}
+        <Link
+          href="/admin/blogs"
+          className="bg-teal-50/80 hover:bg-teal-100/80 border border-teal-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-teal-700 truncate">
+            <Icon icon="ion:newspaper-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Blogs</span>
+          </div>
+          <p className="text-xl font-extrabold text-teal-900 mt-1">{blogCount}</p>
+        </Link>
+
+        {/* 3. Team */}
+        <Link
+          href="/admin/team"
+          className="bg-indigo-50/80 hover:bg-indigo-100/80 border border-indigo-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-indigo-700 truncate">
+            <Icon icon="ion:people-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Team</span>
+          </div>
+          <p className="text-xl font-extrabold text-indigo-900 mt-1">{teamCount}</p>
+        </Link>
+
+        {/* 4. Trainers */}
+        <Link
+          href="/admin/trainers"
+          className="bg-cyan-50/80 hover:bg-cyan-100/80 border border-cyan-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-cyan-700 truncate">
+            <Icon icon="ion:person-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Trainers</span>
+          </div>
+          <p className="text-xl font-extrabold text-cyan-900 mt-1">{trainerCount}</p>
+        </Link>
+
+        {/* 5. Job Openings */}
+        <Link
+          href="/admin/careers"
+          className="bg-emerald-50/80 hover:bg-emerald-100/80 border border-emerald-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-emerald-700 truncate">
+            <Icon icon="ion:briefcase-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Job Openings</span>
+          </div>
+          <p className="text-xl font-extrabold text-emerald-900 mt-1">{jobOpeningCount}</p>
+        </Link>
+
+        {/* 6. Testimonial */}
+        <Link
+          href="/admin/testimonials"
+          className="bg-rose-50/80 hover:bg-rose-100/80 border border-rose-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-rose-700 truncate">
+            <Icon icon="ion:chatbubble-ellipses-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Testimonials</span>
+          </div>
+          <p className="text-xl font-extrabold text-rose-900 mt-1">{testimonialCount}</p>
+        </Link>
+
+        {/* 7. Placed Student */}
+        <Link
+          href="/admin/placements"
+          className="bg-fuchsia-50/80 hover:bg-fuchsia-100/80 border border-fuchsia-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-fuchsia-700 truncate">
+            <Icon icon="ion:trophy-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Placed Students</span>
+          </div>
+          <p className="text-xl font-extrabold text-fuchsia-900 mt-1">{placementCount}</p>
+        </Link>
+
+        {/* 8. Review */}
+        <Link
+          href="/admin/reviews"
+          className="bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-amber-700 truncate">
+            <Icon icon="ion:star-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Reviews</span>
+          </div>
+          <p className="text-xl font-extrabold text-amber-900 mt-1">{reviewCount}</p>
+        </Link>
+
+        {/* 9. FAQs */}
+        <Link
+          href="/admin/faqs"
+          className="bg-sky-50/80 hover:bg-sky-100/80 border border-sky-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-sky-700 truncate">
+            <Icon icon="ion:help-circle-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">FAQs</span>
+          </div>
+          <p className="text-xl font-extrabold text-sky-900 mt-1">{faqCount}</p>
+        </Link>
+
+        {/* 10. Gallery Item */}
+        <Link
+          href="/admin/gallery"
+          className="bg-violet-50/80 hover:bg-violet-100/80 border border-violet-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-violet-700 truncate">
+            <Icon icon="ion:images-outline" className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Gallery Items</span>
+          </div>
+          <p className="text-xl font-extrabold text-violet-900 mt-1">{galleryCount}</p>
+        </Link>
       </div>
 
       {/* CRM Quick Actions & Leads Breakdown */}
