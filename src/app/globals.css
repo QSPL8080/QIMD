@@ -142,6 +142,7 @@
   .heading-font {
     font-family: 'Audrey', var(--font-heading), 'Playfair Display', Georgia, serif;
     letter-spacing: -0.01em;
+    line-height: 1.25;
   }
 
   body,
@@ -162,6 +163,7 @@
 }
 
 html {
+  font-size: 92.5%;
   scroll-behavior: smooth;
   font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
 }
@@ -170,6 +172,8 @@ body {
   @apply overflow-x-hidden;
   color: #111827;
   font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+  font-size: 0.9375rem;
+  line-height: 1.55;
 }
 
 /* ── Typography ─────────────────────────────────── */

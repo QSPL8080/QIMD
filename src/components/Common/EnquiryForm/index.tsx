@@ -238,7 +238,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
       {showTitle && (
         <div className="mb-3 pb-2 border-b border-gray-100 dark:border-dark_border">
           <div className="flex items-center justify-between gap-2 mb-1.5">
-            <h3 className="text-lg sm:text-xl font-black text-midnight_text dark:text-white leading-tight">{formTitle}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-midnight_text dark:text-white leading-tight">{formTitle}</h3>
             {formType !== 'contact' && (
               <div className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0">
                 <Icon icon="mdi:phone" className="text-xs" />

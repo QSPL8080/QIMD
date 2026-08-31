@@ -59,11 +59,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showBrochure = true }) 
           </div>
 
           {/* Title */}
-          <h3 className="text-lg font-bold text-midnight_text dark:text-white mb-2 line-clamp-2 leading-snug">
+          <h3 className="text-base sm:text-lg font-bold text-midnight_text dark:text-white mb-2 line-clamp-2 leading-snug">
             {course.title}
           </h3>
 
-          <p className="text-sm text-muted dark:text-white/60 mb-4 line-clamp-2">
+          <p className="text-xs sm:text-[13px] text-muted dark:text-white/60 mb-3.5 line-clamp-2 leading-relaxed">
             {course.description}
           </p>
 
@@ -71,11 +71,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showBrochure = true }) 
           {(() => {
             const highlightsList = course.highlights || course.learningOutcomes || ['100% Practical Training', 'AI Tools Integration', 'Live Client Projects', '100% Placement Support']
             return (
-              <ul className="space-y-2 mb-5 flex-1">
+              <ul className="space-y-1.5 mb-4 flex-1">
                 {highlightsList.slice(0, 4).map((highlight, index) => (
-                  <li key={index} className="flex items-center gap-2 text-sm text-midnight_text dark:text-white/80">
-                    <Icon icon="mdi:check-circle" className="text-[#764DFF] flex-shrink-0 text-base" />
-                    {highlight}
+                  <li key={index} className="flex items-center gap-2 text-xs sm:text-[13px] text-midnight_text dark:text-white/80 leading-normal">
+                    <Icon icon="mdi:check-circle" className="text-[#764DFF] flex-shrink-0 text-sm sm:text-base" />
+                    <span>{highlight}</span>
                   </li>
                 ))}
               </ul>

@@ -166,18 +166,18 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                 </h1>
 
                 {/* Subheadline */}
-                <p className="text-slate-200 text-sm sm:text-base leading-relaxed max-w-2xl font-medium">
+                <p className="text-slate-200/90 text-xs sm:text-[13.5px] md:text-[14.5px] leading-relaxed max-w-2xl font-normal">
                   {subtitle}
                 </p>
 
                 {/* Feature Pills */}
-                <div className="flex flex-wrap gap-2 pt-1 pb-1">
+                <div className="flex flex-wrap gap-1.5 pt-1 pb-1">
                   {heroBadges.map((badge, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 transition-all shadow-xs cursor-default backdrop-blur-xs"
+                      className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded-full border border-white/20 transition-all shadow-xs cursor-default backdrop-blur-xs"
                     >
-                      <Icon icon="mdi:check-circle" className="text-cyan-300 flex-shrink-0 text-sm" />
+                      <Icon icon="mdi:check-circle" className="text-cyan-300 flex-shrink-0 text-xs sm:text-sm" />
                       <span>{badge}</span>
                     </span>
                   ))}
