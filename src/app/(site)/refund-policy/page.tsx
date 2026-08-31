@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/data";
 
 export const metadata: Metadata = {
-  title: `Refund Policy – ${siteConfig.name}`,
+  title: `Refund & Cancellation Policy – ${siteConfig.name}`,
   description: "Read Quickupp Institute of Marketing & Design (QIMD) Refund and Cancellation Policy for course enrollments, fees, and batch schedules.",
   alternates: { canonical: "https://www.qimd.in/refund-policy" },
 };

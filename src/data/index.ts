@@ -99,7 +99,7 @@ export const footerLinks = {
   ],
   quickLinks: [
     { label: "Home", href: "/" },
-    { label: "About Us", href: "/about" },
+    { label: "About", href: "/about" },
     { label: "Our Trainers", href: "/trainers" },
     { label: "Placements", href: "/placements" },
     { label: "Gallery", href: "/gallery" },
@@ -111,7 +111,7 @@ export const footerLinks = {
   legal: [
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms & Conditions", href: "/terms-and-conditions" },
-    { label: "Refund Policy", href: "/refund-policy" },
+    { label: "Refund & Cancellation", href: "/refund-policy" },
     { label: "Sitemap", href: "/sitemap" },
   ],
 };

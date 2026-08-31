@@ -299,7 +299,7 @@ const Footer: React.FC = () => {
                 </h4>
                 <ul className="mt-4 space-y-3">
                   <li><Link href="/" className="text-sm text-white/70 hover:text-secondary">Home</Link></li>
-                  <li><Link href="/about" className="text-sm text-white/70 hover:text-secondary">About Us</Link></li>
+                  <li><Link href="/about" className="text-sm text-white/70 hover:text-secondary">About</Link></li>
                   <li><Link href="/courses" className="text-sm text-white/70 hover:text-secondary">Courses</Link></li>
                   <li><Link href="/blog" className="text-sm text-white/70 hover:text-secondary">Blogs</Link></li>
                   <li><Link href="/careers" className="text-sm text-white/70 hover:text-secondary">Career</Link></li>
@@ -327,7 +327,7 @@ const Footer: React.FC = () => {
                 <ul className="mt-4 space-y-3">
                   <li><Link href="/privacy-policy" className="text-sm text-white/70 hover:text-secondary">Privacy Policy</Link></li>
                   <li><Link href="/terms-and-conditions" className="text-sm text-white/70 hover:text-secondary">Terms & Conditions</Link></li>
-                  <li><Link href="/refund-policy" className="text-sm text-white/70 hover:text-secondary">Refund Policy</Link></li>
+                  <li><Link href="/refund-policy" className="text-sm text-white/70 hover:text-secondary">Refund &amp; Cancellation</Link></li>
                 </ul>
               </div>
             </>
