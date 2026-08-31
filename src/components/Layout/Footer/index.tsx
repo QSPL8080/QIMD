@@ -24,23 +24,28 @@ const Footer: React.FC = () => {
   const dynCols = footer?.columns?.length ?? 3
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-[#0F111D] via-[#0B0D18] to-[#070812] dark:from-[#090A13] dark:via-[#070810] dark:to-[#05060C] text-white font-sans">
-      {/* ── Ambient Background Glows — QIMD Institute Brand Gradient System (#00D2FF → #764DFF → #BD69F2) ── */}
+    <footer
+      className="relative overflow-hidden w-full text-white font-sans"
+      style={{
+        background: `
+          radial-gradient(ellipse 130% 80% at 50% 85%, rgba(118, 77, 255, 0.42) 0%, rgba(189, 105, 242, 0.28) 40%, rgba(0, 210, 255, 0.18) 75%, transparent 100%),
+          linear-gradient(180deg, #0e1020 0%, #0d0e1c 35%, #161230 75%, #0f0b22 100%)
+        `
+      }}
+    >
+      {/* ── Seamless Full-Width Background Gradient Lights — QIMD Institute Colors (#00D2FF → #764DFF → #BD69F2) ── */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden select-none" aria-hidden="true">
-        {/* Subtle Top Center Ambient Fill */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[220px] rounded-full bg-[#764DFF]/10 blur-[120px]" />
+        {/* Full-width horizontal gradient wash across the lower footer */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[60%] w-full pointer-events-none opacity-70"
+          style={{
+            background: 'linear-gradient(90deg, rgba(0, 210, 255, 0.2) 0%, rgba(118, 77, 255, 0.45) 45%, rgba(189, 105, 242, 0.4) 80%, rgba(236, 72, 153, 0.25) 100%)',
+            filter: 'blur(50px)'
+          }}
+        />
 
-        {/* Primary Bottom Logo Radiant Gradient Arc */}
-        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-[340px] rounded-[100%] bg-gradient-to-r from-[#00D2FF]/30 via-[#764DFF]/55 to-[#BD69F2]/50 blur-[95px] opacity-95" />
-
-        {/* Left Side Electric Blue/Cyan Glow */}
-        <div className="absolute bottom-4 left-[10%] w-[420px] h-[260px] rounded-full bg-[#00D2FF]/25 blur-[100px]" />
-
-        {/* Center Deep Indigo/Purple Glow */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[580px] h-[320px] rounded-full bg-[#764DFF]/45 blur-[85px]" />
-
-        {/* Right Side Radiant Magenta Glow */}
-        <div className="absolute bottom-4 right-[10%] w-[420px] h-[260px] rounded-full bg-[#BD69F2]/40 blur-[100px]" />
+        {/* Ambient Top Glow */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[220px] rounded-full bg-[#764DFF]/15 blur-[120px]" />
       </div>
 
       {/* Main Footer Links */}
@@ -330,34 +335,26 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Large Wide Footer Brand Logo Section with Glowing Stage */}
+      {/* Large Wide Footer Brand Logo Section — Full-Width Ambient Glow without box borders */}
       {footer?.logoActive !== false && (
-        <div className="relative z-10 container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-6 pb-14 sm:pb-16 flex items-center justify-center">
-          {/* Subtle Ambient Radial Highlight centered right behind the logo */}
-          <div
-            className="absolute inset-0 max-w-5xl mx-auto rounded-3xl pointer-events-none opacity-80"
-            style={{
-              background: 'radial-gradient(ellipse 75% 60% at 50% 50%, rgba(118, 77, 255, 0.28) 0%, rgba(189, 105, 242, 0.18) 45%, rgba(0, 210, 255, 0.1) 75%, transparent 100%)'
-            }}
-          />
-
+        <div className="relative z-10 w-full container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-6 pb-14 sm:pb-16 flex items-center justify-center">
           <Link
             href={footer?.logoLink || '/'}
-            className="relative z-10 w-full flex items-center justify-center transition-all duration-300 hover:scale-[1.015]"
+            className="w-full flex items-center justify-center transition-all duration-300 hover:scale-[1.015]"
             aria-label="QIMD Home"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={footer?.logo || '/images/logo/footer-qimd.png'}
               alt={footer?.logoAltText || 'Quickupp / QIMD'}
-              className="w-full max-w-5xl md:max-w-6xl h-auto max-h-[220px] sm:max-h-[280px] md:max-h-[340px] lg:max-h-[380px] object-contain mx-auto select-none drop-shadow-[0_12px_40px_rgba(118,77,255,0.3)] brightness-105"
+              className="w-full max-w-5xl md:max-w-6xl h-auto max-h-[220px] sm:max-h-[280px] md:max-h-[340px] lg:max-h-[380px] object-contain mx-auto select-none drop-shadow-[0_12px_40px_rgba(118,77,255,0.35)] brightness-105"
             />
           </Link>
         </div>
       )}
 
       {/* Bottom Bar */}
-      <div className="relative z-10 border-t border-white/15 bg-black/25 backdrop-blur-xs">
+      <div className="relative z-10 border-t border-white/10 bg-black/15 backdrop-blur-xs">
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 py-5 flex items-center justify-center">
           <p className="text-sm text-white/70 text-center font-medium" suppressHydrationWarning>
             {footer?.copyrightText || `© ${currentYear} ${siteConfig.name}. All Rights Reserved.`}
