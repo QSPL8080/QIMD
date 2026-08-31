@@ -85,7 +85,7 @@ export default async function AdminDashboardPage() {
         {/* 1. Admission Enquiry */}
         <Link
           href="/admin/enquiries/admission"
-          className="bg-amber-50/70 border border-amber-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-amber-400 hover:shadow-md transition-all group"
+          className="bg-amber-50/50 hover:bg-amber-50/80 border border-amber-200/60 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-amber-400 hover:shadow-md transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-800">Admission Enquiry</span>
@@ -93,14 +93,14 @@ export default async function AdminDashboardPage() {
               <Icon icon="ion:school" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-amber-950">{admissionCount}</div>
-          <p className="text-xs text-amber-700/90 font-medium">Student leads & brochure downloads</p>
+          <div className="text-3xl font-extrabold text-slate-900">{admissionCount}</div>
+          <p className="text-xs text-slate-500 font-medium">Student leads & brochure downloads</p>
         </Link>
 
         {/* 2. Franchise Enquiry */}
         <Link
           href="/admin/enquiries/franchise"
-          className="bg-orange-50/70 border border-orange-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-orange-400 hover:shadow-md transition-all group"
+          className="bg-orange-50/50 hover:bg-orange-50/80 border border-orange-200/60 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-orange-400 hover:shadow-md transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-orange-800">Franchise Enquiry</span>
@@ -108,14 +108,14 @@ export default async function AdminDashboardPage() {
               <Icon icon="ion:business" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-orange-950">{franchiseCount}</div>
-          <p className="text-xs text-orange-700/90 font-medium">Franchise partner proposals & leads</p>
+          <div className="text-3xl font-extrabold text-slate-900">{franchiseCount}</div>
+          <p className="text-xs text-slate-500 font-medium">Franchise partner proposals & leads</p>
         </Link>
 
         {/* 3. Career Enquiry */}
         <Link
           href="/admin/enquiries/careers"
-          className="bg-emerald-50/70 border border-emerald-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-emerald-400 hover:shadow-md transition-all group"
+          className="bg-emerald-50/50 hover:bg-emerald-50/80 border border-emerald-200/60 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-emerald-400 hover:shadow-md transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">Career Enquiry</span>
@@ -123,14 +123,14 @@ export default async function AdminDashboardPage() {
               <Icon icon="ion:briefcase" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-emerald-950">{careerCount}</div>
-          <p className="text-xs text-emerald-700/90 font-medium">Job applicant submissions & resumes</p>
+          <div className="text-3xl font-extrabold text-slate-900">{careerCount}</div>
+          <p className="text-xs text-slate-500 font-medium">Job applicant submissions & resumes</p>
         </Link>
 
         {/* 4. Placement Enquiry */}
         <Link
           href="/admin/enquiries/hire"
-          className="bg-purple-50/70 border border-purple-200/80 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-purple-400 hover:shadow-md transition-all group"
+          className="bg-purple-50/50 hover:bg-purple-50/80 border border-purple-200/60 p-5 rounded-2xl shadow-2xs space-y-2 hover:border-purple-400 hover:shadow-md transition-all group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-purple-800">Placement Enquiry</span>
@@ -138,8 +138,8 @@ export default async function AdminDashboardPage() {
               <Icon icon="ion:people" className="w-5.5 h-5.5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-purple-950">{hireCount}</div>
-          <p className="text-xs text-purple-700/90 font-medium">Company hiring & recruiter requests</p>
+          <div className="text-3xl font-extrabold text-slate-900">{hireCount}</div>
+          <p className="text-xs text-slate-500 font-medium">Company hiring & recruiter requests</p>
         </Link>
       </div>
 
@@ -148,121 +148,121 @@ export default async function AdminDashboardPage() {
         {/* 1. Courses */}
         <Link
           href="/admin/courses"
-          className="bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-blue-50/60 hover:bg-blue-50 border border-blue-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-blue-700 truncate">
             <Icon icon="ion:book-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Courses</span>
           </div>
-          <p className="text-xl font-extrabold text-blue-950 mt-1">{courseCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{courseCount}</p>
         </Link>
 
         {/* 2. Blogs */}
         <Link
           href="/admin/blogs"
-          className="bg-teal-50/80 hover:bg-teal-100/80 border border-teal-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-teal-50/60 hover:bg-teal-50 border border-teal-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-teal-700 truncate">
             <Icon icon="ion:newspaper-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Blogs</span>
           </div>
-          <p className="text-xl font-extrabold text-teal-900 mt-1">{blogCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{blogCount}</p>
         </Link>
 
         {/* 3. Team */}
         <Link
           href="/admin/team"
-          className="bg-indigo-50/80 hover:bg-indigo-100/80 border border-indigo-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-indigo-50/60 hover:bg-indigo-50 border border-indigo-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-indigo-700 truncate">
             <Icon icon="ion:people-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Team</span>
           </div>
-          <p className="text-xl font-extrabold text-indigo-900 mt-1">{teamCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{teamCount}</p>
         </Link>
 
         {/* 4. Trainers */}
         <Link
           href="/admin/trainers"
-          className="bg-cyan-50/80 hover:bg-cyan-100/80 border border-cyan-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-cyan-50/60 hover:bg-cyan-50 border border-cyan-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-cyan-700 truncate">
             <Icon icon="ion:person-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Trainers</span>
           </div>
-          <p className="text-xl font-extrabold text-cyan-900 mt-1">{trainerCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{trainerCount}</p>
         </Link>
 
         {/* 5. Job Openings */}
         <Link
           href="/admin/careers"
-          className="bg-emerald-50/80 hover:bg-emerald-100/80 border border-emerald-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-emerald-700 truncate">
             <Icon icon="ion:briefcase-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Job Openings</span>
           </div>
-          <p className="text-xl font-extrabold text-emerald-900 mt-1">{jobOpeningCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{jobOpeningCount}</p>
         </Link>
 
         {/* 6. Testimonial */}
         <Link
           href="/admin/testimonials"
-          className="bg-rose-50/80 hover:bg-rose-100/80 border border-rose-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-rose-50/60 hover:bg-rose-50 border border-rose-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-rose-700 truncate">
             <Icon icon="ion:chatbubble-ellipses-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Testimonials</span>
           </div>
-          <p className="text-xl font-extrabold text-rose-900 mt-1">{testimonialCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{testimonialCount}</p>
         </Link>
 
         {/* 7. Placed Student */}
         <Link
           href="/admin/placements"
-          className="bg-fuchsia-50/80 hover:bg-fuchsia-100/80 border border-fuchsia-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-fuchsia-50/60 hover:bg-fuchsia-50 border border-fuchsia-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-fuchsia-700 truncate">
             <Icon icon="ion:trophy-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Placed Students</span>
           </div>
-          <p className="text-xl font-extrabold text-fuchsia-900 mt-1">{placementCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{placementCount}</p>
         </Link>
 
         {/* 8. Review */}
         <Link
           href="/admin/reviews"
-          className="bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-amber-50/60 hover:bg-amber-50 border border-amber-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-amber-700 truncate">
             <Icon icon="ion:star-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Reviews</span>
           </div>
-          <p className="text-xl font-extrabold text-amber-900 mt-1">{reviewCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{reviewCount}</p>
         </Link>
 
         {/* 9. FAQs */}
         <Link
           href="/admin/faqs"
-          className="bg-sky-50/80 hover:bg-sky-100/80 border border-sky-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-sky-50/60 hover:bg-sky-50 border border-sky-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-sky-700 truncate">
             <Icon icon="ion:help-circle-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">FAQs</span>
           </div>
-          <p className="text-xl font-extrabold text-sky-900 mt-1">{faqCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{faqCount}</p>
         </Link>
 
         {/* 10. Gallery Item */}
         <Link
           href="/admin/gallery"
-          className="bg-violet-50/80 hover:bg-violet-100/80 border border-violet-200/80 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
+          className="bg-violet-50/60 hover:bg-violet-50 border border-violet-200/60 p-3 rounded-xl text-center transition-all hover:scale-[1.02] shadow-2xs group flex flex-col justify-between"
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-violet-700 truncate">
             <Icon icon="ion:images-outline" className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Gallery Items</span>
           </div>
-          <p className="text-xl font-extrabold text-violet-900 mt-1">{galleryCount}</p>
+          <p className="text-xl font-extrabold text-slate-900 mt-1">{galleryCount}</p>
         </Link>
       </div>
 
