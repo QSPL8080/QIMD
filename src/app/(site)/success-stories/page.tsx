@@ -49,26 +49,26 @@ export default function SuccessStoriesPage() {
   const defaultStudentReviews = [
     {
       name: "Rohan V.",
-      course: "Digital Marketing Master Program",
-      review: "The practical training and live client projects helped me build confidence and prepare for interviews. The trainers were supportive throughout my learning journey.",
+      course: "Digital Marketing Course",
+      review: "I joined QIMD for the Digital Marketing Course and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed.",
       rating: 5,
     },
     {
       name: "Sneha M.",
-      course: "UI/UX & Graphic Design Course",
-      review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence.",
+      course: "Digital Marketing Course",
+      review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the course details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses.",
       rating: 5,
     },
     {
       name: "Aniket K.",
-      course: "Video Editing & Content Creation",
-      review: "Unlike traditional institutes, QIMD focuses on practical implementation. Every assignment and project helped me understand how the industry actually works.",
+      course: "Graphic Design Course",
+      review: "My experience of Graphic Design Course with Pune’s QIMD was great. The course covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process.",
       rating: 5,
     },
     {
       name: "Pooja S.",
-      course: "Full-Stack Digital Marketing & AI",
-      review: "From zero experience to working on real client projects, the journey at QIMD has been truly rewarding. I highly recommend it to anyone looking to build a career in the digital industry.",
+      course: "Video Editing Course",
+      review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive.",
       rating: 5,
     },
   ]
@@ -470,7 +470,7 @@ export default function SuccessStoriesPage() {
                         {name}
                       </h4>
                       <span className="text-[10px] text-cyan-300/90 block">
-                        {rev.company ? `@ ${rev.company}` : 'Verified Graduate'}
+                        Verified Student
                       </span>
                     </div>
                   </div>

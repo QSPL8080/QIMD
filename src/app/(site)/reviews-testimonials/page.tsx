@@ -49,32 +49,26 @@ export default function ReviewsTestimonialsPage() {
   const defaultStudentReviews = [
     {
       name: "Rohan V.",
-      course: "Digital Marketing Master Program",
-      review: "The practical approach at QIMD completely changed the way I learn. Working on live projects gave me the confidence to handle real client work.",
+      course: "Digital Marketing Course",
+      review: "I joined QIMD for the Digital Marketing Course and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed.",
       rating: 5,
     },
     {
       name: "Sneha M.",
-      course: "UI/UX & Graphic Design Course",
-      review: "The trainers explain every concept with practical examples. The AI tools, assignments, and live sessions helped me become job-ready.",
+      course: "Digital Marketing Course",
+      review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the course details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses.",
       rating: 5,
     },
     {
       name: "Aniket K.",
-      course: "Video Editing & Content Creation",
-      review: "The internship experience and placement guidance were extremely valuable. I built a strong portfolio before attending interviews.",
+      course: "Graphic Design Course",
+      review: "My experience of Graphic Design Course with Pune’s QIMD was great. The course covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process.",
       rating: 5,
     },
     {
       name: "Pooja S.",
-      course: "Full-Stack Digital Marketing & AI",
-      review: "Unlike traditional courses, QIMD focuses on implementation. Every module includes hands-on practice, which makes learning enjoyable and effective.",
-      rating: 5,
-    },
-    {
-      name: "Vikram R.",
-      course: "Performance Marketing & AI",
-      review: "The trainers are supportive, the classroom environment is interactive, and the learning experience exceeded my expectations.",
+      course: "Video Editing Course",
+      review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive.",
       rating: 5,
     },
   ]
@@ -382,7 +376,7 @@ export default function ReviewsTestimonialsPage() {
                         {name}
                       </h4>
                       <span className="text-[10px] text-slate-500 dark:text-white/50 block">
-                        {rev.company ? `@ ${rev.company}` : 'Verified Graduate'}
+                        Verified Student
                       </span>
                     </div>
                   </div>

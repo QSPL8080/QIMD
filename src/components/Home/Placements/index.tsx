@@ -7,34 +7,30 @@ const studentReviewsList = [
   {
     name: "Rohan V.",
     initial: "R",
-    company: "Growth Media Agency",
-    program: "Digital Marketing Master Program",
+    program: "Digital Marketing Course",
     rating: 5,
-    review: "The practical training and live client projects helped me build confidence and prepare for interviews. The trainers were supportive throughout my learning journey."
+    review: "I joined QIMD for the Digital Marketing Course and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed."
   },
   {
     name: "Sneha M.",
     initial: "S",
-    company: "Creative Studio",
-    program: "UI/UX & Graphic Design Course",
+    program: "Digital Marketing Course",
     rating: 5,
-    review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence."
+    review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the course details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses."
   },
   {
     name: "Aniket K.",
     initial: "A",
-    company: "Media House",
-    program: "Video Editing & Content Creation",
+    program: "Graphic Design Course",
     rating: 5,
-    review: "Unlike traditional institutes, QIMD focuses on practical implementation. Every assignment and project helped me understand how the industry actually works."
+    review: "My experience of Graphic Design Course with Pune’s QIMD was great. The course covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process."
   },
   {
     name: "Pooja S.",
     initial: "P",
-    company: "Tech Agency",
-    program: "Full-Stack Digital Marketing & AI",
+    program: "Video Editing Course",
     rating: 5,
-    review: "From zero experience to working on real client projects, the journey at QIMD has been truly rewarding. I highly recommend it to anyone looking to build a career in the digital industry."
+    review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive."
   }
 ]
 
@@ -144,7 +140,7 @@ const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[]; testim
                     {item.name}
                   </h4>
                   <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
-                    @ {item.company}
+                    Verified Student
                   </p>
                 </div>
               </div>
