@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
@@ -10,18 +10,14 @@ import NextTopLoader from "nextjs-toploader";
 import { siteConfig } from "@/data";
 import { WebsiteSettingsProvider } from "@/app/context/WebsiteSettingsContext";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const libreBaskerville = Libre_Baskerville({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-plus-jakarta",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-libre-baskerville",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
 });
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.qimd.in"),
@@ -120,7 +116,7 @@ export default async function RootLayout({
   const isSvg = faviconUrl.endsWith(".svg");
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${libreBaskerville.variable}`}>
       <head>
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} href={faviconUrl} />
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="32x32" href={faviconUrl} />
@@ -134,7 +130,7 @@ export default async function RootLayout({
         <meta name="application-name" content="QIMD" />
         <meta name="msapplication-TileImage" content={faviconUrl} />
       </head>
-      <body className={`${plusJakartaSans.className} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${libreBaskerville.className} font-sans antialiased`} suppressHydrationWarning>
         <NextTopLoader color="#6366F1" showSpinner={false} height={2.5} crawl={true} speed={200} shadow="0 0 10px #6366F1,0 0 5px #6366F1" />
         <ThemeProvider
           attribute="class"
