@@ -677,6 +677,7 @@ export async function saveGalleryItemAction(data: {
       })
       await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'ADD_GALLERY_ITEM', recordId: created.id })
     }
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: 'Gallery item saved successfully' }
@@ -690,6 +691,7 @@ export async function trashGalleryItemAction(id: string) {
   try {
     await db.gallery.update({ where: { id }, data: { isDeleted: true } })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'TRASH_GALLERY_ITEM', recordId: id })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: 'Gallery item moved to Trash' }
@@ -703,6 +705,7 @@ export async function restoreGalleryItemAction(id: string) {
   try {
     await db.gallery.update({ where: { id }, data: { isDeleted: false } })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'RESTORE_GALLERY_ITEM', recordId: id })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: 'Gallery item restored' }
@@ -716,6 +719,7 @@ export async function deleteGalleryItemAction(id: string) {
   try {
     await db.gallery.delete({ where: { id } })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'PERMANENT_DELETE_GALLERY_ITEM', recordId: id })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: 'Gallery item permanently deleted' }
@@ -1511,6 +1515,7 @@ export async function bulkTrashGalleryItemsAction(ids: string[]) {
       data: { isDeleted: true },
     })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_TRASH_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: `${ids.length} gallery items moved to Trash` }
@@ -1528,6 +1533,7 @@ export async function bulkRestoreGalleryItemsAction(ids: string[]) {
       data: { isDeleted: false },
     })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_RESTORE_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: `${ids.length} gallery items restored` }
@@ -1548,6 +1554,7 @@ export async function bulkDeleteGalleryItemsAction(ids: string[]) {
     }
     await db.gallery.deleteMany({ where: { id: { in: ids } } })
     await createAuditLog({ userId: session.id, module: 'CMS_GALLERY', action: 'BULK_DELETE_GALLERY', recordId: ids.join(',') })
+    revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
     return { success: true, message: `${ids.length} gallery items deleted` }

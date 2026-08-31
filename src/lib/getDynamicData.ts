@@ -267,7 +267,7 @@ export async function getDynamicGallery() {
         id: g.id,
         src: g.fileUrl,
         alt: g.altText || 'QIMD Gallery Image',
-        category: g.category || 'Facilities',
+        category: g.category || 'Classroom',
         caption: g.caption || '',
       }))
     }

@@ -624,7 +624,18 @@ export const placementPartnersData: PlacementPartner[] = [
 ];
 
 // ─── Gallery ─────────────────────────────────────────────────
+export const galleryCategories = [
+  "All",
+  "Classroom",
+  "Training",
+  "Workshop",
+  "Activities",
+  "Facilities",
+  "Placements",
+] as const;
+
 export const galleryData: GalleryImage[] = [
+  // ─── Classroom (6 images) ───
   {
     id: "gallery-001",
     src: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80",
@@ -634,38 +645,258 @@ export const galleryData: GalleryImage[] = [
   },
   {
     id: "gallery-002",
+    src: "https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&q=80",
+    alt: "QIMD Digital Marketing Lecture Hall",
+    category: "Classroom",
+    caption: "Live lecture and concept discussion on AI marketing strategies",
+  },
+  {
+    id: "gallery-003",
+    src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80",
+    alt: "Faculty Mentorship Session",
+    category: "Classroom",
+    caption: "One-on-one doubt clearing and personalized faculty guidance",
+  },
+  {
+    id: "gallery-004",
+    src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
+    alt: "Creative Design Discussion",
+    category: "Classroom",
+    caption: "Graphic design masterclass exploring brand identity systems",
+  },
+  {
+    id: "gallery-005",
+    src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+    alt: "Digital Strategy Classroom Session",
+    category: "Classroom",
+    caption: "Live SEO campaign breakdown and performance analysis",
+  },
+  {
+    id: "gallery-006",
+    src: "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=800&q=80",
+    alt: "Interactive Presentation in Class",
+    category: "Classroom",
+    caption: "Student case study presentations and peer reviews",
+  },
+
+  // ─── Training (6 images) ───
+  {
+    id: "gallery-007",
     src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
     alt: "QIMD Hands-on Practical Training",
     category: "Training",
     caption: "Hands-on practical training with live tools",
   },
   {
-    id: "gallery-003",
+    id: "gallery-008",
+    src: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&q=80",
+    alt: "Live UI/UX & Graphic Design Training",
+    category: "Training",
+    caption: "Practical software training in Photoshop, Illustrator & Figma",
+  },
+  {
+    id: "gallery-009",
+    src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80",
+    alt: "Video Editing & Motion Graphics Lab",
+    category: "Training",
+    caption: "Practical timeline editing in Premiere Pro & DaVinci Resolve",
+  },
+  {
+    id: "gallery-010",
+    src: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&q=80",
+    alt: "AI Tool Execution on Live Projects",
+    category: "Training",
+    caption: "Using Midjourney, Firefly & ChatGPT for commercial client briefs",
+  },
+  {
+    id: "gallery-011",
+    src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+    alt: "Google Ads & Meta Ads Practical Run",
+    category: "Training",
+    caption: "Hands-on live ad budget deployment and conversion tracking",
+  },
+  {
+    id: "gallery-012",
+    src: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
+    alt: "Collaborative Practical Lab Session",
+    category: "Training",
+    caption: "Real-time client project simulation and asset generation",
+  },
+
+  // ─── Workshop (6 images) ───
+  {
+    id: "gallery-013",
     src: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80",
     alt: "QIMD Live Workshop",
     category: "Workshop",
     caption: "Live workshops and industry masterclasses",
   },
   {
-    id: "gallery-004",
+    id: "gallery-014",
+    src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    alt: "AI in Marketing Industry Workshop",
+    category: "Workshop",
+    caption: "Masterclass by visiting agency directors on generative AI in advertising",
+  },
+  {
+    id: "gallery-015",
+    src: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80",
+    alt: "Design Thinking & Typography Bootcamp",
+    category: "Workshop",
+    caption: "Interactive full-day branding and creative design sprint",
+  },
+  {
+    id: "gallery-016",
+    src: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80",
+    alt: "Cinematography & Video Masterclass",
+    category: "Workshop",
+    caption: "Lighting setups, camera handling, and commercial video creation",
+  },
+  {
+    id: "gallery-017",
+    src: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
+    alt: "Freelancing & Agency Scaling Masterclass",
+    category: "Workshop",
+    caption: "How to land international freelance clients and build a design portfolio",
+  },
+  {
+    id: "gallery-018",
+    src: "https://images.unsplash.com/photo-1558403194-611308249627?w=800&q=80",
+    alt: "Growth Hacking Workshop",
+    category: "Workshop",
+    caption: "Advanced performance marketing and growth hacking techniques",
+  },
+
+  // ─── Activities (6 images) ───
+  {
+    id: "gallery-019",
     src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80",
     alt: "QIMD Student Activities",
     category: "Activities",
     caption: "Student activities and group projects",
   },
   {
-    id: "gallery-005",
+    id: "gallery-020",
+    src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80",
+    alt: "Student Team Brainstorming",
+    category: "Activities",
+    caption: "Collaborative campaign ideation and creative storyboard pitch",
+  },
+  {
+    id: "gallery-021",
+    src: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&q=80",
+    alt: "QIMD Hackathon & Design Jam",
+    category: "Activities",
+    caption: "Weekend 24-hour design and digital marketing hackathon",
+  },
+  {
+    id: "gallery-022",
+    src: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80",
+    alt: "Campus Celebration & Quiz Event",
+    category: "Activities",
+    caption: "Industry quiz competition and student achievement celebrations",
+  },
+  {
+    id: "gallery-023",
+    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
+    alt: "Creative Portfolio Review Sessions",
+    category: "Activities",
+    caption: "Peer-to-peer design critiques and creative review circles",
+  },
+  {
+    id: "gallery-024",
+    src: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80",
+    alt: "Alumni Meet & Networking Day",
+    category: "Activities",
+    caption: "QIMD alumni network meetup and career experience sharing",
+  },
+
+  // ─── Facilities (6 images) ───
+  {
+    id: "gallery-025",
     src: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
     alt: "QIMD Training Facilities",
     category: "Facilities",
     caption: "Modern training facilities and labs",
   },
   {
-    id: "gallery-006",
+    id: "gallery-026",
+    src: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&q=80",
+    alt: "High-Performance Computer Lab",
+    category: "Facilities",
+    caption: "High-spec workstations with dual monitors and GPU acceleration",
+  },
+  {
+    id: "gallery-027",
+    src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+    alt: "Individual Workstation Pods",
+    category: "Facilities",
+    caption: "Dedicated individual workstations for focused project editing",
+  },
+  {
+    id: "gallery-028",
+    src: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
+    alt: "Creative Collaboration Lounge",
+    category: "Facilities",
+    caption: "Spacious collaboration zones for student discussions and breaks",
+  },
+  {
+    id: "gallery-029",
+    src: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80",
+    alt: "Conference & Pitch Room",
+    category: "Facilities",
+    caption: "Professional boardroom for client presentations and mock pitches",
+  },
+  {
+    id: "gallery-030",
+    src: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80",
+    alt: "QIMD Campus Reception & Resource Desk",
+    category: "Facilities",
+    caption: "Welcoming reception and reference material library",
+  },
+
+  // ─── Placements (6 images) ───
+  {
+    id: "gallery-031",
     src: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
     alt: "QIMD Placement Drive",
     category: "Placements",
     caption: "Placement drives and hiring events",
+  },
+  {
+    id: "gallery-032",
+    src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80",
+    alt: "HR Interview Session",
+    category: "Placements",
+    caption: "On-campus interviews conducted by top partner digital agencies",
+  },
+  {
+    id: "gallery-033",
+    src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80",
+    alt: "Placement Felicitation & Offer Letter Handover",
+    category: "Placements",
+    caption: "Students receiving offer letters with highest package honours",
+  },
+  {
+    id: "gallery-034",
+    src: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
+    alt: "Corporate Partner Recruitment Meet",
+    category: "Placements",
+    caption: "Annual recruitment day with 20+ hiring partner agencies",
+  },
+  {
+    id: "gallery-035",
+    src: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80",
+    alt: "Mock Interview & Resume Screening",
+    category: "Placements",
+    caption: "Industry mentors reviewing student portfolios before final drives",
+  },
+  {
+    id: "gallery-036",
+    src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+    alt: "Successful Placed Candidate Story",
+    category: "Placements",
+    caption: "Celebrating student placements at leading MNCs & creative studios",
   },
 ];
 
