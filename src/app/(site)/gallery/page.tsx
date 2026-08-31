@@ -149,7 +149,7 @@ function GalleryContent() {
               <Icon icon="mdi:image-multiple-outline" className="text-sm" />
               <span>Campus &amp; Experiential Learning</span>
             </span>
-            <h1 className="text-3xl lg:text-5xl font-extrabold text-[#111827] dark:text-white tracking-tight mb-2">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight leading-tight mb-2">
               Life at QIMD
             </h1>
             <p className="text-primary font-extrabold text-base sm:text-lg mb-4">

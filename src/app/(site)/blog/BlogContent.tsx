@@ -64,7 +64,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
                 <span>QIMD Knowledge Hub</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
                 Insights That <span className="text-[#764DFF]">Empower Careers</span>
               </h1>
 

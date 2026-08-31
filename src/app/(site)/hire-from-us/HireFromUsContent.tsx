@@ -129,10 +129,10 @@ export default function HireFromUsContent() {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
                   Hire From QIMD
                 </h1>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-200 tracking-tight">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-200 tracking-tight">
                   Hire Industry-Ready Digital Professionals
                 </h2>
               </div>
