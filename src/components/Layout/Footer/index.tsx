@@ -24,9 +24,27 @@ const Footer: React.FC = () => {
   const dynCols = footer?.columns?.length ?? 3
 
   return (
-    <footer className="bg-midnight_text dark:bg-dark text-white font-sans">
-      {/* Main Footer */}
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-16 pb-8 sm:pb-10 lg:pb-12">
+    <footer className="relative overflow-hidden bg-gradient-to-b from-[#0F111D] via-[#0B0D18] to-[#070812] dark:from-[#090A13] dark:via-[#070810] dark:to-[#05060C] text-white font-sans">
+      {/* ── Ambient Background Glows — QIMD Institute Brand Gradient System (#00D2FF → #764DFF → #BD69F2) ── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden select-none" aria-hidden="true">
+        {/* Subtle Top Center Ambient Fill */}
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[220px] rounded-full bg-[#764DFF]/10 blur-[120px]" />
+
+        {/* Primary Bottom Logo Radiant Gradient Arc */}
+        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-[340px] rounded-[100%] bg-gradient-to-r from-[#00D2FF]/30 via-[#764DFF]/55 to-[#BD69F2]/50 blur-[95px] opacity-95" />
+
+        {/* Left Side Electric Blue/Cyan Glow */}
+        <div className="absolute bottom-4 left-[10%] w-[420px] h-[260px] rounded-full bg-[#00D2FF]/25 blur-[100px]" />
+
+        {/* Center Deep Indigo/Purple Glow */}
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[580px] h-[320px] rounded-full bg-[#764DFF]/45 blur-[85px]" />
+
+        {/* Right Side Radiant Magenta Glow */}
+        <div className="absolute bottom-4 right-[10%] w-[420px] h-[260px] rounded-full bg-[#BD69F2]/40 blur-[100px]" />
+      </div>
+
+      {/* Main Footer Links */}
+      <div className="relative z-10 container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-16 pb-8 sm:pb-10 lg:pb-12">
         {/*
           Mobile: single column stack
           Tablet (sm): 2-column grid
@@ -312,28 +330,36 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Large Wide Footer Brand Logo */}
+      {/* Large Wide Footer Brand Logo Section with Glowing Stage */}
       {footer?.logoActive !== false && (
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-4 pb-14 sm:pb-16 flex items-center justify-center">
+        <div className="relative z-10 container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 pt-6 pb-14 sm:pb-16 flex items-center justify-center">
+          {/* Subtle Ambient Radial Highlight centered right behind the logo */}
+          <div
+            className="absolute inset-0 max-w-5xl mx-auto rounded-3xl pointer-events-none opacity-80"
+            style={{
+              background: 'radial-gradient(ellipse 75% 60% at 50% 50%, rgba(118, 77, 255, 0.28) 0%, rgba(189, 105, 242, 0.18) 45%, rgba(0, 210, 255, 0.1) 75%, transparent 100%)'
+            }}
+          />
+
           <Link
             href={footer?.logoLink || '/'}
-            className="w-full flex items-center justify-center transition-transform duration-300 hover:scale-[1.01]"
+            className="relative z-10 w-full flex items-center justify-center transition-all duration-300 hover:scale-[1.015]"
             aria-label="QIMD Home"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={footer?.logo || '/images/logo/footer-qimd.png'}
               alt={footer?.logoAltText || 'Quickupp / QIMD'}
-              className="w-full max-w-5xl md:max-w-6xl h-auto max-h-[220px] sm:max-h-[280px] md:max-h-[340px] lg:max-h-[380px] object-contain mx-auto select-none drop-shadow-2xl brightness-105"
+              className="w-full max-w-5xl md:max-w-6xl h-auto max-h-[220px] sm:max-h-[280px] md:max-h-[340px] lg:max-h-[380px] object-contain mx-auto select-none drop-shadow-[0_12px_40px_rgba(118,77,255,0.3)] brightness-105"
             />
           </Link>
         </div>
       )}
 
       {/* Bottom Bar */}
-      <div className="border-t border-white/10">
+      <div className="relative z-10 border-t border-white/15 bg-black/25 backdrop-blur-xs">
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 py-5 flex items-center justify-center">
-          <p className="text-sm text-white/60 text-center" suppressHydrationWarning>
+          <p className="text-sm text-white/70 text-center font-medium" suppressHydrationWarning>
             {footer?.copyrightText || `© ${currentYear} ${siteConfig.name}. All Rights Reserved.`}
           </p>
         </div>
