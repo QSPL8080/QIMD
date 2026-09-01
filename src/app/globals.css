@@ -28,6 +28,10 @@
   font-family: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif !important;
 }
 
+.font-libre-baskerville {
+  font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif !important;
+}
+
 @theme {
   --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
