@@ -18,6 +18,8 @@ export const newBlogsData = [
     content: `## Summary
 Choosing a digital marketing course in Pune? This guide covers what a real syllabus should include, how to test a placement claim before you pay, what fees typically run across the city, and the questions most students forget to ask on the demo call. You'll get a clear checklist for picking a program that ends in a job, not just a certificate.
 
+Sep 01, 2026
+
 ## Key Takeaways
 * A digital marketing course in Pune should give you training, live client projects, and placement support in one program, not a recorded playlist and a PDF.
 * SEO, Google Ads, Meta Ads, content, analytics, and AI tools each need real practice on live accounts. Judge a course on what you'll build, not on the module count.
@@ -54,7 +56,7 @@ Here's what to verify before you enrol:
 * **Named trainers with current work:** Find out whether your mentor is running client accounts right now or reading from a deck written three years ago.
 * **A written placement process:** "100% placement" means nothing on its own. Ask what the process includes - resume building, mock interviews, hiring-partner introductions - and get it in writing.
 * **Batch format that matches your life:** Offline classroom training gives freshers the mentor access and peer pressure they need. Confirm batch size, timings, and whether you can repeat sessions later.
-* **Post-course support:** Doubts don't stop on the last day. Check whether you get continued mentor access, repeat batch access, and help when you're stuck in your first job. Our Why QIMD page lays out exactly what's included after your program ends.
+* **Post-course support:** Doubts don't stop on the last day. Check whether you get continued mentor access, repeat batch access, and help when you're stuck in your first job. Our [Why QIMD page](/why-qimd) lays out exactly what's included after your program ends.
 
 Every Quickupp Institute of Marketing and Design batch runs on live client projects, with trainers who work on those accounts and a placement process we walk you through before you enrol.
 
@@ -68,7 +70,7 @@ Pune fee structures generally fall into these bands:
 * **Full offline programs (5-6 months):** Best for freshers and career-switchers who need the complete stack, live projects, an internship, and placement support.
 * **Advanced or specialisation tracks:** Best for people already working in marketing who want depth in performance marketing, analytics, or AI workflows.
 
-We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, what's included, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can download the course brochure for the current syllabus and batch details.
+We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, what's included, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can [download the course brochure](/brochure/digital-marketing) for the current syllabus and batch details.
 
 Fees only tell half the story. The other half is whether the course fits the position you're actually starting from.
 
@@ -99,7 +101,7 @@ If you're ready to start, speak to a counsellor about the next batch and see the
 ## Final Thoughts
 The best digital marketing course in Pune isn't the one with the longest module list or the loudest placement banner. It's the one where you leave with campaigns you actually ran, work you can defend in an interview, and someone to call when you're stuck in month two of your first job. Ask about live projects, ask who's teaching, ask what happens after the last class - and enrol where the answers are specific.
 
-Whether you're a fresher planning your first role or a professional adding a skill, we can show you exactly what the next batch covers and where our students are working now. Book your free career counselling session.
+Whether you're a fresher planning your first role or a professional adding a skill, we can show you exactly what the next batch covers and where our students are working now. [Book your free career counselling session](/contact).
 
 ## Frequently Asked Questions
 
@@ -138,6 +140,8 @@ Free certifications teach you tool interfaces. A classroom program gives you liv
     content: `## Summary
 Choosing a graphic design course in Pune? This guide covers what a real syllabus should include beyond Photoshop, how to judge an institute by the portfolios its students leave with, what fees typically run across the city, and where AI tools now fit into a designer's day. You'll get a clear checklist for picking a program that ends in a job, not just a software certificate.
 
+Sep 01, 2026
+
 ## Key Takeaways
 * A graphic design course in Pune should build a portfolio, not just teach software. Employers hire the work, not the certificate.
 * Photoshop, Illustrator, and InDesign are the base. Brand identity, typography, and layout thinking are what separate a designer from a tool operator.
@@ -174,7 +178,7 @@ Here's what to verify before you enrol:
 * **Design thinking, not just tools:** Confirm the course teaches typography, colour theory, grids, and brand strategy - the things that get you promoted past junior.
 * **Named trainers with live client work:** Find out whether your mentor is designing for clients right now or teaching from a fixed deck.
 * **AI tools in the syllabus:** Firefly, Midjourney, and Canva are on job descriptions today. Ask exactly how they're taught and where they fit in the workflow.
-* **Post-course support:** Check whether you get continued mentor feedback on your portfolio and repeat batch access to revise topics later. Our Why QIMD page sets out what's included after your program ends.
+* **Post-course support:** Check whether you get continued mentor feedback on your portfolio and repeat batch access to revise topics later. Our [Why QIMD page](/why-qimd) sets out what's included after your program ends.
 
 Every Quickupp Institute of Marketing and Design batch works on live client briefs, reviewed by trainers who design for those clients, with a placement process we explain before you enrol.
 
@@ -188,7 +192,7 @@ Pune fee structures generally fall into these bands:
 * **Full offline programs (5-6 months):** Best for freshers and career-switchers who need fundamentals, software, a portfolio, an internship, and placement support.
 * **Specialisation tracks:** Best for working designers adding motion, UI, or AI-assisted workflows to an existing skill set.
 
-We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, inclusions, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can download the course brochure for the current syllabus and batch details.
+We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, inclusions, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can [download the course brochure](/brochure/graphic-design) for the current syllabus and batch details.
 
 Fees only tell half the story. The other half is whether the course fits where you're starting from.
 
@@ -219,7 +223,7 @@ If you're ready to start, speak to a counsellor about the next batch and see the
 ## Final Thoughts
 The best graphic design course in Pune isn't the one with the longest software list. It's the one that sends you out with ten pieces of work you can explain, defend, and point to in an interview. Ask to see student portfolios, ask who reviews your work, ask what happens after the last class - and enrol where the answers come with examples attached.
 
-Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch builds and where our students are working now. Book your free career counselling session.
+Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch builds and where our students are working now. [Book your free career counselling session](/contact).
 
 ## Frequently Asked Questions
 
@@ -258,6 +262,8 @@ Tutorials teach you where the buttons are. A classroom program gives you real cl
     content: `## Summary
 Choosing a video editing course in Pune? This guide covers what a real syllabus should include beyond timeline basics, how to judge an institute by the showreels its students leave with, what fees typically run across the city, and where AI editing tools now fit. You'll get a clear checklist for picking a program that ends in paid work, not just a software certificate.
 
+Sep 01, 2026
+
 ## Key Takeaways
 * A video editing course in Pune should send you out with a showreel, not a certificate. Clients and studios hire on the reel.
 * Timeline editing is the entry point. Colour grading, sound design, and motion graphics are what get you paid more than a cutting assistant.
@@ -294,7 +300,7 @@ Here's what to verify before you enroll:
 * **Finishing crafts included:** Confirm colour grading, audio mixing, and motion graphics are properly taught - not squeezed into one final week.
 * **Multiple formats covered:** Short-form reels, ad films, and long-form corporate videos need different pacing. Make sure you'll cut all three.
 * **AI tools in the syllabus:** Auto-subtitling, enhancement, and AI-assisted cuts are on job descriptions now. Ask how they're taught and where they fit.
-* **Post-course support:** Check for continued mentor feedback on your reel and repeat batch access to revise topics. Our Why QIMD page covers what's included after your program ends.
+* **Post-course support:** Check for continued mentor feedback on your reel and repeat batch access to revise topics. Our [Why QIMD page](/why-qimd) covers what's included after your program ends.
 
 Every Quickupp Institute of Marketing and Design editing batch works on live client footage, supervised by trainers who cut those projects, with a placement process we explain before you enrol.
 
@@ -308,7 +314,7 @@ Pune fee structures generally fall into these bands:
 * **Full offline programs (5-6 months):** Best for freshers and career-switchers who need editing, grading, sound, motion graphics, a showreel, an internship, and placement support.
 * **Specialisation tracks:** Best for working editors adding motion design, VFX, or AI-assisted workflows.
 
-We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, inclusions, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can download the course brochure for the current syllabus and batch details.
+We don't publish a single flat fee because scope changes the number. What we do share is the complete breakdown before you commit: duration, inclusions, internship and placement support, and EMI options through Bajaj Finance, HDFC, IDFC First, and Kotak so the fee can be split across months. You can [download the course brochure](/brochure/video-editing) for the current syllabus and batch details.
 
 Fees only tell half the story. The other half is whether the course fits where you're starting from.
 
@@ -339,7 +345,7 @@ If you're ready to start, speak to a counsellor about the next batch and see the
 ## Final Thoughts
 The best video editing course in Pune isn't the one with the biggest software list. It's the one that hands you a showreel you're proud to send, built from real briefs with real deadlines. Ask to see student reels, ask whose footage they cut, ask what happens after the last class - and enrol where the answers come with examples attached.
 
-Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch produces and where our students are working now. Book your free career counselling session.
+Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch produces and where our students are working now. [Book your free career counselling session](/contact).
 
 ## Frequently Asked Questions
 
@@ -378,6 +384,8 @@ YouTube teaches you techniques in isolation. A classroom program gives you real 
     content: `## Summary
 Career development is what happens between your first job and the one you actually wanted. This guide covers what it means in practice, why most careers stall around year two, how to build a plan that survives contact with a real job, which skills compound over time, and what changes at each stage from fresher to decision-maker.
 
+Sep 01, 2026
+
 ## Key Takeaways
 * Career development is deliberate. Nobody gets promoted for finishing tasks on time - you get promoted for solving problems above your grade.
 * Most careers stall not from lack of effort but from doing year one repeatedly for five years.
@@ -386,7 +394,7 @@ Career development is what happens between your first job and the one you actual
 * Mentorship shortens the learning curve more than any course does, which is why our support continues for two years after your program ends.
 
 ## Introduction
-You got the job. Six months in, the novelty is gone and a quieter question arrives: is this going anywhere? You look at the person three years ahead of you and can't tell whether they're there because of something they did or because they simply stayed. Nobody sits you down and explains how careers actually progress - so most people default to waiting, and waiting is the one strategy that never works. This guide sets out how career development works in practice, especially in skill-based fields. If you're still choosing a direction, start with our guide to career options after graduation in Pune.
+You got the job. Six months in, the novelty is gone and a quieter question arrives: is this going anywhere? You look at the person three years ahead of you and can't tell whether they're there because of something they did or because they simply stayed. Nobody sits you down and explains how careers actually progress - so most people default to waiting, and waiting is the one strategy that never works. This guide sets out how career development works in practice, especially in skill-based fields. If you're still choosing a direction, start with our guide to [career options after graduation in Pune.](/blog/best-digital-marketing-course-in-pune)
 
 ## What Does Career Development Actually Mean?
 Career development is the deliberate process of increasing what you're capable of, and making that capability visible to people who make decisions about you. It has two halves that most people confuse. The first is capability - the skills, judgement, and range you build. The second is visibility - whether anyone can see it.
@@ -428,7 +436,7 @@ Here's roughly how it breaks down:
 * **Expires fast - specific tool interfaces:** Where the buttons are in a given platform. Necessary, but replaced every couple of years and easily learned when needed.
 * **Holds value - domain judgement:** Knowing why a campaign is structured a certain way, why a layout works, why a cut lands. This transfers across every tool you'll ever use.
 * **Compounds hardest - communication and ownership:** Explaining your reasoning, handling client feedback, scoping work, and taking responsibility for an outcome. This is what separates a senior person from an experienced junior.
-* **The current multiplier - directing AI tools:** AI has absorbed a large share of entry-level execution across marketing, design, and video. The people gaining are the ones who direct it well, which is why every QIMD program is built AI-first rather than bolting it on at the end.
+* **The current multiplier - directing AI tools:** AI has absorbed a large share of entry-level execution across marketing, design, and video. The people gaining are the ones who direct it well, which is why every [QIMD program](/courses) is built AI-first rather than bolting it on at the end.
 
 Which of these matters most depends on where you currently are.
 
@@ -448,12 +456,12 @@ Here's what that looks like in practice:
 * **Support continues into the job:** Two years of repeat batch access and continued mentor guidance - deliberately covering the years when careers most often stall.
 * **You're trained for where the work is going:** AI-first programs, so you're directing the tools reshaping entry-level work rather than competing with them.
 
-If you want to map out where you are and what to close next, book a free career counselling session.
+If you want to map out where you are and what to close next, [book a free career counselling session](/contact).
 
 ## Final Thoughts
 Career development isn't a promotion you're granted. It's a record you build - of problems you took on, work you can show, and judgement you can explain. Pick a target role, close one gap at a time, write down what you build, and find someone honest enough to tell you what's still weak. Do that for three years and you won't need to ask whether your career is going anywhere.
 
-Whether you're planning your first role or trying to get past a stalled one, we can help you work out the next specific step. Book your free career counselling session.
+Whether you're planning your first role or trying to get past a stalled one, we can help you work out the next specific step. [Book your free career counselling session](/contact).
 
 ## Frequently Asked Questions
 
@@ -478,7 +486,7 @@ Yes. Two years of repeat batch access and continued mentor guidance, which cover
 ]
 
 async function main() {
-  console.log('🔄 Cleaning up and migrating 4 official blogs (with clean hyphens and without unused hashes)...')
+  console.log('🔄 Cleaning up and migrating 4 official blogs...')
 
   await db.blog.deleteMany({})
 
@@ -505,7 +513,7 @@ async function main() {
     console.log(`✅ Cleanly migrated: [${blog.category}] ${blog.title}`)
   }
 
-  console.log('🎉 Migration finished with clean dashes and formatted sections!')
+  console.log('🎉 Migration finished with exact structure and links!')
 }
 
 main()

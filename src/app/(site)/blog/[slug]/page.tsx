@@ -58,18 +58,39 @@ function slugify(text: string) {
 
 function formatInlineText(text: string) {
   if (!text) return "";
-  // Strip any accidental leading markdown hashes and clean up dashes
+  // Strip any accidental leading markdown hashes and normalize dashes
   const cleaned = text
     .replace(/^#+\s*/, "")
     .replace(/—|–/g, " - ")
     .replace(/--+/g, " - ");
 
-  // Parse **bold text**
-  const parts = cleaned.split(/(\*\*.*?\*\*)/g);
+  // Tokenize markdown bold and markdown links
+  const regex = /(\[.*?\]\(.*?\)|\*\*.*?\*\*)/g;
+  const parts = cleaned.split(regex);
+
   return parts.map((part, i) => {
+    if (part.startsWith("[") && part.includes("](") && part.endsWith(")")) {
+      const match = part.match(/^\[(.*?)\]\((.*?)\)$/);
+      if (match) {
+        const linkText = match[1];
+        let linkHref = match[2];
+        if (linkHref.startsWith("https://quickuppinstitute.com")) {
+          linkHref = linkHref.replace("https://quickuppinstitute.com", "") || "/";
+        }
+        return (
+          <Link
+            key={i}
+            href={linkHref}
+            className="text-blue-600 hover:text-blue-800 underline font-medium"
+          >
+            {linkText}
+          </Link>
+        );
+      }
+    }
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={i} className="font-semibold text-slate-900 dark:text-white">
+        <strong key={i} className="font-bold text-slate-900 dark:text-white">
           {part.slice(2, -2)}
         </strong>
       );
@@ -79,7 +100,7 @@ function formatInlineText(text: string) {
 }
 
 interface ParsedBlock {
-  type: "h2" | "h3" | "paragraph" | "list";
+  type: "h2" | "h3" | "paragraph" | "list" | "date";
   title?: string;
   id?: string;
   content?: string;
@@ -95,67 +116,82 @@ function parseBlogContent(rawContent: string) {
     .replace(/—|–/g, " - ")
     .replace(/--+/g, " - ");
 
-  const rawBlocks = normalized.split(/\n{2,}/);
+  const lines = normalized.split("\n");
   const toc: { title: string; id: string }[] = [];
   const blocks: ParsedBlock[] = [];
 
-  for (let i = 0; i < rawBlocks.length; i++) {
-    const block = rawBlocks[i].trim();
-    if (!block) continue;
+  let currentListItems: string[] = [];
+
+  function flushList() {
+    if (currentListItems.length > 0) {
+      blocks.push({
+        type: "list",
+        items: [...currentListItems],
+      });
+      currentListItems = [];
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) {
+      flushList();
+      continue;
+    }
 
     // Check for H2 Heading
-    if (block.startsWith("## ")) {
-      const headingText = block.replace(/^##\s+/, "").trim();
+    if (line.startsWith("## ")) {
+      flushList();
+      const headingText = line.replace(/^##\s+/, "").trim();
       const id = slugify(headingText);
-
-      toc.push({
-        title: headingText,
-        id,
-      });
-
-      blocks.push({
-        type: "h2",
-        title: headingText,
-        id,
-      });
+      toc.push({ title: headingText, id });
+      blocks.push({ type: "h2", title: headingText, id });
       continue;
     }
 
     // Check for H3 Heading (e.g. FAQ questions)
-    if (block.startsWith("### ")) {
-      const h3Text = block.replace(/^###\s+/, "").trim();
+    if (line.startsWith("### ")) {
+      flushList();
+      const h3Text = line.replace(/^###\s+/, "").trim();
       const id = slugify(h3Text);
+      blocks.push({ type: "h3", title: h3Text, id });
+      continue;
+    }
 
+    // Check for Numbered FAQ Questions (e.g. "01. What is...")
+    if (/^\d{2}\.\s+/.test(line)) {
+      flushList();
+      const id = slugify(line);
+      blocks.push({ type: "h3", title: line, id });
+      continue;
+    }
+
+    // Check for Bullet points (*, -, •)
+    if (line.startsWith("* ") || line.startsWith("- ") || line.startsWith("• ")) {
+      const itemText = line.replace(/^[\*\-\•]\s+/, "").trim();
+      currentListItems.push(itemText);
+      continue;
+    }
+
+    // Check for Date lines (e.g. "Sep 01, 2026")
+    if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{4}$/i.test(line)) {
+      flushList();
       blocks.push({
-        type: "h3",
-        title: h3Text,
-        id,
+        type: "date",
+        content: line,
       });
       continue;
     }
 
-    // Check for Bulleted List
-    if (block.startsWith("* ") || block.startsWith("- ")) {
-      const items = block
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line.startsWith("* ") || line.startsWith("- "))
-        .map((line) => line.replace(/^[\*\-]\s+/, ""));
-
-      blocks.push({
-        type: "list",
-        items,
-      });
-      continue;
-    }
-
-    // Standard Paragraph
+    // Regular Paragraph
+    flushList();
     blocks.push({
       type: "paragraph",
-      content: block,
+      content: line,
     });
   }
 
+  flushList();
   return { toc, blocks };
 }
 
@@ -261,63 +297,52 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-              {/* Title (Clean Size as requested) */}
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 leading-snug">
+              {/* Title (Compact & bold matching Google Doc) */}
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-6 leading-snug">
                 {post.title}
               </h1>
 
-              {/* Author Row */}
-              <div className="flex items-center gap-2.5 mb-6 pb-4 border-b border-slate-100 dark:border-dark_border text-xs">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-base shrink-0">
-                  <Icon icon="mdi:school-outline" />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900 dark:text-white text-xs">{post.author}</p>
-                  <p className="text-[11px] text-muted dark:text-white/60">Faculty &amp; Industry Mentor Network</p>
-                </div>
-              </div>
-
-              {/* ─── TABLE OF CONTENTS (Clean matching Google Docs) ─── */}
+              {/* ─── TABLE OF CONTENTS (Blue Heading & Bullet links as in Google Docs) ─── */}
               {toc.length > 0 && (
                 <div className="mb-8 pt-2">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-2.5">
+                  <h2 className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400 underline mb-3">
                     Table of Contents
                   </h2>
-                  <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                  <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
                     {toc.map((item) => (
                       <li key={item.id}>
                         <a
                           href={`#${item.id}`}
-                          className="hover:text-primary dark:hover:text-amber-400 transition-colors underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                          className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
                         >
                           {item.title}
                         </a>
                       </li>
                     ))}
                   </ul>
-                  <hr className="my-6 border-slate-200 dark:border-dark_border" />
+                  <hr className="my-6 border-slate-300 dark:border-dark_border" />
                 </div>
               )}
 
-              {/* ─── ARTICLE BODY BLOCKS (Exact text, clean font size & bullets) ─── */}
-              <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+              {/* ─── ARTICLE BODY BLOCKS (Exact document layout & bullet points) ─── */}
+              <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-normal">
                 {blocks.map((block, idx) => {
                   
                   // Section H2 Heading
                   if (block.type === "h2") {
                     return (
-                      <div key={idx} id={block.id} className="pt-4 scroll-mt-24">
-                        <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                      <div key={idx} id={block.id} className="pt-5 scroll-mt-24">
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                           {formatInlineText(block.title || "")}
                         </h2>
                       </div>
                     );
                   }
 
-                  // Section H3 Heading (e.g. FAQ Questions)
+                  // Section H3 / FAQ Question
                   if (block.type === "h3") {
                     return (
-                      <div key={idx} id={block.id} className="pt-2 scroll-mt-24">
+                      <div key={idx} id={block.id} className="pt-3 scroll-mt-24">
                         <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug">
                           {formatInlineText(block.title || "")}
                         </h3>
@@ -328,14 +353,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   // Bulleted List (Clean bullet points matching Google Docs)
                   if (block.type === "list" && block.items) {
                     return (
-                      <ul key={idx} className="list-disc pl-5 space-y-1.5 my-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                      <ul key={idx} className="list-disc pl-5 space-y-1.5 my-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
                         {block.items.map((item, itemIdx) => {
                           const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
                           return (
                             <li key={itemIdx} className="leading-relaxed">
                               {boldMatch ? (
                                 <>
-                                  <strong className="font-semibold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
+                                  <strong className="font-bold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
                                   <span>{formatInlineText(boldMatch[2])}</span>
                                 </>
                               ) : (
@@ -345,6 +370,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
                           );
                         })}
                       </ul>
+                    );
+                  }
+
+                  // Date Line (e.g. Sep 01, 2026)
+                  if (block.type === "date") {
+                    return (
+                      <p key={idx} className="text-xs italic text-slate-500 dark:text-slate-400 my-1">
+                        {block.content}
+                      </p>
                     );
                   }
 
