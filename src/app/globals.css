@@ -32,6 +32,10 @@
   font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif !important;
 }
 
+.font-prata {
+  font-family: var(--font-prata), 'Prata', Georgia, serif !important;
+}
+
 @theme {
   --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
@@ -39,6 +43,7 @@
   --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-libre-baskerville: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-didot: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif;
+  --font-prata: var(--font-prata), 'Prata', Georgia, serif;
 
   --container-screen-xl: 75rem;
   --container-screen-2xl: 83.75rem;
