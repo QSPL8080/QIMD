@@ -56,28 +56,48 @@ function slugify(text: string) {
     .replace(/(^-|-$)+/g, "");
 }
 
-interface ParsedSection {
-  type: "summary" | "takeaways" | "h2" | "h3" | "paragraph" | "list" | "faq_group";
+function formatInlineText(text: string) {
+  if (!text) return "";
+  // Strip any accidental leading markdown hashes and clean up dashes
+  const cleaned = text
+    .replace(/^#+\s*/, "")
+    .replace(/—|–/g, " - ")
+    .replace(/--+/g, " - ");
+
+  // Parse **bold text**
+  const parts = cleaned.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={i} className="font-semibold text-slate-900 dark:text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+
+interface ParsedBlock {
+  type: "h2" | "h3" | "paragraph" | "list";
   title?: string;
   id?: string;
   content?: string;
   items?: string[];
-  faqs?: { question: string; answer: string; id: string }[];
 }
 
 function parseBlogContent(rawContent: string) {
-  if (!rawContent) return { toc: [], sections: [] };
+  if (!rawContent) return { toc: [], blocks: [] };
 
-  // 1. Normalize line endings (handling CRLF from Windows/DB)
-  const normalized = rawContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const normalized = rawContent
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/—|–/g, " - ")
+    .replace(/--+/g, " - ");
+
   const rawBlocks = normalized.split(/\n{2,}/);
-
-  const toc: { number: string; title: string; id: string }[] = [];
-  const sections: ParsedSection[] = [];
-
-  let tocIndex = 1;
-  let isInFaqMode = false;
-  let currentFaqList: { question: string; answer: string; id: string }[] = [];
+  const toc: { title: string; id: string }[] = [];
+  const blocks: ParsedBlock[] = [];
 
   for (let i = 0; i < rawBlocks.length; i++) {
     const block = rawBlocks[i].trim();
@@ -88,77 +108,12 @@ function parseBlogContent(rawContent: string) {
       const headingText = block.replace(/^##\s+/, "").trim();
       const id = slugify(headingText);
 
-      // If we were collecting FAQs, flush them before starting a new H2
-      if (isInFaqMode && currentFaqList.length > 0) {
-        sections.push({
-          type: "faq_group",
-          faqs: [...currentFaqList],
-        });
-        currentFaqList = [];
-        isInFaqMode = false;
-      }
-
-      // Add to Table of Contents
       toc.push({
-        number: String(tocIndex).padStart(2, "0"),
         title: headingText,
         id,
       });
-      tocIndex++;
 
-      // Check if this is the Frequently Asked Questions section
-      if (headingText.toLowerCase().includes("frequently asked questions") || headingText.toLowerCase().includes("faq")) {
-        isInFaqMode = true;
-        sections.push({
-          type: "h2",
-          title: headingText,
-          id,
-        });
-        continue;
-      }
-
-      // Check if this is Summary section
-      if (headingText.toLowerCase() === "summary") {
-        // Look ahead for the summary paragraph
-        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ")) {
-          const summaryText = rawBlocks[i + 1].trim();
-          sections.push({
-            type: "summary",
-            title: "Summary",
-            id,
-            content: summaryText,
-          });
-          i++; // Skip next block since it's consumed as summary text
-          continue;
-        }
-      }
-
-      // Check if this is Key Takeaways section
-      if (headingText.toLowerCase().includes("key takeaways")) {
-        // Look ahead for bullet list
-        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ")) {
-          const takeawaysBlock = rawBlocks[i + 1].trim();
-          const items = takeawaysBlock
-            .split("\n")
-            .map((line) => line.trim())
-            .filter((line) => line.startsWith("* ") || line.startsWith("- "))
-            .map((line) => line.replace(/^[\*\-]\s+/, ""));
-
-          if (items.length > 0) {
-            sections.push({
-              type: "takeaways",
-              title: headingText,
-              id,
-              items,
-            });
-            i++; // Skip next block since consumed
-            continue;
-          }
-        }
-      }
-
-      // Standard H2
-      sections.push({
+      blocks.push({
         type: "h2",
         title: headingText,
         id,
@@ -166,27 +121,12 @@ function parseBlogContent(rawContent: string) {
       continue;
     }
 
-    // Check for H3 Heading (e.g. FAQ questions like "### 01. Do I need...")
+    // Check for H3 Heading (e.g. FAQ questions)
     if (block.startsWith("### ")) {
       const h3Text = block.replace(/^###\s+/, "").trim();
       const id = slugify(h3Text);
 
-      // If we are in FAQ mode, check if the next block is the answer
-      if (isInFaqMode) {
-        let answerText = "";
-        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ") && !rawBlocks[i + 1].startsWith("### ")) {
-          answerText = rawBlocks[i + 1].trim();
-          i++; // Skip the answer block
-        }
-        currentFaqList.push({
-          question: h3Text,
-          answer: answerText,
-          id,
-        });
-        continue;
-      }
-
-      sections.push({
+      blocks.push({
         type: "h3",
         title: h3Text,
         id,
@@ -202,7 +142,7 @@ function parseBlogContent(rawContent: string) {
         .filter((line) => line.startsWith("* ") || line.startsWith("- "))
         .map((line) => line.replace(/^[\*\-]\s+/, ""));
 
-      sections.push({
+      blocks.push({
         type: "list",
         items,
       });
@@ -210,21 +150,13 @@ function parseBlogContent(rawContent: string) {
     }
 
     // Standard Paragraph
-    sections.push({
+    blocks.push({
       type: "paragraph",
       content: block,
     });
   }
 
-  // Flush any remaining FAQs
-  if (isInFaqMode && currentFaqList.length > 0) {
-    sections.push({
-      type: "faq_group",
-      faqs: [...currentFaqList],
-    });
-  }
-
-  return { toc, sections };
+  return { toc, blocks };
 }
 
 export default async function BlogDetailPage({ params }: PageProps) {
@@ -273,7 +205,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     .slice(0, 3);
 
   const heroImage = post.coverImage || "/images/courses/digital-marketing.jpg";
-  const { toc, sections } = parseBlogContent(post.content || "");
+  const { toc, blocks } = parseBlogContent(post.content || "");
 
   return (
     <>
@@ -281,21 +213,21 @@ export default async function BlogDetailPage({ params }: PageProps) {
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
           
           {/* Breadcrumb Navigation */}
-          <nav className="mb-6 flex items-center gap-2 text-xs text-muted dark:text-white/60 font-medium">
+          <nav className="mb-4 flex items-center gap-1.5 text-xs text-muted dark:text-white/60 font-medium">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <Icon icon="ion:chevron-forward" className="text-slate-400 text-xs" />
             <Link href="/blog" className="hover:text-primary transition-colors">Blogs</Link>
             <Icon icon="ion:chevron-forward" className="text-slate-400 text-xs" />
-            <span className="text-slate-700 dark:text-white/90 font-bold truncate max-w-xs sm:max-w-md">{post.title}</span>
+            <span className="text-slate-700 dark:text-white/90 font-semibold truncate max-w-xs sm:max-w-md">{post.title}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Main Blog Article */}
-            <article className="lg:col-span-8 bg-white dark:bg-darklight rounded-3xl p-6 sm:p-10 shadow-sm border border-border dark:border-dark_border">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Blog Article Container */}
+            <article className="lg:col-span-8 bg-white dark:bg-darklight rounded-2xl p-6 sm:p-9 shadow-xs border border-border dark:border-dark_border">
               
               {/* Featured Cover Image */}
               {heroImage && (
-                <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden mb-8 border border-border/60 dark:border-dark_border/60 shadow-md">
+                <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs">
                   <Image
                     src={heroImage}
                     alt={post.title}
@@ -304,186 +236,111 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     sizes="(max-width: 768px) 100vw, 800px"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </div>
               )}
 
-              {/* Meta Row with Category & Live Edited/Published Dates */}
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <span className="bg-primary/10 text-primary dark:text-amber-400 font-bold text-xs px-3.5 py-1.5 rounded-full">
+              {/* Meta Info Row */}
+              <div className="flex flex-wrap items-center gap-2.5 mb-3 text-xs">
+                <span className="bg-primary/10 text-primary dark:text-amber-400 font-bold px-3 py-1 rounded-full text-[11px]">
                   {post.category}
                 </span>
                 {post.readTime && (
-                  <span className="text-xs text-muted dark:text-white/60 flex items-center gap-1">
+                  <span className="text-muted dark:text-white/60 flex items-center gap-1">
                     <Icon icon="mdi:clock-outline" /> {post.readTime}
                   </span>
                 )}
                 {post.publishedAt && (
-                  <span className="text-xs text-muted dark:text-white/60 flex items-center gap-1">
-                    <Icon icon="mdi:calendar-outline" /> Published: {post.publishedAt}
+                  <span className="text-muted dark:text-white/60 flex items-center gap-1">
+                    <Icon icon="mdi:calendar-outline" /> {post.publishedAt}
                   </span>
                 )}
                 {(post as any).isEdited && (post as any).updatedAt && (
-                  <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 font-medium px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
                     <Icon icon="mdi:pencil-outline" className="text-xs" /> Updated: {(post as any).updatedAt}
                   </span>
                 )}
               </div>
 
-              {/* Article Headline */}
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-midnight_text dark:text-white mb-6 leading-tight">
+              {/* Title (Clean Size as requested) */}
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 leading-snug">
                 {post.title}
               </h1>
 
-              {/* Author Info */}
-              <div className="flex items-center gap-3 mb-8 pb-6 border-b border-border dark:border-dark_border">
-                <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary">
-                  <Icon icon="mdi:school-outline" className="text-2xl" />
+              {/* Author Row */}
+              <div className="flex items-center gap-2.5 mb-6 pb-4 border-b border-slate-100 dark:border-dark_border text-xs">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-base shrink-0">
+                  <Icon icon="mdi:school-outline" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm text-midnight_text dark:text-white">{post.author}</p>
-                  <p className="text-xs text-muted dark:text-white/60">Faculty &amp; Industry Mentor Network</p>
+                  <p className="font-bold text-slate-900 dark:text-white text-xs">{post.author}</p>
+                  <p className="text-[11px] text-muted dark:text-white/60">Faculty &amp; Industry Mentor Network</p>
                 </div>
               </div>
 
-              {/* ─── TABLE OF CONTENTS (INTERACTIVE TABLE) ─── */}
+              {/* ─── TABLE OF CONTENTS (Clean matching Google Docs) ─── */}
               {toc.length > 0 && (
-                <div className="mb-10 p-6 sm:p-7 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200 dark:border-dark_border">
-                  <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-slate-200 dark:border-dark_border">
-                    <Icon icon="ion:list-outline" className="text-primary text-2xl" />
-                    <h2 className="text-lg font-extrabold text-midnight_text dark:text-white">
-                      Table of Contents
-                    </h2>
-                  </div>
-
-                  {/* Clean Table of Contents Grid/Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs sm:text-sm">
-                      <thead>
-                        <tr className="text-slate-400 dark:text-white/40 uppercase tracking-wider text-[11px] border-b border-slate-200 dark:border-dark_border">
-                          <th className="pb-2 w-12 font-bold">#</th>
-                          <th className="pb-2 font-bold">Topic / Section</th>
-                          <th className="pb-2 text-right font-bold">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                        {toc.map((item) => (
-                          <tr key={item.id} className="group hover:bg-slate-100/60 dark:hover:bg-white/5 transition-colors">
-                            <td className="py-2.5 font-mono text-xs font-bold text-primary dark:text-amber-400">
-                              {item.number}
-                            </td>
-                            <td className="py-2.5 font-medium text-slate-700 dark:text-white/80 group-hover:text-primary dark:group-hover:text-amber-400 transition-colors">
-                              <a href={`#${item.id}`} className="block">
-                                {item.title}
-                              </a>
-                            </td>
-                            <td className="py-2.5 text-right">
-                              <a
-                                href={`#${item.id}`}
-                                className="inline-flex items-center gap-1 text-xs text-primary dark:text-amber-400 font-bold hover:underline"
-                              >
-                                <span>Jump</span>
-                                <Icon icon="ion:arrow-down" className="text-xs" />
-                              </a>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                <div className="mb-8 pt-2">
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-2.5">
+                    Table of Contents
+                  </h2>
+                  <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                    {toc.map((item) => (
+                      <li key={item.id}>
+                        <a
+                          href={`#${item.id}`}
+                          className="hover:text-primary dark:hover:text-amber-400 transition-colors underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
+                        >
+                          {item.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <hr className="my-6 border-slate-200 dark:border-dark_border" />
                 </div>
               )}
 
-              {/* ─── ARTICLE STRUCTURED CONTENT ─── */}
-              <div className="blog-content space-y-7 text-slate-700 dark:text-white/80 text-sm sm:text-base leading-relaxed">
-                {sections.map((sec, idx) => {
+              {/* ─── ARTICLE BODY BLOCKS (Exact text, clean font size & bullets) ─── */}
+              <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                {blocks.map((block, idx) => {
                   
-                  // Summary Callout Box
-                  if (sec.type === "summary") {
+                  // Section H2 Heading
+                  if (block.type === "h2") {
                     return (
-                      <div
-                        key={idx}
-                        id={sec.id}
-                        className="p-6 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 shadow-2xs space-y-2 scroll-mt-24"
-                      >
-                        <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-bold text-sm sm:text-base">
-                          <Icon icon="mdi:text-box-outline" className="text-xl" />
-                          <span>Summary Overview</span>
-                        </div>
-                        <p className="text-slate-700 dark:text-white/90 text-sm sm:text-base leading-relaxed font-medium">
-                          {sec.content}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  // Key Takeaways Highlight Box
-                  if (sec.type === "takeaways" && sec.items) {
-                    return (
-                      <div
-                        key={idx}
-                        id={sec.id}
-                        className="p-6 sm:p-7 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 shadow-2xs space-y-4 scroll-mt-24"
-                      >
-                        <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-400 font-extrabold text-base sm:text-lg border-b border-amber-200/60 dark:border-amber-900/40 pb-3">
-                          <Icon icon="mdi:lightbulb-on" className="text-amber-500 text-2xl shrink-0" />
-                          <span>{sec.title || "Key Takeaways"}</span>
-                        </div>
-                        <ul className="space-y-3 pl-1">
-                          {sec.items.map((item, itemIdx) => (
-                            <li key={itemIdx} className="flex items-start gap-3">
-                              <Icon icon="mdi:check-circle" className="text-emerald-500 text-lg mt-0.5 shrink-0" />
-                              <span className="text-slate-800 dark:text-white/90 font-medium text-xs sm:text-sm leading-relaxed">
-                                {item}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  }
-
-                  // H2 Section Heading
-                  if (sec.type === "h2") {
-                    return (
-                      <div key={idx} id={sec.id} className="pt-8 border-t border-slate-200/80 dark:border-dark_border scroll-mt-24">
-                        <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white leading-snug">
-                          {sec.title}
+                      <div key={idx} id={block.id} className="pt-4 scroll-mt-24">
+                        <h2 className="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                          {formatInlineText(block.title || "")}
                         </h2>
                       </div>
                     );
                   }
 
-                  // H3 Section Heading
-                  if (sec.type === "h3") {
+                  // Section H3 Heading (e.g. FAQ Questions)
+                  if (block.type === "h3") {
                     return (
-                      <div key={idx} id={sec.id} className="pt-4 scroll-mt-24">
-                        <h3 className="text-base sm:text-lg font-bold text-midnight_text dark:text-white leading-snug">
-                          {sec.title}
+                      <div key={idx} id={block.id} className="pt-2 scroll-mt-24">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                          {formatInlineText(block.title || "")}
                         </h3>
                       </div>
                     );
                   }
 
-                  // Bulleted Lists (with **bold label**: detail parsing)
-                  if (sec.type === "list" && sec.items) {
+                  // Bulleted List (Clean bullet points matching Google Docs)
+                  if (block.type === "list" && block.items) {
                     return (
-                      <ul key={idx} className="space-y-3 pl-2 my-4">
-                        {sec.items.map((item, itemIdx) => {
+                      <ul key={idx} className="list-disc pl-5 space-y-1.5 my-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                        {block.items.map((item, itemIdx) => {
                           const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
                           return (
-                            <li key={itemIdx} className="flex items-start gap-3 text-sm sm:text-base">
-                              <span className="w-2 h-2 rounded-full bg-primary dark:bg-amber-400 mt-2 shrink-0" />
-                              <span className="leading-relaxed">
-                                {boldMatch ? (
-                                  <>
-                                    <strong className="text-midnight_text dark:text-white font-bold">{boldMatch[1]}: </strong>
-                                    <span>{boldMatch[2]}</span>
-                                  </>
-                                ) : (
-                                  item
-                                )}
-                              </span>
+                            <li key={itemIdx} className="leading-relaxed">
+                              {boldMatch ? (
+                                <>
+                                  <strong className="font-semibold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
+                                  <span>{formatInlineText(boldMatch[2])}</span>
+                                </>
+                              ) : (
+                                formatInlineText(item)
+                              )}
                             </li>
                           );
                         })}
@@ -491,37 +348,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     );
                   }
 
-                  // Standard Paragraph
-                  if (sec.type === "paragraph" && sec.content) {
+                  // Regular Paragraph
+                  if (block.type === "paragraph" && block.content) {
                     return (
-                      <p key={idx} className="leading-relaxed text-sm sm:text-base">
-                        {sec.content}
+                      <p key={idx} className="leading-relaxed">
+                        {formatInlineText(block.content)}
                       </p>
-                    );
-                  }
-
-                  // FAQ Group Cards
-                  if (sec.type === "faq_group" && sec.faqs) {
-                    return (
-                      <div key={idx} className="space-y-4 pt-2">
-                        {sec.faqs.map((faq, fIdx) => (
-                          <div
-                            key={fIdx}
-                            id={faq.id}
-                            className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200 dark:border-dark_border space-y-2.5 transition-all hover:border-primary/40 scroll-mt-24"
-                          >
-                            <h3 className="text-sm sm:text-base font-bold text-midnight_text dark:text-white flex items-start gap-2.5">
-                              <span className="text-primary dark:text-amber-400 font-extrabold shrink-0">Q.</span>
-                              <span>{faq.question}</span>
-                            </h3>
-                            {faq.answer && (
-                              <p className="text-xs sm:text-sm text-slate-600 dark:text-white/75 leading-relaxed pl-5">
-                                {faq.answer}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
                     );
                   }
 
@@ -531,12 +363,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
               {/* Topics & Tags */}
               {post.tags && post.tags.length > 0 && (
-                <div className="mt-12 pt-6 border-t border-border dark:border-dark_border flex flex-wrap gap-2 items-center">
-                  <span className="text-xs font-bold text-midnight_text dark:text-white mr-2">Topics:</span>
+                <div className="mt-8 pt-4 border-t border-slate-100 dark:border-dark_border flex flex-wrap gap-1.5 items-center text-xs">
+                  <span className="font-bold text-slate-900 dark:text-white mr-1 text-[11px]">Topics:</span>
                   {post.tags.map((tag, i) => (
                     <span
                       key={i}
-                      className="text-xs bg-slate-100 dark:bg-dark text-midnight_text dark:text-white/70 px-3 py-1.5 rounded-full border border-border/50 dark:border-dark_border/50"
+                      className="text-[11px] bg-slate-100 dark:bg-dark text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full border border-slate-200 dark:border-dark_border"
                     >
                       #{tag}
                     </span>
@@ -546,21 +378,21 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </article>
 
             {/* Sidebar */}
-            <aside className="lg:col-span-4 space-y-6">
-              <div className="sticky top-24 space-y-6">
+            <aside className="lg:col-span-4 space-y-5">
+              <div className="sticky top-24 space-y-5">
                 
                 {/* Course Enquiry CTA Box */}
-                <div className="bg-slate-900 dark:bg-darklight rounded-2xl p-6 text-white border border-slate-800 shadow-lg">
-                  <span className="inline-block bg-primary/20 text-cyan-300 font-bold text-[11px] px-3 py-1 rounded-full mb-3 uppercase tracking-wider">
+                <div className="bg-slate-900 dark:bg-darklight rounded-2xl p-5 text-white border border-slate-800 shadow-md">
+                  <span className="inline-block bg-primary/20 text-cyan-300 font-bold text-[10px] px-2.5 py-0.5 rounded-full mb-2.5 uppercase tracking-wider">
                     Practical Training
                   </span>
-                  <h3 className="font-extrabold text-lg mb-2">Interested in Learning {post.category}?</h3>
-                  <p className="text-white/80 text-xs sm:text-sm mb-5 leading-relaxed">
+                  <h3 className="font-bold text-sm sm:text-base mb-1.5">Interested in {post.category}?</h3>
+                  <p className="text-white/80 text-xs mb-4 leading-relaxed">
                     Join QIMD&apos;s offline classroom training in Hinjewadi, Pune. Work on live client projects with mentor access.
                   </p>
                   <Link
                     href="/courses"
-                    className="block text-center bg-secondary hover:bg-amber-400 text-midnight_text font-extrabold py-3 rounded-xl text-xs sm:text-sm transition-all shadow"
+                    className="block text-center bg-secondary hover:bg-amber-400 text-midnight_text font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs"
                   >
                     Explore Our Courses
                   </Link>
@@ -568,34 +400,34 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
                 {/* Related Articles Box */}
                 {relatedPosts.length > 0 && (
-                  <div className="bg-white dark:bg-darklight rounded-2xl p-5 shadow-sm border border-border dark:border-dark_border">
-                    <h4 className="font-extrabold text-midnight_text dark:text-white mb-4 text-sm sm:text-base flex items-center gap-2">
-                      <Icon icon="ion:newspaper-outline" className="text-primary" />
+                  <div className="bg-white dark:bg-darklight rounded-2xl p-4 sm:p-5 shadow-xs border border-border dark:border-dark_border">
+                    <h4 className="font-bold text-slate-900 dark:text-white mb-3 text-xs sm:text-sm flex items-center gap-1.5">
+                      <Icon icon="ion:newspaper-outline" className="text-primary text-base" />
                       <span>Other Guides &amp; Articles</span>
                     </h4>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {relatedPosts.map((related) => {
                         const relatedImg = (related as any).featuredImage || (related as any).coverImage || "/images/courses/digital-marketing.jpg";
                         return (
                           <Link
                             key={related.id || related.slug}
                             href={`/blog/${related.slug}`}
-                            className="flex gap-3 group items-center"
+                            className="flex gap-2.5 group items-center"
                           >
-                            <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-border/50">
+                            <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-slate-900 shrink-0 border border-slate-200 dark:border-slate-800">
                               <Image
                                 src={relatedImg}
                                 alt={related.title}
                                 fill
-                                sizes="64px"
+                                sizes="56px"
                                 className="object-cover group-hover:scale-105 transition-transform"
                               />
                             </div>
                             <div>
-                              <p className="text-xs font-bold text-midnight_text dark:text-white group-hover:text-primary dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
+                              <p className="text-xs font-semibold text-slate-800 dark:text-white group-hover:text-primary dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
                                 {related.title}
                               </p>
-                              <p className="text-[11px] text-muted dark:text-white/50 mt-1 font-medium">{related.category}</p>
+                              <p className="text-[10px] text-muted dark:text-white/50 mt-0.5">{related.category}</p>
                             </div>
                           </Link>
                         );
@@ -605,17 +437,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 )}
 
                 {/* Free Counselling CTA */}
-                <div className="bg-white dark:bg-darklight rounded-2xl p-5 shadow-sm border border-border dark:border-dark_border text-center space-y-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-xl">
+                <div className="bg-white dark:bg-darklight rounded-2xl p-4 sm:p-5 shadow-xs border border-border dark:border-dark_border text-center space-y-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-base">
                     <Icon icon="ion:headset-outline" />
                   </div>
-                  <h4 className="font-bold text-sm text-midnight_text dark:text-white">Need Career Advice?</h4>
-                  <p className="text-xs text-muted dark:text-white/70">
+                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Need Career Advice?</h4>
+                  <p className="text-[11px] text-muted dark:text-white/70 leading-relaxed">
                     Talk to our senior career mentors to choose the right track for your goals.
                   </p>
                   <Link
                     href="/contact"
-                    className="inline-block w-full py-2.5 px-4 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white text-xs font-bold transition-all"
+                    className="inline-block w-full py-2 px-3 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white text-xs font-semibold transition-all"
                   >
                     Book Free Counselling
                   </Link>
