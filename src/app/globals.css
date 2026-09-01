@@ -32,67 +32,13 @@
   font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif !important;
 }
 
-.font-prata {
-  font-family: var(--font-prata), 'Prata', Georgia, serif !important;
-}
-
-/* ── Sofia Pro / Sodia Pro Font ─────────────────────── */
-@font-face {
-  font-family: 'Sofia Pro';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Sofia Pro'),
-       local('Sofia Pro Regular'),
-       url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Regular Az.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Sofia Pro';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Sofia Pro Bold'),
-       local('Sofia-Pro-Bold'),
-       local('SofiaPro-Bold'),
-       url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Bold Az.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Sodia Pro';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Sofia Pro'),
-       local('Sofia Pro Regular'),
-       url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Regular Az.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Sodia Pro';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Sofia Pro Bold'),
-       local('Sofia-Pro-Bold'),
-       local('SofiaPro-Bold'),
-       url('https://fonts.cdnfonts.com/s/14903/Sofia Pro Bold Az.woff') format('woff');
-}
-
-.font-sodia-pro,
-.font-sofia-pro {
-  font-family: 'Sodia Pro', 'Sofia Pro', 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif !important;
-}
-
 @theme {
   --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-heading: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+  --font-heading: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif;
   --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-libre-baskerville: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-didot: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif;
-  --font-prata: var(--font-prata), 'Prata', Georgia, serif;
-  --font-sodia-pro: 'Sodia Pro', 'Sofia Pro', 'Montserrat', 'Inter', system-ui, sans-serif;
 
   --container-screen-xl: 75rem;
   --container-screen-2xl: 83.75rem;
@@ -178,7 +124,7 @@
   h1, h2, h3, h4, h5, h6,
   .font-heading,
   .heading-font {
-    font-family: var(--font-heading), 'Playfair Display', Georgia, serif;
+    font-family: 'Didot', 'Didot LT STD', var(--font-heading), 'Bodoni MT', Georgia, serif;
     letter-spacing: -0.01em;
     line-height: 1.25;
   }

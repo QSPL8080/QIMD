@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Libre_Baskerville, Prata } from "next/font/google";
+import { Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
@@ -16,13 +16,6 @@ const libreBaskerville = Libre_Baskerville({
   variable: "--font-libre-baskerville",
   weight: ["400", "700"],
   style: ["normal", "italic"],
-});
-
-const prata = Prata({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-prata",
-  weight: "400",
 });
 
 
@@ -123,7 +116,7 @@ export default async function RootLayout({
   const isSvg = faviconUrl.endsWith(".svg");
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${libreBaskerville.variable} ${prata.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${libreBaskerville.variable}`}>
       <head>
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} href={faviconUrl} />
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="32x32" href={faviconUrl} />
