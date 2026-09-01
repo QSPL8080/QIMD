@@ -56,82 +56,172 @@ function slugify(text: string) {
     .replace(/(^-|-$)+/g, "");
 }
 
-// Parses raw markdown into structured sections, Table of Contents, Key Takeaways, FAQs, etc.
+interface ParsedSection {
+  type: "summary" | "takeaways" | "h2" | "h3" | "paragraph" | "list" | "faq_group";
+  title?: string;
+  id?: string;
+  content?: string;
+  items?: string[];
+  faqs?: { question: string; answer: string; id: string }[];
+}
+
 function parseBlogContent(rawContent: string) {
-  const lines = rawContent.split("\n");
+  if (!rawContent) return { toc: [], sections: [] };
+
+  // 1. Normalize line endings (handling CRLF from Windows/DB)
+  const normalized = rawContent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const rawBlocks = normalized.split(/\n{2,}/);
+
   const toc: { number: string; title: string; id: string }[] = [];
-  const sections: {
-    type: "h2" | "h3" | "paragraph" | "list" | "summary" | "takeaways" | "faq";
-    title?: string;
-    id?: string;
-    content?: string;
-    items?: string[];
-    q?: string;
-    a?: string;
-  }[] = [];
+  const sections: ParsedSection[] = [];
 
-  let currentSectionType: string | null = null;
-  let currentH2Title = "";
-  let currentH2Id = "";
-  let currentListItems: string[] = [];
-  let currentParagraphs: string[] = [];
-  let tocCount = 1;
+  let tocIndex = 1;
+  let isInFaqMode = false;
+  let currentFaqList: { question: string; answer: string; id: string }[] = [];
 
-  // Scan for H2 headings to construct Table of Contents
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("## ")) {
-      const h2Text = trimmed.replace(/^##\s+/, "").trim();
-      const id = slugify(h2Text);
+  for (let i = 0; i < rawBlocks.length; i++) {
+    const block = rawBlocks[i].trim();
+    if (!block) continue;
+
+    // Check for H2 Heading
+    if (block.startsWith("## ")) {
+      const headingText = block.replace(/^##\s+/, "").trim();
+      const id = slugify(headingText);
+
+      // If we were collecting FAQs, flush them before starting a new H2
+      if (isInFaqMode && currentFaqList.length > 0) {
+        sections.push({
+          type: "faq_group",
+          faqs: [...currentFaqList],
+        });
+        currentFaqList = [];
+        isInFaqMode = false;
+      }
+
+      // Add to Table of Contents
       toc.push({
-        number: String(tocCount).padStart(2, "0"),
-        title: h2Text,
+        number: String(tocIndex).padStart(2, "0"),
+        title: headingText,
         id,
       });
-      tocCount++;
-    }
-  }
+      tocIndex++;
 
-  // Parse markdown blocks
-  const blocks = rawContent.split(/\n\n+/);
+      // Check if this is the Frequently Asked Questions section
+      if (headingText.toLowerCase().includes("frequently asked questions") || headingText.toLowerCase().includes("faq")) {
+        isInFaqMode = true;
+        sections.push({
+          type: "h2",
+          title: headingText,
+          id,
+        });
+        continue;
+      }
 
-  for (const block of blocks) {
-    const trimmed = block.trim();
-    if (!trimmed) continue;
+      // Check if this is Summary section
+      if (headingText.toLowerCase() === "summary") {
+        // Look ahead for the summary paragraph
+        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ")) {
+          const summaryText = rawBlocks[i + 1].trim();
+          sections.push({
+            type: "summary",
+            title: "Summary",
+            id,
+            content: summaryText,
+          });
+          i++; // Skip next block since it's consumed as summary text
+          continue;
+        }
+      }
 
-    if (trimmed.startsWith("## ")) {
-      const h2Text = trimmed.replace(/^##\s+/, "").trim();
-      const id = slugify(h2Text);
-      currentH2Title = h2Text;
-      currentH2Id = id;
+      // Check if this is Key Takeaways section
+      if (headingText.toLowerCase().includes("key takeaways")) {
+        // Look ahead for bullet list
+        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ")) {
+          const takeawaysBlock = rawBlocks[i + 1].trim();
+          const items = takeawaysBlock
+            .split("\n")
+            .map((line) => line.trim())
+            .filter((line) => line.startsWith("* ") || line.startsWith("- "))
+            .map((line) => line.replace(/^[\*\-]\s+/, ""));
+
+          if (items.length > 0) {
+            sections.push({
+              type: "takeaways",
+              title: headingText,
+              id,
+              items,
+            });
+            i++; // Skip next block since consumed
+            continue;
+          }
+        }
+      }
+
+      // Standard H2
       sections.push({
         type: "h2",
-        title: h2Text,
+        title: headingText,
         id,
       });
-    } else if (trimmed.startsWith("### ")) {
-      const h3Text = trimmed.replace(/^###\s+/, "").trim();
+      continue;
+    }
+
+    // Check for H3 Heading (e.g. FAQ questions like "### 01. Do I need...")
+    if (block.startsWith("### ")) {
+      const h3Text = block.replace(/^###\s+/, "").trim();
       const id = slugify(h3Text);
+
+      // If we are in FAQ mode, check if the next block is the answer
+      if (isInFaqMode) {
+        let answerText = "";
+        if (i + 1 < rawBlocks.length && !rawBlocks[i + 1].startsWith("## ") && !rawBlocks[i + 1].startsWith("### ")) {
+          answerText = rawBlocks[i + 1].trim();
+          i++; // Skip the answer block
+        }
+        currentFaqList.push({
+          question: h3Text,
+          answer: answerText,
+          id,
+        });
+        continue;
+      }
+
       sections.push({
         type: "h3",
         title: h3Text,
         id,
       });
-    } else if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
-      const items = trimmed
+      continue;
+    }
+
+    // Check for Bulleted List
+    if (block.startsWith("* ") || block.startsWith("- ")) {
+      const items = block
         .split("\n")
-        .filter((l) => l.trim().startsWith("* ") || l.trim().startsWith("- "))
-        .map((l) => l.trim().replace(/^[\*\-]\s+/, ""));
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("* ") || line.startsWith("- "))
+        .map((line) => line.replace(/^[\*\-]\s+/, ""));
+
       sections.push({
         type: "list",
         items,
       });
-    } else {
-      sections.push({
-        type: "paragraph",
-        content: trimmed,
-      });
+      continue;
     }
+
+    // Standard Paragraph
+    sections.push({
+      type: "paragraph",
+      content: block,
+    });
+  }
+
+  // Flush any remaining FAQs
+  if (isInFaqMode && currentFaqList.length > 0) {
+    sections.push({
+      type: "faq_group",
+      faqs: [...currentFaqList],
+    });
   }
 
   return { toc, sections };
@@ -171,10 +261,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
   if (!post) notFound();
 
-  const allBlogs = await db.blog.findMany({
-    where: { status: "PUBLISHED", isDeleted: false },
-    select: { id: true, title: true, slug: true, category: true, featuredImage: true },
-  }).catch(() => []);
+  const allBlogs = await db.blog
+    .findMany({
+      where: { status: "PUBLISHED", isDeleted: false },
+      select: { id: true, title: true, slug: true, category: true, featuredImage: true },
+    })
+    .catch(() => []);
 
   const relatedPosts = (allBlogs.length > 0 ? allBlogs : blogsData)
     .filter((p) => p.slug !== post.slug)
@@ -256,10 +348,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
               {/* ─── TABLE OF CONTENTS (INTERACTIVE TABLE) ─── */}
               {toc.length > 0 && (
-                <div className="mb-10 p-6 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200 dark:border-dark_border">
+                <div className="mb-10 p-6 sm:p-7 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200 dark:border-dark_border">
                   <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-slate-200 dark:border-dark_border">
-                    <Icon icon="ion:list-outline" className="text-primary text-xl" />
-                    <h2 className="text-base sm:text-lg font-extrabold text-midnight_text dark:text-white">
+                    <Icon icon="ion:list-outline" className="text-primary text-2xl" />
+                    <h2 className="text-lg font-extrabold text-midnight_text dark:text-white">
                       Table of Contents
                     </h2>
                   </div>
@@ -303,41 +395,86 @@ export default async function BlogDetailPage({ params }: PageProps) {
               )}
 
               {/* ─── ARTICLE STRUCTURED CONTENT ─── */}
-              <div className="blog-content space-y-6 text-slate-700 dark:text-white/80 text-sm sm:text-base leading-relaxed">
+              <div className="blog-content space-y-7 text-slate-700 dark:text-white/80 text-sm sm:text-base leading-relaxed">
                 {sections.map((sec, idx) => {
-                  if (sec.type === "h2") {
-                    const isKeyTakeaway = sec.title?.toLowerCase().includes("key takeaways");
-                    const isFaq = sec.title?.toLowerCase().includes("frequently asked questions");
+                  
+                  // Summary Callout Box
+                  if (sec.type === "summary") {
                     return (
-                      <div key={idx} id={sec.id} className="pt-6 border-t border-slate-100 dark:border-dark_border/50 scroll-mt-24">
-                        <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white flex items-center gap-2 mb-3">
-                          {isKeyTakeaway && <Icon icon="mdi:lightbulb-on" className="text-amber-500 text-2xl shrink-0" />}
-                          {isFaq && <Icon icon="mdi:help-circle-outline" className="text-primary text-2xl shrink-0" />}
-                          <span>{sec.title}</span>
+                      <div
+                        key={idx}
+                        id={sec.id}
+                        className="p-6 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 shadow-2xs space-y-2 scroll-mt-24"
+                      >
+                        <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-bold text-sm sm:text-base">
+                          <Icon icon="mdi:text-box-outline" className="text-xl" />
+                          <span>Summary Overview</span>
+                        </div>
+                        <p className="text-slate-700 dark:text-white/90 text-sm sm:text-base leading-relaxed font-medium">
+                          {sec.content}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  // Key Takeaways Highlight Box
+                  if (sec.type === "takeaways" && sec.items) {
+                    return (
+                      <div
+                        key={idx}
+                        id={sec.id}
+                        className="p-6 sm:p-7 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 shadow-2xs space-y-4 scroll-mt-24"
+                      >
+                        <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-400 font-extrabold text-base sm:text-lg border-b border-amber-200/60 dark:border-amber-900/40 pb-3">
+                          <Icon icon="mdi:lightbulb-on" className="text-amber-500 text-2xl shrink-0" />
+                          <span>{sec.title || "Key Takeaways"}</span>
+                        </div>
+                        <ul className="space-y-3 pl-1">
+                          {sec.items.map((item, itemIdx) => (
+                            <li key={itemIdx} className="flex items-start gap-3">
+                              <Icon icon="mdi:check-circle" className="text-emerald-500 text-lg mt-0.5 shrink-0" />
+                              <span className="text-slate-800 dark:text-white/90 font-medium text-xs sm:text-sm leading-relaxed">
+                                {item}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+
+                  // H2 Section Heading
+                  if (sec.type === "h2") {
+                    return (
+                      <div key={idx} id={sec.id} className="pt-8 border-t border-slate-200/80 dark:border-dark_border scroll-mt-24">
+                        <h2 className="text-xl sm:text-2xl font-extrabold text-midnight_text dark:text-white leading-snug">
+                          {sec.title}
                         </h2>
                       </div>
                     );
                   }
 
+                  // H3 Section Heading
                   if (sec.type === "h3") {
                     return (
-                      <div key={idx} id={sec.id} className="pt-3 scroll-mt-24">
-                        <h3 className="text-base sm:text-lg font-bold text-midnight_text dark:text-white mb-2">
+                      <div key={idx} id={sec.id} className="pt-4 scroll-mt-24">
+                        <h3 className="text-base sm:text-lg font-bold text-midnight_text dark:text-white leading-snug">
                           {sec.title}
                         </h3>
                       </div>
                     );
                   }
 
+                  // Bulleted Lists (with **bold label**: detail parsing)
                   if (sec.type === "list" && sec.items) {
                     return (
-                      <ul key={idx} className="space-y-2.5 pl-2 my-4">
+                      <ul key={idx} className="space-y-3 pl-2 my-4">
                         {sec.items.map((item, itemIdx) => {
                           const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
                           return (
-                            <li key={itemIdx} className="flex items-start gap-3">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary dark:bg-amber-400 mt-2 shrink-0" />
-                              <span>
+                            <li key={itemIdx} className="flex items-start gap-3 text-sm sm:text-base">
+                              <span className="w-2 h-2 rounded-full bg-primary dark:bg-amber-400 mt-2 shrink-0" />
+                              <span className="leading-relaxed">
                                 {boldMatch ? (
                                   <>
                                     <strong className="text-midnight_text dark:text-white font-bold">{boldMatch[1]}: </strong>
@@ -354,11 +491,37 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     );
                   }
 
+                  // Standard Paragraph
                   if (sec.type === "paragraph" && sec.content) {
                     return (
-                      <p key={idx} className="leading-relaxed">
+                      <p key={idx} className="leading-relaxed text-sm sm:text-base">
                         {sec.content}
                       </p>
+                    );
+                  }
+
+                  // FAQ Group Cards
+                  if (sec.type === "faq_group" && sec.faqs) {
+                    return (
+                      <div key={idx} className="space-y-4 pt-2">
+                        {sec.faqs.map((faq, fIdx) => (
+                          <div
+                            key={fIdx}
+                            id={faq.id}
+                            className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-dark border border-slate-200 dark:border-dark_border space-y-2.5 transition-all hover:border-primary/40 scroll-mt-24"
+                          >
+                            <h3 className="text-sm sm:text-base font-bold text-midnight_text dark:text-white flex items-start gap-2.5">
+                              <span className="text-primary dark:text-amber-400 font-extrabold shrink-0">Q.</span>
+                              <span>{faq.question}</span>
+                            </h3>
+                            {faq.answer && (
+                              <p className="text-xs sm:text-sm text-slate-600 dark:text-white/75 leading-relaxed pl-5">
+                                {faq.answer}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     );
                   }
 
