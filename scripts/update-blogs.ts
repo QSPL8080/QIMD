@@ -28,12 +28,12 @@ Sep 01, 2026
 * Fees depend on duration, batch format, and whether internship and placement support are included. We share the full breakdown before you enrol.
 
 ## Introduction
-You've searched "best digital marketing course in Pune" and now you have fifteen tabs open. Every institute promises 100% placement. Every brochure lists the same twenty modules. Some ask for a registration fee before they'll even show you the syllabus. Picking the wrong one costs you six months, your fee, and the confidence to try again. This guide walks through what a digital marketing course should actually teach you, what it costs in Pune, and how we run our batches for freshers, working professionals, and business owners across the city. If you're still deciding between specialisations, our breakdown of digital marketing, graphic design and video editing careers shows what each path looks like day to day.
+You've searched "best digital marketing course in Pune" and now you have fifteen tabs open. Every institute promises 100% placement. Every brochure lists the same twenty modules. Some ask for a registration fee before they'll even show you the syllabus. Picking the wrong one costs you six months, your fee, and the confidence to try again. This guide walks through what a digital marketing course should actually teach you, what it costs in Pune, and how we run our batches for freshers, working professionals, and business owners across the city. If you're still deciding between specialisations, our [breakdown of digital marketing, graphic design and video editing careers](/courses) shows what each path looks like day to day.
 
 ## What Does a Digital Marketing Course in Pune Actually Cover?
 A digital marketing course teaches you how to bring customers to a business through search, social, and paid channels, and then prove with data that it worked. It works by taking you through each channel in sequence: search engine optimization for organic traffic, Google Ads and Meta Ads for paid traffic, content and creative for the message, and analytics for the reporting layer that ties it together. The purpose is not to make you aware of these tools. It's to make you employable in a role that uses them on Monday morning.
 
-A serious AI-powered digital marketing program will cover on-page and technical SEO, keyword research, Google Search and Performance Max campaigns, Meta ad structures and audience building, landing pages, email and WhatsApp automation, GA4 and reporting, plus the AI layer now sitting on top of all of it - prompt-driven content, automated creative variants, and workflow tools that agencies already expect juniors to know.
+A serious [AI-powered digital marketing program](/courses/ai-digital-marketing) will cover on-page and technical SEO, keyword research, Google Search and Performance Max campaigns, Meta ad structures and audience building, landing pages, email and WhatsApp automation, GA4 and reporting, plus the AI layer now sitting on top of all of it - prompt-driven content, automated creative variants, and workflow tools that agencies already expect juniors to know.
 
 The gap between "institute that covers the syllabus" and "institute that puts you on a live account" is exactly where most enrolments go wrong.
 
@@ -96,12 +96,12 @@ Here's what that looks like in practice:
 
 For anyone who isn't sure which program fits, our career counselling team will map your background against the three tracks before you spend anything.
 
-If you're ready to start, speak to a counsellor about the next batch and see the full syllabus, fee structure, and placement process before you enrol.
+If you're ready to start, [speak to a counsellor about the next batch](/contact) and see the full syllabus, fee structure, and placement process before you enrol.
 
 ## Final Thoughts
 The best digital marketing course in Pune isn't the one with the longest module list or the loudest placement banner. It's the one where you leave with campaigns you actually ran, work you can defend in an interview, and someone to call when you're stuck in month two of your first job. Ask about live projects, ask who's teaching, ask what happens after the last class - and enrol where the answers are specific.
 
-Whether you're a fresher planning your first role or a professional adding a skill, we can show you exactly what the next batch covers and where our students are working now. [Book your free career counselling session](/contact).
+Whether you're a fresher planning your first role or a professional adding a skill, we can show you exactly what the next batch covers and where our students are working now. [Book your free career counselling session.](/contact)
 
 ## Frequently Asked Questions
 
@@ -150,12 +150,12 @@ Sep 01, 2026
 * Fees depend on duration, batch format, and whether internship and placement support are included. We share the full breakdown before you enrol.
 
 ## Introduction
-You've searched "best graphic design course in Pune" and every result promises Adobe mastery and a job. Some are three-month software crash courses. Some are degree programs that cost several lakhs. Most show you a syllabus but never show you what a student actually made. Picking wrong costs you six months and leaves you with a certificate no studio asks to see. This guide walks through what a graphic design course should genuinely teach, what it costs in Pune, and how we run our batches for freshers, career-switchers, and freelancers. If you're still weighing your options across creative fields, our full course lineup shows how design, video, and marketing careers differ.
+You've searched "best graphic design course in Pune" and every result promises Adobe mastery and a job. Some are three-month software crash courses. Some are degree programs that cost several lakhs. Most show you a syllabus but never show you what a student actually made. Picking wrong costs you six months and leaves you with a certificate no studio asks to see. This guide walks through what a graphic design course should genuinely teach, what it costs in Pune, and how we run our batches for freshers, career-switchers, and freelancers. If you're still weighing your options across creative fields, our [full course lineup](/courses) shows how design, video, and marketing careers differ.
 
 ## What Does a Graphic Design Course in Pune Actually Cover?
 A graphic design course teaches you to solve a communication problem visually - and to produce files that a printer, a developer, or a social media manager can actually use. It works in layers: design fundamentals first (composition, colour, typography, hierarchy), then software fluency, then applied output like brand identity systems, packaging, social media creatives, and marketing collateral.
 
-A serious AI-powered graphic design program covers the complete Adobe Creative Cloud workflow - Photoshop for image work, Illustrator for vector and logo design, InDesign for multi-page layout - plus brand identity development, print-ready file preparation, social media creative systems, and the AI layer studios now expect juniors to handle: Adobe Firefly, Midjourney, and Canva for rapid concept generation and creative variants.
+A serious [AI-powered graphic design program](/courses/ai-graphic-design) covers the complete Adobe Creative Cloud workflow - Photoshop for image work, Illustrator for vector and logo design, InDesign for multi-page layout - plus brand identity development, print-ready file preparation, social media creative systems, and the AI layer studios now expect juniors to handle: Adobe Firefly, Midjourney, and Canva for rapid concept generation and creative variants.
 
 The gap between "institute that teaches Photoshop" and "institute that sends you out with a defensible portfolio" is exactly where most enrolments go wrong.
 
@@ -218,12 +218,12 @@ Here's what that looks like in practice:
 
 If you're not sure whether design or video suits you better, our career counselling team will map your background against both before you spend anything.
 
-If you're ready to start, speak to a counsellor about the next batch and see the syllabus, fee structure, and student portfolios before you enrol.
+If you're ready to start, [speak to a counsellor about the next batch](/contact) and see the syllabus, fee structure, and student portfolios before you enrol.
 
 ## Final Thoughts
 The best graphic design course in Pune isn't the one with the longest software list. It's the one that sends you out with ten pieces of work you can explain, defend, and point to in an interview. Ask to see student portfolios, ask who reviews your work, ask what happens after the last class - and enrol where the answers come with examples attached.
 
-Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch builds and where our students are working now. [Book your free career counselling session](/contact).
+Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch builds and where our students are working now. [Book your free career counselling session.](/contact)
 
 ## Frequently Asked Questions
 
@@ -272,12 +272,12 @@ Sep 01, 2026
 * Fees depend on duration, batch format, and whether internship and placement support are included. We share the full breakdown before you enrol.
 
 ## Introduction
-You've searched "best video editing course in Pune" and the results range from weekend Premiere Pro workshops to multi-lakh film school diplomas. Everyone shows a flashy showreel on the homepage - almost nobody tells you whether students made it. Picking wrong leaves you able to cut a timeline but unable to deliver a client project on a deadline. This guide walks through what a video editing course should actually teach, what it costs in Pune, and how we run our batches for freshers, freelancers, and content creators. If you're weighing this against other creative paths, our full course lineup shows how editing, design, and marketing careers differ.
+You've searched "best video editing course in Pune" and the results range from weekend Premiere Pro workshops to multi-lakh film school diplomas. Everyone shows a flashy showreel on the homepage - almost nobody tells you whether students made it. Picking wrong leaves you able to cut a timeline but unable to deliver a client project on a deadline. This guide walks through what a video editing course should actually teach, what it costs in Pune, and how we run our batches for freshers, freelancers, and content creators. If you're weighing this against other creative paths, our [full course lineup](/courses) shows how editing, design, and marketing careers differ.
 
 ## What Does a Video Editing Course in Pune Actually Cover?
 A video editing course teaches you to turn raw footage into a finished piece that holds attention and delivers a message - and to export it correctly for wherever it's going. It works in layers: non-linear timeline editing first, then storytelling and pacing, then the finishing crafts that separate professionals from hobbyists - colour grading, sound design, and motion graphics.
 
-A serious AI-powered video editing program covers timeline editing and cinematic storytelling, colour grading in DaVinci Resolve, audio engineering and sound design, motion graphics including lower thirds and animated visual effects, and the AI layer now standard in production: automated subtitling, video enhancement, and AI-assisted rough cuts for high-volume social content.
+A serious [AI-powered video editing program](/courses/ai-video-editing) covers timeline editing and cinematic storytelling, colour grading in DaVinci Resolve, audio engineering and sound design, motion graphics including lower thirds and animated visual effects, and the AI layer now standard in production: automated subtitling, video enhancement, and AI-assisted rough cuts for high-volume social content.
 
 The gap between "institute that teaches the software" and "institute that sends you out with a showreel" is exactly where most enrolments go wrong.
 
@@ -340,12 +340,12 @@ Here's what that looks like in practice:
 
 If you're not sure whether editing or design suits you better, our career counselling team will map your background against both before you spend anything.
 
-If you're ready to start, speak to a counsellor about the next batch and see the syllabus, fee structure, and student showreels before you enrol.
+If you're ready to start, [speak to a counsellor about the next batch](/contact) and see the syllabus, fee structure, and student showreels before you enrol.
 
 ## Final Thoughts
 The best video editing course in Pune isn't the one with the biggest software list. It's the one that hands you a showreel you're proud to send, built from real briefs with real deadlines. Ask to see student reels, ask whose footage they cut, ask what happens after the last class - and enrol where the answers come with examples attached.
 
-Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch produces and where our students are working now. [Book your free career counselling session](/contact).
+Whether you're starting from zero or upgrading a freelance practice, we can show you what the next batch produces and where our students are working now. [Book your free career counselling session.](/contact)
 
 ## Frequently Asked Questions
 

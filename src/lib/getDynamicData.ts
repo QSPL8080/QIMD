@@ -55,6 +55,22 @@ export const getDynamicCourses = unstable_cache(
   { revalidate: 60, tags: ['courses'] }
 )
 
+function cleanBlogExcerpt(content: string, metaDescription?: string | null): string {
+  if (metaDescription && metaDescription.trim().length > 10) {
+    return metaDescription.trim()
+  }
+  const cleaned = content
+    .replace(/^##\s*Summary\s*/im, '')
+    .replace(/^#+\s+/gm, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/^[\*\-\•]\s+/gm, '')
+    .replace(/\r\n/g, '\n')
+    .trim()
+
+  return cleaned.substring(0, 160) + '...'
+}
+
 export async function getDynamicBlogs() {
   try {
     const dbBlogs = await db.blog.findMany({
@@ -73,7 +89,7 @@ export async function getDynamicBlogs() {
         author: b.author || 'QIMD Team',
         readTime: `${b.readingTime} min read`,
         content: b.content,
-        excerpt: b.content.substring(0, 140) + '...',
+        excerpt: cleanBlogExcerpt(b.content, b.metaDescription),
         publishedAt: `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][b.createdAt.getMonth()]} ${b.createdAt.getDate()}, ${b.createdAt.getFullYear()}`,
         featured: b.featured,
       }))

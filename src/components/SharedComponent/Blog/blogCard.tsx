@@ -96,7 +96,12 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, featured = false }) => {
 
           {/* Meaningful 1-Paragraph Preview */}
           <p className="text-sm text-muted dark:text-white/70 leading-relaxed mb-4 line-clamp-4">
-            {excerpt}
+            {(excerpt || '')
+              .replace(/^##\s*Summary\s*/i, '')
+              .replace(/^#+\s*/g, '')
+              .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+              .replace(/\*\*(.*?)\*\*/g, '$1')
+              .trim()}
           </p>
         </div>
 
