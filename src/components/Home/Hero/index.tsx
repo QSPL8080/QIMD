@@ -162,8 +162,8 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
 
                 {/* Main Headline */}
                 <h1
-                  className="font-didot text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-bold text-white leading-snug tracking-tight drop-shadow-md"
-                  style={{ fontFamily: "'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif" }}
+                  className="font-libre-baskerville text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-bold text-white leading-snug tracking-tight drop-shadow-md"
+                  style={{ fontFamily: "var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif" }}
                 >
                   {title}
                 </h1>

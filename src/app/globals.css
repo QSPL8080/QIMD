@@ -2,32 +2,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── Didot Display Font ─────────────────────────────── */
-@font-face {
-  font-family: 'Didot';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Didot'),
-       local('Didot LT STD'),
-       url('https://fonts.cdnfonts.com/s/14050/Didot.woff') format('woff');
-}
-
-@font-face {
-  font-family: 'Didot';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Didot Bold'),
-       local('Didot-Bold'),
-       local('Didot LT STD Bold'),
-       url('https://fonts.cdnfonts.com/s/14050/Didot.woff') format('woff');
-}
-
-.font-didot {
-  font-family: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif !important;
-}
-
 .font-libre-baskerville {
   font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif !important;
 }
@@ -35,10 +9,9 @@
 @theme {
   --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-heading: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif;
+  --font-heading: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
   --font-libre-baskerville: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-didot: 'Didot', 'Didot LT STD', 'Cinzel', 'Bodoni MT', Georgia, serif;
 
   --container-screen-xl: 75rem;
   --container-screen-2xl: 83.75rem;
@@ -124,7 +97,7 @@
   h1, h2, h3, h4, h5, h6,
   .font-heading,
   .heading-font {
-    font-family: 'Didot', 'Didot LT STD', var(--font-heading), 'Bodoni MT', Georgia, serif;
+    font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
     letter-spacing: -0.01em;
     line-height: 1.25;
   }
