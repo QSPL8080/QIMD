@@ -129,6 +129,16 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-title" content="QIMD" />
         <meta name="application-name" content="QIMD" />
         <meta name="msapplication-TileImage" content={faviconUrl} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+                window.history.scrollRestoration = 'manual';
+                window.scrollTo(0, 0);
+              }
+            `,
+          }}
+        />
       </head>
       <body className={`${libreBaskerville.className} font-sans antialiased`} suppressHydrationWarning>
         <NextTopLoader color="#6366F1" showSpinner={false} height={2.5} crawl={true} speed={200} shadow="0 0 10px #6366F1,0 0 5px #6366F1" />

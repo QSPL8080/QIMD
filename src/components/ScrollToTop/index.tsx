@@ -15,6 +15,22 @@ export default function ScrollToTop() {
   };
 
   useEffect(() => {
+    // Disable browser automatic scroll restoration so page always starts at top / hero section
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    // Scroll to top immediately on page load and route change
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
+    const handlePageShow = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+
     const toggleVisibility = () => {
       const scrolled = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
       if (scrolled > 150) {
@@ -28,7 +44,10 @@ export default function ScrollToTop() {
     toggleVisibility();
 
     window.addEventListener("scroll", toggleVisibility, { passive: true });
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("scroll", toggleVisibility);
+    };
   }, [pathname]);
 
   return (
