@@ -9,14 +9,12 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Dynamically extract all unique category names present in DB blogs
+  // Active Categories
   const defaultCategories = [
     "Digital Marketing",
     "Graphic Design",
     "Video Editing",
-    "Artificial Intelligence",
     "Career Development",
-    "Industry Insights",
   ];
   
   const dynamicCategories = Array.from(
@@ -31,11 +29,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
   const filteredBlogs = blogs.filter((blog: any) => {
     const matchesCat =
       selectedCategory === "All" ||
-      blog.category?.toLowerCase() === selectedCategory.toLowerCase() ||
-      blog.category?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-      (selectedCategory === "Artificial Intelligence" && (blog.category?.toLowerCase().includes("ai") || blog.title?.toLowerCase().includes("ai"))) ||
-      (selectedCategory === "Career Development" && (blog.category?.toLowerCase().includes("career") || blog.title?.toLowerCase().includes("career"))) ||
-      (selectedCategory === "Industry Insights" && (blog.category?.toLowerCase().includes("insight") || blog.category?.toLowerCase().includes("general")));
+      blog.category?.toLowerCase().trim() === selectedCategory.toLowerCase().trim();
 
     const matchesSearch =
       searchQuery.trim() === "" ||

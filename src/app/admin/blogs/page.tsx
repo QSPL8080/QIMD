@@ -55,9 +55,7 @@ export default function AdminBlogsPage() {
     'Digital Marketing',
     'Graphic Design',
     'Video Editing',
-    'Artificial Intelligence',
     'Career Development',
-    'Industry Insights',
   ])
   const [selectedCategoryInput, setSelectedCategoryInput] = useState('Digital Marketing')
   const [isCustomCat, setIsCustomCat] = useState(false)
@@ -350,9 +348,7 @@ export default function AdminBlogsPage() {
               <option value="Digital Marketing">Digital Marketing</option>
               <option value="Graphic Design">Graphic Design</option>
               <option value="Video Editing">Video Editing</option>
-              <option value="Artificial Intelligence">Artificial Intelligence</option>
               <option value="Career Development">Career Development</option>
-              <option value="Industry Insights">Industry Insights</option>
             </select>
           </div>
         </div>
@@ -425,7 +421,7 @@ export default function AdminBlogsPage() {
                   <th className="p-4">Title & Slug</th>
                   <th className="p-4">Category Tab</th>
                   <th className="p-4">Author</th>
-                  <th className="p-4">Reading Time</th>
+                  <th className="p-4">Last Updated</th>
                   <th className="p-4">Status</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
@@ -456,7 +452,9 @@ export default function AdminBlogsPage() {
                       </span>
                     </td>
                     <td className="p-4 text-slate-800 font-semibold text-sm">{b.author || 'QIMD Team'}</td>
-                    <td className="p-4 text-slate-600 font-medium text-sm">{b.readingTime} min read</td>
+                    <td className="p-4 text-slate-600 text-xs font-medium">
+                      {b.updatedAt ? new Date(b.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
+                    </td>
                     <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${

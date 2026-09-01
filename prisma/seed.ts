@@ -142,8 +142,18 @@ async function main() {
     }
   }
 
-  // 3. Blogs Migration
-  for (const b of blogsData) {
+  // 3. Blogs Migration (Clean and seed 4 official blogs)
+  const validSlugs = blogsData.map(b => b.slug)
+  await prisma.blog.deleteMany({
+    where: {
+      slug: { notIn: validSlugs }
+    }
+  })
+
+  // Load rich content from update-blogs
+  const { newBlogsData } = await import('../scripts/update-blogs')
+
+  for (const b of newBlogsData) {
     const existing = await prisma.blog.findFirst({
       where: { slug: b.slug },
     })
@@ -152,16 +162,40 @@ async function main() {
         data: {
           title: b.title,
           slug: b.slug,
-          category: b.category || 'General',
-          excerpt: b.excerpt,
-          featuredImage: b.coverImage,
-          images: b.images || [],
-          author: b.author || 'QIMD Team',
-          readingTime: parseInt(b.readTime || '5') || 5,
-          content: b.content || '',
+          category: b.category,
+          excerpt: b.metaDescription,
+          featuredImage: b.featuredImage,
+          images: [b.featuredImage],
+          author: b.author,
+          readingTime: b.readingTime,
+          content: b.content,
+          metaTitle: b.metaTitle,
+          metaDescription: b.metaDescription,
+          canonicalUrl: b.canonicalUrl,
+          tags: b.tags,
           status: 'PUBLISHED',
           isActive: true,
         },
+      })
+    } else {
+      await prisma.blog.update({
+        where: { id: existing.id },
+        data: {
+          title: b.title,
+          category: b.category,
+          excerpt: b.metaDescription,
+          featuredImage: b.featuredImage,
+          images: [b.featuredImage],
+          author: b.author,
+          readingTime: b.readingTime,
+          content: b.content,
+          metaTitle: b.metaTitle,
+          metaDescription: b.metaDescription,
+          canonicalUrl: b.canonicalUrl,
+          tags: b.tags,
+          isDeleted: false,
+          isActive: true,
+        }
       })
     }
   }
