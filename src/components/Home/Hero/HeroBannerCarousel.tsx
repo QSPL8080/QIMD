@@ -67,41 +67,42 @@ export default function HeroBannerCarousel() {
   // When banners are added in CMS, display image carousel directly
   return (
     <div className="hero-card-slide-right w-full">
-      <div className="relative overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 min-h-[190px] sm:min-h-[220px] lg:min-h-[230px] flex items-center justify-center bg-black/30 border border-white/20 backdrop-blur-md">
-        <div className="relative w-full h-[190px] sm:h-[220px] lg:h-[230px] overflow-hidden rounded-2xl">
+      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border border-white/20">
+        <div className="relative w-full h-full">
           {banners.map((banner, index) => {
             const isCurrent = index === currentIndex
 
             return (
               <div
                 key={banner.id}
-                className={`transition-all duration-700 ease-in-out absolute inset-0 w-full h-full flex items-center justify-center ${
+                className={`transition-opacity duration-700 ease-in-out absolute inset-0 w-full h-full ${
                   isCurrent
-                    ? 'opacity-100 z-10 scale-100'
-                    : 'opacity-0 z-0 pointer-events-none scale-95'
+                    ? 'opacity-100 z-10 pointer-events-auto'
+                    : 'opacity-0 z-0 pointer-events-none'
                 }`}
               >
                 <img
                   src={banner.imageUrl}
                   alt={banner.title || `Homepage Banner ${index + 1}`}
-                  className="w-full h-full object-cover rounded-2xl block"
+                  className="w-full h-full object-cover object-center block"
+                  loading={index === 0 ? 'eager' : 'lazy'}
                 />
               </div>
             )
           })}
         </div>
 
-        {/* Carousel indicators if more than 1 banner */}
+        {/* Carousel indicators */}
         {banners.length > 1 && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-full backdrop-blur-md border border-white/10 shadow-lg">
             {banners.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  idx === currentIndex ? 'w-5 bg-cyan-300' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                  idx === currentIndex ? 'w-5 bg-cyan-300 shadow-[0_0_8px_rgba(103,232,249,0.8)]' : 'w-1.5 bg-white/40 hover:bg-white/80'
                 }`}
-                aria-label={`Go to slide ${idx + 1}`}
+                aria-label={`Go to banner ${idx + 1}`}
               />
             ))}
           </div>
