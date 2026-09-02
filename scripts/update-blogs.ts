@@ -2,7 +2,7 @@ import { db } from '../src/lib/db'
 
 export const newBlogsData = [
   {
-    title: "Best Digital Marketing Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Digital Marketing Course in Pune",
     slug: "best-digital-marketing-course-in-pune",
     category: "Digital Marketing",
     author: "QIMD Institute",
@@ -124,7 +124,7 @@ Resume building, mock interviews, interview preparation, and introductions to ou
 Free certifications teach you tool interfaces. A classroom program gives you live campaign experience, a mentor who reviews your work, an internship, and placement support - the things employers actually interview on.`
   },
   {
-    title: "Best Graphic Design Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Graphic Design Course in Pune",
     slug: "best-graphic-design-course-in-pune",
     category: "Graphic Design",
     author: "QIMD Institute",
@@ -246,7 +246,7 @@ Portfolio reviews, resume building, interview preparation, and introductions to 
 Tutorials teach you where the buttons are. A classroom program gives you real client briefs, a mentor who critiques your decisions, an internship, and placement support - the things studios actually interview on.`
   },
   {
-    title: "Best Video Editing Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Video Editing Course in Pune",
     slug: "best-video-editing-course-in-pune",
     category: "Video Editing",
     author: "QIMD Institute",

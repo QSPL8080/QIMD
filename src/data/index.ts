@@ -905,7 +905,7 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-001",
     slug: "best-digital-marketing-course-in-pune",
-    title: "Best Digital Marketing Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Digital Marketing Course in Pune",
     excerpt:
       "Choosing a digital marketing course in Pune? This guide covers what a real syllabus should include, how to test a placement claim before you pay, what fees typically run across the city, and the questions most students forget to ask on the demo call. You'll get a clear checklist for picking a program that ends in a job, not just a certificate.",
     coverImage: "/images/courses/digital-marketing.jpg",
@@ -921,7 +921,7 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-002",
     slug: "best-graphic-design-course-in-pune",
-    title: "Best Graphic Design Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Graphic Design Course in Pune",
     excerpt:
       "Choosing a graphic design course in Pune? This guide covers what a real syllabus should include beyond Photoshop, how to judge an institute by the portfolios its students leave with, what fees typically run across the city, and where AI tools now fit into a designer's day. You'll get a clear checklist for picking a program that ends in a job, not just a software certificate.",
     coverImage: "/images/courses/graphic-design.jpg",
@@ -937,7 +937,7 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-003",
     slug: "best-video-editing-course-in-pune",
-    title: "Best Video Editing Course in Pune: A Buyer's Guide Before You Enroll",
+    title: "Best Video Editing Course in Pune",
     excerpt:
       "Choosing a video editing course in Pune? This guide covers what a real syllabus should include beyond timeline basics, how to judge an institute by the showreels its students leave with, what fees typically run across the city, and where AI editing tools now fit. You'll get a clear checklist for picking a program that ends in paid work, not just a software certificate.",
     coverImage: "/images/courses/video-editing.jpg",
