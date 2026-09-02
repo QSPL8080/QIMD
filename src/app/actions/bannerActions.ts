@@ -52,21 +52,11 @@ export async function saveBannerAction(
         isActive: data.isActive !== undefined ? data.isActive : existing.isActive,
       }
 
-      // Update Supabase
+      // Update Supabase Database
       await db.banner.update({
         where: { id },
         data: updatePayload,
       })
-
-      // Sync Update to Local pgAdmin
-      try {
-        await localDb.banner.update({
-          where: { id },
-          data: updatePayload,
-        })
-      } catch (err) {
-        console.warn('Local pgAdmin sync error (non-fatal):', err)
-      }
     } else {
       const createPayload = {
         badge: data.badge || 'CAREER BOOSTER',
@@ -81,27 +71,15 @@ export async function saveBannerAction(
         isActive: data.isActive !== undefined ? data.isActive : true,
       }
 
-      // Create in Supabase
-      const newBanner = await db.banner.create({
+      // Create in Supabase Database
+      await db.banner.create({
         data: createPayload,
       })
-
-      // Sync Create to Local pgAdmin
-      try {
-        await localDb.banner.create({
-          data: {
-            id: newBanner.id,
-            ...createPayload,
-          },
-        })
-      } catch (err) {
-        console.warn('Local pgAdmin sync error (non-fatal):', err)
-      }
     }
 
     revalidatePath('/admin/banners')
     revalidatePath('/')
-    return { success: true, message: 'Banner saved successfully in both databases' }
+    return { success: true, message: 'Banner saved successfully in database' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to save banner' }
   }
@@ -112,15 +90,7 @@ export async function deleteBannerPermanentlyAction(id: string) {
   try {
     const existing = await db.banner.findUnique({ where: { id } })
     if (existing) {
-      // Delete from Supabase
       await db.banner.delete({ where: { id } })
-      
-      // Delete from Local pgAdmin
-      try {
-        await localDb.banner.delete({ where: { id } })
-      } catch (err) {
-        console.warn('Local pgAdmin delete sync error (non-fatal):', err)
-      }
 
       if (existing.imageUrl) {
         await safeDeleteUnusedFile(existing.imageUrl, { table: 'banner', id })
@@ -128,7 +98,7 @@ export async function deleteBannerPermanentlyAction(id: string) {
     }
     revalidatePath('/admin/banners')
     revalidatePath('/')
-    return { success: true, message: 'Banner deleted successfully from both databases' }
+    return { success: true, message: 'Banner deleted successfully from database' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete banner' }
   }
