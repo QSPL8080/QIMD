@@ -103,13 +103,13 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
           <div className="lg:col-span-7 flex flex-col justify-between h-full">
             <div>
               {/* Search Bar Card with Dark Glassmorphism */}
-              <div className="mb-2 hero-card-slide-left">
-                <div className="bg-white/10 dark:bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-xl p-2.5 sm:p-3 w-full max-w-2xl transition-all duration-300">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center">
-                      <Icon icon="mdi:magnify" className="text-cyan-300 text-sm" />
+              <div className="mb-2 sm:mb-3 hero-card-slide-left">
+                <div className="bg-white/10 dark:bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-xl p-3.5 sm:p-4 w-full max-w-2xl transition-all duration-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                      <Icon icon="mdi:magnify" className="text-cyan-300 text-base" />
                     </div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-300">Quick Course Search</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Quick Course Search</span>
                   </div>
                   <div className="relative">
                     <input
@@ -119,26 +119,26 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                       onChange={e => setSearchQuery(e.target.value)}
                       onFocus={() => setSearchFocused(true)}
                       onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-                      className="w-full pl-3 pr-8 py-2 rounded-lg border border-white/25 text-xs sm:text-sm text-white placeholder:text-slate-300 bg-white/10 backdrop-blur-md focus:outline-none focus:border-cyan-300 focus:bg-white/20 transition-all font-medium"
+                      className="w-full pl-3.5 pr-9 py-2.5 rounded-xl border border-white/25 text-sm text-white placeholder:text-slate-300 bg-white/10 backdrop-blur-md focus:outline-none focus:border-cyan-300 focus:bg-white/20 transition-all font-medium"
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
                       >
-                        <Icon icon="mdi:close" className="text-xs" />
+                        <Icon icon="mdi:close" className="text-sm" />
                       </button>
                     )}
                   </div>
                   
                   {/* Dropdown search results */}
                   {searchFocused && searchResults.length > 0 && (
-                    <div className="mt-2 pt-1.5 border-t border-white/15 space-y-1 max-h-44 overflow-y-auto bg-[#1e1338]/95 p-2 rounded-xl border border-white/20 shadow-2xl">
+                    <div className="mt-2.5 pt-2 border-t border-white/15 space-y-1 max-h-48 overflow-y-auto bg-[#1e1338]/95 p-2 rounded-xl border border-white/20 shadow-2xl">
                       {searchResults.map(c => (
                         <Link
                           key={c.id}
                           href={`/courses/${c.slug}`}
-                          className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-white/15 text-xs font-semibold text-white transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/15 text-xs font-semibold text-white transition-colors"
                         >
                           <Icon icon="mdi:book-open-page-variant" className="text-cyan-300 text-sm flex-shrink-0" />
                           <span>{c.title}</span>
@@ -147,61 +147,61 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                     </div>
                   )}
                   {searchFocused && searchQuery.length > 1 && searchResults.length === 0 && (
-                    <p className="text-xs text-slate-300 mt-1.5 px-1">No matching courses found</p>
+                    <p className="text-xs text-slate-300 mt-2 px-1">No matching courses found</p>
                   )}
                 </div>
               </div>
 
               {/* HERO CONTENT */}
-              <div className="space-y-2.5 sm:space-y-3">
+              <div className="space-y-4 sm:space-y-5">
                 {/* Institute Badge */}
-                <div className="inline-flex items-center gap-1.5 bg-white/15 text-white border border-white/25 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full shadow-xs backdrop-blur-md">
+                <div className="inline-flex items-center gap-2 bg-white/15 text-white border border-white/25 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full shadow-xs backdrop-blur-md">
                   <Icon icon="mdi:star-four-points" className="text-xs text-cyan-300 animate-pulse" />
                   <span>{siteConfig.fullName}</span>
                 </div>
 
                 {/* Main Headline */}
                 <h1
-                  className="font-libre-baskerville text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight tracking-tight drop-shadow-md"
+                  className="font-libre-baskerville text-2xl sm:text-3xl lg:text-4xl xl:text-4xl font-bold text-white leading-snug tracking-tight drop-shadow-md"
                   style={{ fontFamily: "var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif" }}
                 >
                   {title}
                 </h1>
 
                 {/* Subheadline */}
-                <p className="text-slate-200/90 text-[11.5px] sm:text-[12.5px] md:text-[13px] leading-relaxed max-w-2xl font-normal">
+                <p className="text-slate-200/90 text-xs sm:text-[13.5px] md:text-[14.5px] leading-relaxed max-w-2xl font-normal">
                   {subtitle}
                 </p>
 
                 {/* Feature Pills */}
-                <div className="flex flex-wrap gap-1 pt-0.5 pb-0.5">
+                <div className="flex flex-wrap gap-1.5 pt-1 pb-1">
                   {heroBadges.map((badge, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-full border border-white/20 transition-all shadow-xs cursor-default backdrop-blur-xs"
+                      className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded-full border border-white/20 transition-all shadow-xs cursor-default backdrop-blur-xs"
                     >
-                      <Icon icon="mdi:check-circle" className="text-cyan-300 flex-shrink-0 text-xs" />
+                      <Icon icon="mdi:check-circle" className="text-cyan-300 flex-shrink-0 text-xs sm:text-sm" />
                       <span>{badge}</span>
                     </span>
                   ))}
                 </div>
 
                 {/* CTAs */}
-                <div className="flex flex-wrap items-center gap-2.5 pt-0.5 pb-1">
+                <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
                   <Link
                     href={buttonUrl}
-                    className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#764DFF] via-[#8b5cf6] to-[#0284c7] hover:opacity-95 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-[#764DFF] via-[#8b5cf6] to-[#0284c7] hover:opacity-95 text-white font-extrabold px-6 py-3.5 rounded-xl text-sm sm:text-base transition-all duration-200 shadow-xl hover:shadow-cyan-500/25 hover:-translate-y-0.5"
                   >
-                    <Icon icon="mdi:book-open-page-variant" className="text-base" />
+                    <Icon icon="mdi:book-open-page-variant" className="text-lg" />
                     <span>{buttonText}</span>
                   </Link>
                   <Link
                     href={siteConfig.socialLinks.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#22c55e] text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm transition-all duration-200 shadow-lg hover:shadow-green-500/20 hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#22c55e] text-white font-bold px-6 py-3.5 rounded-xl text-sm sm:text-base transition-all duration-200 shadow-xl hover:shadow-green-500/20 hover:-translate-y-0.5"
                   >
-                    <Icon icon="mdi:whatsapp" className="text-base" />
+                    <Icon icon="mdi:whatsapp" className="text-xl" />
                     <span>WhatsApp Us</span>
                   </Link>
                 </div>
@@ -209,7 +209,7 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
             </div>
 
             {/* COUNTER STATS - Dark glassmorphic styling */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-white/20 mt-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2.5 border-t border-white/20 mt-3">
               {statsData.map((stat, index) => (
                 <CounterItem key={index} stat={stat} index={index} />
               ))}
