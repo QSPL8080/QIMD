@@ -66,8 +66,8 @@ export default function HeroBannerCarousel() {
 
   // When banners are added in CMS, display image carousel directly
   return (
-    <div className="hero-card-slide-right w-full space-y-2">
-      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl bg-[#0f0728] border border-white/25">
+    <div className="hero-card-slide-right w-full">
+      <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl">
         <div className="relative w-full h-full">
           {banners.map((banner, index) => {
             const isCurrent = index === currentIndex
@@ -84,7 +84,7 @@ export default function HeroBannerCarousel() {
                 <img
                   src={banner.imageUrl}
                   alt={banner.title || `Homepage Banner ${index + 1}`}
-                  className="w-full h-full object-fill block select-none"
+                  className="w-full h-full object-contain rounded-2xl block select-none bg-white"
                   loading={index === 0 ? 'eager' : 'lazy'}
                 />
               </div>
@@ -92,7 +92,7 @@ export default function HeroBannerCarousel() {
           })}
         </div>
 
-        {/* Top-Right Mini Slide Badges so nothing at the bottom is blocked */}
+        {/* Top-Right Mini Slide Indicators */}
         {banners.length > 1 && (
           <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-md border border-white/20 shadow-md">
             {banners.map((_, idx) => (
