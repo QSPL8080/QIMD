@@ -78,16 +78,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.svg", sizes: "32x32", type: "image/svg+xml" },
-      { url: "/favicon.svg", sizes: "48x48", type: "image/svg+xml" },
-      { url: "/favicon.svg", sizes: "96x96", type: "image/svg+xml" },
-      { url: "/favicon.svg", sizes: "192x192", type: "image/svg+xml" },
-      { url: "/favicon.svg", sizes: "512x512", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
     ],
-    shortcut: ["/favicon.svg"],
+    shortcut: ["/favicon.ico"],
     apple: [
-      { url: "/favicon.svg", sizes: "180x180", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
     ],
   },
   manifest: "/site.webmanifest",
@@ -103,7 +98,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let faviconUrl = "/favicon.svg";
+  let faviconUrl = "/favicon.ico";
   try {
     const ws = await db.websiteSettings.findFirst({ select: { favicon: true } });
     if (ws?.favicon && ws.favicon.trim()) {

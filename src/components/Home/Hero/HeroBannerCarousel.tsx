@@ -12,6 +12,7 @@ export interface Banner {
 export default function HeroBannerCarousel() {
   const [banners, setBanners] = useState<Banner[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [activePreview, setActivePreview] = useState<string | null>(null)
 
   useEffect(() => {
     let isMounted = true
@@ -65,8 +66,6 @@ export default function HeroBannerCarousel() {
   }
 
   // When banners are added in CMS, display image carousel directly
-  const [activePreview, setActivePreview] = useState<string | null>(null)
-
   return (
     <>
       <div className="hero-card-slide-right w-full">
