@@ -48,7 +48,7 @@ export default function HeroBannerCarousel() {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length)
-    }, 4000)
+    }, 3500)
 
     return () => clearInterval(interval)
   }, [banners.length])
@@ -57,7 +57,9 @@ export default function HeroBannerCarousel() {
   if (banners.length === 0) {
     return (
       <div className="hero-card-slide-right w-full">
-        <div className="relative overflow-hidden rounded-2xl min-h-[220px] sm:min-h-[240px] border border-dashed border-slate-300/60 bg-white/20 backdrop-blur-xs flex items-center justify-center" />
+        <div className="relative overflow-hidden rounded-2xl min-h-[200px] sm:min-h-[220px] border border-dashed border-white/20 bg-white/10 backdrop-blur-xs flex items-center justify-center text-xs text-white/50">
+          No Banners Configured
+        </div>
       </div>
     )
   }
@@ -65,29 +67,45 @@ export default function HeroBannerCarousel() {
   // When banners are added in CMS, display image carousel directly
   return (
     <div className="hero-card-slide-right w-full">
-      <div className="relative overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 min-h-[220px] flex items-center justify-center bg-white/50 border border-white/80">
-        <div className="relative w-full min-h-[220px] sm:min-h-[240px] overflow-hidden rounded-2xl">
+      <div className="relative overflow-hidden rounded-2xl shadow-2xl transition-all duration-300 min-h-[190px] sm:min-h-[220px] lg:min-h-[230px] flex items-center justify-center bg-black/30 border border-white/20 backdrop-blur-md">
+        <div className="relative w-full h-[190px] sm:h-[220px] lg:h-[230px] overflow-hidden rounded-2xl">
           {banners.map((banner, index) => {
             const isCurrent = index === currentIndex
 
             return (
               <div
                 key={banner.id}
-                className={`transition-all duration-700 ease-in-out ${
+                className={`transition-all duration-700 ease-in-out absolute inset-0 w-full h-full flex items-center justify-center ${
                   isCurrent
-                    ? 'opacity-100 z-10 relative scale-100'
-                    : 'opacity-0 z-0 absolute inset-0 pointer-events-none scale-95'
+                    ? 'opacity-100 z-10 scale-100'
+                    : 'opacity-0 z-0 pointer-events-none scale-95'
                 }`}
               >
                 <img
                   src={banner.imageUrl}
                   alt={banner.title || `Homepage Banner ${index + 1}`}
-                  className="w-full h-full object-contain rounded-2xl block"
+                  className="w-full h-full object-cover rounded-2xl block"
                 />
               </div>
             )
           })}
         </div>
+
+        {/* Carousel indicators if more than 1 banner */}
+        {banners.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm">
+            {banners.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  idx === currentIndex ? 'w-5 bg-cyan-300' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

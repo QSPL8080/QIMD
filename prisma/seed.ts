@@ -353,6 +353,41 @@ async function main() {
     }
   }
 
+  // 11. Banners Migration
+  const defaultBanners = [
+    {
+      title: 'Digital Marketing Course Banner',
+      imageUrl: '/images/Banner/web banner_digital marketing 2.jpg.jpeg',
+      displayOrder: 1,
+      isActive: true,
+      badge: 'CAREER BOOSTER',
+      tag: '100% Job Assistance'
+    },
+    {
+      title: 'Graphic Designer Course Banner',
+      imageUrl: '/images/Banner/web banner_graphic designer  2.jpg.jpeg',
+      displayOrder: 2,
+      isActive: true,
+      badge: 'CAREER BOOSTER',
+      tag: '100% Job Assistance'
+    },
+    {
+      title: 'Video Editor Course Banner',
+      imageUrl: '/images/Banner/web banner_video editor  2.jpg.jpeg',
+      displayOrder: 3,
+      isActive: true,
+      badge: 'CAREER BOOSTER',
+      tag: '100% Job Assistance'
+    }
+  ]
+
+  for (const b of defaultBanners) {
+    const existing = await prisma.banner.findFirst({ where: { imageUrl: b.imageUrl } })
+    if (!existing) {
+      await prisma.banner.create({ data: b })
+    }
+  }
+
   console.log('✅ Successful Full Website Content Migration to PostgreSQL Database!')
 }
 
