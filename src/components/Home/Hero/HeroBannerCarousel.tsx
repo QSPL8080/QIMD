@@ -69,9 +69,11 @@ export default function HeroBannerCarousel() {
   return (
     <>
       <div className="hero-card-slide-right w-full">
-        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl bg-white/95 border border-white/40 group cursor-pointer"
-             onClick={() => setActivePreview(banners[currentIndex]?.imageUrl || null)}
-             title="Click to view full banner in high resolution">
+        <div 
+          className="relative w-full aspect-[16/8.8] sm:aspect-[16/8.5] rounded-xl overflow-hidden shadow-xl group cursor-pointer"
+          onClick={() => setActivePreview(banners[currentIndex]?.imageUrl || null)}
+          title="Click to view full banner in high resolution"
+        >
           <div className="relative w-full h-full">
             {banners.map((banner, index) => {
               const isCurrent = index === currentIndex
@@ -88,7 +90,7 @@ export default function HeroBannerCarousel() {
                   <img
                     src={banner.imageUrl}
                     alt={banner.title || `Homepage Banner ${index + 1}`}
-                    className="w-full h-full object-fill rounded-2xl block select-none"
+                    className="w-full h-full object-fill rounded-xl block select-none"
                     loading={index === 0 ? 'eager' : 'lazy'}
                   />
                 </div>
@@ -96,17 +98,10 @@ export default function HeroBannerCarousel() {
             })}
           </div>
 
-          {/* Hover zoom hint */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-center justify-center pointer-events-none">
-            <span className="bg-black/70 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-md flex items-center gap-1.5 shadow-lg">
-              🔍 Click to view full banner
-            </span>
-          </div>
-
           {/* Top-Right Mini Slide Indicators */}
           {banners.length > 1 && (
             <div 
-              className="absolute top-2.5 right-2.5 z-30 flex items-center gap-1.5 bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-md border border-white/20 shadow-md"
+              className="absolute top-2 right-2 z-30 flex items-center gap-1.5 bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-md shadow-md"
               onClick={(e) => e.stopPropagation()}
             >
               {banners.map((_, idx) => (
@@ -114,7 +109,7 @@ export default function HeroBannerCarousel() {
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentIndex ? 'w-4 bg-cyan-300 shadow-[0_0_6px_rgba(103,232,249,0.9)]' : 'w-1.5 bg-white/40 hover:bg-white/80'
+                    idx === currentIndex ? 'w-3.5 bg-cyan-300 shadow-[0_0_6px_rgba(103,232,249,0.9)]' : 'w-1.5 bg-white/40 hover:bg-white/80'
                   }`}
                   aria-label={`Go to banner ${idx + 1}`}
                 />
