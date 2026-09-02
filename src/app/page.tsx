@@ -23,13 +23,13 @@ import {
 } from "@/lib/getDynamicData";
 
 export const metadata: Metadata = {
-  title: `${siteConfig.name} – ${siteConfig.tagline}`,
+  title: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
   description: siteConfig.description,
   alternates: {
     canonical: "https://www.qimd.in",
   },
   openGraph: {
-    title: `${siteConfig.name} – ${siteConfig.tagline}`,
+    title: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
     description: siteConfig.description,
     url: "https://www.qimd.in",
     images: [{ url: "/images/logo/qimd-logo.png" }],

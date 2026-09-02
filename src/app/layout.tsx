@@ -22,8 +22,8 @@ const libreBaskerville = Libre_Baskerville({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.qimd.in"),
   title: {
-    default: `${siteConfig.name} – ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
+    default: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
+    template: "%s | QIMD Institute",
   },
   description: siteConfig.description,
   keywords: [
