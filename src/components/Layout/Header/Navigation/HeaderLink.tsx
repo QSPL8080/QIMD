@@ -13,9 +13,11 @@ const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
 
   useEffect(() => {
     const active =
-      path === hrefTarget ||
-      (hrefTarget !== '/' && path.startsWith(hrefTarget)) ||
-      item.submenu?.some((sub: any) => path === (sub.href || sub.url) || path.startsWith(sub.href || sub.url));
+      (hrefTarget !== '/' && hrefTarget !== '#' && (path === hrefTarget || path.startsWith(hrefTarget))) ||
+      item.submenu?.some((sub: any) => {
+        const subHref = sub.href || sub.url;
+        return subHref && (path === subHref || path.startsWith(subHref));
+      });
     setIsActive(!!active);
   }, [path, hrefTarget, item.submenu]);
 
@@ -28,6 +30,12 @@ const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
     >
       <Link
         href={hrefTarget}
+        onClick={(e) => {
+          if (hrefTarget === '#' || !hrefTarget) {
+            e.preventDefault();
+            setSubmenuOpen((prev) => !prev);
+          }
+        }}
         suppressHydrationWarning
         className={`flex items-center gap-0.5 text-[14px] font-medium px-4 py-5 transition-colors duration-200 cursor-pointer ${
           isActive || submenuOpen

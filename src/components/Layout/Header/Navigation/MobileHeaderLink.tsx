@@ -16,24 +16,41 @@ const MobileHeaderLink: React.FC<MobileHeaderLinkProps> = ({ item, onClose }) =>
   const hrefTarget = item?.href || item?.url || '/';
 
   const isActive =
-    path === hrefTarget ||
-    item.submenu?.some((sub: any) => path === (sub.href || sub.url));
+    (hrefTarget !== '/' && hrefTarget !== '#' && path === hrefTarget) ||
+    item.submenu?.some((sub: any) => {
+      const subHref = sub.href || sub.url;
+      return subHref && (path === subHref || path.startsWith(subHref));
+    });
 
   return (
     <div className="w-full border-b border-border/50 dark:border-dark_border/50 last:border-0">
       {item.submenu ? (
         <div className="flex items-center justify-between w-full">
-          <Link
-            href={hrefTarget}
-            onClick={onClose}
-            className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${
-              isActive
-                ? 'text-primary bg-primary/5'
-                : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
-            }`}
-          >
-            {item.label}
-          </Link>
+          {hrefTarget === '#' ? (
+            <button
+              type="button"
+              onClick={() => setSubmenuOpen(!submenuOpen)}
+              className={`flex-1 text-left py-3 px-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                isActive
+                  ? 'text-primary bg-primary/5'
+                  : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
+              }`}
+            >
+              {item.label}
+            </button>
+          ) : (
+            <Link
+              href={hrefTarget}
+              onClick={onClose}
+              className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${
+                isActive
+                  ? 'text-primary bg-primary/5'
+                  : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
+              }`}
+            >
+              {item.label}
+            </Link>
+          )}
           <button
             onClick={(e) => {
               e.preventDefault();

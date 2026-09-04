@@ -61,8 +61,9 @@ export const headerData: NavItem[] = [
   },
   {
     label: "About Us",
-    href: "/about",
+    href: "#",
     submenu: [
+      { label: "About QIMD", href: "/about/about-qimd" },
       { label: "Our Team", href: "/about/our-team" },
       { label: "Our Trainers", href: "/trainers" },
     ],
@@ -99,7 +100,7 @@ export const footerLinks = {
   ],
   quickLinks: [
     { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
+    { label: "About QIMD", href: "/about/about-qimd" },
     { label: "Our Trainers", href: "/trainers" },
     { label: "Placements", href: "/placements" },
     { label: "Gallery", href: "/gallery" },

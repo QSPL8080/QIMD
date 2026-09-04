@@ -58,7 +58,7 @@ export default function SitemapPage() {
               icon="mdi:home"
               links={[
                 { label: "Home", href: "/" },
-                { label: "About Us", href: "/about" },
+                { label: "About QIMD", href: "/about/about-qimd" },
                 { label: "Why QIMD?", href: "/why-qimd" },
                 { label: "Contact Us", href: "/contact" },
                 { label: "Admission Information", href: "/admission" },
@@ -78,6 +78,8 @@ export default function SitemapPage() {
               title="About"
               icon="mdi:account-group"
               links={[
+                { label: "About QIMD", href: "/about/about-qimd" },
+                { label: "Our Team", href: "/about/our-team" },
                 { label: "Our Trainers", href: "/trainers" },
                 { label: "Gallery", href: "/gallery" },
               ]}
