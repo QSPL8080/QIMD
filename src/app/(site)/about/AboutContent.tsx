@@ -61,6 +61,7 @@ function StaggeredPopCard({ item, index }: { item: { title: string; icon: string
 export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: any[] } = {}) {
   const { phone } = useWebsiteSettings();
   const contactPhone = phone || "+91 80878 97288";
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   // 1. Learning model 5 steps - directly from doc
   const learningModel = [
@@ -194,16 +195,6 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
     },
   ];
 
-  // 6. Mission formula items - directly from doc
-  const missionFormula = [
-    "Practical Learning",
-    "AI Tools",
-    "Live Projects",
-    "Internship Experience",
-    "Portfolio Building",
-    "Career Preparation",
-  ];
-
   return (
     <div className="bg-grey dark:bg-dark min-h-screen text-midnight_text dark:text-white">
       
@@ -272,7 +263,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
         </div>
       </section>
 
-      {/* 2. WHY QIMD? & AI-POWERED & PRACTICAL LEARNING (DUAL CARDS - COMPACT FONT) */}
+      {/* 2. WHY QIMD? & AI-POWERED & PRACTICAL LEARNING */}
       <section
         className="py-14 sm:py-18 border-b border-slate-200/80 dark:border-dark_border relative overflow-hidden text-midnight_text"
         id="why-qimd"
@@ -435,7 +426,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
         </div>
       </section>
 
-      {/* 4. 6 MONTHS LEARNING + 3 MONTHS INTERNSHIP (COMPACT PROPORTIONS) */}
+      {/* 4. 6 MONTHS LEARNING + 3 MONTHS INTERNSHIP */}
       <section
         className="py-14 sm:py-18 text-white relative overflow-hidden border-y border-white/10"
         style={{
@@ -478,7 +469,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
         </div>
       </section>
 
-      {/* 5. LEARN THROUGH REAL CLIENT PROJECTS (COMPACT PROPORTIONS) */}
+      {/* 5. LEARN THROUGH REAL CLIENT PROJECTS */}
       <section
         className="py-14 sm:py-18 text-white relative overflow-hidden border-b border-white/10"
         id="real-client-projects"
@@ -706,7 +697,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
               </div>
             </div>
 
-            {/* Our Mission Card */}
+            {/* Our Mission Card - Spread Wisely with balanced vertical height */}
             <div
               className="relative overflow-hidden rounded-3xl bg-white dark:bg-darklight border border-slate-200/80 dark:border-dark_border p-6 sm:p-7 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
               data-aos="fade-left"
@@ -721,7 +712,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
                   <h3 className="text-lg sm:text-xl font-extrabold text-[#111827] dark:text-white tracking-tight leading-snug mb-1.5">
                     Our Mission
                   </h3>
-                  <div className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-white/80 leading-relaxed font-medium">
+                  <div className="space-y-2.5 text-xs sm:text-sm text-slate-700 dark:text-white/80 leading-relaxed font-medium">
                     <p className="font-semibold text-slate-900 dark:text-white">
                       To make students industry-ready before they begin their professional careers.
                     </p>
@@ -729,14 +720,26 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
                       We aim to achieve this by combining:
                     </p>
                     
-                    {/* Mission Formula directly from doc */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
-                      {missionFormula.map((pillar, pIdx) => (
+                    {/* Mission Formula - 2 column balanced cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                      {[
+                        { title: "Practical Learning", icon: "mdi:laptop" },
+                        { title: "AI Tools", icon: "mdi:robot-outline" },
+                        { title: "Live Projects", icon: "mdi:briefcase-outline" },
+                        { title: "Internship Experience", icon: "mdi:account-tie" },
+                        { title: "Portfolio Building", icon: "mdi:folder-star-outline" },
+                        { title: "Career Preparation", icon: "mdi:rocket-launch-outline" },
+                      ].map((pillar, pIdx) => (
                         <div
                           key={pIdx}
-                          className="bg-white/90 dark:bg-dark p-2 rounded-xl border border-[#BD69F2]/20 text-center font-bold text-xs text-[#7a23b0] dark:text-[#d4a0f7] shadow-2xs"
+                          className="flex items-center gap-2 bg-slate-50 dark:bg-dark p-2 rounded-xl border border-[#BD69F2]/20 hover:border-[#BD69F2]/50 text-left transition-all shadow-2xs group/pill"
                         >
-                          {pillar}
+                          <div className="w-6 h-6 rounded-lg bg-[#BD69F2]/10 text-[#BD69F2] flex items-center justify-center text-xs shrink-0 font-bold group-hover/pill:bg-[#BD69F2] group-hover/pill:text-white transition-colors">
+                            <Icon icon={pillar.icon} />
+                          </div>
+                          <span className="font-bold text-xs text-slate-800 dark:text-white">
+                            {pillar.title}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -757,9 +760,9 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
         </div>
       </section>
 
-      {/* 9. CLOSING SECTION: QIMD - LEARN. PRACTICE. WORK. LAUNCH YOUR CAREER. */}
+      {/* 9. CLOSING SECTION: INLINE EMBEDDED VIDEO CARD & LAUNCH YOUR CAREER CTA */}
       <section
-        className="relative overflow-hidden py-14 sm:py-18 text-midnight_text border-t border-slate-200/80 dark:border-dark_border"
+        className="relative overflow-hidden py-14 sm:py-20 text-midnight_text border-t border-slate-200/80 dark:border-dark_border"
         style={{
           background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
         }}
@@ -767,39 +770,86 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
         <div className="pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-[#764DFF]/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-[#38bdf8]/10 blur-2xl" />
 
-        <div className="container mx-auto max-w-3xl px-4 text-center space-y-3.5 relative z-10" data-aos="fade-up">
-          <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
-            <Icon icon="mdi:rocket-launch-outline" className="text-sm text-[#764DFF]" />
-            <span>Launch Your Career</span>
-          </span>
+        <div className="container mx-auto max-w-4xl px-4 space-y-10 relative z-10" data-aos="fade-up">
+          
+          {/* SEAMLESS INLINE VIDEO CARD (PLAYS DIRECTLY IN CARD, NO POPUP) */}
+          <div className="max-w-3xl mx-auto">
+            <div className="group relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 dark:border-dark_border bg-slate-950 aspect-video w-full transition-all duration-300 hover:shadow-[0_20px_50px_rgba(118,77,255,0.25)]">
+              {isPlayingVideo ? (
+                <iframe
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
+                  title="QIMD Institute - Practical Learning Experience"
+                  className="w-full h-full border-0 rounded-3xl"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div
+                  onClick={() => setIsPlayingVideo(true)}
+                  className="relative w-full h-full cursor-pointer"
+                >
+                  {/* Background Video Poster */}
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80"
+                    alt="QIMD Practical Learning & Campus Experience"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-85"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight leading-snug">
-            QIMD - Learn. Practice. Work. Launch Your Career.
-          </h2>
+                  {/* Glowing Animated Play Button */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                    <div className="relative">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#764DFF] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-[#5c38d6] transition-all duration-300">
+                        <Icon icon="mdi:play" className="text-3xl sm:text-4xl translate-x-0.5" />
+                      </div>
+                      <div className="absolute inset-0 rounded-full bg-[#764DFF]/40 animate-ping pointer-events-none" />
+                    </div>
 
-          <p className="text-xs sm:text-sm text-slate-700 dark:text-white/80 max-w-2xl mx-auto leading-relaxed font-medium">
-            Don&apos;t just learn skills. Build experience. Build your portfolio. Build your confidence. Get ready for the real industry with QIMD.
-          </p>
-
-          <p className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tracking-wide pt-0.5">
-            Build Skills. Gain Experience. Launch Your Career with QIMD.
-          </p>
-
-          <div className="pt-2.5 flex flex-wrap items-center justify-center gap-3.5">
-            <Link
-              href="/courses"
-              className="bg-primary hover:bg-darkprimary text-white font-extrabold text-xs sm:text-sm px-6 sm:px-7 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            >
-              Explore Programs
-            </Link>
-            <Link
-              href={`tel:${contactPhone.replace(/\s+/g, '')}`}
-              className="inline-flex items-center gap-2 bg-white dark:bg-darklight hover:bg-slate-50 text-midnight_text dark:text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl border border-slate-200/80 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            >
-              <Icon icon="mdi:phone" className="text-base text-[#764DFF]" />
-              <span className="text-midnight_text dark:text-white font-extrabold tracking-wide">{contactPhone}</span>
-            </Link>
+                    <span className="text-xs sm:text-sm font-extrabold text-white bg-slate-900/80 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/20 shadow-md">
+                      Click to Play Video
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* LAUNCH YOUR CAREER CONTENT WITHIN SAME SECTION */}
+          <div className="max-w-3xl mx-auto text-center space-y-3.5">
+            <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
+              <Icon icon="mdi:rocket-launch-outline" className="text-sm text-[#764DFF]" />
+              <span>Launch Your Career</span>
+            </span>
+
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] dark:text-white tracking-tight leading-snug">
+              QIMD - Learn. Practice. Work. Launch Your Career.
+            </h2>
+
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-white/80 max-w-2xl mx-auto leading-relaxed font-medium">
+              Don&apos;t just learn skills. Build experience. Build your portfolio. Build your confidence. Get ready for the real industry with QIMD.
+            </p>
+
+            <p className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tracking-wide pt-0.5">
+              Build Skills. Gain Experience. Launch Your Career with QIMD.
+            </p>
+
+            <div className="pt-2.5 flex flex-wrap items-center justify-center gap-3.5">
+              <Link
+                href="/courses"
+                className="bg-primary hover:bg-darkprimary text-white font-extrabold text-xs sm:text-sm px-6 sm:px-7 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Explore Programs
+              </Link>
+              <Link
+                href={`tel:${contactPhone.replace(/\s+/g, '')}`}
+                className="inline-flex items-center gap-2 bg-white dark:bg-darklight hover:bg-slate-50 text-midnight_text dark:text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl border border-slate-200/80 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                <Icon icon="mdi:phone" className="text-base text-[#764DFF]" />
+                <span className="text-midnight_text dark:text-white font-extrabold tracking-wide">{contactPhone}</span>
+              </Link>
+            </div>
+          </div>
+
         </div>
       </section>
 
