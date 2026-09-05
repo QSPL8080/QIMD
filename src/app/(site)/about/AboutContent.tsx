@@ -146,7 +146,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
   // 5. Your Career Journey Starts With QIMD 6 items - directly from doc
   const careerItems = [
     {
-      title: "Course Completion Certificate",
+      title: "Program Completion Certificate",
       desc: "Recognition of successful completion of the selected program.",
       icon: "mdi:certificate-outline",
       color: "text-[#764DFF]",
@@ -342,7 +342,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
                       AI is transforming the way digital professionals work.
                     </p>
                     <p>
-                      That&apos;s why our courses are designed around the latest AI tools, technologies and industry workflows, helping students understand not only traditional skills but also how AI can be used to improve productivity, creativity and execution.
+                      That&apos;s why our programs are designed around the latest AI tools, technologies and industry workflows, helping students understand not only traditional skills but also how AI can be used to improve productivity, creativity and execution.
                     </p>
                   </div>
                 </div>
@@ -581,7 +581,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
           </h2>
 
           <p className="text-xs sm:text-sm font-bold text-[#764DFF]">
-            A certificate can show that you completed a course. A portfolio can show what you can actually do.
+            A certificate can show that you completed a program. A portfolio can show what you can actually do.
           </p>
 
           <div className="space-y-2.5 text-xs sm:text-sm text-slate-700 dark:text-white/80 leading-relaxed font-medium pt-1">
@@ -615,7 +615,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
             </h2>
 
             <p className="text-xs sm:text-sm text-slate-700 dark:text-white/80 font-medium">
-              We don&apos;t want students to simply complete a course. We want them to be ready to enter the industry.
+              We don&apos;t want students to simply complete a program. We want them to be ready to enter the industry.
             </p>
           </div>
 
@@ -691,7 +691,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
               <div className="relative z-10 mt-5 pt-3.5 border-t border-slate-100 dark:border-dark_border">
                 <div className="border-l-3 border-[#764DFF] pl-3 py-0.5 bg-[#764DFF]/5 rounded-r-xl">
                   <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white leading-relaxed">
-                    Our vision is to create professionals who don&apos;t just say: &ldquo;I have completed a course.&rdquo; But can confidently say: &ldquo;I know how to do the work.&rdquo;
+                    Our vision is to create professionals who don&apos;t just say: &ldquo;I have completed a program.&rdquo; But can confidently say: &ldquo;I know how to do the work.&rdquo;
                   </p>
                 </div>
               </div>

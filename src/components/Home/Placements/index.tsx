@@ -7,28 +7,28 @@ const studentReviewsList = [
   {
     name: "Rohan V.",
     initial: "R",
-    program: "Digital Marketing Course",
+    program: "Digital Marketing Program",
     rating: 5,
-    review: "I joined QIMD for the Digital Marketing Course and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed."
+    review: "I joined QIMD for the Digital Marketing Program and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed."
   },
   {
     name: "Sneha M.",
     initial: "S",
-    program: "Digital Marketing Course",
+    program: "Digital Marketing Program",
     rating: 5,
-    review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the course details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses."
+    review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the program details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses."
   },
   {
     name: "Aniket K.",
     initial: "A",
-    program: "Graphic Design Course",
+    program: "Graphic Design Program",
     rating: 5,
-    review: "My experience of Graphic Design Course with Pune’s QIMD was great. The course covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process."
+    review: "My experience of Graphic Design Program with Pune’s QIMD was great. The program covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process."
   },
   {
     name: "Pooja S.",
     initial: "P",
-    program: "Video Editing Course",
+    program: "Video Editing Program",
     rating: 5,
     review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive."
   }

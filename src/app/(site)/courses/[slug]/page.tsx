@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   } catch (err) {}
 
-  if (!course) return { title: "Course Not Found" };
+  if (!course) return { title: "Program Not Found" };
   return {
     title: `${course.title} – ${siteConfig.name}`,
     description: course.description,
@@ -137,7 +137,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
         title={course.title}
         items={[
           { label: "Home", href: "/" },
-          { label: "Courses", href: "/courses" },
+          { label: "Programs", href: "/courses" },
           { label: course.shortTitle },
         ]}
       /> */}
@@ -167,7 +167,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
               {/* Highlights */}
               <div className="bg-white dark:bg-darklight rounded-2xl p-6 shadow-card border border-border dark:border-dark_border mb-8">
-                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-5">Course Highlights</h2>
+                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-5">Program Highlights</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(course.highlights || course.outcomes || []).map((highlight: string, i: number) => (
                     <div key={i} className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
               {/* Curriculum */}
               <div className="bg-white dark:bg-darklight rounded-2xl p-6 shadow-card border border-border dark:border-dark_border mb-8">
-                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-6">Course Curriculum</h2>
+                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-6">Program Curriculum</h2>
                 <div className="space-y-4">
                   {(course.curriculum || []).map((module: any) => (
                     <details key={module.moduleNumber} className="group border border-border dark:border-dark_border rounded-xl overflow-hidden">
@@ -242,7 +242,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                       <Icon icon={course.icon || 'mdi:book-open-page-variant'} className="text-primary text-3xl" />
                     </div>
-                    <h3 className="text-lg font-bold text-midnight_text dark:text-white">{course.shortTitle} Course</h3>
+                    <h3 className="text-lg font-bold text-midnight_text dark:text-white">{course.shortTitle?.replace(/Course/gi, 'Program')}</h3>
 
                   </div>
                   <EnquiryForm

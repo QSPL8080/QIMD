@@ -290,10 +290,10 @@ export default function AdminCoursesPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Icon icon="ion:book-outline" className="w-6 h-6 text-sky-600" />
-            Courses CMS Management
+            Programs CMS Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Create, edit, publish, assign trainers, upload banner images, syllabus, and manage courses
+            Create, edit, publish, assign trainers, upload banner images, syllabus, and manage programs
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -327,7 +327,7 @@ export default function AdminCoursesPage() {
             className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
-            Create New Course
+            Create New Program
           </button>
         </div>
       </div>
@@ -350,7 +350,7 @@ export default function AdminCoursesPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Search course name or slug..."
+              placeholder="Search program name or slug..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
@@ -410,13 +410,13 @@ export default function AdminCoursesPage() {
         )}
       </div>
 
-      {/* Courses List Table */}
+      {/* Programs List Table */}
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         {loading ? (
-          <div className="p-8 text-center text-slate-500 text-sm font-medium">Loading courses...</div>
+          <div className="p-8 text-center text-slate-500 text-sm font-medium">Loading programs...</div>
         ) : filteredCourses.length === 0 ? (
           <div className="p-8 text-center text-slate-500 text-sm font-medium">
-            {showTrash ? 'No courses currently in Trash.' : 'No active courses found.'}
+            {showTrash ? 'No programs currently in Trash.' : 'No active programs found.'}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -424,7 +424,7 @@ export default function AdminCoursesPage() {
             <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
               <tr>
                 <th className="p-4 w-10"></th>
-                <th className="p-4">Course Banner & Name</th>
+                <th className="p-4">Program Banner & Name</th>
                 <th className="p-4">Category</th>
                 <th className="p-4">Brochure PDF</th>
                 <th className="p-4">Duration & Fees</th>
@@ -507,7 +507,7 @@ export default function AdminCoursesPage() {
                         <button
                           onClick={() => openForm(course)}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Edit Course"
+                          title="Edit Program"
                         >
                           <Icon icon="ion:create-outline" className="w-5 h-5" />
                         </button>
@@ -546,13 +546,13 @@ export default function AdminCoursesPage() {
         )}
       </div>
 
-      {/* Course Modal Form */}
+      {/* Program Modal Form */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200/80 rounded-3xl w-full max-w-2xl p-6 sm:p-7 max-h-[88vh] overflow-y-auto no-scrollbar space-y-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
               <h2 className="text-lg font-bold text-slate-900">
-                {editingCourse ? 'Edit Course Record' : 'Create New Course Record'}
+                {editingCourse ? 'Edit Program Record' : 'Create New Program Record'}
               </h2>
               <button onClick={() => setIsFormOpen(false)} className="text-slate-400 hover:text-slate-700 p-1">
                 <Icon icon="ion:close" className="w-5 h-5" />
@@ -562,7 +562,7 @@ export default function AdminCoursesPage() {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">Course Name *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Program Name *</label>
                   <input
                     type="text"
                     name="courseName"
@@ -585,7 +585,7 @@ export default function AdminCoursesPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">Course Category *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Program Category *</label>
                   <select
                     name="categoryId"
                     required
@@ -685,12 +685,12 @@ export default function AdminCoursesPage() {
                 )}
               </div>
 
-              {/* Course PDF Brochure Document Section */}
+              {/* Program PDF Brochure Document Section */}
               <div className="bg-purple-50/70 p-4 border border-purple-200 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="block text-purple-900 font-bold flex items-center gap-1.5">
                     <Icon icon="ion:document-attach-outline" className="w-4 h-4 text-purple-600" />
-                    Course PDF Brochure (Automatically downloaded by students when form is submitted)
+                    Program PDF Brochure (Automatically downloaded by students when form is submitted)
                   </label>
                 </div>
                 <div className="flex items-center gap-3">
@@ -865,7 +865,7 @@ export default function AdminCoursesPage() {
                   type="submit"
                   className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
                 >
-                  Save Course Record
+                  Save Program Record
                 </button>
               </div>
             </form>
@@ -882,10 +882,10 @@ export default function AdminCoursesPage() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900 text-sm">
-                Permanently delete {selectedIds.length} courses?
+                Permanently delete {selectedIds.length} programs?
               </h3>
               <p className="text-xs text-slate-500 mt-1">
-                These courses will be permanently removed from the database and cannot be recovered.
+                These programs will be permanently removed from the database and cannot be recovered.
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">

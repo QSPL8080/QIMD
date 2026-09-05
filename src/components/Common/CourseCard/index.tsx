@@ -54,7 +54,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, showBrochure = true }) 
             </span>
             <span className="inline-flex items-center gap-1 text-xs font-medium bg-[#4999D4]/10 text-[#4999D4] px-2.5 py-1 rounded-full">
               <Icon icon="mdi:school" className="text-sm" />
-              {!course.mode || course.mode === 'Offline' || course.mode === 'Offline Only' ? 'Offline Course' : course.mode}
+              {!course.mode || course.mode === 'Offline' || course.mode === 'Offline Only' || course.mode === 'Offline Course' ? 'Offline Program' : course.mode.replace(/Course/gi, 'Program')}
             </span>
           </div>
 

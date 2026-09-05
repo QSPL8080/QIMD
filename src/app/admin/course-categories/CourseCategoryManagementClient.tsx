@@ -211,7 +211,7 @@ export default function CourseCategoryManagementClient({
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <Icon icon="ion:folder-open-outline" className="w-6 h-6 text-cyan-600" />
-            Course Categories Management
+            Program Categories Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Organize training programs into digital marketing, graphic design, video editing & custom categories
@@ -341,7 +341,7 @@ export default function CourseCategoryManagementClient({
                 <th className="p-4 w-10"></th>
                 <th className="p-4">Category Name</th>
                 <th className="p-4">SEO Slug</th>
-                <th className="p-4">Courses Count</th>
+                <th className="p-4">Programs Count</th>
                 <th className="p-4">Display Order</th>
                 <th className="p-4">Status</th>
                 <th className="p-4 text-right">Actions</th>
@@ -351,7 +351,7 @@ export default function CourseCategoryManagementClient({
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-slate-500 font-medium text-sm">
-                    {showTrash ? 'No categories currently in Trash.' : 'No active course categories found.'}
+                    {showTrash ? 'No categories currently in Trash.' : 'No active program categories found.'}
                   </td>
                 </tr>
               ) : (
@@ -377,7 +377,7 @@ export default function CourseCategoryManagementClient({
                     <td className="p-4 text-slate-600 font-medium text-xs font-mono">{c.slug}</td>
                     <td className="p-4">
                       <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        {c.courses?.length || 0} Courses
+                        {c.courses?.length || 0} Programs
                       </span>
                     </td>
                     <td className="p-4 font-semibold text-slate-800 text-sm">{c.displayOrder}</td>
@@ -476,7 +476,7 @@ export default function CourseCategoryManagementClient({
           <div className="bg-white border border-slate-200/80 rounded-3xl shadow-2xl w-full max-w-lg p-6 sm:p-7 max-h-[88vh] overflow-y-auto no-scrollbar space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="text-base font-bold text-slate-900">
-                {editingCat ? 'Edit Category' : 'Create Course Category'}
+                {editingCat ? 'Edit Category' : 'Create Program Category'}
               </h3>
               <button onClick={() => setModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <Icon icon="ion:close" className="w-5 h-5" />

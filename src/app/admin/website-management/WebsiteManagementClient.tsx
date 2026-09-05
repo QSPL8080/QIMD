@@ -44,7 +44,7 @@ const PAGE_CATEGORIES = [
     pages: [
       { key: 'HOME', name: 'Home Page', icon: 'ion:home-outline' },
       { key: 'ABOUT', name: 'About Us', icon: 'ion:information-circle-outline' },
-      { key: 'COURSES', name: 'Courses Directory', icon: 'ion:book-outline' },
+      { key: 'COURSES', name: 'Programs Directory', icon: 'ion:book-outline' },
       { key: 'WHY_QIMD', name: 'Why QIMD Page', icon: 'ion:star-outline' },
       { key: 'BLOGS', name: 'Blogs & Articles', icon: 'ion:document-text-outline' },
       { key: 'CAREER', name: 'Career / Openings', icon: 'ion:briefcase-outline' },
@@ -83,7 +83,7 @@ const SECTION_TYPE_CATALOG = [
   { type: 'TESTIMONIALS', name: 'Testimonials', category: 'CONTENT', icon: 'ion:chatbubbles-outline', desc: 'Student reviews and video testimonials slider/grid.' },
   { type: 'GALLERY', category: 'CONTENT', name: 'Campus Gallery', icon: 'ion:images-outline', desc: 'Photo and video campus gallery preview.' },
   { type: 'FAQ', category: 'CONTENT', name: 'FAQ Accordion', icon: 'ion:help-circle-outline', desc: 'Frequently asked questions accordion list.' },
-  { type: 'COURSES', category: 'COURSES', name: 'Course Listing Grid', icon: 'ion:book-outline', desc: 'Job-oriented course cards connected to Course CMS.' },
+  { type: 'COURSES', category: 'COURSES', name: 'Program Listing Grid', icon: 'ion:book-outline', desc: 'Job-oriented program cards connected to Program CMS.' },
   { type: 'PLACEMENT', category: 'PLACEMENT', name: 'Placed Students', icon: 'ion:trophy-outline', desc: 'Student placement stats and company hires.' },
   { type: 'PARTNERS', category: 'PARTNERS', name: 'Hiring Partners', icon: 'ion:briefcase-outline', desc: 'Recruitment partner logo slider.' },
   { type: 'EMI_PARTNERS', category: 'PARTNERS', name: 'EMI Financing Partners', icon: 'ion:card-outline', desc: '0% EMI loan partner logos.' },
@@ -137,7 +137,7 @@ export default function WebsiteManagementClient({ session }: Props) {
     ],
     headerNavigation: [
       { label: 'Home', url: '/', active: true },
-      { label: 'Courses', url: '/courses', active: true },
+      { label: 'Programs', url: '/courses', active: true },
       { label: 'About Us', url: '/about', active: true },
       { label: 'Why QIMD?', url: '/why-qimd', active: true },
       { label: 'Blogs', url: '/blog', active: true },
@@ -156,7 +156,7 @@ export default function WebsiteManagementClient({ session }: Props) {
     copyrightText: '© 2026 QIMD Institute. All Rights Reserved.',
     quickLinks: [
       { label: 'About Us', url: '/about', active: true },
-      { label: 'Courses', url: '/courses', active: true },
+      { label: 'Programs', url: '/courses', active: true },
       { label: 'Placements', url: '/placements', active: true },
       { label: 'Contact Us', url: '/contact', active: true },
     ],

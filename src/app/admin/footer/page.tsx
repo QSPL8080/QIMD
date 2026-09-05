@@ -1017,7 +1017,7 @@ export default function AdminFooterCMSPage() {
                   type="text"
                   value={columnForm.title}
                   onChange={(e) => setColumnForm({ ...columnForm, title: e.target.value })}
-                  placeholder="e.g. Quick Links / Courses / Information"
+                  placeholder="e.g. Quick Links / Programs / Information"
                   required
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-bold"
                 />

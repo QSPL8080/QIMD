@@ -428,7 +428,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     href="/courses"
                     className="block text-center bg-secondary hover:bg-amber-400 text-midnight_text font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs"
                   >
-                    Explore Our Courses
+                    Explore Our Programs
                   </Link>
                 </div>
 

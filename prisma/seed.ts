@@ -24,7 +24,7 @@ async function main() {
   if (!defaultCategory) {
     defaultCategory = await prisma.courseCategory.create({
       data: {
-        name: 'AI Practical Courses',
+        name: 'AI Practical Programs',
         slug: 'ai-courses',
         description: 'Industry-Oriented AI Powered Training Programs',
         status: true,
@@ -238,7 +238,7 @@ async function main() {
           companyLogo: p.companyLogo,
           package: p.package,
           designation: p.role,
-          courseName: p.course || 'AI Practical Course',
+          courseName: p.course || 'AI Practical Program',
           location: p.location || 'Pune',
           joiningYear: p.joiningYear || '2024',
           displayOrder: i + 1,
@@ -356,7 +356,7 @@ async function main() {
   // 11. Banners Migration
   const defaultBanners = [
     {
-      title: 'Digital Marketing Course Banner',
+      title: 'Digital Marketing Program Banner',
       imageUrl: '/images/Banner/web banner_digital marketing 2.jpg.jpeg',
       displayOrder: 1,
       isActive: true,
@@ -364,7 +364,7 @@ async function main() {
       tag: '100% Job Assistance'
     },
     {
-      title: 'Graphic Designer Course Banner',
+      title: 'Graphic Designer Program Banner',
       imageUrl: '/images/Banner/web banner_graphic designer  2.jpg.jpeg',
       displayOrder: 2,
       isActive: true,
@@ -372,7 +372,7 @@ async function main() {
       tag: '100% Job Assistance'
     },
     {
-      title: 'Video Editor Course Banner',
+      title: 'Video Editor Program Banner',
       imageUrl: '/images/Banner/web banner_video editor  2.jpg.jpeg',
       displayOrder: 3,
       isActive: true,

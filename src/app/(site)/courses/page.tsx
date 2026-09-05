@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: `Courses – ${siteConfig.name}`,
-  description: "Explore QIMD's AI-powered courses in Digital Marketing, Graphic Design, and Video Editing. 6-month offline training with live projects and 100% placement support.",
+  title: `Programs – ${siteConfig.name}`,
+  description: "Explore QIMD's AI-powered programs in Digital Marketing, Graphic Design, and Video Editing. 6-month offline training with live projects and 100% placement support.",
   alternates: { canonical: "https://www.qimd.in/courses" },
 };
 
@@ -21,7 +21,7 @@ export default async function CoursesPage() {
         title="Our Training Programs"
         items={[
           { label: "Home", href: "/" },
-          { label: "Courses" },
+          { label: "Programs" },
         ]}
       /> */}
 
@@ -33,7 +33,7 @@ export default async function CoursesPage() {
               AI-Powered Training Programs
             </h2>
             <p className="text-muted dark:text-white/60 text-base max-w-2xl mx-auto">
-              Industry-oriented, practical, and AI-powered. All courses are{" "}
+              Industry-oriented, practical, and AI-powered. All programs are{" "}
               <strong className="text-primary">offline only</strong> with live client projects, internships, and 100% job assistance.
             </p>
           </div>

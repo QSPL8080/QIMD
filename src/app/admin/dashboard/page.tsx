@@ -74,7 +74,7 @@ export default async function AdminDashboardPage() {
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-sm transition-colors flex items-center gap-2 shadow-sm shadow-blue-500/20"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
-            Add Course
+            Add Program
           </Link>
           <Link
             href="/admin/blogs"
@@ -158,7 +158,7 @@ export default async function AdminDashboardPage() {
         >
           <div className="flex items-center justify-center gap-1 text-[11px] uppercase font-bold tracking-wider text-blue-700 truncate">
             <Icon icon="ion:book-outline" className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Courses</span>
+            <span className="truncate">Programs</span>
           </div>
           <p className="text-xl font-extrabold text-slate-900 mt-1">{courseCount}</p>
         </Link>
@@ -293,7 +293,7 @@ export default async function AdminDashboardPage() {
                 <tr>
                   <th className="p-3">Student Name</th>
                   <th className="p-3">Contact</th>
-                  <th className="p-3">Target Course</th>
+                  <th className="p-3">Target Program</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Date</th>
                 </tr>
@@ -350,7 +350,7 @@ export default async function AdminDashboardPage() {
             >
               <div className="flex items-center gap-3">
                 <Icon icon="ion:document-attach-outline" className="w-4 h-4 text-purple-600" />
-                <span className="font-medium">Manage Course Brochures</span>
+                <span className="font-medium">Manage Program Brochures</span>
               </div>
               <Icon icon="ion:chevron-forward-outline" className="w-4 h-4 text-slate-400" />
             </Link>

@@ -237,7 +237,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
                 className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold px-8 py-3.5 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center gap-2"
               >
                 <Icon icon="mdi:school-outline" className="text-base" />
-                <span>Explore Courses</span>
+                <span>Explore Programs</span>
               </Link>
               <Link
                 href="/contact"

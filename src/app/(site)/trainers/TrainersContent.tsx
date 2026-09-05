@@ -378,7 +378,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
                 href="/courses"
                 className="bg-primary hover:bg-darkprimary text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
               >
-                Explore Courses
+                Explore Programs
               </Link>
               <Link
                 href="/contact"

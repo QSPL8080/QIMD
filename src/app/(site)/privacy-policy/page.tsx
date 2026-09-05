@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
                 <strong>Quickupp Institute of Marketing &amp; Design (QIMD)</strong>, operated by <strong>Quickupp Softech Pvt. Ltd.</strong> (“Quickupp”, “QIMD”, “we”, “us”, or “our”), respects your privacy and is committed to protecting the personal information entrusted to us.
               </p>
               <p>
-                This Privacy Policy explains how we collect, use, store, process and protect personal information when you visit <strong>quickuppinstitute.com</strong>, submit an enquiry, download a brochure, contact us, register for a course, make a payment, enrol in a programme or otherwise interact with our services.
+                This Privacy Policy explains how we collect, use, store, process and protect personal information when you visit <strong>quickuppinstitute.com</strong>, submit an enquiry, download a brochure, contact us, register for a program, make a payment, enrol in a programme or otherwise interact with our services.
               </p>
             </div>
 
@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
                 <li>Email address;</li>
                 <li>City/location;</li>
                 <li>Educational information;</li>
-                <li>Course preferences;</li>
+                <li>Program preferences;</li>
                 <li>Admission information;</li>
                 <li>Payment and transaction information;</li>
                 <li>Documents submitted during admission;</li>
@@ -77,11 +77,11 @@ export default function PrivacyPolicyPage() {
               <p className="mb-2">We may use personal information to:</p>
               <ul className="list-disc pl-5 space-y-1">
                 <li>Respond to enquiries;</li>
-                <li>Provide course information;</li>
+                <li>Provide program information;</li>
                 <li>Send brochures;</li>
                 <li>Provide counselling;</li>
                 <li>Process admissions;</li>
-                <li>Manage courses and batches;</li>
+                <li>Manage programs and batches;</li>
                 <li>Process payments;</li>
                 <li>Provide LMS access;</li>
                 <li>Manage attendance;</li>
@@ -104,7 +104,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">3. Marketing Communications</h2>
               <p className="mb-2">Where permitted by applicable law, we may contact you regarding:</p>
               <ul className="list-disc pl-5 space-y-1 mb-3">
-                <li>Courses;</li>
+                <li>Programs;</li>
                 <li>Admissions;</li>
                 <li>New batches;</li>
                 <li>Workshops;</li>
@@ -171,7 +171,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">7. Data Retention</h2>
               <p className="mb-2">We retain personal information for as long as reasonably necessary for purposes such as:</p>
               <ul className="list-disc pl-5 space-y-1 mb-3">
-                <li>Admission and course administration;</li>
+                <li>Admission and program administration;</li>
                 <li>Financial and accounting records;</li>
                 <li>Certification;</li>
                 <li>Internship and placement administration;</li>

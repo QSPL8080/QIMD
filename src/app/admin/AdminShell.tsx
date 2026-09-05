@@ -175,7 +175,7 @@ export default function AdminShell({ session, children }: AdminShellProps) {
                 }`}
               >
                 <Icon icon="ion:book-outline" className="w-5 h-5 text-sky-600 flex-shrink-0" />
-                Courses
+                Programs
               </Link>
               <Link
                 href="/admin/course-categories"
@@ -186,7 +186,7 @@ export default function AdminShell({ session, children }: AdminShellProps) {
                 }`}
               >
                 <Icon icon="ion:folder-open-outline" className="w-5 h-5 text-cyan-600 flex-shrink-0" />
-                Course Categories
+                Program Categories
               </Link>
               <Link
                 href="/admin/brochures"

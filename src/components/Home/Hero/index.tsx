@@ -70,7 +70,7 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
 
   const title = section?.sectionTitle || "India's First Industry-Oriented & AI Powered Marketing & Design Institute";
   const subtitle = section?.subtitle || "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities.";
-  const buttonText = section?.buttonText || "Explore Courses";
+  const buttonText = section?.buttonText || "Explore Programs";
   const buttonUrl = section?.buttonUrl || "/courses";
 
   return (
@@ -109,12 +109,12 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                     <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
                       <Icon icon="mdi:magnify" className="text-cyan-300 text-base" />
                     </div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Quick Course Search</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Quick Program Search</span>
                   </div>
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Search for courses (e.g. Graphic Design, Marketing)..."
+                      placeholder="Search for programs (e.g. Graphic Design, Marketing)..."
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}
                       onFocus={() => setSearchFocused(true)}
@@ -147,7 +147,7 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
                     </div>
                   )}
                   {searchFocused && searchQuery.length > 1 && searchResults.length === 0 && (
-                    <p className="text-xs text-slate-300 mt-2 px-1">No matching courses found</p>
+                    <p className="text-xs text-slate-300 mt-2 px-1">No matching programs found</p>
                   )}
                 </div>
               </div>

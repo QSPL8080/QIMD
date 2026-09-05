@@ -51,12 +51,12 @@ export const siteConfig = {
 export const headerData: NavItem[] = [
   { label: "Home", href: "/" },
   {
-    label: "Courses",
+    label: "Programs",
     href: "/courses",
     submenu: [
-      { label: "AI Powered Digital Marketing Course", href: "/courses/ai-digital-marketing" },
-      { label: "AI Powered Graphic Design Course", href: "/courses/ai-graphic-design" },
-      { label: "AI Powered Video Editing Course", href: "/courses/ai-video-editing" },
+      { label: "AI Powered Digital Marketing Program", href: "/courses/ai-digital-marketing" },
+      { label: "AI Powered Graphic Design Program", href: "/courses/ai-graphic-design" },
+      { label: "AI Powered Video Editing Program", href: "/courses/ai-video-editing" },
     ],
   },
   {
@@ -94,9 +94,9 @@ export const headerData: NavItem[] = [
 // ─── Footer Links ────────────────────────────────────────────
 export const footerLinks = {
   popularCourses: [
-    { label: "AI Digital Marketing Course", href: "/courses/ai-digital-marketing" },
-    { label: "AI Graphic Design Course", href: "/courses/ai-graphic-design" },
-    { label: "AI Video Editing Course", href: "/courses/ai-video-editing" },
+    { label: "AI Digital Marketing Program", href: "/courses/ai-digital-marketing" },
+    { label: "AI Graphic Design Program", href: "/courses/ai-graphic-design" },
+    { label: "AI Video Editing Program", href: "/courses/ai-video-editing" },
   ],
   quickLinks: [
     { label: "Home", href: "/" },
@@ -160,7 +160,7 @@ export const whyQimdFeatures: FeatureItem[] = [
   {
     icon: "mdi:lifebuoy",
     title: "Lifetime Support",
-    description: "Get continuous guidance and support from our mentors even after course completion.",
+    description: "Get continuous guidance and support from our mentors even after program completion.",
   },
   {
     icon: "mdi:refresh",
@@ -170,7 +170,7 @@ export const whyQimdFeatures: FeatureItem[] = [
   {
     icon: "mdi:book-multiple",
     title: "Study Material",
-    description: "Comprehensive and up-to-date study material covering all course topics.",
+    description: "Comprehensive and up-to-date study material covering all program topics.",
   },
   {
     icon: "mdi:account-star",
@@ -204,13 +204,13 @@ export const coursesData: Course[] = [
   {
     id: "course-001",
     slug: "ai-digital-marketing",
-    title: "AI Powered Digital Marketing Course",
+    title: "AI Powered Digital Marketing Program",
     shortTitle: "Digital Marketing",
     tagline: "Master Digital Marketing with AI Tools",
     description:
       "Industry-oriented AI-powered digital marketing training covering SEO, Social Media Marketing, Google Ads, Meta Ads, Email Marketing, Content Marketing, and more. Learn with live client projects and AI tools.",
     duration: "6 Months",
-    mode: "Offline Course",
+    mode: "Offline Program",
     highlights: [
       "Live Client Projects",
       "AI-Powered Tools & Workflows",
@@ -291,13 +291,13 @@ export const coursesData: Course[] = [
   {
     id: "course-002",
     slug: "ai-graphic-design",
-    title: "AI Powered Graphic Design Course",
+    title: "AI Powered Graphic Design Program",
     shortTitle: "Graphic Design",
     tagline: "Design with AI – Create Without Limits",
     description:
       "Comprehensive graphic design training using industry-leading tools like Adobe Photoshop, Illustrator, InDesign, Canva, and AI-powered design tools. Build a stunning portfolio with live project experience.",
     duration: "6 Months",
-    mode: "Offline Course",
+    mode: "Offline Program",
     highlights: [
       "Live Client Projects",
       "AI Design Tools (Adobe Firefly, Midjourney)",
@@ -376,13 +376,13 @@ export const coursesData: Course[] = [
   {
     id: "course-003",
     slug: "ai-video-editing",
-    title: "AI Powered Video Editing Course",
+    title: "AI Powered Video Editing Program",
     shortTitle: "Video Editing",
     tagline: "Edit Videos Like a Pro with AI",
     description:
       "Professional video editing training using Adobe Premiere Pro, After Effects, DaVinci Resolve, and cutting-edge AI video tools. Learn storytelling, motion graphics, color grading, and content creation.",
     duration: "6 Months",
-    mode: "Offline Course",
+    mode: "Offline Program",
     highlights: [
       "Live Client Projects",
       "AI Video Tools",
@@ -465,7 +465,7 @@ export const testimonialsData: Testimonial[] = [
   {
     id: "test-001",
     studentName: "Aisha Sharma",
-    courseTaken: "AI Powered Digital Marketing Course",
+    courseTaken: "AI Powered Digital Marketing Program",
     review:
       "QIMD completely transformed my career path! Coming from a non-technical background, I was apprehensive about digital marketing. However, the hands-on practical training with real client ad budgets, live SEO tools, and ChatGPT/Midjourney integration gave me the exact skills companies test for. Within 2 weeks of graduation, I landed a role as Digital Marketing Executive at a top Pune agency with a great package!",
     rating: 5,
@@ -481,7 +481,7 @@ export const testimonialsData: Testimonial[] = [
   {
     id: "test-002",
     studentName: "Arjun Patil",
-    courseTaken: "AI Powered Digital Marketing Course",
+    courseTaken: "AI Powered Digital Marketing Program",
     review:
       "The offline classroom environment and live project assignments at QIMD are unmatched. Being able to ask questions directly to mentors who manage actual client campaigns made a huge difference. I learned end-to-end performance marketing, Google Search/Meta ads, and automated email sequences that doubled lead conversions for our demo project.",
     rating: 5,
@@ -497,7 +497,7 @@ export const testimonialsData: Testimonial[] = [
   {
     id: "test-003",
     studentName: "Rahul Deshmukh",
-    courseTaken: "AI Powered Graphic Design Course",
+    courseTaken: "AI Powered Graphic Design Program",
     review:
       "The graphic design program at QIMD is truly world-class. We didn't just learn Photoshop and Illustrator — we mastered generative AI tools like Adobe Firefly, Midjourney, and Figma prototyping. The portfolio I built during my 6 months helped me stand out instantly. The trainers are working industry leads who give honest, real-world feedback on every assignment.",
     rating: 5,
@@ -528,7 +528,7 @@ export const placedStudentsData: PlacedStudent[] = [
     isVerified: true,
     location: "Pune, India",
     joiningYear: "2024",
-    shortSuccessStory: "Mastered performance ads & AI content tools. Hired within 10 days of course completion.",
+    shortSuccessStory: "Mastered performance ads & AI content tools. Hired within 10 days of program completion.",
   },
   {
     id: "placed-002",
@@ -906,9 +906,9 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-001",
     slug: "best-digital-marketing-course-in-pune",
-    title: "Best Digital Marketing Course in Pune",
+    title: "Best Digital Marketing Program in Pune",
     excerpt:
-      "Choosing a digital marketing course in Pune? This guide covers what a real syllabus should include, how to test a placement claim before you pay, what fees typically run across the city, and the questions most students forget to ask on the demo call. You'll get a clear checklist for picking a program that ends in a job, not just a certificate.",
+      "Choosing a digital marketing program in Pune? This guide covers what a real syllabus should include, how to test a placement claim before you pay, what fees typically run across the city, and the questions most students forget to ask on the demo call. You'll get a clear checklist for picking a program that ends in a job, not just a certificate.",
     coverImage: "/images/courses/digital-marketing.jpg",
     images: [
       "/images/courses/digital-marketing.jpg",
@@ -922,9 +922,9 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-002",
     slug: "best-graphic-design-course-in-pune",
-    title: "Best Graphic Design Course in Pune",
+    title: "Best Graphic Design Program in Pune",
     excerpt:
-      "Choosing a graphic design course in Pune? This guide covers what a real syllabus should include beyond Photoshop, how to judge an institute by the portfolios its students leave with, what fees typically run across the city, and where AI tools now fit into a designer's day. You'll get a clear checklist for picking a program that ends in a job, not just a software certificate.",
+      "Choosing a graphic design program in Pune? This guide covers what a real syllabus should include beyond Photoshop, how to judge an institute by the portfolios its students leave with, what fees typically run across the city, and where AI tools now fit into a designer's day. You'll get a clear checklist for picking a program that ends in a job, not just a software certificate.",
     coverImage: "/images/courses/graphic-design.jpg",
     images: [
       "/images/courses/graphic-design.jpg",
@@ -938,9 +938,9 @@ export const blogsData: BlogPost[] = [
   {
     id: "blog-003",
     slug: "best-video-editing-course-in-pune",
-    title: "Best Video Editing Course in Pune",
+    title: "Best Video Editing Program in Pune",
     excerpt:
-      "Choosing a video editing course in Pune? This guide covers what a real syllabus should include beyond timeline basics, how to judge an institute by the showreels its students leave with, what fees typically run across the city, and where AI editing tools now fit. You'll get a clear checklist for picking a program that ends in paid work, not just a software certificate.",
+      "Choosing a video editing program in Pune? This guide covers what a real syllabus should include beyond timeline basics, how to judge an institute by the showreels its students leave with, what fees typically run across the city, and where AI editing tools now fit. You'll get a clear checklist for picking a program that ends in paid work, not just a software certificate.",
     coverImage: "/images/courses/video-editing.jpg",
     images: [
       "/images/courses/video-editing.jpg",
@@ -973,7 +973,7 @@ export const blogsData: BlogPost[] = [
 export const faqsData: FAQ[] = [
   {
     id: "faq-001",
-    question: "What courses does QIMD offer?",
+    question: "What programs does QIMD offer?",
     answer:
       "We offer industry-focused training in Digital Marketing, Graphic Design, and Video Editing, designed with practical learning and AI-powered tools.",
   },
@@ -987,7 +987,7 @@ export const faqsData: FAQ[] = [
     id: "faq-003",
     question: "Do I need prior experience to join?",
     answer:
-      "No. Our courses are suitable for beginners, students, job seekers, entrepreneurs, and working professionals.",
+      "No. Our programs are suitable for beginners, students, job seekers, entrepreneurs, and working professionals.",
   },
   {
     id: "faq-004",
@@ -1010,7 +1010,7 @@ export const faqsData: FAQ[] = [
     id: "faq-007",
     question: "Will I receive a certificate?",
     answer:
-      "Yes. You will receive a Course Completion Certificate & Internship Certificate after successfully completing your program.",
+      "Yes. You will receive a Program Completion Certificate & Internship Certificate after successfully completing your program.",
   },
   {
     id: "faq-008",
@@ -1026,9 +1026,9 @@ export const faqsData: FAQ[] = [
   },
   {
     id: "faq-010",
-    question: "What is the course duration?",
+    question: "What is the program duration?",
     answer:
-      "Course duration varies by program. Please contact our admissions team for the latest batch schedules and timelines.",
+      "Program duration varies by program. Please contact our admissions team for the latest batch schedules and timelines.",
   },
   {
     id: "faq-011",
@@ -1042,7 +1042,7 @@ export const faqsData: FAQ[] = [
   },
   {
     id: "faq-013",
-    question: "Who can join these courses?",
+    question: "Who can join these programs?",
     answer:
       "Our programs are ideal for Students, Freshers, Working Professionals, Business Owners, Freelancers, and Career Switchers.",
   },
@@ -1203,9 +1203,9 @@ export const eventsData: Event[] = [
   {
     id: "event-001",
     slug: "new-batch-starting-digital-marketing",
-    title: "New Batch Starting – AI Digital Marketing Course",
+    title: "New Batch Starting – AI Digital Marketing Program",
     description:
-      "Join our upcoming batch for the AI Powered Digital Marketing Course. Limited seats available. Enroll now to secure your spot.",
+      "Join our upcoming batch for the AI Powered Digital Marketing Program. Limited seats available. Enroll now to secure your spot.",
     date: "2025-09-01",
     venue: "QIMD Institute, Hinjewadi, Pune",
     image: "/images/events/event-1.jpg",
@@ -1215,9 +1215,9 @@ export const eventsData: Event[] = [
   {
     id: "event-002",
     slug: "new-batch-starting-graphic-design",
-    title: "New Batch Starting – AI Graphic Design Course",
+    title: "New Batch Starting – AI Graphic Design Program",
     description:
-      "Enroll in our next batch for the AI Powered Graphic Design Course. Learn with industry experts and live projects.",
+      "Enroll in our next batch for the AI Powered Graphic Design Program. Learn with industry experts and live projects.",
     date: "2025-09-01",
     venue: "QIMD Institute, Hinjewadi, Pune",
     image: "/images/events/event-2.jpg",
@@ -1229,7 +1229,7 @@ export const eventsData: Event[] = [
     slug: "free-career-counselling-workshop",
     title: "Free Career Counselling Workshop",
     description:
-      "Attend our free career counselling workshop and discover the right course for your goals, skills, and career path.",
+      "Attend our free career counselling workshop and discover the right program for your goals, skills, and career path.",
     date: "2025-08-20",
     venue: "QIMD Institute, Hinjewadi, Pune",
     image: "/images/events/event-3.jpg",
@@ -1252,9 +1252,9 @@ export const heroBadges = [
 
 // ─── Course Categories (for search) ─────────────────────────
 export const courseCategories = [
-  "AI Powered Digital Marketing Course",
-  "AI Powered Graphic Design Course",
-  "AI Powered Video Editing Course",
+  "AI Powered Digital Marketing Program",
+  "AI Powered Graphic Design Program",
+  "AI Powered Video Editing Program",
 ];
 
 // ─── Trainers Data Fallback (Exactly 1 per domain) ────────────

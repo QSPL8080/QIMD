@@ -3,7 +3,7 @@ import { siteConfig } from "@/data";
 
 export const metadata: Metadata = {
   title: `Terms & Conditions – ${siteConfig.name}`,
-  description: "Read Quickupp Institute of Marketing & Design (QIMD) Terms and Conditions for using our website, courses, and educational services.",
+  description: "Read Quickupp Institute of Marketing & Design (QIMD) Terms and Conditions for using our website, programs, and educational services.",
   alternates: { canonical: "https://www.qimd.in/terms-and-conditions" },
 };
 
@@ -31,10 +31,10 @@ export default function TermsPage() {
                 Welcome to <strong>Quickupp Institute of Marketing &amp; Design (QIMD)</strong>, operated by <strong>Quickupp Softech Pvt. Ltd.</strong> (“Quickupp”, “QIMD”, “Institute”, “we”, “us”, or “our”).
               </p>
               <p>
-                These Terms &amp; Conditions (“Terms”) govern your access to and use of <strong>quickuppinstitute.com</strong> (“Website”) and your participation in the courses, training programmes, practical sessions, live projects, internships, placement assistance, workshops, LMS resources and other services provided by the Institute.
+                These Terms &amp; Conditions (“Terms”) govern your access to and use of <strong>quickuppinstitute.com</strong> (“Website”) and your participation in the programs, training programmes, practical sessions, live projects, internships, placement assistance, workshops, LMS resources and other services provided by the Institute.
               </p>
               <p>
-                By accessing our Website, submitting an enquiry, registering for a course, making a payment, or enrolling in any programme, you acknowledge that you have read, understood and agreed to these Terms.
+                By accessing our Website, submitting an enquiry, registering for a program, making a payment, or enrolling in any programme, you acknowledge that you have read, understood and agreed to these Terms.
               </p>
               <p className="font-semibold text-midnight_text dark:text-white">
                 If you do not agree with these Terms, please do not use the Website or enrol in our programmes.
@@ -58,7 +58,7 @@ export default function TermsPage() {
                 <li>Workshops and industry-oriented learning</li>
               </ul>
               <p className="text-sm text-muted dark:text-white/70">
-                The specific course structure, duration, curriculum, batch schedule, facilities and deliverables may vary depending on the programme selected.
+                The specific program structure, duration, curriculum, batch schedule, facilities and deliverables may vary depending on the programme selected.
               </p>
             </div>
 
@@ -74,12 +74,12 @@ export default function TermsPage() {
               </div>
             </div>
 
-            {/* 3. Course & Training */}
+            {/* 3. Program & Training */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">3. Course &amp; Training</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">3. Program &amp; Training</h2>
               <div className="space-y-2">
-                <p><strong>3.1</strong> Course duration, curriculum, modules, batch timings, faculty, practical sessions, projects, software and learning resources may vary by programme.</p>
-                <p><strong>3.2</strong> The Institute may reasonably modify course content, faculty, schedules, training methodology, software, tools or modules due to industry developments, technology changes, operational requirements or faculty availability.</p>
+                <p><strong>3.1</strong> Program duration, curriculum, modules, batch timings, faculty, practical sessions, projects, software and learning resources may vary by programme.</p>
+                <p><strong>3.2</strong> The Institute may reasonably modify program content, faculty, schedules, training methodology, software, tools or modules due to industry developments, technology changes, operational requirements or faculty availability.</p>
                 <p><strong>3.3</strong> Where a material change affects the essential nature of an enrolled programme, the Institute will communicate the change to affected students where reasonably appropriate.</p>
               </div>
             </div>
@@ -88,17 +88,17 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">4. Fees &amp; Payment</h2>
               <div className="space-y-2 mb-3">
-                <p><strong>4.1</strong> The applicable course fee shall be communicated to the student before admission.</p>
+                <p><strong>4.1</strong> The applicable program fee shall be communicated to the student before admission.</p>
                 <p><strong>4.2</strong> Unless otherwise agreed in writing, fees shall be paid according to the payment schedule communicated by the Institute.</p>
                 <p><strong>4.3</strong> The standard payment structure specified in the admission documentation is:</p>
                 <ul className="list-disc pl-5 space-y-1 my-2 bg-slate-50 dark:bg-white/5 p-3 rounded-lg border border-slate-200/60 dark:border-white/10">
-                  <li><strong>10%</strong> of the total course fee at the time of admission;</li>
-                  <li><strong>60%</strong> at least 15 days before course commencement; and</li>
-                  <li><strong>30%</strong> within 60 days from the course commencement date.</li>
+                  <li><strong>10%</strong> of the total program fee at the time of admission;</li>
+                  <li><strong>60%</strong> at least 15 days before program commencement; and</li>
+                  <li><strong>30%</strong> within 60 days from the program commencement date.</li>
                 </ul>
                 <p><strong>4.4</strong> The payment schedule applicable to a student shall be the schedule communicated and accepted at the time of admission.</p>
                 <p><strong>4.5</strong> Students are responsible for making payments within the prescribed due dates.</p>
-                <p><strong>4.6</strong> Delayed payment may result in restriction or suspension of access to applicable course services, including LMS access, practical sessions, live projects, internship-related activities or certificate processing, subject to applicable law.</p>
+                <p><strong>4.6</strong> Delayed payment may result in restriction or suspension of access to applicable program services, including LMS access, practical sessions, live projects, internship-related activities or certificate processing, subject to applicable law.</p>
                 <p><strong>4.7</strong> Certificates may be withheld until applicable academic requirements are completed and all outstanding fees are cleared.</p>
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function TermsPage() {
                 <p><strong>5.2</strong> Unless otherwise specified for a particular programme, students must maintain a minimum of <strong>75% attendance</strong>.</p>
                 <p><strong>5.3</strong> Failure to meet the attendance requirement may affect eligibility for:</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>Course Completion Certificate;</li>
+                  <li>Program Completion Certificate;</li>
                   <li>Internship Certificate;</li>
                   <li>Internship opportunities;</li>
                   <li>Live project participation;</li>
@@ -126,7 +126,7 @@ export default function TermsPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">6. Practical Training &amp; Live Projects</h2>
               <div className="space-y-2">
                 <p><strong>6.1</strong> Certain programmes may include practical assignments, case studies and live industry/client projects.</p>
-                <p><strong>6.2</strong> Allocation of live projects is subject to availability, course requirements, student performance, skill level and operational requirements.</p>
+                <p><strong>6.2</strong> Allocation of live projects is subject to availability, program requirements, student performance, skill level and operational requirements.</p>
                 <p><strong>6.3</strong> Participation in a live project does not guarantee internship, employment or placement.</p>
                 <p><strong>6.4</strong> Students must maintain professional conduct while participating in Institute or client projects.</p>
                 <p><strong>6.5</strong> Students must not disclose, copy, publish, distribute or misuse confidential client information, campaign data, business information, credentials, documents or project information.</p>
@@ -137,13 +137,13 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">7. LMS &amp; Learning Resources</h2>
               <div className="space-y-2">
-                <p><strong>7.1</strong> Where applicable, students may receive access to an LMS, course videos, study materials, documents, templates and other educational resources.</p>
+                <p><strong>7.1</strong> Where applicable, students may receive access to an LMS, program videos, study materials, documents, templates and other educational resources.</p>
                 <p><strong>7.2</strong> LMS credentials are personal to the enrolled student and must not be shared.</p>
                 <p><strong>7.3</strong> Students must not, without prior written permission:</p>
                 <ul className="list-disc pl-5 space-y-1">
                   <li>Share LMS credentials;</li>
-                  <li>Copy or distribute restricted course videos;</li>
-                  <li>Reproduce or resell course materials;</li>
+                  <li>Copy or distribute restricted program videos;</li>
+                  <li>Reproduce or resell program materials;</li>
                   <li>Upload Institute content to public platforms;</li>
                   <li>Share paid resources with non-enrolled persons;</li>
                   <li>Record restricted training sessions; or</li>
@@ -157,7 +157,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">8. Repeat Batch Access</h2>
               <div className="space-y-2">
-                <p>Where repeat-batch access is included with a particular programme, such access shall be subject to the applicable course terms, batch availability and Institute policies.</p>
+                <p>Where repeat-batch access is included with a particular programme, such access shall be subject to the applicable program terms, batch availability and Institute policies.</p>
                 <p>Repeat-batch access does not automatically include additional certificates, internships, live projects or other services unless specifically communicated by the Institute.</p>
               </div>
             </div>
@@ -166,15 +166,15 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">9. Certification</h2>
               <div className="space-y-2">
-                <p><strong>9.1</strong> Eligible students may receive a Course Completion Certificate and/or Internship Completion Certificate, depending on the applicable programme.</p>
+                <p><strong>9.1</strong> Eligible students may receive a Program Completion Certificate and/or Internship Completion Certificate, depending on the applicable programme.</p>
                 <p><strong>9.2</strong> Certificate issuance may require:</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>Successful completion of the applicable course;</li>
+                  <li>Successful completion of the applicable program;</li>
                   <li>Completion of required practical assignments;</li>
                   <li>Completion of required live projects;</li>
                   <li>Minimum 75% attendance;</li>
                   <li>Compliance with Institute policies; and</li>
-                  <li>Full payment of applicable course fees and outstanding dues.</li>
+                  <li>Full payment of applicable program fees and outstanding dues.</li>
                 </ul>
                 <p><strong>9.3</strong> Certificates do not constitute a guarantee of employment, salary, promotion or professional success.</p>
               </div>
@@ -186,7 +186,7 @@ export default function TermsPage() {
               <div className="space-y-2">
                 <p><strong>10.1</strong> Internship opportunities may be provided to eligible students depending on the applicable programme.</p>
                 <p><strong>10.2</strong> Internship opportunities are subject to student eligibility, attendance, performance, conduct, project availability and organisational requirements.</p>
-                <p><strong>10.3</strong> Enrolment in a course does not create an unconditional right to a particular internship, employer, role, stipend or duration.</p>
+                <p><strong>10.3</strong> Enrolment in a program does not create an unconditional right to a particular internship, employer, role, stipend or duration.</p>
               </div>
             </div>
 
@@ -219,7 +219,7 @@ export default function TermsPage() {
               <div className="space-y-2">
                 <p>Students demonstrating exceptional performance may be considered for internship, freelance or employment opportunities with Quickupp Softech Pvt. Ltd.</p>
                 <p>Any such opportunity shall be subject to the company&apos;s recruitment process, performance requirements, vacancy availability and applicable employment terms.</p>
-                <p>Course completion does not create an entitlement to employment with Quickupp Softech Pvt. Ltd.</p>
+                <p>Program completion does not create an entitlement to employment with Quickupp Softech Pvt. Ltd.</p>
               </div>
             </div>
 
@@ -245,8 +245,8 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">14. Intellectual Property</h2>
               <div className="space-y-2">
-                <p>All Institute-created course materials, videos, presentations, documents, templates, graphics, training content, website content, branding and other educational resources are owned by or lawfully licensed to Quickupp, unless otherwise stated.</p>
-                <p>Students receive a limited right to use course materials for their personal educational purposes.</p>
+                <p>All Institute-created program materials, videos, presentations, documents, templates, graphics, training content, website content, branding and other educational resources are owned by or lawfully licensed to Quickupp, unless otherwise stated.</p>
+                <p>Students receive a limited right to use program materials for their personal educational purposes.</p>
                 <p>Students must not reproduce, distribute, publish, sell, license or commercially exploit Institute-owned content without prior written permission.</p>
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function TermsPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">18. Privacy &amp; Personal Data</h2>
               <div className="space-y-2">
-                <p>Quickupp may collect and process personal information for purposes including admission, course administration, communication, payment processing, certification, internship and placement assistance, customer support, security and legal compliance.</p>
+                <p>Quickupp may collect and process personal information for purposes including admission, program administration, communication, payment processing, certification, internship and placement assistance, customer support, security and legal compliance.</p>
                 <p>Personal information will be handled in accordance with applicable law and the Quickupp Privacy Policy.</p>
               </div>
             </div>
@@ -319,7 +319,7 @@ export default function TermsPage() {
                 <li>Plagiarism;</li>
                 <li>Cheating;</li>
                 <li>Disclosure of confidential information;</li>
-                <li>Unauthorised distribution of course material; or</li>
+                <li>Unauthorised distribution of program material; or</li>
                 <li>Illegal activities.</li>
               </ul>
               <p className="text-sm text-muted dark:text-white/70">
@@ -399,7 +399,7 @@ export default function TermsPage() {
                   <a href="https://www.quickuppinstitute.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">quickuppinstitute.com</a>
                 </p>
                 <p className="text-xs text-muted dark:text-white/60 pt-2">
-                  For questions regarding these Terms, courses, admissions, fees or services, please contact us at the email address above.
+                  For questions regarding these Terms, programs, admissions, fees or services, please contact us at the email address above.
                 </p>
               </div>
             </div>

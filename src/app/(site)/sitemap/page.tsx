@@ -6,7 +6,7 @@ import { siteConfig, coursesData } from "@/data";
 
 export const metadata: Metadata = {
   title: `Sitemap – ${siteConfig.name}`,
-  description: "Browse the complete sitemap of QIMD Institute website — all pages, courses, and resources.",
+  description: "Browse the complete sitemap of QIMD Institute website — all pages, programs, and resources.",
   alternates: { canonical: "https://www.qimd.in/sitemap" },
 };
 
@@ -66,10 +66,10 @@ export default function SitemapPage() {
             />
 
             <SitemapSection
-              title="Courses"
+              title="Programs"
               icon="mdi:book-open-page-variant"
               links={[
-                { label: "All Courses", href: "/courses" },
+                { label: "All Programs", href: "/courses" },
                 ...coursesData.map((c) => ({ label: c.title, href: `/courses/${c.slug}` })),
               ]}
             />

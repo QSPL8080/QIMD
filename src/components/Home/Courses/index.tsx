@@ -33,7 +33,7 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
           </h2>
           <p className="text-slate-700 dark:text-white/80 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium">
             Practical, AI-powered training programs designed to make you job-ready from day one.
-            All courses are offline with live client projects and 100% placement support.
+            All programs are offline with live client projects and 100% placement support.
           </p>
         </div>
 

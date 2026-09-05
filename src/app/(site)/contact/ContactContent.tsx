@@ -68,7 +68,7 @@ export default function ContactContent() {
   ];
 
   const guidanceTopics = [
-    "Course Selection",
+    "Program Selection",
     "Admission Process",
     "Fee Structure & EMI Options",
     "Batch Schedules",
@@ -86,7 +86,7 @@ export default function ContactContent() {
         email: formData.email,
         phone: formData.mobileNumber,
         subject: formData.course ? `Contact Enquiry (${formData.course})` : 'General Contact Enquiry',
-        message: formData.message || `Interested in course: ${formData.course}`,
+        message: formData.message || `Interested in program: ${formData.course}`,
       });
       setIsSubmitting(false);
       if (res.success) {
@@ -296,7 +296,7 @@ export default function ContactContent() {
                     </div>
                     <div>
                       <label className="block font-semibold text-white mb-1 text-xs">
-                        Course Interested In *
+                        Program Interested In *
                       </label>
                       <div className="relative" ref={courseDropdownRef}>
                         <div
@@ -314,7 +314,7 @@ export default function ContactContent() {
                           }`}
                         >
                           <span className={`truncate mr-2 ${!formData.course ? 'text-slate-400 font-normal' : 'text-slate-900 font-semibold'}`}>
-                            {formData.course || "Select course of interest"}
+                            {formData.course || "Select program of interest"}
                           </span>
                           <Icon
                             icon="mdi:chevron-down"
@@ -411,7 +411,7 @@ export default function ContactContent() {
           </h2>
 
           <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium">
-            Our admissions team is available to help you choose the right course based on your career goals, interests, and experience.
+            Our admissions team is available to help you choose the right program based on your career goals, interests, and experience.
           </p>
 
           <div className="pt-2">

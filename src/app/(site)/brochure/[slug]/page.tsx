@@ -13,7 +13,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  let courseTitle = 'Course Brochure'
+  let courseTitle = 'Program Brochure'
 
   try {
     const dbCourse = await db.course.findFirst({
@@ -42,6 +42,7 @@ export default async function BrochurePage({ params }: PageProps) {
     const coreKey = slug
       .replace('ai-powered-', '')
       .replace('ai-', '')
+      .replace('-program', '')
       .replace('-course', '')
 
     const dbCourse = await db.course.findFirst({
@@ -84,7 +85,7 @@ export default async function BrochurePage({ params }: PageProps) {
         id: slug,
         title: slug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
         slug: slug,
-        description: 'Official course syllabus and training details.',
+        description: 'Official program syllabus and training details.',
       }
     }
   }

@@ -53,7 +53,7 @@ export default function WhyQimdContent() {
     {
       title: "Modern Learning Management System",
       icon: "mdi:cloud-download-outline",
-      desc: "Access study materials, assignments, recorded resources, and learning support throughout your course.",
+      desc: "Access study materials, assignments, recorded resources, and learning support throughout your program.",
     },
     {
       title: "Practical Assignments & Workshops",
@@ -422,7 +422,7 @@ export default function WhyQimdContent() {
               href="/courses"
               className="bg-primary hover:bg-darkprimary text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              View All Courses
+              View All Programs
             </Link>
             <Link
               href="/contact"

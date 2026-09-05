@@ -327,7 +327,7 @@ export default function AdminStudentReviewsPage() {
                 <tr>
                   <th className="p-4 w-10"></th>
                   <th className="p-4">Student &amp; Photo</th>
-                  <th className="p-4">Course &amp; Company</th>
+                  <th className="p-4">Program &amp; Company</th>
                   <th className="p-4">Star Rating</th>
                   <th className="p-4">Review Text</th>
                   <th className="p-4 text-right">Actions</th>
@@ -364,7 +364,7 @@ export default function AdminStudentReviewsPage() {
                       <span className="font-bold text-slate-900">{r.studentName}</span>
                     </td>
                     <td className="p-4">
-                      <p className="font-semibold text-indigo-600">{r.course || 'AI Course'}</p>
+                      <p className="font-semibold text-indigo-600">{r.course || 'AI Program'}</p>
                       {r.company && <p className="text-xs text-slate-500">@ {r.company}</p>}
                     </td>
                     <td className="p-4">
@@ -488,7 +488,7 @@ export default function AdminStudentReviewsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Course Completed</label>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Program Completed</label>
                 <input
                   type="text"
                   name="course"

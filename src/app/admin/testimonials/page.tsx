@@ -340,7 +340,7 @@ export default function AdminTestimonialsPage() {
               <tr>
                 <th className="p-4 w-10"></th>
                 <th className="p-4">Student & Photo</th>
-                <th className="p-4">Heading / Course</th>
+                <th className="p-4">Heading / Program</th>
                 <th className="p-4">Rating & Type</th>
                 <th className="p-4">Review Text</th>
                 <th className="p-4 text-right">Actions</th>
@@ -386,7 +386,7 @@ export default function AdminTestimonialsPage() {
                           &quot;{item.heading}&quot;
                         </p>
                       )}
-                      <p className="text-slate-500 text-xs font-medium">{item.course || 'AI Course'}</p>
+                      <p className="text-slate-500 text-xs font-medium">{item.course || 'AI Program'}</p>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-1 text-amber-500 font-bold text-sm">
@@ -533,7 +533,7 @@ export default function AdminTestimonialsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">Course Completed</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Program Completed</label>
                   {courses.length > 0 ? (
                     <select
                       name="course"
@@ -550,7 +550,7 @@ export default function AdminTestimonialsPage() {
                     <input
                       type="text"
                       name="course"
-                      defaultValue={editingItem?.course || 'AI Powered Digital Marketing Course'}
+                      defaultValue={editingItem?.course || 'AI Powered Digital Marketing Program'}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                     />
                   )}

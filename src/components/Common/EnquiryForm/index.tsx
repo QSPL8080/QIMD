@@ -91,7 +91,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
       newErrors.email = "Valid email address required";
     
     if (formType === 'admission') {
-      if (!form.courseInterest && !selectedCourse) newErrors.courseInterest = "Please select a course";
+      if (!form.courseInterest && !selectedCourse) newErrors.courseInterest = "Please select a program";
     } else {
       if (!form.message?.trim()) newErrors.message = "Message is required";
     }
@@ -205,7 +205,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
           {formType === 'contact' 
             ? "Your message has been sent successfully. Our team will get back to you shortly."
             : downloadInfo?.url
-              ? "Your course brochure download has started automatically! Our admissions counsellor will get in touch with you shortly."
+              ? "Your program brochure download has started automatically! Our admissions counsellor will get in touch with you shortly."
               : "We've received your admission enquiry. Our admissions counsellor will get in touch with you shortly."}
         </p>
         {downloadInfo?.url && (
@@ -363,7 +363,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
                   <Icon icon="mdi:book-open-outline" className="text-base" />
                 </div>
                 <span className={`truncate mr-2 ${form.courseInterest ? 'text-midnight_text dark:text-white font-medium' : 'text-gray-400 font-normal'}`}>
-                  {coursesData.find(c => c.slug === form.courseInterest)?.title || "Select a Course *"}
+                  {coursesData.find(c => c.slug === form.courseInterest)?.title || "Select a Program *"}
                 </span>
                 <Icon
                   icon="mdi:chevron-down"
@@ -384,7 +384,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
                       !form.courseInterest ? 'bg-primary/5 font-bold text-primary' : ''
                     }`}
                   >
-                    Select a Course *
+                    Select a Program *
                   </div>
                   {coursesData.map((course) => {
                     const isSelected = form.courseInterest === course.slug;
@@ -443,7 +443,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
                 <Icon icon="mdi:book-open-outline" className="text-base" />
               </div>
               <span className={`truncate mr-2 ${form.courseInterest ? 'text-midnight_text dark:text-white font-medium' : 'text-gray-400 font-normal'}`}>
-                {coursesData.find(c => c.slug === form.courseInterest)?.title || (formType === 'contact' ? "Select Course (Optional)" : "Select a Course *")}
+                {coursesData.find(c => c.slug === form.courseInterest)?.title || (formType === 'contact' ? "Select Program (Optional)" : "Select a Program *")}
               </span>
               <Icon
                 icon="mdi:chevron-down"
@@ -464,7 +464,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
                     !form.courseInterest ? 'bg-primary/5 font-bold text-primary' : ''
                   }`}
                 >
-                  {formType === 'contact' ? "None (General Inquiry)" : "Select a Course *"}
+                  {formType === 'contact' ? "None (General Inquiry)" : "Select a Program *"}
                 </div>
                 {coursesData.map((course) => {
                   const isSelected = form.courseInterest === course.slug;

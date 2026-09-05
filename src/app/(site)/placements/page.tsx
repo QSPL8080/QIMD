@@ -238,7 +238,7 @@ export default function PlacementsPage() {
     },
     {
       name: "Sneha M.",
-      course: "UI/UX & Graphic Design Course",
+      course: "UI/UX & Graphic Design Program",
       review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence.",
       rating: 5,
     },
@@ -385,7 +385,7 @@ export default function PlacementsPage() {
 
             <div className="space-y-3 text-[#374151] text-xs sm:text-sm leading-relaxed font-medium max-w-3xl mx-auto">
               <p>
-                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our mission doesn&apos;t end when your course is completed—it begins with helping you build a successful career.
+                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our mission doesn&apos;t end when your program is completed—it begins with helping you build a successful career.
               </p>
               <p>
                 Our AI-powered, industry-driven training programs are designed to make students job-ready through practical learning, live client projects, internship opportunities, and comprehensive placement assistance. We also collaborate with hiring partners to connect eligible students with career opportunities that align with their skills and goals.

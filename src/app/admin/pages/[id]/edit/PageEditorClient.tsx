@@ -330,7 +330,7 @@ export default function PageEditorClient({ page }: { page: PageData }) {
               type="text"
               name="metaTitle"
               defaultValue={page.metaTitle || ''}
-              placeholder="e.g. AI-Powered Courses – QIMD Hinjewadi Pune"
+              placeholder="e.g. AI-Powered Programs – QIMD Hinjewadi Pune"
               className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-semibold"
             />
           </div>
@@ -459,7 +459,7 @@ export default function PageEditorClient({ page }: { page: PageData }) {
                     type="text"
                     name="buttonText"
                     defaultValue={editingSection?.buttonText || ''}
-                    placeholder="e.g. Explore Courses"
+                    placeholder="e.g. Explore Programs"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                   />
                 </div>

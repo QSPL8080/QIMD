@@ -65,7 +65,7 @@ const CareerCounsellingCTA: React.FC = () => {
 
               {/* Subtext */}
               <p className="text-white/90 text-sm sm:text-base leading-relaxed max-w-xl font-normal">
-                Not sure which course is right for you? Our experts will help you choose the best program based on your career goals, skills, and interests.
+                Not sure which program is right for you? Our experts will help you choose the best program based on your career goals, skills, and interests.
               </p>
 
               {/* Stats Grid */}

@@ -306,7 +306,7 @@ export default function PageManagementClient({ initialPages }: { initialPages: P
                     name="pageName"
                     required
                     defaultValue={editingPage?.pageName || ''}
-                    placeholder="e.g. Courses & Programs"
+                    placeholder="e.g. Programs Directory"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 font-bold"
                   />
                 </div>
@@ -370,7 +370,7 @@ export default function PageManagementClient({ initialPages }: { initialPages: P
                       type="text"
                       name="metaTitle"
                       defaultValue={editingPage?.metaTitle || ''}
-                      placeholder="e.g. AI-Powered Courses – QIMD Pune"
+                      placeholder="e.g. AI-Powered Programs – QIMD Pune"
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                     />
                   </div>

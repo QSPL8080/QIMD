@@ -105,10 +105,10 @@ const PlacementCard: React.FC<PlacementCardProps> = ({ student, index = 0 }) => 
         {/* Card Body */}
         <div className="p-5 flex flex-col flex-1 justify-between bg-white dark:bg-darklight space-y-4">
           <div className="space-y-3">
-            {/* Course Completed */}
+            {/* Program Completed */}
             <div className="inline-flex items-center gap-1.5 bg-[#764DFF]/10 dark:bg-[#764DFF]/20 text-[#764DFF] dark:text-[#BD69F2] text-xs font-bold px-2.5 py-1 rounded-md max-w-full break-words">
               <Icon icon="mdi:book-open-variant" className="text-sm flex-shrink-0" />
-              <span className="break-words">{student.course || (student as any).courseName || 'Professional Course'}</span>
+              <span className="break-words">{student.course || (student as any).courseName || 'Professional Program'}</span>
             </div>
 
             {/* Designation & Company */}

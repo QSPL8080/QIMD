@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: `Admission Information – ${siteConfig.name}`,
-  description: "Learn about QIMD Institute's admission process, eligibility criteria, course fees, and enrollment procedure.",
+  description: "Learn about QIMD Institute's admission process, eligibility criteria, program fees, and enrollment procedure.",
   alternates: { canonical: "https://www.qimd.in/admission" },
 };
 
@@ -67,7 +67,7 @@ export default async function AdmissionPage() {
                 {[
                   { step: "01", title: "Submit Enquiry", desc: "Fill out the enquiry form or call our admissions team." },
                   { step: "02", title: "Counselling Session", desc: "Our team will schedule a free career counselling session to understand your goals." },
-                  { step: "03", title: "Course Selection", desc: "Based on your goals, our counsellors will recommend the best course for you." },
+                  { step: "03", title: "Program Selection", desc: "Based on your goals, our counsellors will recommend the best program for you." },
                   { step: "04", title: "Enrollment", desc: "Complete the enrollment formalities and fee payment to confirm your seat." },
                   { step: "05", title: "Batch Confirmation", desc: "You'll be assigned to the next available batch and receive all onboarding details." },
                 ].map((item, i) => (
@@ -87,25 +87,25 @@ export default async function AdmissionPage() {
             <Section title="Fee & Payment">
               <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-5 border border-primary/20">
                 <p className="text-sm text-muted dark:text-white/70 mb-3">
-                  Course fees vary by program and batch. Please contact our admissions team for the latest fee structure, current offers, and EMI options.
+                  Program fees vary by program and batch. Please contact our admissions team for the latest fee structure, current offers, and EMI options.
                 </p>
                 <p className="text-sm text-muted dark:text-white/70">
-                  <strong className="text-primary">EMI Available:</strong> We offer flexible EMI payment options through our banking partners to make the course accessible to everyone.
+                  <strong className="text-primary">EMI Available:</strong> We offer flexible EMI payment options through our banking partners to make the program accessible to everyone.
                 </p>
               </div>
             </Section>
 
-            <Section title="What&apos;s Included in the Course Fee?">
+            <Section title="What&apos;s Included in the Program Fee?">
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-8">
                 {[
-                  "All course sessions & classes",
+                  "All program sessions & classes",
                   "Study material & resources",
                   "Access to software & tools",
                   "Live client project experience",
                   "Internship opportunity",
                   "Resume building support",
                   "Interview preparation",
-                  "Course completion certificate",
+                  "Program completion certificate",
                   "Internship certificate",
                   "2 years repeat batch access",
                   "Placement assistance",

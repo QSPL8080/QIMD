@@ -43,7 +43,7 @@ export default function PageSectionManagementClient({
     { key: 'HOME', name: 'Home Page' },
     { key: 'ABOUT', name: 'About Us Page' },
     { key: 'WHY_QIMD', name: 'Why QIMD Page' },
-    { key: 'COURSES', name: 'Courses Page' },
+    { key: 'COURSES', name: 'Programs Page' },
     { key: 'PLACEMENTS', name: 'Placements Page' },
     { key: 'CONTACT', name: 'Contact Page' },
   ]
@@ -401,7 +401,7 @@ export default function PageSectionManagementClient({
                     type="text"
                     name="buttonText"
                     defaultValue={editingSection?.buttonText || ''}
-                    placeholder="e.g. Explore Courses, Apply Now"
+                    placeholder="e.g. Explore Programs, Apply Now"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                   />
                 </div>

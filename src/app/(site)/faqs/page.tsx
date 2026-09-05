@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 export const metadata: Metadata = {
   title: `FAQs – ${siteConfig.name}`,
-  description: "Find answers to frequently asked questions about QIMD Institute's courses, admissions, fees, placements, and more.",
+  description: "Find answers to frequently asked questions about QIMD Institute's programs, admissions, fees, placements, and more.",
   alternates: { canonical: "https://www.qimd.in/faqs" },
 };
 

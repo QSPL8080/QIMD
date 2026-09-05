@@ -30,7 +30,7 @@ export default function BrochureModal({ isOpen, onClose, course }: BrochureModal
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
-  const courseTitle = course?.title || 'Course'
+  const courseTitle = course?.title || 'Program'
   const courseSlug = course?.slug || ''
 
   // Reset state when course changes or modal opens

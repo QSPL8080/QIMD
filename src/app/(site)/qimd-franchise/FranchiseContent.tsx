@@ -60,7 +60,7 @@ export default function FranchiseContent() {
       category: "Academic Support",
       icon: "mdi:school",
       items: [
-        "Complete Course Curriculum",
+        "Complete Program Curriculum",
         "AI-Powered Learning Modules",
         "Learning Management System (LMS)",
         "Study Material",
@@ -573,7 +573,7 @@ export default function FranchiseContent() {
                   Programs You Can Offer
                 </h2>
                 <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-                  Deliver high-demand, AI-powered practical courses to students and professionals in your region.
+                  Deliver high-demand, AI-powered practical programs to students and professionals in your region.
                 </p>
               </div>
 

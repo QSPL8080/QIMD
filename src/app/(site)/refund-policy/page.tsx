@@ -3,7 +3,7 @@ import { siteConfig } from "@/data";
 
 export const metadata: Metadata = {
   title: `Refund & Cancellation Policy – ${siteConfig.name}`,
-  description: "Read Quickupp Institute of Marketing & Design (QIMD) Refund and Cancellation Policy for course enrollments, fees, and batch schedules.",
+  description: "Read Quickupp Institute of Marketing & Design (QIMD) Refund and Cancellation Policy for program enrollments, fees, and batch schedules.",
   alternates: { canonical: "https://www.qimd.in/refund-policy" },
 };
 
@@ -28,7 +28,7 @@ export default function RefundPolicyPage() {
             {/* Introductory Text */}
             <div className="space-y-3 bg-slate-50 dark:bg-white/5 p-4 sm:p-5 rounded-xl border border-slate-200/80 dark:border-white/10">
               <p>
-                This Refund &amp; Cancellation Policy applies to courses, training programmes, workshops and other paid educational services offered by <strong>Quickupp Institute of Marketing &amp; Design (QIMD)</strong>, operated by <strong>Quickupp Softech Pvt. Ltd.</strong> (“Quickupp”, “QIMD”, “Institute”, “we”, “us”, or “our”).
+                This Refund &amp; Cancellation Policy applies to training programmes, workshops and other paid educational services offered by <strong>Quickupp Institute of Marketing &amp; Design (QIMD)</strong>, operated by <strong>Quickupp Softech Pvt. Ltd.</strong> (“Quickupp”, “QIMD”, “Institute”, “we”, “us”, or “our”).
               </p>
               <p>
                 By making a payment or enrolling in a programme, you acknowledge and agree to the applicable refund and cancellation terms, subject to applicable law.
@@ -40,32 +40,32 @@ export default function RefundPolicyPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">1. Admission &amp; Registration Fees</h2>
               <div className="space-y-2">
                 <p>Admission and registration fees are non-refundable, subject to applicable law.</p>
-                <p>Payment of the admission/registration fee confirms the student&apos;s admission process or seat reservation, subject to the applicable course and batch conditions.</p>
+                <p>Payment of the admission/registration fee confirms the student&apos;s admission process or seat reservation, subject to the applicable program and batch conditions.</p>
               </div>
             </div>
 
-            {/* 2. Cancellation Before Course Commencement */}
+            {/* 2. Cancellation Before Program Commencement */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">2. Cancellation Before Course Commencement</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">2. Cancellation Before Program Commencement</h2>
               <div className="space-y-2">
-                <p>A student may submit a cancellation request before the applicable course commencement date.</p>
-                <p>However, cancellation or refund requests submitted within <strong>15 days prior to the scheduled course commencement date</strong> will generally not be eligible for a refund, subject to applicable law.</p>
+                <p>A student may submit a cancellation request before the applicable program commencement date.</p>
+                <p>However, cancellation or refund requests submitted within <strong>15 days prior to the scheduled program commencement date</strong> will generally not be eligible for a refund, subject to applicable law.</p>
               </div>
             </div>
 
-            {/* 3. Cancellation After Course Commencement */}
+            {/* 3. Cancellation After Program Commencement */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">3. Cancellation After Course Commencement</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">3. Cancellation After Program Commencement</h2>
               <div className="space-y-2">
-                <p>Once a course has commenced, course fees are generally non-refundable.</p>
+                <p>Once a program has commenced, program fees are generally non-refundable.</p>
                 <p>This includes cancellation due to personal reasons, relocation, change of career plans, employment, academic commitments, inability to attend or a decision not to continue the programme.</p>
                 <p>Any exception will be considered only where required by applicable law or specifically approved by the Institute.</p>
               </div>
             </div>
 
-            {/* 4. Access to Course Services */}
+            {/* 4. Access to Program Services */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">4. Access to Course Services</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">4. Access to Program Services</h2>
               <p className="mb-2">Once a student has:</p>
               <ul className="list-disc pl-5 space-y-1 mb-2">
                 <li>Attended a class;</li>
@@ -73,9 +73,9 @@ export default function RefundPolicyPage() {
                 <li>Participated in a workshop;</li>
                 <li>Accessed the LMS;</li>
                 <li>Received study materials; or</li>
-                <li>Started receiving course-related services,</li>
+                <li>Started receiving program-related services,</li>
               </ul>
-              <p>the course fee will generally be non-refundable, subject to applicable law.</p>
+              <p>the program fee will generally be non-refundable, subject to applicable law.</p>
             </div>
 
             {/* 5. Partial Refunds */}
@@ -90,7 +90,7 @@ export default function RefundPolicyPage() {
                 <li>Unused study materials;</li>
                 <li>Unused practical sessions;</li>
                 <li>Unused repeat-batch access; or</li>
-                <li>Failure to use available course benefits.</li>
+                <li>Failure to use available program benefits.</li>
               </ul>
             </div>
 
@@ -100,7 +100,7 @@ export default function RefundPolicyPage() {
               <p className="mb-2">Students may request a transfer to another batch. Approval is subject to:</p>
               <ul className="list-disc pl-5 space-y-1 mb-2">
                 <li>Availability of seats;</li>
-                <li>Course availability;</li>
+                <li>Program availability;</li>
                 <li>Institute approval;</li>
                 <li>Timing compatibility; and</li>
                 <li>Applicable administrative conditions.</li>
@@ -110,11 +110,11 @@ export default function RefundPolicyPage() {
               </p>
             </div>
 
-            {/* 7. Course Rescheduling */}
+            {/* 7. Program Rescheduling */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">7. Course Rescheduling</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">7. Program Rescheduling</h2>
               <div className="space-y-2">
-                <p>If Quickupp reschedules a course, batch or session due to operational, faculty, technical, regulatory or other legitimate reasons, the Institute may provide an alternative schedule or reasonable alternative arrangement.</p>
+                <p>If Quickupp reschedules a program, batch or session due to operational, faculty, technical, regulatory or other legitimate reasons, the Institute may provide an alternative schedule or reasonable alternative arrangement.</p>
                 <p>Where the Institute continues to provide the relevant programme or a reasonable alternative, such rescheduling will not automatically create a right to a refund.</p>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function RefundPolicyPage() {
                 <li>Student name;</li>
                 <li>Registered mobile number;</li>
                 <li>Registered email address;</li>
-                <li>Course name;</li>
+                <li>Program name;</li>
                 <li>Admission/payment details;</li>
                 <li>Reason for cancellation/refund; and</li>
                 <li>Supporting documents, where applicable.</li>
@@ -163,7 +163,7 @@ export default function RefundPolicyPage() {
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">11. EMI / Financing</h2>
               <div className="space-y-2">
-                <p>Where course fees are paid through an EMI, bank, NBFC or other third-party financing arrangement, the financing arrangement may be governed by separate terms.</p>
+                <p>Where program fees are paid through an EMI, bank, NBFC or other third-party financing arrangement, the financing arrangement may be governed by separate terms.</p>
                 <p>Students remain responsible for obligations owed directly to the relevant financing provider.</p>
                 <p>Approval of a refund by Quickupp does not automatically cancel a separate financing agreement unless the relevant financing provider confirms such cancellation.</p>
               </div>
@@ -181,7 +181,7 @@ export default function RefundPolicyPage() {
                 <li>A particular employer; or</li>
                 <li>A particular salary</li>
               </ul>
-              <p className="mb-2">does not by itself create a right to a course-fee refund.</p>
+              <p className="mb-2">does not by itself create a right to a program-fee refund.</p>
               <p className="text-sm text-muted dark:text-white/70">
                 Placement assistance and internship opportunities are subject to eligibility, student performance, availability and employer/company requirements.
               </p>
@@ -199,7 +199,7 @@ export default function RefundPolicyPage() {
             {/* 14. Disciplinary Termination */}
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">14. Disciplinary Termination</h2>
-              <p>Where a student&apos;s admission or access is suspended or terminated due to serious misconduct, unauthorised distribution of course content, confidentiality violations, illegal activity, fraud or other serious breach of Institute policies, the student may not be entitled to a refund, subject to applicable law and the circumstances of the case.</p>
+              <p>Where a student&apos;s admission or access is suspended or terminated due to serious misconduct, unauthorised distribution of program content, confidentiality violations, illegal activity, fraud or other serious breach of Institute policies, the student may not be entitled to a refund, subject to applicable law and the circumstances of the case.</p>
             </div>
 
             {/* 15. Exceptional Circumstances */}

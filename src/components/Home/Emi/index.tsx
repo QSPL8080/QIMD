@@ -25,7 +25,7 @@ const EmiSection: React.FC<{ emiPartners?: any[] }> = ({ emiPartners }) => {
             Start Your Learning Journey with Flexible Payments
           </h2>
           <p suppressHydrationWarning className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto font-medium leading-relaxed">
-            Choose your course and start your learning journey with easy EMI options.
+            Choose your program and start your learning journey with easy EMI options.
           </p>
         </div>
       </div>

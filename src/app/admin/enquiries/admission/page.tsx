@@ -173,7 +173,7 @@ export default function AdminAdmissionLeadsPage() {
             Admission Enquiry CMS
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Track prospective student course applications, qualifications, and update lead conversion status
+            Track prospective student program applications, qualifications, and update lead conversion status
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ export default function AdminAdmissionLeadsPage() {
         <div className="relative flex-1 w-full">
           <input
             type="text"
-            placeholder="Search lead by student name, email, or course..."
+            placeholder="Search lead by student name, email, or program..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
@@ -324,7 +324,7 @@ export default function AdminAdmissionLeadsPage() {
                   </th>
                   <th className="p-4">Name</th>
                   <th className="p-4">Email</th>
-                  <th className="p-4">Course</th>
+                  <th className="p-4">Program</th>
                   <th className="p-4">Status</th>
                   <th className="p-4 text-right">Action</th>
                 </tr>
@@ -422,7 +422,7 @@ export default function AdminAdmissionLeadsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-0">
                 <div className="min-w-0">
-                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">Interested Course</span>
+                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">Interested Program</span>
                   <span className="text-slate-900 font-bold block truncate" title={selectedLead.course?.courseName}>{selectedLead.course?.courseName || 'AI Practical Program'}</span>
                 </div>
                 <div className="min-w-0">

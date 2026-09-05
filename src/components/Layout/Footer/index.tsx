@@ -300,7 +300,7 @@ const Footer: React.FC = () => {
                 <ul className="mt-4 space-y-3">
                   <li><Link href="/" className="text-sm text-white/70 hover:text-secondary">Home</Link></li>
                   <li><Link href="/about/about-qimd" className="text-sm text-white/70 hover:text-secondary">About QIMD</Link></li>
-                  <li><Link href="/courses" className="text-sm text-white/70 hover:text-secondary">Courses</Link></li>
+                  <li><Link href="/courses" className="text-sm text-white/70 hover:text-secondary">Programs</Link></li>
                   <li><Link href="/blog" className="text-sm text-white/70 hover:text-secondary">Blogs</Link></li>
                   <li><Link href="/careers" className="text-sm text-white/70 hover:text-secondary">Career</Link></li>
                   <li><Link href="/contact" className="text-sm text-white/70 hover:text-secondary">Contact Us</Link></li>
@@ -309,13 +309,13 @@ const Footer: React.FC = () => {
 
               <div>
                 <h4 className="text-base font-semibold text-white mb-5 relative">
-                  Our Courses
+                  Our Programs
                   <span className="absolute bottom-[-8px] left-0 w-10 h-0.5 bg-secondary rounded-full" />
                 </h4>
                 <ul className="mt-4 space-y-3">
-                  <li><Link href="/courses/ai-digital-marketing" className="text-sm text-white/70 hover:text-secondary">AI Powered Digital Marketing Course</Link></li>
-                  <li><Link href="/courses/ai-graphic-design" className="text-sm text-white/70 hover:text-secondary">AI Powered Graphic Design Course</Link></li>
-                  <li><Link href="/courses/ai-video-editing" className="text-sm text-white/70 hover:text-secondary">AI Powered Video Editing Course</Link></li>
+                  <li><Link href="/courses/ai-digital-marketing" className="text-sm text-white/70 hover:text-secondary">AI Powered Digital Marketing Program</Link></li>
+                  <li><Link href="/courses/ai-graphic-design" className="text-sm text-white/70 hover:text-secondary">AI Powered Graphic Design Program</Link></li>
+                  <li><Link href="/courses/ai-video-editing" className="text-sm text-white/70 hover:text-secondary">AI Powered Video Editing Program</Link></li>
                 </ul>
               </div>
 
