@@ -52,6 +52,16 @@ async function main() {
           isActive: true,
         },
       })
+    } else {
+      await prisma.course.update({
+        where: { id: existing.id },
+        data: {
+          courseName: c.title,
+          description: c.description || c.title,
+          status: 'PUBLISHED',
+          isActive: true,
+        },
+      })
     }
   }
 
@@ -245,6 +255,16 @@ async function main() {
           isActive: true,
         },
       })
+    } else {
+      await prisma.placement.update({
+        where: { id: existing.id },
+        data: {
+          courseName: p.course || 'AI Practical Program',
+          companyName: p.company,
+          package: p.package,
+          designation: p.role,
+        },
+      })
     }
   }
 
@@ -272,6 +292,15 @@ async function main() {
           featured: tm.isFeatured ?? false,
           displayOrder: i + 1,
           isActive: true,
+        },
+      })
+    } else {
+      await prisma.testimonial.update({
+        where: { id: existing.id },
+        data: {
+          course: tm.courseTaken,
+          heading: tm.heading,
+          review: tm.review,
         },
       })
     }
@@ -386,6 +415,42 @@ async function main() {
     if (!existing) {
       await prisma.banner.create({ data: b })
     }
+  }
+
+  // 12. Global Database Cleanup: Ensure all footer columns, links, and page sections use "Program"
+  try {
+    const footerColumns = await prisma.footerColumn.findMany({ include: { links: true } })
+    for (const col of footerColumns) {
+      const newTitle = col.title?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+      if (newTitle && newTitle !== col.title) {
+        await prisma.footerColumn.update({ where: { id: col.id }, data: { title: newTitle } })
+      }
+      for (const link of col.links) {
+        const newLinkTitle = link.title?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+        if (newLinkTitle && newLinkTitle !== link.title) {
+          await prisma.footerColumnLink.update({ where: { id: link.id }, data: { title: newLinkTitle } })
+        }
+      }
+    }
+
+    const pageSections = await prisma.pageSection.findMany()
+    for (const sec of pageSections) {
+      const newBtn = sec.buttonText?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+      const newTitle = sec.sectionTitle?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+      const newSub = sec.subtitle?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+      if (newBtn !== sec.buttonText || newTitle !== sec.sectionTitle || newSub !== sec.subtitle) {
+        await prisma.pageSection.update({
+          where: { id: sec.id },
+          data: {
+            buttonText: newBtn || sec.buttonText,
+            sectionTitle: newTitle || sec.sectionTitle,
+            subtitle: newSub || sec.subtitle,
+          },
+        })
+      }
+    }
+  } catch (err) {
+    console.warn('Note on footer/sections cleanup:', err)
   }
 
   console.log('✅ Successful Full Website Content Migration to PostgreSQL Database!')

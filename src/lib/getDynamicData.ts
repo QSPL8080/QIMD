@@ -25,13 +25,15 @@ export const getDynamicCourses = unstable_cache(
       if (dbCourses.length > 0) {
         return dbCourses.map((c) => {
           const courseImg = c.bannerImage || '/images/courses/digital-marketing.jpg';
+          const safeTitle = c.courseName ? c.courseName.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : 'AI Practical Program';
+          const safeMode = c.courseMode ? c.courseMode.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : 'Offline Program';
           return {
             id: c.id,
-            title: c.courseName,
+            title: safeTitle,
             slug: c.slug,
-            category: c.category?.name || 'General',
+            category: c.category?.name?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') || 'General',
             duration: c.duration || '6 Months',
-            mode: c.courseMode || 'Offline Course',
+            mode: safeMode,
             shortDescription: c.shortDescription || '',
             description: c.description || '',
             bannerImage: courseImg,
@@ -148,7 +150,7 @@ export async function getDynamicPlacements() {
         package: p.package || '',
         role: p.designation || 'Specialist',
         designation: p.designation || 'Specialist',
-        course: p.courseName || 'AI Practical Course',
+        course: (p.courseName || 'AI Practical Program').replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program'),
         location: p.location || '',
         joiningYear: p.joiningYear || '',
         isVideo: p.isVideo || false,
@@ -174,25 +176,29 @@ export async function getDynamicTestimonials() {
     })
 
     if (dbTestimonials.length > 0) {
-      return dbTestimonials.map((t) => ({
-        id: t.id,
-        name: t.studentName || 'QIMD Student',
-        studentName: t.studentName || 'QIMD Student',
-        heading: t.heading || undefined,
-        image: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
-        photo: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
-        courseTaken: t.course || 'AI Practical Course',
-        course: t.course || 'AI Practical Course',
-        role: t.role || 'Alumnus',
-        company: t.company || '',
-        rating: t.rating || 5,
-        review: t.review || '',
-        isVideo: t.isVideo || false,
-        videoUrl: t.videoUrl || null,
-        videoThumbnail: t.videoThumbnail || null,
-        studentStory: t.studentStory || null,
-        isFeatured: t.featured || false,
-      }))
+      return dbTestimonials.map((t) => {
+        const safeCourse = (t.course || 'AI Practical Program').replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
+        const safeHeading = t.heading ? t.heading.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : undefined;
+        return {
+          id: t.id,
+          name: t.studentName || 'QIMD Student',
+          studentName: t.studentName || 'QIMD Student',
+          heading: safeHeading,
+          image: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+          photo: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+          courseTaken: safeCourse,
+          course: safeCourse,
+          role: t.role || 'Alumnus',
+          company: t.company || '',
+          rating: t.rating || 5,
+          review: t.review || '',
+          isVideo: t.isVideo || false,
+          videoUrl: t.videoUrl || null,
+          videoThumbnail: t.videoThumbnail || null,
+          studentStory: t.studentStory || null,
+          isFeatured: t.featured || false,
+        }
+      })
     }
   } catch (err) {
     console.error('Error fetching dynamic testimonials:', err)
@@ -301,7 +307,11 @@ export async function getDynamicPageSections(pageKey: string) {
     })
     const sectionMap: Record<string, any> = {}
     sections.forEach((s) => {
-      sectionMap[s.sectionKey] = s
+      const cloned = { ...s }
+      if (cloned.buttonText) cloned.buttonText = cloned.buttonText.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
+      if (cloned.sectionTitle) cloned.sectionTitle = cloned.sectionTitle.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
+      if (cloned.subtitle) cloned.subtitle = cloned.subtitle.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
+      sectionMap[cloned.sectionKey] = cloned
     })
     return sectionMap
   } catch (err) {

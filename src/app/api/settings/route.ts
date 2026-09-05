@@ -36,6 +36,16 @@ export async function GET() {
 
     const socialLinksData: any = websiteSettings?.socialLinks || {}
 
+    const sanitizedFooterColumns = (footerColumns || []).map((col: any) => ({
+      ...col,
+      title: col.title ? col.title.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : col.title,
+      description: col.description ? col.description.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : col.description,
+      links: (col.links || []).map((l: any) => ({
+        ...l,
+        title: l.title ? l.title.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : l.title,
+      })),
+    }))
+
     const responseData = {
       // Global technical settings
       websiteName: websiteSettings?.websiteName || siteConfig.name,
@@ -99,7 +109,7 @@ export async function GET() {
         showBottomLinks: footerSettings?.showBottomLinks ?? false,
         phones: footerPhones,
         emails: footerEmails,
-        columns: footerColumns,
+        columns: sanitizedFooterColumns,
       },
 
       // Social Links CMS (Single Source of Truth)
