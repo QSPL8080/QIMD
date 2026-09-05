@@ -604,7 +604,7 @@ export default function FranchiseContent() {
                   Who Can Become a Partner?
                 </h2>
                 <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-                  We welcome passionate business leaders. No prior experience in education required — our team guides you at every step.
+                  We welcome passionate business leaders. No prior experience in education required - our team guides you at every step.
                 </p>
               </div>
 

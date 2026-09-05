@@ -340,7 +340,7 @@ export default function PlacementsPage() {
     },
     {
       category: "Video Editing",
-      icon: "mdi:video-clapper",
+      icon: "mdi:movie-open-play-outline",
       badgeColor: "bg-pink-50 text-pink-700 border-pink-200",
       roles: [
         "Video Editor",

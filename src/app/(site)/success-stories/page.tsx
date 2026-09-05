@@ -81,7 +81,7 @@ export default function SuccessStoriesPage() {
     { label: "IT Companies", icon: "mdi:laptop" },
     { label: "Startups", icon: "mdi:rocket-launch-outline" },
     { label: "E-commerce Companies", icon: "mdi:cart-outline" },
-    { label: "Media & Production Houses", icon: "mdi:video-clapper" },
+    { label: "Media & Production Houses", icon: "mdi:movie-open-play-outline" },
     { label: "Corporate Marketing Teams", icon: "mdi:domain" },
     { label: "Freelancing & Consulting", icon: "mdi:account-tie-outline" },
     { label: "Entrepreneurship", icon: "mdi:lightbulb-on-outline" },

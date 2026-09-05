@@ -64,7 +64,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
 
               <div className="space-y-4 text-slate-700 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
                 <p className="text-base sm:text-lg font-bold text-slate-800 dark:text-white">
-                  Welcome to the <strong>QIMD Knowledge Hub</strong> — your trusted resource for industry insights, practical learning, career guidance, and emerging trends in Digital Marketing, Graphic Design, Video Editing, and Artificial Intelligence.
+                  Welcome to the <strong>QIMD Knowledge Hub</strong> - your trusted resource for industry insights, practical learning, career guidance, and emerging trends in Digital Marketing, Graphic Design, Video Editing, and Artificial Intelligence.
                 </p>
                 <p>
                   Our blogs are written by industry professionals to help students, working professionals, entrepreneurs, and creative enthusiasts stay informed, build practical knowledge, and succeed in today&apos;s digital-first world.
@@ -88,7 +88,7 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
                 {[
                   { title: "Digital Marketing", desc: "SEO, PPC & Growth Tactics", icon: "mdi:bullhorn-outline", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/40" },
                   { title: "Graphic Design", desc: "Branding & Visual Arts", icon: "mdi:palette-outline", color: "text-purple-600 bg-purple-50 dark:bg-purple-950/40" },
-                  { title: "Video Editing", desc: "Reels, Shorts & VFX", icon: "mdi:video-clapper", color: "text-pink-600 bg-pink-50 dark:bg-pink-950/40" },
+                  { title: "Video Editing", desc: "Reels, Shorts & VFX", icon: "mdi:movie-open-play-outline", color: "text-pink-600 bg-pink-50 dark:bg-pink-950/40" },
                   { title: "AI Innovations", desc: "Prompt Engineering & Tools", icon: "mdi:robot-outline", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40" },
                 ].map((item, i) => (
                   <div
