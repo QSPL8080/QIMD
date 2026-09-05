@@ -95,7 +95,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
                 Learn from Industry Experts Who Practice What They Teach
               </h1>
               <p className="text-slate-800 dark:text-white/90 text-sm sm:text-base leading-relaxed font-semibold">
-                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our trainers are more than educators—they are experienced professionals actively working in the fields of Digital Marketing, Graphic Design, and Video Editing.
+                At <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>, our trainers are more than educators - they are experienced professionals actively working in the fields of Digital Marketing, Graphic Design, and Video Editing.
               </p>
               <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm leading-relaxed">
                 With hands-on industry experience, they bring real business challenges, live client projects, and the latest AI-powered tools into every classroom session, ensuring students learn skills that are relevant, practical, and job-ready.
@@ -367,7 +367,7 @@ export default function TrainersContent({ trainers }: { trainers: any[] }) {
                 At QIMD, every trainer is committed to helping students build practical skills, industry knowledge, and the confidence to succeed in today&apos;s competitive digital world.
               </p>
               <p>
-                Our goal is simple—to ensure every student graduates with the experience, portfolio, and expertise needed to build a successful career.
+                Our goal is simple - to ensure every student graduates with the experience, portfolio, and expertise needed to build a successful career.
               </p>
               <p className="text-[#764DFF] font-extrabold text-xs sm:text-sm pt-1">
                 Learn from experts. Practice on live projects. Become industry-ready with QIMD.

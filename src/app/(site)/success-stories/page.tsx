@@ -192,7 +192,7 @@ export default function SuccessStoriesPage() {
             </h2>
             <div className="space-y-3 text-slate-700 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
               <p>
-                Our students have transformed their careers by applying practical knowledge gained at QIMD. Whether they started as freshers, students, career switchers, freelancers, or entrepreneurs, they all shared one thing in common—a desire to build real skills that employers value.
+                Our students have transformed their careers by applying practical knowledge gained at QIMD. Whether they started as freshers, students, career switchers, freelancers, or entrepreneurs, they all shared one thing in common - a desire to build real skills that employers value.
               </p>
               <p className="text-slate-900 dark:text-white font-bold text-xs sm:text-sm pt-1">
                 Today, many of them are working with digital agencies, startups, established companies, and growing brands, while others have successfully launched their own freelance careers and businesses.

@@ -19,6 +19,35 @@ const nextConfig = {
     '172.29.240.1',
   ],
 
+  async redirects() {
+    return [
+      {
+        source: '/reviews',
+        destination: '/reviews-testimonials',
+        permanent: true,
+      },
+      {
+        source: '/testimonials',
+        destination: '/reviews-testimonials',
+        permanent: true,
+      },
+      {
+        source: '/review',
+        destination: '/reviews-testimonials',
+        permanent: true,
+      },
+      {
+        source: '/testimonial',
+        destination: '/reviews-testimonials',
+        permanent: true,
+      },
+      {
+        source: '/placement',
+        destination: '/placements',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       // Cache static bundles permanently for lightning-fast page transitions
