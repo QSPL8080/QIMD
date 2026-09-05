@@ -48,25 +48,25 @@ export default function SuccessStoriesPage() {
 
   const defaultStudentReviews = [
     {
-      name: "Rohan V.",
+      name: "Rohan Verma",
       course: "Digital Marketing Program",
       review: "I joined QIMD for the Digital Marketing Program and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed.",
       rating: 5,
     },
     {
-      name: "Sneha M.",
+      name: "Sneha More",
       course: "Digital Marketing Program",
       review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the program details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses.",
       rating: 5,
     },
     {
-      name: "Aniket K.",
+      name: "Aniket Kulkarni",
       course: "Graphic Design Program",
       review: "My experience of Graphic Design Program with Pune’s QIMD was great. The program covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process.",
       rating: 5,
     },
     {
-      name: "Pooja S.",
+      name: "Pooja Sharma",
       course: "Video Editing Program",
       review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive.",
       rating: 5,

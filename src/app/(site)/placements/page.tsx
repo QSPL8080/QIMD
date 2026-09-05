@@ -231,25 +231,25 @@ export default function PlacementsPage() {
 
   const defaultStudentReviews = [
     {
-      name: "Rohan V.",
+      name: "Rohan Verma",
       course: "Digital Marketing Master Program",
       review: "The practical training and live client projects helped me build confidence and prepare for interviews. The trainers were supportive throughout my learning journey.",
       rating: 5,
     },
     {
-      name: "Sneha M.",
+      name: "Sneha More",
       course: "UI/UX & Graphic Design Program",
       review: "The AI-powered curriculum, internships, and placement guidance gave me the skills I needed to start my career with confidence.",
       rating: 5,
     },
     {
-      name: "Aniket K.",
+      name: "Aniket Kulkarni",
       course: "Video Editing & Content Creation",
       review: "Unlike traditional institutes, QIMD focuses on practical implementation. Every assignment and project helped me understand how the industry actually works.",
       rating: 5,
     },
     {
-      name: "Pooja S.",
+      name: "Pooja Sharma",
       course: "Full-Stack Digital Marketing & AI",
       review: "From zero experience to working on real client projects, the journey at QIMD has been truly rewarding. I highly recommend it to anyone looking to build a career in the digital industry.",
       rating: 5,

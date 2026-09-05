@@ -449,8 +449,70 @@ async function main() {
         })
       }
     }
+    // 13. Student Reviews Migration (Full Names)
+    const defaultStudentReviews = [
+      {
+        studentName: "Rohan Verma",
+        course: "Digital Marketing Program",
+        rating: 5,
+        review: "I joined QIMD for the Digital Marketing Program and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed.",
+        displayOrder: 1,
+        isActive: true,
+      },
+      {
+        studentName: "Sneha More",
+        course: "Digital Marketing Program",
+        rating: 5,
+        review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the program details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses.",
+        displayOrder: 2,
+        isActive: true,
+      },
+      {
+        studentName: "Aniket Kulkarni",
+        course: "Graphic Design Program",
+        rating: 5,
+        review: "My experience of Graphic Design Program with Pune’s QIMD was great. The program covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process.",
+        displayOrder: 3,
+        isActive: true,
+      },
+      {
+        studentName: "Pooja Sharma",
+        course: "Video Editing Program",
+        rating: 5,
+        review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive.",
+        displayOrder: 4,
+        isActive: true,
+      },
+    ]
+
+    for (const sr of defaultStudentReviews) {
+      const existing = await prisma.studentReview.findFirst({
+        where: {
+          OR: [
+            { studentName: sr.studentName },
+            { studentName: sr.studentName.split(' ')[0] + ' ' + sr.studentName.split(' ')[1][0] + '.' },
+            { studentName: sr.studentName.split(' ')[0] + ' ' + sr.studentName.split(' ')[1][0] }
+          ]
+        }
+      })
+      if (existing) {
+        await prisma.studentReview.update({
+          where: { id: existing.id },
+          data: {
+            studentName: sr.studentName,
+            course: sr.course,
+            review: sr.review,
+            rating: sr.rating,
+          }
+        })
+      } else {
+        await prisma.studentReview.create({
+          data: sr
+        })
+      }
+    }
   } catch (err) {
-    console.warn('Note on footer/sections cleanup:', err)
+    console.warn('Note on footer/sections/reviews cleanup:', err)
   }
 
   console.log('✅ Successful Full Website Content Migration to PostgreSQL Database!')
