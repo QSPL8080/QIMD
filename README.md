@@ -459,6 +459,9 @@ package/
 │   │   │   ├── refund-policy/page.tsx     # Fee refund policy guidelines
 │   │   │   ├── reviews-testimonials/page.tsx # Video reviews & student stories
 │   │   │   ├── sitemap/page.tsx           # Visual sitemap navigation
+│   │   │   ├── trainers/
+│   │   │   │   ├── page.tsx               # Faculty & trainers directory page
+│   │   │   │   └── TrainersContent.tsx    # Interactive trainers showcase UI component
 │   │   │   └── page.tsx                   # Main Institute Homepage
 │   │   ├── admin/                         # CMS & CRM Admin dashboard
 │   │   │   ├── audit-logs/page.tsx        # System change logs & security audit trail
@@ -553,7 +556,8 @@ package/
 | :--- | :--- | :--- |
 | `/` | **Homepage** | Hero slider carousel ([`HeroBannerCarousel.tsx`](file:///c:/Users/Admin/Downloads/QMID%20Website/QIMD/package/src/components/Home/Hero/HeroBannerCarousel.tsx)), quick search, popular courses cards, why choose QIMD stats, student placement marquee, 0% EMI financing calculator, student video testimonials, campus photo gallery, FAQ accordion, instant lead form. |
 | `/about/about-qimd` | **About QIMD** | In-depth story of the institute, core values, mission, vision, key achievements, pedagogy methodology, and leadership message. |
-| `/about/our-team` | **Leadership & Faculty** | Executive directors, senior mentors, corporate trainers, and faculty directory with experience tags, skills, and LinkedIn badges. |
+| `/about/our-team` | **Leadership & Team** | Executive directors, leadership board, and core team member directory with designations and bios. |
+| `/trainers` | **Our Trainers & Faculty** | Comprehensive faculty directory with experience tags, industry specializations, qualifications, AI skills, and LinkedIn badges. |
 | `/courses` | **Course Catalog** | Filterable course directory with category tabs, duration badges, offline/online/hybrid mode filters, and curriculum highlights. |
 | `/courses/[slug]` | **Course Detail Page** | Deep curriculum overview, modular syllabus breakdown, learning outcomes, demo preview video, fee structure, career pathways, and instant brochure download form. |
 | `/brochure/[slug]` | **Brochure Viewer** | Embedded interactive PDF brochure reader with high-resolution download option. |
