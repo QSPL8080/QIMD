@@ -552,31 +552,33 @@ package/
 
 ## 5. Public Website Routes & User Experiences
 
-| Route Path | Page Title | Key Features & Implementation Details |
-| :--- | :--- | :--- |
-| `/` | **Homepage** | Hero slider carousel ([`HeroBannerCarousel.tsx`](file:///c:/Users/Admin/Downloads/QMID%20Website/QIMD/package/src/components/Home/Hero/HeroBannerCarousel.tsx)), quick search, popular courses cards, why choose QIMD stats, student placement marquee, 0% EMI financing calculator, student video testimonials, campus photo gallery, FAQ accordion, instant lead form. |
-| `/about/about-qimd` | **About QIMD** | In-depth story of the institute, core values, mission, vision, key achievements, pedagogy methodology, and leadership message. |
-| `/about/our-team` | **Leadership & Team** | Executive directors, leadership board, and core team member directory with designations and bios. |
-| `/trainers` | **Our Trainers & Faculty** | Comprehensive faculty directory with experience tags, industry specializations, qualifications, AI skills, and LinkedIn badges. |
-| `/courses` | **Course Catalog** | Filterable course directory with category tabs, duration badges, offline/online/hybrid mode filters, and curriculum highlights. |
-| `/courses/[slug]` | **Course Detail Page** | Deep curriculum overview, modular syllabus breakdown, learning outcomes, demo preview video, fee structure, career pathways, and instant brochure download form. |
-| `/brochure/[slug]` | **Brochure Viewer** | Embedded interactive PDF brochure reader with high-resolution download option. |
-| `/admission` | **Admissions Portal** | Step-by-step admission process guide, eligibility criteria, required documents checklist, and direct admission application form. |
-| `/placements` | **Placements Portal** | Real-time placed student gallery, hiring company badges, salary packages (LPA), designations, student photos, and video success interviews. |
-| `/reviews-testimonials`| **Student Reviews** | Authentic video interview gallery, Google ratings badge, verified alumnus quotes, and career transition stories. |
-| `/events` | **Events & Workshops** | Upcoming design masterclasses, AI marketing workshops, hackathons, and guest lecture schedules. |
-| `/events/[slug]` | **Event Detail** | Workshop curriculum, speaker bios, venue/date, and attendee registration form. |
-| `/blog` | **Blog & Articles** | Categorized industry articles on AI in marketing, UX design principles, video editing techniques, and career tips. |
-| `/blog/[slug]` | **Blog Article Reader** | Full-width article reader with estimated reading time, author bio, social share buttons, and related articles carousel. |
-| `/gallery` | **Campus Media Gallery**| Filterable photo and video albums (Classrooms, Labs, Student Projects, Convocation, Cultural Events). |
-| `/faqs` | **FAQ Knowledgebase** | Searchable accordion covering eligibility, fee installment options, placement assistance, and practical project requirements. |
-| `/contact` | **Contact Us** | Interactive Google Maps locator, institute address, primary phone/email, and multi-field general inquiry form. |
-| `/hire-from-us` | **Hire Talent (B2B)** | Dedicated corporate recruiter portal to hire pre-vetted students with specific skill sets. |
-| `/qimd-franchise` | **Franchise Partner** | Institute franchise model breakdown, ROI calculator, and franchise partnership application form. |
-| `/careers` | **Careers at QIMD** | Active job openings for trainers, counselors, and staff with direct resume upload. |
-| `/privacy-policy` | **Privacy Policy** | Comprehensive data privacy and compliance document. |
-| `/refund-policy` | **Refund Policy** | Transparent fee refund and cancellation rules. |
-| `/sitemap` | **Visual Sitemap** | Structured tree listing all active website links. |
+The public website consists of the following official pages structured across the main navigation:
+
+| Navigation Menu | Route Path | Page Title | Key Features & Implementation Details |
+| :--- | :--- | :--- | :--- |
+| **Home** | `/` | **Homepage** | Hero slider carousel ([`HeroBannerCarousel.tsx`](file:///c:/Users/Admin/Downloads/QMID%20Website/QIMD/package/src/components/Home/Hero/HeroBannerCarousel.tsx)), quick search, popular courses, why choose QIMD stats, student placement marquee, 0% EMI financing calculator, student video testimonials, campus photo gallery, FAQ accordion, instant lead form. |
+| **Programs** | `/courses` | **Course Catalog** | Filterable course directory with category tabs, duration badges, offline mode indicators, and curriculum highlights. |
+| **Programs** | `/courses/[slug]` | **Course Detail Page** | Deep curriculum overview, modular syllabus breakdown, learning outcomes, demo preview video, fee structure, career pathways, and instant brochure download form. |
+| **About Us** | `/about/about-qimd` | **About QIMD** | In-depth story of the institute, core values, mission, vision, key achievements, pedagogy methodology, and leadership message. |
+| **About Us** | `/about/our-team` | **Our Team** | Executive directors, leadership board, and core team member directory with designations and bios. |
+| **About Us** | `/trainers` | **Our Trainers** | Comprehensive faculty directory with experience tags, industry specializations, qualifications, AI skills, and LinkedIn badges. |
+| **Why QIMD?** | `/why-qimd` | **Why QIMD?** | Detailed breakdown of the QIMD advantage, AI-powered practical training, live client projects, and 100% placement assistance. |
+| **Why QIMD?** | `/success-stories` | **Success Stories** | In-depth student success narratives, sector-wise hiring breakdown, video testimonials, recent placements, and verified student ratings. |
+| **Why QIMD?** | `/placements` | **Our Placements** | Real-time placed student gallery, hiring company badges, salary packages (LPA), designations, student photos, and video stories. |
+| **Why QIMD?** | `/reviews-testimonials`| **Reviews & Testimonials** | Authentic video interview gallery, Google ratings badge, verified alumnus quotes, and career transition stories. |
+| **Why QIMD?** | `/gallery` | **Life at QIMD (Gallery)**| Filterable photo and video albums (Classrooms, Labs, Student Projects, Convocation, Cultural Events). |
+| **Blogs** | `/blog` | **Blogs & Articles** | Categorized industry articles on AI in marketing, UX design principles, video editing techniques, and career tips. |
+| **Blogs** | `/blog/[slug]` | **Blog Post Reader** | Full-width article reader with estimated reading time, author bio, social share buttons, and related articles carousel. |
+| **Career** | `/careers` | **Current Openings** | Active job openings for trainers, counselors, and staff with direct resume upload. |
+| **Career** | `/hire-from-us` | **Hire From QIMD (B2B)** | Dedicated corporate recruiter portal to hire pre-vetted students with specific skill sets. |
+| **Career** | `/qimd-franchise` | **QIMD Franchise** | Institute franchise model breakdown, ROI calculator, and franchise partnership application form. |
+| **Contact** | `/contact` | **Contact Us** | Interactive Google Maps locator, institute address, primary phone/email, and multi-field general inquiry form. |
+| **Support** | `/faqs` | **FAQs** | Searchable accordion covering eligibility, fee installment options, placement assistance, and practical project requirements. |
+| **Legal** | `/privacy-policy` | **Privacy Policy** | Comprehensive data privacy and compliance document. |
+| **Legal** | `/refund-policy` | **Refund Policy** | Transparent fee refund and cancellation rules. |
+| **Legal** | `/terms-and-conditions`| **Terms & Conditions** | Website terms of service and usage conditions. |
+| **Utility** | `/brochure/[slug]` | **Brochure Viewer** | Embedded interactive PDF brochure reader with direct download option. |
+| **Utility** | `/sitemap` | **Visual Sitemap** | Structured tree listing all active website links. |
 
 ---
 
