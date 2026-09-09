@@ -1,249 +1,361 @@
-# 📚 QIMD (Quickup Institute of Marketing & Design) - Exhaustive Technical Documentation
+# 📚 QIMD (Quickup Institute of Marketing & Design)
 
-Comprehensive, line-by-line documentation of every file, component, database model, API endpoint, server action, and configuration script in the QIMD codebase.
+An enterprise-grade educational institute platform, content management system (CMS), and lead management CRM built with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4**, **Prisma ORM**, and **PostgreSQL (Supabase)**.
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Architectural Overview](#1-architectural-overview)
-2. [Database Schema & Field Reference (`prisma/schema.prisma`)](#2-database-schema--field-reference)
-3. [Dual Database Sync Engine](#3-dual-database-sync-engine)
-4. [Exhaustive Directory & File Index](#4-exhaustive-directory--file-index)
-   - [Root Configuration Files](#root-configuration-files)
-   - [Public Website Routes (`src/app/(site)`)](#public-website-routes-srcappsite)
-   - [CMS Admin Dashboard Routes (`src/app/admin`)](#cms-admin-dashboard-routes-srcappadmin)
-   - [API Endpoints (`src/app/api`)](#api-endpoints-srcappapi)
-   - [Server Actions (`src/app/actions`)](#server-actions-srcappactions)
-   - [UI Components (`src/components`)](#ui-components-srccomponents)
-   - [Core Libraries & Auth (`src/lib`)](#core-libraries--auth-srclib)
-5. [Authentication & Authorization Flow](#5-authentication--authorization-flow)
-6. [Environment Variables Reference](#6-environment-variables-reference)
-7. [Installation & Deployment Instructions](#7-installation--deployment-instructions)
+1. [Architectural Overview](#-architectural-overview)
+2. [Tech Stack & Dependencies](#-tech-stack--dependencies)
+3. [Database Schema & Models Reference](#-database-schema--models-reference)
+4. [Project Directory & File Structure](#-project-directory--file-structure)
+5. [Public Website Routes (`src/app/(site)`)](#-public-website-routes)
+6. [CMS Admin Dashboard (`src/app/admin`)](#-cms-admin-dashboard)
+7. [Server Actions Reference (`src/app/actions`)](#-server-actions-reference)
+8. [API Endpoints Reference (`src/app/api`)](#-api-endpoints-reference)
+9. [UI Component Architecture (`src/components`)](#-ui-component-architecture)
+10. [Authentication & Authorization](#-authentication--authorization)
+11. [Environment Variables Reference](#-environment-variables-reference)
+12. [Installation & Getting Started](#-installation--getting-started)
+13. [Database Management & Seeding](#-database-management--seeding)
+14. [Deployment & Production Build](#-deployment--production-build)
 
 ---
 
-## 1. Architectural Overview
+## 🏛 Architectural Overview
 
-QIMD is an enterprise-grade education institute web application powering:
-- **Public Marketing Portal**: Fast SEO-optimized landing pages, course search engine, dynamic banner slideshow, brochure download forms, and lead generation.
-- **CMS & CRM Admin System**: Role-based access dashboard to manage course content, team profiles, placed student stories, blog posts, and leads/enquiries.
-- **Dual Database Architecture**: Automated real-time synchronization between **Supabase Cloud PostgreSQL** and **Local PostgreSQL (pgAdmin `qimd_db`)**.
+QIMD is designed as a unified monorepo-style Next.js application powering three core operational pillars:
 
----
-
-## 2. Database Schema & Field Reference
-
-All database tables are managed via Prisma ORM in `prisma/schema.prisma`.
-
-### 📌 Core Table Models:
-
-#### 1. `User` (`users`)
-- `id` (UUID, Primary Key)
-- `fullName` (VarChar 150) - Admin / Staff Name
-- `email` (VarChar 255, Unique) - Login Email
-- `passwordHash` (Text) - Bcrypt Hashed Password
-- `role` (VarChar 50) - Role (`SUPER_ADMIN`, `ADMIN`, `CONTENT_MANAGER`)
-- `status` (Boolean) - Active Account Flag
-- `isDeleted` (Boolean) - Soft Delete Flag
-
-#### 2. `Banner` (`banners`)
-- `id` (UUID, Primary Key)
-- `badge` (VarChar 100) - Pill Badge Text (e.g. `CAREER BOOSTER`)
-- `title` (VarChar 200) - Primary Title Line
-- `titleAccent` (VarChar 200) - Colored Accent Title Line
-- `subtitle` (Text) - Banner Description
-- `tag` (VarChar 150) - Feature Tag (e.g. `100% Job Assistance`)
-- `accentColor` (VarChar 50) - Hex Color Code (e.g. `#764DFF`)
-- `icon` (VarChar 100) - Iconify Icon Identifier
-- `imageUrl` (Text) - Image File Path / Cloud URL
-- `displayOrder` (Int) - Carousel Sorting Index
-- `isActive` (Boolean) - Public Visibility Flag
-- `isDeleted` (Boolean) - Soft Delete Flag
-
-#### 3. `Course` (`courses`)
-- `id` (UUID, Primary Key)
-- `categoryId` (UUID, Foreign Key -> `CourseCategory`)
-- `trainerId` (UUID, Foreign Key -> `Trainer`)
-- `courseName` (VarChar 255) - Course Title
-- `slug` (VarChar 255, Unique) - URL Slug
-- `shortDescription` (Text) - Summary Text
-- `description` (Text) - HTML / Detailed Overview
-- `duration` (VarChar 100) - Duration (e.g. `6 Months`)
-- `fees` (Decimal 10,2) - Original Fee Amount
-- `discountPrice` (Decimal 10,2) - Offer Price Amount
-- `courseMode` (VarChar 50) - Mode (`Offline`, `Online`, `Hybrid`)
-- `syllabus` (Text) - Syllabus Outline JSON / HTML
-- `brochure` (Text) - PDF Download URL
-
-#### 4. `Placement` (`placements`)
-- `id` (UUID, Primary Key)
-- `studentName` (VarChar 200) - Student Name
-- `studentPhoto` (Text) - Student Avatar Image URL
-- `companyName` (VarChar 200) - Employer Name
-- `companyLogo` (Text) - Employer Logo Image URL
-- `package` (VarChar 100) - Salary Package (e.g. `8.5 LPA`)
-- `designation` (VarChar 150) - Job Role (e.g. `UI/UX Designer`)
+- **Public Marketing & Student Portal**: High-speed, SEO-optimized landing pages, dynamic course catalog, interactive curriculum viewer, brochure downloads, verified placement records, student testimonials, and responsive lead generation forms.
+- **Dynamic Content Management System (CMS)**: Administrative management for hero banners, courses, categories, trainers, team members, blog posts, photo/video gallery albums, hiring partners, EMI financing partners, FAQs, and custom dynamic page sections.
+- **Multi-Stream CRM & Enquiry Management**: Lead routing and CRM workflows for:
+  - Admission Enquiries
+  - Franchise Partner Applications
+  - Corporate / Employer Hiring Requests
+  - Faculty & Staff Career Applications (with resume uploads)
+  - General Contact Messages
+- **Header & Footer Customizer**: Live customizable navigation bars, top-header contact items, social links, footer columns, and quick links without redeploying code.
 
 ---
 
-## 3. Dual Database Sync Engine
+## 🛠 Tech Stack & Dependencies
 
-All CMS mutation routines (`src/app/actions/bannerActions.ts`, etc.) interact with two Prisma client instances:
-1. **Primary Instance (`db`)**: Connects to `DATABASE_URL` (Supabase Cloud PostgreSQL).
-2. **Local Backup Instance (`localDb`)**: Connects to `postgresql://postgres:8080@localhost:5432/qimd_db?schema=public` (Local pgAdmin).
-
-When any admin modifies records in `/admin/banners` or `/admin/courses`, both instances are updated in parallel, guaranteeing 100% database parity between local development and cloud hosting.
-
----
-
-## 4. Exhaustive Directory & File Index
-
-### 📁 Root Configuration Files
-
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `package.json` | Project dependencies, Next.js version (15.3.2), Prisma scripts, and dev commands |
-| `tsconfig.json` | TypeScript compiler options, paths aliases (`@/*` -> `./src/*`) |
-| `next.config.js` | Next.js configuration, image domains, and headers |
-| `postcss.config.mjs` | PostCSS config for Tailwind CSS v4 |
-| `.env` | Environment secrets, database connection URLs, JWT keys |
-| `prisma/schema.prisma` | Master PostgreSQL data model definitions and indexes |
-
----
-
-### 🌐 Public Website Routes (`src/app/(site)`)
-
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `src/app/(site)/page.tsx` | Main Homepage landing page rendering Hero, Courses, Stats, Testimonials & FAQs |
-| `src/app/(site)/about/page.tsx` | About Institute page server entry point |
-| `src/app/(site)/about/AboutContent.tsx` | Client UI for institute history, vision, mission & awards |
-| `src/app/(site)/about/our-team/page.tsx` | Team & leadership team page |
-| `src/app/(site)/courses/page.tsx` | Course catalog page listing all active courses |
-| `src/app/(site)/courses/[slug]/page.tsx` | Dynamic course detail page rendering syllabus, fees, and brochure form |
-| `src/app/(site)/placements/page.tsx` | Student placement portal rendering packages & company logos |
-| `src/app/(site)/reviews-testimonials/page.tsx` | Video reviews and student testimonial gallery page |
-| `src/app/(site)/blog/page.tsx` | Blog articles listing page |
-| `src/app/(site)/blog/[slug]/page.tsx` | Dynamic blog post detail page with markdown / HTML content |
-| `src/app/(site)/contact/page.tsx` | Contact us page with address, Google Maps & enquiry form |
-| `src/app/(site)/hire-from-us/page.tsx` | B2B employer placement request portal |
-| `src/app/(site)/qimd-franchise/page.tsx` | Franchise partnership application portal |
-| `src/app/(site)/careers/page.tsx` | Job openings page for hiring institute faculty |
-| `src/app/(site)/faqs/page.tsx` | Public FAQ accordion page |
-| `src/app/(site)/gallery/page.tsx` | Campus photo & event media gallery page |
-| `src/app/(site)/privacy-policy/page.tsx` | Legal privacy policy document page |
-| `src/app/(site)/refund-policy/page.tsx` | Legal refund & cancellation policy page |
-
----
-
-### 🛡️ CMS Admin Dashboard Routes (`src/app/admin`)
-
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `src/app/admin/AdminShell.tsx` | Master Admin Sidebar & Navigation Layout |
-| `src/app/admin/login/page.tsx` | Admin login page with credentials form |
-| `src/app/admin/dashboard/page.tsx` | Admin overview dashboard showing analytics & lead counters |
-| `src/app/admin/banners/page.tsx` | Homepage Banners server component fetching banner records |
-| `src/app/admin/banners/BannerManagementClient.tsx` | Client UI for Banner CMS (upload, edit, deactivate, delete) |
-| `src/app/admin/courses/page.tsx` | Course CMS page for managing curriculum & fees |
-| `src/app/admin/course-categories/page.tsx` | Course category management page |
-| `src/app/admin/placements/page.tsx` | Student placement CMS page |
-| `src/app/admin/testimonials/page.tsx` | Student review & video testimonial CMS page |
-| `src/app/admin/reviews/page.tsx` | Rating & text review CMS page |
-| `src/app/admin/blogs/page.tsx` | Blog post creator & editor CMS page |
-| `src/app/admin/trainers/page.tsx` | Instructor & trainer management CMS page |
-| `src/app/admin/team/page.tsx` | Institute team member CMS page |
-| `src/app/admin/partners/page.tsx` | Hiring partner company logo CMS page |
-| `src/app/admin/faqs/page.tsx` | FAQ editor CMS page |
-| `src/app/admin/enquiries/admission/page.tsx` | CRM Admission Enquiries lead table |
-| `src/app/admin/enquiries/franchise/page.tsx` | CRM Franchise Partner lead table |
-| `src/app/admin/enquiries/hire/page.tsx` | CRM Company Placement hiring lead table |
-| `src/app/admin/enquiries/careers/page.tsx` | CRM Faculty Job applicant resume table |
-| `src/app/admin/enquiries/contact/page.tsx` | CRM Contact Us lead table |
-| `src/app/admin/header/page.tsx` | Navbar header settings CMS page |
-| `src/app/admin/footer/page.tsx` | Footer settings & quick links CMS page |
-
----
-
-### ⚡ Server Actions & Dual DB Sync (`src/app/actions`)
-
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `src/app/actions/bannerActions.ts` | Server Actions for Banner CRUD (`saveBannerAction`, `deleteBannerPermanentlyAction`, `getPublicBannersAction`) with 2-way Supabase & Local DB sync |
-
----
-
-### 🔌 API Endpoints (`src/app/api`)
-
-| Route Endpoint | HTTP Method | Description & Purpose |
+| Layer | Technology | Description |
 | :--- | :--- | :--- |
-| `src/app/api/public/banners/route.ts` | `GET` | Public API returning active banners for homepage carousel |
-| `src/app/api/admin/banners/route.ts` | `GET` | Admin API returning all banner records for CMS grid |
-| `src/app/api/upload/route.ts` | `POST` | File upload API processing images & saving to `/public/uploads` |
-| `src/app/api/auth/[...nextauth]/route.ts` | `GET / POST` | NextAuth authentication handler |
-| `src/app/api/settings/route.ts` | `GET` | Public API returning site header & footer settings |
+| **Framework** | Next.js 15.1+ (App Router) | React Server Components, Server Actions, API routes, Turbopack |
+| **UI Library** | React 19 | Latest concurrent React features |
+| **Language** | TypeScript 5 | End-to-end type safety |
+| **Styling** | Tailwind CSS v4 | Modern styling with `@tailwindcss/postcss` |
+| **Database** | PostgreSQL / Supabase | Scalable relational database with connection pooling |
+| **ORM** | Prisma 6.4 | Type-safe query engine and schema migrations |
+| **Auth** | NextAuth.js & JWT / bcryptjs | Role-Based Access Control (RBAC), secure sessions |
+| **Icons** | Iconify React (`@iconify/react`) | Extended icon support across frontend and CMS |
+| **Animations** | AOS & Framer Motion | Smooth scroll reveal and transition animations |
+| **Carousels** | React Slick & Slick Carousel | Responsive hero banners and testimonial carousels |
+| **Documents** | PDFKit | Automated server-side PDF document generation |
+| **Notifications** | React Hot Toast | Real-time toast feedback across admin and frontend |
 
 ---
 
-### 🎨 UI Components (`src/components`)
+## 🗄 Database Schema & Models Reference
 
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `src/components/Home/Hero/index.tsx` | Main hero section component containing search, counters, CTA & form |
-| `src/components/Home/Hero/HeroBannerCarousel.tsx` | Auto-rotating banner carousel component supporting dynamic images & blank states |
-| `src/components/Common/EnquiryForm.tsx` | Lead enquiry form component with input validation |
+The database is defined in `prisma/schema.prisma` and includes the following models:
+
+### 1. Users & Administration
+- **`User` (`users`)**: Administrator accounts with role-based access (`SUPER_ADMIN`, `ADMIN`, `CONTENT_MANAGER`), hashed passwords (`bcryptjs`), and activity audit linkages.
+- **`AuditLog` (`audit_logs`)**: Security and change log tracking user actions, affected modules, record IDs, IP addresses, and user agents.
+- **`NotificationLog` (`notification_logs`)**: Delivery logs for system notifications and alerts.
+- **`Report` (`reports`)**: Generated analytical and export reports (PDF / Excel).
+
+### 2. Academics & Faculty
+- **`CourseCategory` (`course_categories`)**: Academic domains (e.g., Digital Marketing, UI/UX Design, Full Stack Development).
+- **`Course` (`courses`)**: Comprehensive course details including slug, pricing, discount fees, duration, mode (Online/Offline/Hybrid), syllabus, outcomes, demo videos, and brochure links.
+- **`Brochure` (`brochures`)**: Downloadable course brochures and syllabi.
+- **`Trainer` (`trainers`)**: Faculty profiles, bio, certifications, social links, and linked courses.
+- **`TeamMember` (`teams`)**: Institute leadership and operational staff profiles.
+
+### 3. Proof & Social Verification
+- **`Placement` (`placements`)**: Student placement success records with salary package, hiring company, designation, photos, and optional video stories.
+- **`Testimonial` (`testimonials`)**: Video and text student reviews with ratings and quotes.
+- **`StudentReview` (`student_reviews`)**: Additional student ratings and feedback entries.
+- **`Partner` (`partners`)**: Hiring partner company logos and links.
+- **`EmiPartner` (`emi_partners`)**: Financial institutions and NBFC partners offering 0% EMI options.
+
+### 4. Marketing & Content
+- **`Banner` (`banners`)**: Hero carousel banners with title accents, badges, tags, custom color accents, and imagery.
+- **`Blog` (`blogs`)**: MDX and rich-text blog posts with reading time estimates, author attribution, and SEO tags.
+- **`Gallery` (`gallery`)**: Campus event media (photos and videos) grouped by album and category.
+- **`Faq` (`faqs`)**: Categorized questions and answers for course and admissions support.
+- **`WebPage` (`web_pages`) & `PageSection` (`page_sections`)**: Dynamic page builder for custom pages and customizable content blocks.
+
+### 5. CRM & Lead Capture Enquiries
+- **`AdmissionEnquiry` (`admission_enquiries`)**: Student course leads with status (`NEW`, `PENDING`, `CONTACTED`, `CLOSED`).
+- **`FranchisePartnerEnquiry` (`franchise_partner_enquiries`)**: Franchise applications with investment capacity and city details.
+- **`CompanyPlacementEnquiry` (`company_placement_enquiries`)**: Corporate recruiter hiring requests with job roles, vacancies, and skill requirements.
+- **`CareerEnquiry` (`career_enquiries`)**: Faculty job applications linked to specific `JobOpening` entries with resume URLs.
+- **`ContactEnquiry` (`contact_enquiries`)**: General inquiries from the contact form.
+- **`JobOpening` (`job_openings`)**: Active institute job postings and faculty openings.
+
+### 6. Dynamic Site Settings
+- **`WebsiteSettings` (`website_settings`)**: Global site configurations (branding, contact information, social links, SEO tags).
+- **`HeaderSettings` (`header_settings`) & `HeaderContactItem` (`header_contact_items`)**: Top navbar configuration, CTA buttons, and quick contacts.
+- **`FooterSettings` (`footer_settings`), `FooterContactItem` (`footer_contact_items`), `FooterColumn` (`footer_columns`), `FooterColumnLink` (`footer_column_links`)**: Multi-column footer layout, copyright info, and link trees.
 
 ---
 
-### 🔐 Core Libraries & Auth (`src/lib`)
+## 📁 Project Directory & File Structure
 
-| File Path | Description & Purpose |
-| :--- | :--- |
-| `src/lib/db.ts` | Prisma Client singleton database connection instance |
-| `src/lib/auth.ts` | Authentication session verifier & RBAC middleware helpers |
-| `src/lib/mediaService.ts` | Media reference checker preventing safe file deletion if used elsewhere |
+```
+package/
+├── markdown/                 # Static MDX blog content files
+│   └── blog/                 # Sample and legacy MDX articles
+├── prisma/
+│   └── schema.prisma         # Prisma schema definitions (22 models)
+├── public/
+│   ├── images/               # Logos, hero graphics, partner logos, banners
+│   └── uploads/              # Uploaded media (images, resumes, brochures)
+├── src/
+│   ├── app/
+│   │   ├── (site)/           # Public-facing website pages & layout
+│   │   ├── admin/            # CMS & CRM Admin dashboard pages
+│   │   ├── actions/          # Next.js Server Actions (CMS, CRM, Media, Auth)
+│   │   ├── api/              # REST API endpoints (Public, Admin, Upload, Export)
+│   │   ├── favicon.ico
+│   │   ├── globals.css       # Tailwind CSS v4 styles & theme variables
+│   │   └── layout.tsx        # Root HTML wrapper with NextThemes & TopLoader
+│   ├── components/
+│   │   ├── Admin/            # Admin UI widgets, data tables, modals
+│   │   ├── Auth/             # Login, register, and password forms
+│   │   ├── Common/           # Shared UI (Breadcrumbs, CourseCard, PhoneInput, Loader)
+│   │   ├── Contact/          # Contact page components and maps
+│   │   ├── Home/             # Homepage components (Hero, Courses, WhyQimd, FAQ, etc.)
+│   │   ├── Layout/           # Global Header, Navigation, and Footer
+│   │   └── SharedComponent/  # Sub-hero banners and reusable widgets
+│   ├── lib/
+│   │   ├── db.ts             # Prisma Client singleton
+│   │   ├── auth.ts           # Authentication session & RBAC helpers
+│   │   ├── mediaService.ts   # Media management and safe delete validator
+│   │   ├── validations.ts    # Zod schema validation rules
+│   │   └── audit.ts          # Security audit logging engine
+│   └── types/                # TypeScript interfaces and types
+├── next.config.mjs           # Next.js configuration (images, domains)
+├── package.json              # Project dependencies & npm scripts
+├── postcss.config.mjs        # PostCSS configuration for Tailwind CSS v4
+└── tsconfig.json             # TypeScript compiler settings & alias configuration
+```
 
 ---
 
-## 5. Authentication & Authorization Flow
+## 🌐 Public Website Routes
 
-1. Admin inputs credentials at `/admin/login`.
-2. Auth handler validates email against `User` table password hash using `bcryptjs`.
-3. Validated sessions issue a secure HTTP-Only JWT token.
-4. Protected admin routes call `requireContentManagerSession()` or `getAdminSession()` from `src/lib/auth.ts` before rendering data or executing server actions.
-
----
-
-## 6. Environment Variables Reference
-
-| Variable Name | Purpose | Example Value |
+| Route | Page Name | Features & Highlights |
 | :--- | :--- | :--- |
-| `DATABASE_URL` | Supabase Pooled PostgreSQL URL | `postgresql://user:pass@host:6543/postgres?pgbouncer=true` |
-| `DIRECT_URL` | Supabase Direct PostgreSQL URL | `postgresql://user:pass@host:5432/postgres` |
-| `JWT_SECRET` | Secret key for JWT signing | `qimd_super_secret_jwt_key_2026_secure` |
-| `NEXTAUTH_SECRET` | NextAuth encryption secret | `98E3B2CC28F61492C6934531C828C` |
-| `NEXTAUTH_URL` | Application base URL | `http://localhost:3000` |
+| `/` | **Homepage** | Hero slider carousel, course explorer, student placements showcase, EMI calculator, testimonials, campus gallery preview, FAQs |
+| `/about` | **About QIMD** | History, mission, vision, key achievements, and pedagogy |
+| `/about/about-qimd` | **About Overview** | In-depth story of the institute |
+| `/about/our-team` | **Leadership & Faculty** | Executive board, senior instructors, and team directory |
+| `/courses` | **Course Catalog** | Filterable course directory by category and mode |
+| `/courses/[slug]` | **Course Detail** | Curriculum syllabus, fee structures, outcomes, demo preview, and brochure download form |
+| `/brochure/[slug]` | **Brochure Viewer** | Dynamic PDF syllabus preview and direct download |
+| `/admission` | **Admissions** | Admissions process, eligibility criteria, and direct application form |
+| `/placements` | **Placements Portal** | Placed student gallery, hiring company badges, salary packages, and video stories |
+| `/reviews-testimonials`| **Reviews & Stories** | Video interviews, Google reviews rating badges, and student success narratives |
+| `/events` | **Events & Workshops** | Campus masterclasses, bootcamps, and seminar schedules |
+| `/events/[slug]` | **Event Detail** | Detailed workshop registration and speaker schedule |
+| `/blog` | **Blog & Articles** | Industry insights, design tutorials, and marketing trends |
+| `/blog/[slug]` | **Blog Post** | Article reader with author bio, reading time, and related posts |
+| `/gallery` | **Campus Gallery** | Interactive photo albums, events, workshops, and student activities |
+| `/faqs` | **FAQ Knowledgebase**| Searchable accordion covering admissions, fees, and placements |
+| `/contact` | **Contact Us** | Interactive Google Map, branch addresses, phone, and contact form |
+| `/hire-from-us` | **Hire Talent (B2B)** | Corporate recruiter portal to request batches of certified graduates |
+| `/qimd-franchise` | **Franchise Partner** | Franchise application form with investment tier calculator |
+| `/careers` | **Join Our Team** | Current job openings for trainers and staff with resume submission |
+| `/privacy-policy` | **Privacy Policy** | Data privacy and compliance terms |
+| `/refund-policy` | **Refund Policy** | Transparent fee refund guidelines |
+| `/sitemap` | **Visual Sitemap** | Directory tree of all public pages |
 
 ---
 
-## 7. Installation & Deployment Instructions
+## 🛡 CMS Admin Dashboard
 
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-2. **Push Prisma Schema to Databases**:
-   ```bash
-   npx prisma db push
-   npx prisma generate
-   ```
-3. **Run Local Dev Server**:
-   ```bash
-   npm run dev
-   ```
-4. **Build for Production**:
-   ```bash
-   npm run build
-   npm run start
-   ```
+Accessible at `/admin` (or `/admin/login`):
+
+- **`/admin/dashboard`**: High-level metrics overview (total leads, active courses, placed students, recent applications).
+- **`/admin/banners`**: Manage homepage hero slider banners (upload images, customize badges, accent colors, and display order).
+- **`/admin/courses` & `/admin/course-categories`**: Create, edit, and organize courses, pricing, syllabi, and categories.
+- **`/admin/trainers` & `/admin/team`**: Manage instructors and team profiles.
+- **`/admin/placements`**: Record student placements with company logos, package figures, and video success links.
+- **`/admin/testimonials` & `/admin/reviews`**: Curate video testimonials and rating reviews.
+- **`/admin/blogs`**: Write and publish blog articles.
+- **`/admin/gallery`**: Organize photo albums and media assets.
+- **`/admin/partners`**: Manage hiring partner company logos.
+- **`/admin/brochures`**: Upload and link PDF course syllabi.
+- **`/admin/faqs`**: Manage public FAQ items.
+- **`/admin/careers`**: Post job openings and review candidate applicants.
+- **`/admin/pages`**: Create custom dynamic web pages and manage modular page sections.
+- **CRM Leads Management**:
+  - `/admin/enquiries/admission`: Admission leads with follow-up status.
+  - `/admin/enquiries/franchise`: Franchise partnership applications.
+  - `/admin/enquiries/hire`: Corporate hiring talent requests.
+  - `/admin/enquiries/careers`: Candidate job applications with resume downloads.
+  - `/admin/enquiries/contact`: General website inquiries.
+- **Site Layout & Settings**:
+  - `/admin/header`: Customize navbar branding, contact info, and navigation items.
+  - `/admin/footer`: Customize footer columns, links, social handles, and copyright.
+  - `/admin/logo`: Global logo asset management.
+  - `/admin/users`: Admin user accounts and role assignments.
+  - `/admin/audit-logs`: System audit trail for security compliance.
+  - `/admin/reports`: Data export tools for CRM leads and analytics.
+
+---
+
+## ⚡ Server Actions Reference
+
+All data mutations are handled by server actions in `src/app/actions/`:
+
+| File | Primary Functions |
+| :--- | :--- |
+| `authActions.ts` | `adminLoginAction`, `adminLogoutAction`, `changePasswordAction` |
+| `bannerActions.ts` | `saveBannerAction`, `toggleBannerStatusAction`, `deleteBannerPermanentlyAction`, `getPublicBannersAction` |
+| `cmsActions.ts` | Course, Trainer, Category, Blog, Placement, Testimonial, and FAQ CRUD operations |
+| `crmActions.ts` | Lead submission and CRM status workflows for Admissions, Franchise, Hiring, Careers, and Contact |
+| `careerActions.ts` | Job opening creation, editing, status toggling, and applicant status changes |
+| `headerActions.ts` | Save header configuration, manage top-bar contact items |
+| `footerActions.ts` | Save footer settings, manage footer columns and navigation links |
+| `pageActions.ts` | Create, update, and manage dynamic WebPages |
+| `sectionActions.ts` | Add, reorder, and modify modular PageSections |
+| `partnerActions.ts` | Add and update Hiring and EMI financing partners |
+| `mediaActions.ts` | Media upload verification and safe deletion validation |
+| `userActions.ts` | Create admin accounts, update roles, deactivate users |
+| `websiteManagementActions.ts` | Manage global SEO, analytics IDs, and contact info |
+
+---
+
+## 🔌 API Endpoints Reference
+
+### Public APIs
+- `GET /api/public/banners`: Returns active hero banners for the homepage carousel.
+- `GET /api/public/reviews`: Returns published student reviews and star ratings.
+- `GET /api/public-gallery`: Returns published gallery albums and photos.
+- `GET /api/public-settings`: Returns public branding, social links, and header/footer data.
+- `GET /api/public/brochures/download`: Handles secure brochure syllabus file downloads.
+
+### Admin APIs
+- `GET /api/admin/banners`: Fetch all banners (active and inactive).
+- `GET /api/admin/courses`: Fetch all courses with category relations.
+- `GET /api/admin/blogs`: Fetch blog articles.
+- `GET /api/admin/enquiries`: Fetch CRM lead records by type and status.
+- `GET /api/admin/placements`: Fetch placement records.
+- `GET /api/admin/testimonials`: Fetch video and text testimonials.
+- `GET /api/admin/trainers`: Fetch faculty members.
+- `GET /api/admin/gallery`: Fetch all gallery items.
+- `GET /api/admin/faqs`: Fetch FAQ list.
+- `GET /api/admin/settings`: Fetch internal site configuration.
+
+### Utilities & Uploads
+- `POST /api/upload`: Handles file uploads (images, PDFs) saving to `/public/uploads`.
+- `POST /api/upload/career-resume`: Handles resume uploads with file type and size validation.
+- `GET /api/export`: Generates lead exports in CSV / Excel format.
+- `GET/POST /api/auth/[...nextauth]`: NextAuth handler for session management.
+
+---
+
+## 🔐 Authentication & Authorization
+
+- **Password Hashing**: Uses `bcryptjs` with salt rounds.
+- **Session Tokens**: JWT-based session cookies verified on protected actions and routes.
+- **RBAC Matrix**:
+  - `SUPER_ADMIN`: Full access (user management, audit logs, database backups, all CMS/CRM).
+  - `ADMIN`: Full CMS and CRM access (courses, banners, leads, inquiries).
+  - `CONTENT_MANAGER`: Content creation and blog authoring permissions.
+- **Route Protection**: Implemented via session verifiers in `src/lib/auth.ts` (`getAdminSession()`, `requireContentManagerSession()`).
+
+---
+
+## ⚙️ Environment Variables Reference
+
+Create a `.env` file in the root of the `package` directory:
+
+```env
+# Database Connections (Supabase PostgreSQL)
+DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+
+# Authentication Secrets
+JWT_SECRET="your_custom_jwt_secret_key_here"
+NEXTAUTH_SECRET="your_custom_nextauth_secret_key_here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Application Settings
+NODE_ENV="development"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+```
+
+---
+
+## 🚀 Installation & Getting Started
+
+### 1. Prerequisites
+- **Node.js**: `v18.18.0` or higher (Node `v20+` recommended)
+- **npm** or **pnpm** / **yarn**
+- **PostgreSQL** database instance (e.g. Supabase, AWS RDS, or local PostgreSQL)
+
+### 2. Install Dependencies
+```bash
+cd package
+npm install
+```
+
+### 3. Initialize Prisma
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+```
+
+### 4. Run Development Server
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to view the public website, or [http://localhost:3000/admin](http://localhost:3000/admin) to access the CMS admin panel.
+
+---
+
+## 💾 Database Management & Seeding
+
+```bash
+# Open Prisma Studio GUI
+npx prisma studio
+
+# Seed initial admin user and sample courses/banners (if configured)
+npx tsx src/lib/seed.ts
+
+# Format Prisma schema
+npx prisma format
+```
+
+---
+
+## 🚢 Deployment & Production Build
+
+### Building for Production
+```bash
+# Create optimized production build
+npm run build
+
+# Start production server
+npm run start
+```
+
+### Deployment Recommendations
+- **Hosting**: Vercel, AWS Amplify, Railway, or Docker container on VPS.
+- **Database**: Supabase PostgreSQL with connection pooling enabled.
+- **File Storage**: Ensure persistent volume or cloud bucket storage is configured if scaling across multi-container serverless instances.
+
+---
+
+© 2026 **QIMD (Quickup Institute of Marketing & Design)**. All rights reserved.
