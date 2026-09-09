@@ -284,16 +284,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
             {/* Main Blog Article Container */}
             <article className="lg:col-span-8 bg-white dark:bg-darklight rounded-2xl p-6 sm:p-9 shadow-xs border border-border dark:border-dark_border">
               
-              {/* Featured Cover Image */}
+              {/* Featured Cover Image - Full banner visualization */}
               {heroImage && (
-                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs bg-slate-950">
+                <div className="w-full rounded-2xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs bg-slate-950">
                   <Image
                     src={heroImage}
                     alt={post.title}
-                    fill
+                    width={1920}
+                    height={1080}
                     priority
                     sizes="(max-width: 768px) 100vw, 900px"
-                    className="object-cover object-center"
+                    className="w-full h-auto object-contain block rounded-2xl"
                   />
                 </div>
               )}
@@ -359,14 +360,15 @@ export default async function BlogDetailPage({ params }: PageProps) {
                           {subImages.map((imgSrc: string, i: number) => (
                             <div
                               key={i}
-                              className="relative aspect-[16/10] rounded-xl overflow-hidden border border-slate-200/80 dark:border-dark_border shadow-xs"
+                              className="w-full rounded-xl overflow-hidden border border-slate-200/80 dark:border-dark_border shadow-xs bg-slate-950"
                             >
                               <Image
                                 src={imgSrc}
                                 alt={`${post.title} Preview ${i + 1}`}
-                                fill
+                                width={1920}
+                                height={1080}
                                 sizes="(max-width: 768px) 50vw, 33vw"
-                                className="object-cover hover:scale-105 transition-transform duration-300"
+                                className="w-full h-auto object-contain hover:scale-105 transition-transform duration-300 block"
                               />
                             </div>
                           ))}
