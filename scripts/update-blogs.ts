@@ -7,7 +7,12 @@ export const newBlogsData = [
     category: "Digital Marketing",
     author: "QIMD Institute",
     readingTime: 6,
-    featuredImage: "/images/courses/digital-marketing.jpg",
+    featuredImage: "/images/blogs/digital-marketing/DM-Banner.jpg",
+    images: [
+      "/images/blogs/digital-marketing/1.jpg",
+      "/images/blogs/digital-marketing/2.jpg",
+      "/images/blogs/digital-marketing/3.jpg",
+    ],
     metaTitle: "Best Digital Marketing Course in Pune | Enrol Now",
     metaDescription: "Looking for the best digital marketing course in Pune? Compare syllabus, fees, placement claims and batch formats, then enroll in a practical AI-powered program.",
     canonicalUrl: "https://quickuppinstitute.com/blog/best-digital-marketing-course-in-pune",
@@ -129,7 +134,12 @@ Free certifications teach you tool interfaces. A classroom program gives you liv
     category: "Graphic Design",
     author: "QIMD Institute",
     readingTime: 6,
-    featuredImage: "/images/courses/graphic-design.jpg",
+    featuredImage: "/images/blogs/graphic-design/GD-Banner.jpg",
+    images: [
+      "/images/blogs/graphic-design/1.jpg",
+      "/images/blogs/graphic-design/2.jpg",
+      "/images/blogs/graphic-design/3.jpg",
+    ],
     metaTitle: "Best Graphic Design Course in Pune | Enrol Now",
     metaDescription: "Looking for the best graphic design course in Pune? Compare syllabus, software, portfolio output and placement claims, then enrol in a practical AI-powered program.",
     canonicalUrl: "https://quickuppinstitute.com/blog/best-graphic-design-course-in-pune",
@@ -251,7 +261,12 @@ Tutorials teach you where the buttons are. A classroom program gives you real cl
     category: "Video Editing",
     author: "QIMD Institute",
     readingTime: 6,
-    featuredImage: "/images/courses/video-editing.jpg",
+    featuredImage: "/images/blogs/video-editing/VE-Banner.jpg",
+    images: [
+      "/images/blogs/video-editing/1.jpg",
+      "/images/blogs/video-editing/2.jpg",
+      "/images/blogs/video-editing/3.jpg",
+    ],
     metaTitle: "Best Video Editing Course in Pune | Enrol Now",
     metaDescription: "Looking for the best video editing course in Pune? Compare syllabus, software, showreel output and placement claims, then enroll in a practical AI-powered program.",
     canonicalUrl: "https://quickuppinstitute.com/blog/best-video-editing-course-in-pune",
@@ -373,7 +388,11 @@ YouTube teaches you techniques in isolation. A classroom program gives you real 
     category: "Career Development",
     author: "QIMD Institute",
     readingTime: 6,
-    featuredImage: "/images/blog/blog-4.jpg",
+    featuredImage: "/images/blogs/career-development/CD-Banner.jpg",
+    images: [
+      "/images/blogs/career-development/1.jpg",
+      "/images/blogs/career-development/2.jpg",
+    ],
     metaTitle: "Career Development Guide for Freshers | QIMD Institute",
     metaDescription: "A practical career development guide for freshers: how to build a portfolio, get promoted past the entry level, and grow a skill that compounds year on year.",
     canonicalUrl: "https://quickuppinstitute.com/blog/career-development-guide-for-freshers",
@@ -486,7 +505,7 @@ Yes. Two years of repeat batch access and continued mentor guidance, which cover
 ]
 
 async function main() {
-  console.log('🔄 Cleaning up and migrating 4 official blogs...')
+  console.log('🔄 Cleaning up and migrating 4 official blogs with banner and subimages...')
 
   await db.blog.deleteMany({})
 
@@ -499,6 +518,7 @@ async function main() {
         author: blog.author,
         readingTime: blog.readingTime,
         featuredImage: blog.featuredImage,
+        images: blog.images,
         metaTitle: blog.metaTitle,
         metaDescription: blog.metaDescription,
         canonicalUrl: blog.canonicalUrl,
@@ -507,17 +527,18 @@ async function main() {
         status: blog.status,
         isActive: blog.isActive,
         content: blog.content,
-        images: [blog.featuredImage],
       },
     })
-    console.log(`✅ Cleanly migrated: [${blog.category}] ${blog.title}`)
+    console.log(`✅ Cleanly migrated: [${blog.category}] ${blog.title} with banner & ${blog.images.length} sub-images`)
   }
 
-  console.log('🎉 Migration finished with exact structure and links!')
+  console.log('🎉 Migration finished with exact structure and images!')
 }
 
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
+if (process.argv[1] && (process.argv[1].endsWith('update-blogs.ts') || process.argv[1].endsWith('update-blogs.js'))) {
+  main()
+    .catch((e) => {
+      console.error(e)
+      process.exit(1)
+    })
+}

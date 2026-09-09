@@ -909,9 +909,11 @@ export const blogsData: BlogPost[] = [
     title: "Best Digital Marketing Program in Pune",
     excerpt:
       "Choosing a digital marketing program in Pune? This guide covers what a real syllabus should include, how to test a placement claim before you pay, what fees typically run across the city, and the questions most students forget to ask on the demo call. You'll get a clear checklist for picking a program that ends in a job, not just a certificate.",
-    coverImage: "/images/courses/digital-marketing.jpg",
+    coverImage: "/images/blogs/digital-marketing/DM-Banner.jpg",
     images: [
-      "/images/courses/digital-marketing.jpg",
+      "/images/blogs/digital-marketing/1.jpg",
+      "/images/blogs/digital-marketing/2.jpg",
+      "/images/blogs/digital-marketing/3.jpg",
     ],
     author: "QIMD Institute",
     publishedAt: "2026-09-01",
@@ -925,9 +927,11 @@ export const blogsData: BlogPost[] = [
     title: "Best Graphic Design Program in Pune",
     excerpt:
       "Choosing a graphic design program in Pune? This guide covers what a real syllabus should include beyond Photoshop, how to judge an institute by the portfolios its students leave with, what fees typically run across the city, and where AI tools now fit into a designer's day. You'll get a clear checklist for picking a program that ends in a job, not just a software certificate.",
-    coverImage: "/images/courses/graphic-design.jpg",
+    coverImage: "/images/blogs/graphic-design/GD-Banner.jpg",
     images: [
-      "/images/courses/graphic-design.jpg",
+      "/images/blogs/graphic-design/1.jpg",
+      "/images/blogs/graphic-design/2.jpg",
+      "/images/blogs/graphic-design/3.jpg",
     ],
     author: "QIMD Institute",
     publishedAt: "2026-09-01",
@@ -941,9 +945,11 @@ export const blogsData: BlogPost[] = [
     title: "Best Video Editing Program in Pune",
     excerpt:
       "Choosing a video editing program in Pune? This guide covers what a real syllabus should include beyond timeline basics, how to judge an institute by the showreels its students leave with, what fees typically run across the city, and where AI editing tools now fit. You'll get a clear checklist for picking a program that ends in paid work, not just a software certificate.",
-    coverImage: "/images/courses/video-editing.jpg",
+    coverImage: "/images/blogs/video-editing/VE-Banner.jpg",
     images: [
-      "/images/courses/video-editing.jpg",
+      "/images/blogs/video-editing/1.jpg",
+      "/images/blogs/video-editing/2.jpg",
+      "/images/blogs/video-editing/3.jpg",
     ],
     author: "QIMD Institute",
     publishedAt: "2026-09-01",
@@ -957,9 +963,10 @@ export const blogsData: BlogPost[] = [
     title: "Career Development: How to Grow From Your First Job Into a Career You Chose",
     excerpt:
       "Career development is what happens between your first job and the one you actually wanted. This guide covers what it means in practice, why most careers stall around year two, how to build a plan that survives contact with a real job, which skills compound over time, and what changes at each stage from fresher to decision-maker.",
-    coverImage: "/images/blog/blog-4.jpg",
+    coverImage: "/images/blogs/career-development/CD-Banner.jpg",
     images: [
-      "/images/blog/blog-4.jpg",
+      "/images/blogs/career-development/1.jpg",
+      "/images/blogs/career-development/2.jpg",
     ],
     author: "QIMD Institute",
     publishedAt: "2026-09-01",

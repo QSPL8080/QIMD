@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -139,6 +140,11 @@ function parseBlogContent(rawContent: string) {
       continue;
     }
 
+    // Skip any standalone image markdown
+    if (/^!\[.*?\]\(.*?\)$/.test(line)) {
+      continue;
+    }
+
     // Check for H2 Heading
     if (line.startsWith("## ")) {
       flushList();
@@ -221,6 +227,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           : null,
         isEdited: dbPost.updatedAt && dbPost.updatedAt > dbPost.createdAt,
         coverImage: dbPost.featuredImage || "/images/blog/blog-1.jpg",
+        images: Array.isArray(dbPost.images) ? (dbPost.images as string[]) : [],
         excerpt: dbPost.metaDescription || (dbPost.content ? dbPost.content.substring(0, 160) + "..." : ""),
         content: dbPost.content,
         tags: Array.isArray(dbPost.tags) ? (dbPost.tags as string[]) : ["QIMD", "Industry Insights"],
@@ -241,7 +248,23 @@ export default async function BlogDetailPage({ params }: PageProps) {
     .slice(0, 3);
 
   const heroImage = post.coverImage || "/images/courses/digital-marketing.jpg";
+  const rawImages = (post.images || []).filter((img: string) => img && img !== heroImage);
+  const subImages = rawImages.length > 0 ? rawImages : [];
   const { toc, blocks } = parseBlogContent(post.content || "");
+
+  // Find all H2 indices to position the side-by-side subimages in between sections
+  const h2Indices: number[] = [];
+  blocks.forEach((b, idx) => {
+    if (b.type === "h2") {
+      h2Indices.push(idx);
+    }
+  });
+  const midH2BlockIdx =
+    h2Indices.length > 2
+      ? h2Indices[Math.floor(h2Indices.length / 2)]
+      : blocks.length > 2
+      ? Math.floor(blocks.length / 2)
+      : -1;
 
   return (
     <>
@@ -328,70 +351,82 @@ export default async function BlogDetailPage({ params }: PageProps) {
               <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-normal">
                 {blocks.map((block, idx) => {
                   
-                  // Section H2 Heading
-                  if (block.type === "h2") {
-                    return (
-                      <div key={idx} id={block.id} className="pt-5 scroll-mt-24">
-                        <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                          {formatInlineText(block.title || "")}
-                        </h2>
-                      </div>
-                    );
-                  }
+                  return (
+                    <React.Fragment key={idx}>
+                      {/* ─── IN-BETWEEN SIDE BY SIDE SUB-IMAGES ─── */}
+                      {idx === midH2BlockIdx && subImages.length > 0 && (
+                        <div className={`grid gap-3 sm:gap-4 my-8 ${subImages.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'}`}>
+                          {subImages.map((imgSrc: string, i: number) => (
+                            <div
+                              key={i}
+                              className="relative aspect-[16/10] rounded-xl overflow-hidden border border-slate-200/80 dark:border-dark_border shadow-xs"
+                            >
+                              <Image
+                                src={imgSrc}
+                                alt={`${post.title} Preview ${i + 1}`}
+                                fill
+                                sizes="(max-width: 768px) 50vw, 33vw"
+                                className="object-cover hover:scale-105 transition-transform duration-300"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-                  // Section H3 / FAQ Question
-                  if (block.type === "h3") {
-                    return (
-                      <div key={idx} id={block.id} className="pt-3 scroll-mt-24">
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                          {formatInlineText(block.title || "")}
-                        </h3>
-                      </div>
-                    );
-                  }
+                      {/* Section H2 Heading */}
+                      {block.type === "h2" && (
+                        <div id={block.id} className="pt-5 scroll-mt-24">
+                          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                            {formatInlineText(block.title || "")}
+                          </h2>
+                        </div>
+                      )}
 
-                  // Bulleted List (Clean bullet points matching Google Docs)
-                  if (block.type === "list" && block.items) {
-                    return (
-                      <ul key={idx} className="list-disc pl-5 space-y-1.5 my-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
-                        {block.items.map((item, itemIdx) => {
-                          const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
-                          return (
-                            <li key={itemIdx} className="leading-relaxed">
-                              {boldMatch ? (
-                                <>
-                                  <strong className="font-bold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
-                                  <span>{formatInlineText(boldMatch[2])}</span>
-                                </>
-                              ) : (
-                                formatInlineText(item)
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    );
-                  }
+                      {/* Section H3 / FAQ Question */}
+                      {block.type === "h3" && (
+                        <div id={block.id} className="pt-3 scroll-mt-24">
+                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug">
+                            {formatInlineText(block.title || "")}
+                          </h3>
+                        </div>
+                      )}
 
-                  // Date Line (e.g. Sep 01, 2026)
-                  if (block.type === "date") {
-                    return (
-                      <p key={idx} className="text-xs italic text-slate-500 dark:text-slate-400 my-1">
-                        {block.content}
-                      </p>
-                    );
-                  }
+                      {/* Bulleted List (Clean bullet points matching Google Docs) */}
+                      {block.type === "list" && block.items && (
+                        <ul className="list-disc pl-5 space-y-1.5 my-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                          {block.items.map((item, itemIdx) => {
+                            const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
+                            return (
+                              <li key={itemIdx} className="leading-relaxed">
+                                {boldMatch ? (
+                                  <>
+                                    <strong className="font-bold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
+                                    <span>{formatInlineText(boldMatch[2])}</span>
+                                  </>
+                                ) : (
+                                  formatInlineText(item)
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
 
-                  // Regular Paragraph
-                  if (block.type === "paragraph" && block.content) {
-                    return (
-                      <p key={idx} className="leading-relaxed">
-                        {formatInlineText(block.content)}
-                      </p>
-                    );
-                  }
+                      {/* Date Line (e.g. Sep 01, 2026) */}
+                      {block.type === "date" && (
+                        <p className="text-xs italic text-slate-500 dark:text-slate-400 my-1">
+                          {block.content}
+                        </p>
+                      )}
 
-                  return null;
+                      {/* Regular Paragraph */}
+                      {block.type === "paragraph" && block.content && (
+                        <p className="leading-relaxed">
+                          {formatInlineText(block.content)}
+                        </p>
+                      )}
+                    </React.Fragment>
+                  );
                 })}
               </div>
 
