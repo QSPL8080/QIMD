@@ -152,8 +152,7 @@ package/
 | Route | Page Name | Features & Highlights |
 | :--- | :--- | :--- |
 | `/` | **Homepage** | Hero slider carousel, course explorer, student placements showcase, EMI calculator, testimonials, campus gallery preview, FAQs |
-| `/about` | **About QIMD** | History, mission, vision, key achievements, and pedagogy |
-| `/about/about-qimd` | **About Overview** | In-depth story of the institute |
+| `/about/about-qimd` | **About QIMD** | History, mission, vision, key achievements, pedagogy, and institute story |
 | `/about/our-team` | **Leadership & Faculty** | Executive board, senior instructors, and team directory |
 | `/courses` | **Course Catalog** | Filterable course directory by category and mode |
 | `/courses/[slug]` | **Course Detail** | Curriculum syllabus, fee structures, outcomes, demo preview, and brochure download form |
