@@ -40,21 +40,21 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, featured = false }) => {
       }`}
     >
       {/* Single Primary Image Banner */}
-      <div className="relative w-full h-60 sm:h-64 bg-slate-900 overflow-hidden">
+      <div className="relative w-full aspect-[16/9] bg-slate-950 overflow-hidden">
         <Link href={`/blog/${slug}`} className="block relative w-full h-full">
           <Image
             src={primaryImage}
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
         </Link>
 
         {/* Category Pill Overlay */}
-        <div className="absolute top-3 left-3 z-10">
-          <span className="bg-primary/90 text-white text-xs font-bold px-3 py-1 rounded-full shadow backdrop-blur-md">
+        <div className="absolute top-3 left-3 z-10 pointer-events-none">
+          <span className="bg-primary/95 text-white text-xs font-bold px-3 py-1 rounded-full shadow backdrop-blur-md">
             {category}
           </span>
         </div>

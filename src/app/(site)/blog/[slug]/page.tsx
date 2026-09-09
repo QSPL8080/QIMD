@@ -286,14 +286,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
               
               {/* Featured Cover Image */}
               {heroImage && (
-                <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs">
+                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs bg-slate-950">
                   <Image
                     src={heroImage}
                     alt={post.title}
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, 800px"
-                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 900px"
+                    className="object-cover object-center"
                   />
                 </div>
               )}
