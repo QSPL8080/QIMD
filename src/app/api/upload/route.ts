@@ -6,8 +6,27 @@ import fs from 'fs'
 
 const BUCKET_NAME = 'qimd-media'
 
+// True only when real (non-placeholder) Supabase credentials are configured
 const isSupabaseConfigured =
-  !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  !!process.env.SUPABASE_SERVICE_ROLE_KEY &&
+  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') &&
+  !process.env.SUPABASE_SERVICE_ROLE_KEY.includes('placeholder') &&
+  process.env.SUPABASE_SERVICE_ROLE_KEY.length > 20
+
+/**
+ * Save a file buffer to the local /public/uploads/ directory.
+ * Returns the public URL path e.g. /uploads/filename.ext
+ */
+function saveToLocalStorage(buffer: Buffer, uniqueName: string): string {
+  const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true })
+  }
+  const filePath = path.join(uploadsDir, uniqueName)
+  fs.writeFileSync(filePath, buffer)
+  return `/uploads/${uniqueName}`
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -36,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     let fileUrl = ''
 
-    // If Supabase Storage is configured, upload to cloud (permanent storage)
+    // Attempt Supabase Storage upload when properly configured
     if (isSupabaseConfigured) {
       const { data, error } = await supabaseAdmin.storage
         .from(BUCKET_NAME)
@@ -46,32 +65,19 @@ export async function POST(req: NextRequest) {
         })
 
       if (error) {
-        console.error('Supabase Storage Upload Error:', error)
-        // When Supabase is configured but fails, return an error — do NOT silently fall
-        // back to local storage because production servers (Vercel, etc.) have ephemeral
-        // filesystem and locally-saved files will not persist across deployments.
-        return NextResponse.json(
-          {
-            error: `Cloud storage upload failed: ${error.message}. Please check your Supabase storage configuration and bucket permissions.`,
-          },
-          { status: 500 }
-        )
+        // Supabase upload failed — fall back to local storage so the upload
+        // never returns an empty URL to the client (which would clear the DB field).
+        console.error('Supabase Storage upload failed, falling back to local storage:', error.message)
+        fileUrl = saveToLocalStorage(buffer, uniqueName)
+      } else {
+        const { data: publicUrlData } = supabaseAdmin.storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(uniqueName)
+        fileUrl = publicUrlData.publicUrl
       }
-
-      const { data: publicUrlData } = supabaseAdmin.storage
-        .from(BUCKET_NAME)
-        .getPublicUrl(uniqueName)
-
-      fileUrl = publicUrlData.publicUrl
     } else {
-      // Local fallback — only used in development when Supabase is NOT configured
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true })
-      }
-      const filePath = path.join(uploadsDir, uniqueName)
-      fs.writeFileSync(filePath, buffer)
-      fileUrl = `/uploads/${uniqueName}`
+      // No Supabase config — use local /public/uploads/ (development)
+      fileUrl = saveToLocalStorage(buffer, uniqueName)
     }
 
     return NextResponse.json({

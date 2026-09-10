@@ -1,15 +1,9 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { PrismaClient } from '@prisma/client'
 import { requireContentManagerSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { safeDeleteUnusedFile } from '@/lib/mediaService'
-
-const localDbUrl = 'postgresql://postgres:8080@localhost:5432/qimd_db?schema=public'
-const localDb = new PrismaClient({
-  datasources: { db: { url: localDbUrl } },
-})
 
 export async function saveBannerAction(
   data: {
