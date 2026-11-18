@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Icon } from '@iconify/react'
 import { galleryData, galleryCategories } from '@/data'
+import { QwHero } from '@/components/WhyQimd/WhyKit'
 
 interface GalleryItem {
   id: string
@@ -135,108 +136,83 @@ function GalleryContent() {
   const activeLightboxItem = lightboxIndex !== null ? filtered[lightboxIndex] : null
 
   return (
-    <>
-      <section
-        className="pt-20 sm:pt-28 pb-16 lg:pb-24 border-b border-slate-200/80 dark:border-dark_border relative overflow-hidden min-h-[60vh] text-midnight_text"
-        style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
-        }}
-      >
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-          {/* Header */}
-          <div className="text-center mb-10" data-aos="fade-up">
-            <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs mb-3">
-              <Icon icon="mdi:image-multiple-outline" className="text-sm" />
-              <span>Campus &amp; Experiential Learning</span>
-            </span>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight leading-tight mb-2">
-              Life at QIMD
-            </h1>
-            <p className="text-primary font-extrabold text-base sm:text-lg mb-4">
-              Where Learning Meets Real-World Experience
+    <div className="qw">
+      <QwHero
+        kicker="Campus & Experiential Learning"
+        icon="mdi:image-multiple-outline"
+        title="Life at QIMD"
+        intro={
+          <>
+            <p className="qw-sub">Where Learning Meets Real-World Experience</p>
+            <p>
+              At QIMD (Quickupp Institute of Marketing &amp; Design), learning goes beyond the classroom. Every day is filled with interactive sessions, practical workshops, live client projects, brainstorming activities, and collaborative learning that prepare students for successful careers.
             </p>
-            <div className="text-slate-600 dark:text-white/70 text-xs sm:text-sm max-w-3xl mx-auto space-y-2 leading-relaxed font-medium">
-              <p>
-                At QIMD (Quickupp Institute of Marketing &amp; Design), learning goes beyond the classroom. Every day is filled with interactive sessions, practical workshops, live client projects, brainstorming activities, and collaborative learning that prepare students for successful careers.
-              </p>
-              <p className="text-slate-900 dark:text-white font-bold text-xs sm:text-sm">
-                Our campus is designed to create an engaging environment where students learn, practice, innovate, and grow together.
-              </p>
-            </div>
-          </div>
+          </>
+        }
+        aside={
+          <p>
+            Our campus is designed to create an engaging environment where students learn, practice, innovate, and grow together.
+          </p>
+        }
+      />
 
-          {/* Category Filter Tabs */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8" data-aos="fade-up">
+      <section className="qw-sec qw-sec-tint qw-gallery-sec">
+        <div className="qw-wrap">
+          {/* Category filter */}
+          <div className="qw-filters" role="tablist" aria-label="Gallery categories">
             {categoriesList.map((cat) => {
               const isActive = cat.toLowerCase() === activeCategory.toLowerCase()
               const count = categoryCounts[cat] || 0
-
               return (
                 <button
                   key={cat}
                   type="button"
                   onClick={() => handleCategorySelect(cat)}
-                  className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-full border transition-all duration-200 cursor-pointer shadow-xs flex items-center gap-1.5 ${
-                    isActive
-                      ? 'bg-primary text-white border-primary shadow-md scale-105'
-                      : 'bg-white dark:bg-darklight text-slate-700 dark:text-white/70 border-slate-200/80 dark:border-dark_border hover:border-primary hover:text-primary hover:bg-slate-50'
-                  }`}
+                  className={`qw-filter${isActive ? ' is-active' : ''}`}
                 >
                   <span>{cat}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {count}
-                  </span>
+                  <span className="qw-filter-count">{count}</span>
                 </button>
               )
             })}
           </div>
 
-          {/* Active Filter Info Badge */}
-          <div className="flex items-center justify-between mb-6 px-2 text-xs font-semibold text-slate-600 dark:text-white/70">
+          {/* Active filter info */}
+          <div className="qw-filter-info">
             <div>
-              Showing <span className="text-[#764DFF] font-bold">{filtered.length}</span> {filtered.length === 1 ? 'media item' : 'media items'}{' '}
+              Showing <strong>{filtered.length}</strong> {filtered.length === 1 ? 'media item' : 'media items'}{' '}
               {activeCategory !== 'All' && (
                 <span>
-                  in <strong className="text-slate-900 dark:text-white">"{activeCategory}"</strong>
+                  in <strong className="qw-accent">"{activeCategory}"</strong>
                 </span>
               )}
             </div>
             {activeCategory !== 'All' && (
-              <button
-                onClick={() => handleCategorySelect('All')}
-                className="text-[#764DFF] hover:underline cursor-pointer flex items-center gap-1"
-              >
+              <button type="button" onClick={() => handleCategorySelect('All')} className="qw-filter-clear">
                 <span>Show All Categories</span>
-                <Icon icon="mdi:close-circle" className="text-sm" />
+                <Icon icon="mdi:close-circle" />
               </button>
             )}
           </div>
 
-          {/* Gallery Grid */}
+          {/* Gallery */}
           {loading ? (
-            <div className="text-center py-20 text-muted dark:text-white/40 text-sm">
-              <Icon icon="ion:sync" className="animate-spin text-3xl mx-auto mb-2 text-primary" />
+            <div className="qw-gallery-state">
+              <Icon icon="ion:sync" className="qw-spin" />
               Loading campus gallery...
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-20 max-w-md mx-auto space-y-3 bg-white/50 backdrop-blur-sm rounded-3xl p-8 border border-slate-200">
-              <Icon icon="mdi:image-off-outline" className="text-muted/40 text-5xl mx-auto mb-1" />
-              <p className="text-midnight_text dark:text-white font-bold text-base">
+            <div className="qw-gallery-state">
+              <Icon icon="mdi:image-off-outline" />
+              <p>
                 No photos found under {activeCategory === 'All' ? 'this gallery' : `the "${activeCategory}" category`}.
               </p>
-              <button
-                onClick={() => handleCategorySelect('All')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#764DFF] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer hover:bg-[#5c38d6]"
-              >
+              <button type="button" onClick={() => handleCategorySelect('All')} className="qw-btn qw-btn-main">
                 <span>View All Media ({galleryItems.length})</span>
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="qw-masonry">
               {filtered.map((image, index) => {
                 const isVideo =
                   image.mediaType === 'VIDEO' ||
@@ -244,53 +220,34 @@ function GalleryContent() {
                   image.fileUrl.includes('vimeo') ||
                   image.fileUrl.endsWith('.mp4')
                 const categoryLabel = image.category || 'Classroom'
-
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={image.id || index}
                     onClick={() => openLightbox(index)}
-                    className="group relative rounded-2xl overflow-hidden aspect-video bg-slate-900 border border-slate-200/80 dark:border-dark_border cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                    className={`qw-shot t${index % 3}`}
                   >
                     {isVideo ? (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-white p-4">
-                        <Icon
-                          icon="ion:play-circle"
-                          className="text-rose-500 text-5xl group-hover:scale-110 transition-transform mb-2"
-                        />
-                        <span className="text-xs font-bold truncate max-w-full">
-                          {image.altText || 'Video Media'}
-                        </span>
-                        <span className="text-[10px] text-slate-400 mt-1 uppercase font-semibold bg-white/10 px-2 py-0.5 rounded-full">
-                          {categoryLabel}
-                        </span>
-                      </div>
+                      <span className="qw-shot-video">
+                        <Icon icon="ion:play-circle" />
+                        <span className="qw-shot-video-title">{image.altText || 'Video Media'}</span>
+                        <span className="qw-shot-cat">{categoryLabel}</span>
+                      </span>
                     ) : (
                       <>
-                        <img
-                          src={image.fileUrl}
-                          alt={image.altText || 'QIMD Campus Media'}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        {/* Gradient Badge Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-85 group-hover:opacity-95 transition-opacity duration-300" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
-                          <span className="inline-block text-[10px] font-bold bg-[#764DFF]/90 text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1 shadow-sm">
-                            {categoryLabel}
-                          </span>
-                          <p className="text-xs font-semibold text-white/95 line-clamp-1">
-                            {image.caption || image.altText || 'QIMD Practical Training'}
-                          </p>
-                        </div>
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center z-20">
-                          <Icon icon="mdi:magnify-plus" className="text-white text-4xl mb-2 drop-shadow-md" />
-                          <span className="text-white text-xs font-bold bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
-                            Click to Expand
-                          </span>
-                        </div>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={image.fileUrl} alt={image.altText || 'QIMD Campus Media'} loading="lazy" />
+                        <span className="qw-shot-caption">
+                          <span className="qw-shot-cat">{categoryLabel}</span>
+                          <span className="qw-shot-text">{image.caption || image.altText || 'QIMD Practical Training'}</span>
+                        </span>
+                        <span className="qw-shot-zoom">
+                          <Icon icon="mdi:magnify-plus" />
+                          <span>Click to Expand</span>
+                        </span>
                       </>
                     )}
-                  </div>
+                  </button>
                 )
               })}
             </div>
@@ -298,79 +255,48 @@ function GalleryContent() {
         </div>
       </section>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       {lightboxIndex !== null && activeLightboxItem && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={closeLightbox}
-        >
-          <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={closeLightbox}
-              className="absolute -top-12 right-0 text-white hover:text-rose-400 transition-colors cursor-pointer"
-              aria-label="Close Lightbox"
-            >
-              <Icon icon="mdi:close" className="text-3xl" />
+        <div className="qw-lightbox" onClick={closeLightbox}>
+          <div className="qw-lightbox-inner" onClick={(e) => e.stopPropagation()}>
+            <button type="button" onClick={closeLightbox} className="qw-lb-btn qw-lb-close" aria-label="Close Lightbox">
+              <Icon icon="mdi:close" />
             </button>
-
-            <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center min-h-[300px] max-h-[75vh] p-2 border border-white/10">
+            <div className="qw-lightbox-media">
               {activeLightboxItem.mediaType === 'VIDEO' || activeLightboxItem.fileUrl.endsWith('.mp4') ? (
-                <video controls className="w-full max-h-[70vh] rounded-2xl">
+                <video controls>
                   <source src={activeLightboxItem.fileUrl} />
                   Your browser does not support HTML video.
                 </video>
               ) : activeLightboxItem.fileUrl.includes('youtube') || activeLightboxItem.fileUrl.includes('vimeo') ? (
-                <iframe
-                  src={activeLightboxItem.fileUrl}
-                  className="w-full h-96 rounded-2xl"
-                  allowFullScreen
-                />
+                <iframe src={activeLightboxItem.fileUrl} allowFullScreen />
               ) : (
-                <img
-                  src={activeLightboxItem.fileUrl}
-                  alt={activeLightboxItem.altText || 'Gallery Lightbox'}
-                  className="max-h-[70vh] object-contain rounded-2xl"
-                />
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={activeLightboxItem.fileUrl} alt={activeLightboxItem.altText || 'Gallery Lightbox'} />
               )}
             </div>
-
-            {/* Lightbox Info */}
-            <div className="text-center mt-4 space-y-1">
-              <div className="inline-block text-[10px] font-bold bg-[#764DFF] text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1">
-                {activeLightboxItem.category || 'Classroom'}
-              </div>
-              <p className="text-white font-bold text-base">{activeLightboxItem.altText || 'QIMD Campus Media'}</p>
-              {activeLightboxItem.caption && (
-                <p className="text-slate-300 text-xs">{activeLightboxItem.caption}</p>
-              )}
-              <p className="text-white/40 text-xs pt-1">
+            <div className="qw-lightbox-info">
+              <span className="qw-shot-cat">{activeLightboxItem.category || 'Classroom'}</span>
+              <p className="qw-lightbox-title">{activeLightboxItem.altText || 'QIMD Campus Media'}</p>
+              {activeLightboxItem.caption && <p className="qw-lightbox-caption">{activeLightboxItem.caption}</p>}
+              <p className="qw-lightbox-count">
                 {lightboxIndex + 1} of {filtered.length}
               </p>
             </div>
-
-            {/* Navigation buttons */}
             {filtered.length > 1 && (
               <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-2 sm:-left-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer"
-                  aria-label="Previous Image"
-                >
-                  <Icon icon="mdi:chevron-left" className="text-2xl" />
+                <button type="button" onClick={prevImage} className="qw-lb-btn qw-lb-prev" aria-label="Previous Image">
+                  <Icon icon="mdi:chevron-left" />
                 </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-2 sm:-right-12 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer"
-                  aria-label="Next Image"
-                >
-                  <Icon icon="mdi:chevron-right" className="text-2xl" />
+                <button type="button" onClick={nextImage} className="qw-lb-btn qw-lb-next" aria-label="Next Image">
+                  <Icon icon="mdi:chevron-right" />
                 </button>
               </>
             )}
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 
