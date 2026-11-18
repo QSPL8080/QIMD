@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
             </div>
 
             {/* 4. Cookies & Similar Technologies */}
-            <div>
+            <div id="cookies" className="scroll-mt-28">
               <h2 className="text-xl sm:text-2xl font-bold text-midnight_text dark:text-white mb-3">4. Cookies &amp; Similar Technologies</h2>
               <p className="mb-2">Our Website may use cookies, pixels, analytics tools and similar technologies to:</p>
               <ul className="list-disc pl-5 space-y-1 mb-3">

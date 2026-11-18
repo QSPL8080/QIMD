@@ -20,13 +20,28 @@ export default function ScrollToTop() {
       window.history.scrollRestoration = "manual";
     }
 
+    // Links with a #section (e.g. /privacy-policy#cookies) jump to that section instead of the top
+    const scrollToHashTarget = () => {
+      const hash = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : "";
+      const target = hash ? document.getElementById(hash) : null;
+      if (target) {
+        target.scrollIntoView({ behavior: "instant" as ScrollBehavior, block: "start" });
+        return true;
+      }
+      return false;
+    };
+
     // Scroll to top immediately on page load and route change
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
+    if (!scrollToHashTarget()) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    }
+    // Content can render a moment later; retry the section jump once
+    const hashRetry = window.setTimeout(scrollToHashTarget, 350);
 
     const handlePageShow = () => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (!scrollToHashTarget()) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     };
 
     window.addEventListener("pageshow", handlePageShow);
@@ -45,6 +60,7 @@ export default function ScrollToTop() {
 
     window.addEventListener("scroll", toggleVisibility, { passive: true });
     return () => {
+      window.clearTimeout(hashRetry);
       window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("scroll", toggleVisibility);
     };

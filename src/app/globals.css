@@ -1720,3 +1720,54 @@ a.qf-card-value:hover { color: #c4b5fd; }
 .qf-links li { display: flex; }
 .qf-link { padding: 5px 0; line-height: 1.5; }
 .qf-watermark { font-size: clamp(80px, 19vw, 250px); }
+
+/* Footer bottom bar: copyright + legal links */
+.qf-bottom-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+}
+@media (min-width: 1024px) {
+  .qf-bottom-row { flex-direction: row; justify-content: space-between; gap: 24px; }
+}
+.qf-bottom .qf-copy { padding: 0; text-align: center; font-size: 13px; color: rgba(255, 255, 255, 0.55); }
+.qf-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+@media (max-width: 639.98px) {
+  .qf-legal { border-radius: 18px; padding: 6px; }
+}
+.qf-legal-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-family: var(--qx-heading);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.qf-legal-ic { font-size: 14px; color: #a78bfa; transition: transform 0.3s ease; }
+.qf-legal-link:hover { color: #fff; background: rgba(118, 77, 255, 0.18); }
+.qf-legal-link:hover .qf-legal-ic { transform: scale(1.15); }
+.qf-legal-link.is-active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(118, 77, 255, 0.55), rgba(73, 153, 212, 0.45));
+}
+.qf-legal-link.is-active .qf-legal-ic { color: #fff; }
+/* keep legal links clear of the floating WhatsApp / back-to-top buttons on phones & tablets */
+@media (max-width: 1023.98px) { .qf-bottom-row { padding-bottom: 84px; } }

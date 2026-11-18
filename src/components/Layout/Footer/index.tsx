@@ -45,6 +45,15 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
   },
 ]
 
+// Legal pages shown in the footer bottom bar
+const LEGAL_LINKS = [
+  { href: '/privacy-policy', label: 'Privacy Policy', icon: 'solar:shield-user-linear' },
+  { href: '/terms-and-conditions', label: 'Terms & Conditions', icon: 'solar:document-text-linear' },
+  { href: '/refund-policy', label: 'Refund Policy', icon: 'solar:wallet-money-linear' },
+  { href: '/privacy-policy#cookies', label: 'Cookie Policy', icon: 'solar:cookie-linear' },
+  { href: '/sitemap', label: 'Sitemap', icon: 'solar:map-arrow-square-linear' },
+]
+
 const FALLBACK_FOOTER_LOGO = '/images/logo/footer-qimd.png'
 
 // Footer logo with automatic fallback if the configured image is missing
@@ -264,12 +273,22 @@ const Footer: React.FC = () => {
         QIMD
       </div>
 
-      {/* ── Bottom bar ─────────────────────────────────── */}
+      {/* ── Bottom bar: copyright + legal ─────────────── */}
       <div className="qf-bottom">
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          <p suppressHydrationWarning>
-            {footer?.copyrightText || `© ${currentYear} ${siteConfig.name}. All Rights Reserved.`}
-          </p>
+          <div className="qf-bottom-row">
+            <p className="qf-copy" suppressHydrationWarning>
+              {footer?.copyrightText || `© ${currentYear} ${siteConfig.name}. All Rights Reserved.`}
+            </p>
+            <nav className="qf-legal" aria-label="Legal">
+              {LEGAL_LINKS.map((l) => (
+                <Link key={l.href} href={l.href} className={`qf-legal-link ${pathname === l.href ? 'is-active' : ''}`}>
+                  <Icon icon={l.icon} className="qf-legal-ic" />
+                  <span>{l.label}</span>
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
     </footer>
