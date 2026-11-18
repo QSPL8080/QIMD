@@ -5064,3 +5064,32 @@ html:not([data-area="admin"]) main .qw-polaroid-name { margin: 0; font-family: v
   .qw .qw-tab + .qw-tab::before, .qw .qw-tab.is-active::after { display: none; }
   .qw .qw-tab.is-active { background: #EEEAFB; }
 }
+
+/* Placed-student cards: straight, clean, evenly aligned */
+.qw-polaroids { align-items: stretch; gap: 24px; }
+.qw-polaroid, .qw-polaroid:nth-child(n) {
+  transform: none; padding: 0; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(21, 18, 58, .05), 0 12px 32px -20px rgba(21, 18, 58, .35);
+}
+.qw-polaroid:hover { transform: translateY(-6px); box-shadow: 0 1px 2px rgba(21, 18, 58, .05), 0 24px 44px -22px rgba(21, 18, 58, .45); }
+.qw-polaroid-photo { aspect-ratio: 4 / 3.3; border-radius: 0; }
+.qw-polaroid-photo::after { content: ''; position: absolute; inset: auto 0 0 0; height: 38%; background: linear-gradient(to top, rgba(21, 18, 58, .55), transparent); pointer-events: none; }
+.qw-badge { position: absolute; z-index: 2; padding: 6px 10px; border-radius: 8px; font-size: 12px; backdrop-filter: blur(6px); }
+.qw-badge-tl { top: 14px; left: 14px; }
+.qw-badge-bl { bottom: 14px; left: 14px; background: rgba(255, 255, 255, .92); color: var(--qw-ink); }
+.qw-badge-bl svg { color: var(--qw-pink); }
+.qw-badge.is-verified { background: var(--qw-pink); color: #fff; }
+.qw-polaroid-package { z-index: 2; top: 14px; right: 14px; padding: 6px 11px; border-radius: 8px; font-size: 13px; color: var(--qw-ink); box-shadow: 0 6px 16px -8px rgba(0, 0, 0, .4); }
+.qw .qw-polaroid-play {
+  z-index: 2; width: 54px; height: 54px; margin: -27px 0 0 -27px; font-size: 26px;
+  background: rgba(255, 255, 255, .92); box-shadow: 0 0 0 8px rgba(255, 255, 255, .25) !important;
+}
+.qw-polaroid-body { padding: 22px 22px 18px; gap: 12px; }
+html:not([data-area="admin"]) main .qw-polaroid-name { font-size: 20px !important; }
+.qw-polaroid-meta { margin-top: -6px; }
+.qw-polaroid-job { padding-top: 2px; }
+.qw-polaroid-story { margin-top: 2px; border-radius: 10px; }
+.qw-polaroid-foot { border-top-style: solid; border-top-color: var(--qw-line); padding-top: 14px; }
+/* gallery photos straight as well */
+.qw .qw-shot, .qw .qw-shot:nth-child(n) { transform: none; }
+.qw .qw-shot:hover { transform: translateY(-4px); }

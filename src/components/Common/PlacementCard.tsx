@@ -39,18 +39,16 @@ const PlacementCard: React.FC<PlacementCardProps> = ({ student, index = 0 }) => 
             </div>
           )}
 
-          <div className="qw-polaroid-badges">
-            {student.isVerified && (
-              <span className="qw-badge is-verified">
-                <Icon icon="mdi:check-decagram" />
-                <span>Verified Placement</span>
-              </span>
-            )}
-            <span className="qw-badge">
-              <Icon icon="mdi:school" />
-              <span>Successfully Placed</span>
+          {student.isVerified && (
+            <span className="qw-badge is-verified qw-badge-tl">
+              <Icon icon="mdi:check-decagram" />
+              <span>Verified Placement</span>
             </span>
-          </div>
+          )}
+          <span className="qw-badge qw-badge-bl">
+            <Icon icon="mdi:school" />
+            <span>Successfully Placed</span>
+          </span>
 
           {student.package && <span className="qw-polaroid-package">{student.package}</span>}
 
