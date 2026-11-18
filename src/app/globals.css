@@ -3666,7 +3666,7 @@ html:not([data-area="admin"]) main a[class*="border-[#764DFF]"]:not([class*="bg-
   --qa-night: #15123A;
   --qa-purple: #5B3FD9;
   --qa-soft: #ECE9FB;
-  --qa-lime: #D4F25B;
+  --qa-lime: #D9922B; /* careers amber */
   --qa-ink: #15123A;
   --qa-text: #4A4F63;
   --qa-muted: #8A8FA3;
@@ -3789,7 +3789,7 @@ html:not([data-area="admin"]) main a[class*="border-[#764DFF]"]:not([class*="bg-
 .qa .qa-btn-dark { background: var(--qa-night); color: #fff; }
 .qa .qa-btn-dark:hover { background: var(--qa-purple); color: #fff; }
 .qa .qa-btn-lime { background: var(--qa-lime); color: var(--qa-ink); }
-.qa .qa-btn-lime:hover { background: #C4E640; color: var(--qa-ink); }
+.qa .qa-btn-lime:hover { background: #C27F1F; color: var(--qa-ink); }
 .qa .qa-btn-glass { background: rgba(255, 255, 255, .1); color: #fff; }
 .qa .qa-btn-glass:hover { background: rgba(255, 255, 255, .18); color: #fff; }
 .qa .qa-btn-block { width: 100%; margin-top: auto; }
@@ -3902,7 +3902,7 @@ html:not([data-area="admin"]) main a[class*="border-[#764DFF]"]:not([class*="bg-
   display: flex; align-items: center; justify-content: center; background: var(--qa-lime); color: var(--qa-ink); font-size: 36px;
   transition: transform .3s;
 }
-.qa-play::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid rgba(212, 242, 91, .6); animation: qa-ping 2s ease-out infinite; }
+.qa-play::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid rgba(217, 146, 43, .6); animation: qa-ping 2s ease-out infinite; }
 @keyframes qa-ping { from { transform: scale(.85); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
 .qa-video-poster:hover .qa-play { transform: scale(1.08); }
 .qa-play-label {
@@ -4101,7 +4101,7 @@ html:not([data-area="admin"]) main :is(.qa-h3, .qp-h3) { font-size: var(--qx-h3)
   --qp-text: rgba(255, 255, 255, 0.74);
   --qp-muted: rgba(255, 255, 255, 0.5);
   --qp-accent: #7B5CFF;
-  --qp-cyan: #5EE2F0;
+  --qp-cyan: #1FB2F0;
   --qp-ink: #0D0B1E;
   background: var(--qp-bg);
   color: var(--qp-text);
