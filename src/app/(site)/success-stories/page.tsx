@@ -7,7 +7,7 @@ import PlacementCard from '@/components/Common/PlacementCard'
 import VideoModal from '@/components/Common/VideoModal'
 import { getPublicPartnersAction, getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/partnerActions'
 import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
-import { QwHero, QwHead, QwStickers, QwReview, QwVideo, QwCta } from '@/components/WhyQimd/WhyKit'
+import { QwHero, QwHead, QwStickers, QwReview, QwCta } from '@/components/WhyQimd/WhyKit'
 
 export default function SuccessStoriesPage() {
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
@@ -116,10 +116,10 @@ export default function SuccessStoriesPage() {
               <Icon icon="mdi:briefcase-check-outline" />
               <span>Explore Recent Placements</span>
             </a>
-            <a href="#video-testimonials" className="qw-btn qw-btn-soft">
+            <Link href="/reviews-testimonials#video-testimonials" className="qw-btn qw-btn-soft">
               <Icon icon="mdi:play-circle-outline" />
               <span>Watch Video Testimonials</span>
-            </a>
+            </Link>
           </>
         }
         aside={
@@ -181,25 +181,6 @@ export default function SuccessStoriesPage() {
           </div>
         </div>
       </section>
-
-      {/* Student Video Testimonials */}
-      {videoReviews.length > 0 && (
-        <section className="qw-sec qw-sec-dark" id="video-testimonials">
-          <div className="qw-wrap">
-            <QwHead
-              light
-              kicker="Direct Feedback"
-              title="Student Video Testimonials"
-              desc="Hear directly from our students about their learning journey, classroom experience, live projects, internships, and career growth after joining QIMD."
-            />
-            <div className="qw-films">
-              {videoReviews.map((review) => (
-                <QwVideo key={review.id} review={review} onPlay={() => playVideo(review)} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Recently Placed Students */}
       <section className="qw-sec" id="placements">
