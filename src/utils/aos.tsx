@@ -11,11 +11,12 @@ const Aoscompo: React.FC<AoscompoProps> = ({ children }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       AOS.init({
-        duration: 700,
-        once: false,
-        mirror: true,
+        duration: 800,
+        once: true,
+        mirror: false,
         easing: 'ease-out-cubic',
-        offset: 80,
+        offset: 60,
+        disable: () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
       })
       AOS.refresh()
     }, 100)

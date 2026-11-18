@@ -1,21 +1,37 @@
 import type { Metadata } from "next";
-import { Libre_Baskerville } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
 import ScrollToTop from "@/components/ScrollToTop";
 import Aoscompo from "@/utils/aos";
+import SiteMotion from "@/components/Common/SiteMotion";
 import NextTopLoader from "nextjs-toploader";
 import { siteConfig } from "@/data";
 import { WebsiteSettingsProvider } from "@/app/context/WebsiteSettingsContext";
 
-const libreBaskerville = Libre_Baskerville({
-  subsets: ["latin"],
+// Self-hosted institute fonts (Poppins for headings, Inter for body) — no build-time network needed
+const poppins = localFont({
+  src: [
+    { path: "./fonts/poppins-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/poppins-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/poppins-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/poppins-latin-700-normal.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/poppins-latin-800-normal.woff2", weight: "800", style: "normal" },
+  ],
   display: "swap",
-  variable: "--font-libre-baskerville",
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
+  variable: "--font-poppins",
+  fallback: ["ui-sans-serif", "system-ui", "Segoe UI", "sans-serif"],
+});
+
+const inter = localFont({
+  src: "./fonts/inter-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
+  display: "swap",
+  variable: "--font-inter",
+  fallback: ["ui-sans-serif", "system-ui", "Segoe UI", "sans-serif"],
 });
 
 
@@ -111,7 +127,7 @@ export default async function RootLayout({
   const isSvg = faviconUrl.endsWith(".svg");
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${libreBaskerville.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
       <head>
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} href={faviconUrl} />
         <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="32x32" href={faviconUrl} />
@@ -131,11 +147,12 @@ export default async function RootLayout({
                 window.history.scrollRestoration = 'manual';
                 window.scrollTo(0, 0);
               }
+              try { document.documentElement.setAttribute('data-area', window.location.pathname.indexOf('/admin') === 0 ? 'admin' : 'site'); } catch (e) {}
             `,
           }}
         />
       </head>
-      <body className={`${libreBaskerville.className} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${inter.className} font-sans antialiased`} suppressHydrationWarning>
         <NextTopLoader color="#6366F1" showSpinner={false} height={2.5} crawl={true} speed={200} shadow="0 0 10px #6366F1,0 0 5px #6366F1" />
         <ThemeProvider
           attribute="class"
@@ -149,6 +166,7 @@ export default async function RootLayout({
               <Footer />
             </Aoscompo>
             <ScrollToTop />
+            <SiteMotion />
           </WebsiteSettingsProvider>
         </ThemeProvider>
       </body>

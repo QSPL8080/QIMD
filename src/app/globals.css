@@ -2,16 +2,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Legacy class kept for compatibility — now maps to the institute heading font */
 .font-libre-baskerville {
-  font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif !important;
+  font-family: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif !important;
 }
 
 @theme {
-  --font-sans: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-serif: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-heading: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-body: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  --font-libre-baskerville: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+  --font-sans: var(--font-inter), 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: var(--font-inter), 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-libre-baskerville: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --container-screen-xl: 75rem;
   --container-screen-2xl: 83.75rem;
@@ -57,8 +58,8 @@
   --color-complement: #4F46E5;      /* Deep Complement */
 
   /* Text */
-  --color-midnight_text: #111827;   /* Primary dark headings */
-  --color-body_text: #374151;       /* Body / supporting text */
+  --color-midnight_text: #0B1437;   /* Institute navy headings */
+  --color-body_text: #475569;       /* Body / supporting text */
   --color-muted: #6B7280;           /* Muted / helper text */
 
   /* Status — semantic, unchanged */
@@ -97,39 +98,38 @@
   h1, h2, h3, h4, h5, h6,
   .font-heading,
   .heading-font {
-    font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    letter-spacing: -0.015em;
     line-height: 1.25;
   }
 
   body,
-  p,
-  span,
-  a,
-  li,
-  input,
-  textarea,
-  select,
-  button,
-  label,
   .subheading,
   .font-sans,
   .font-body {
-    font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+    font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  input, textarea, select, button {
+    font-family: inherit;
   }
 }
 
 html {
   font-size: 100%;
   scroll-behavior: smooth;
-  font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
+  scroll-padding-top: 96px;
+  font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   @apply overflow-x-hidden;
-  color: #111827;
-  font-family: var(--font-libre-baskerville), 'Libre Baskerville', Georgia, serif;
-  line-height: 1.6;
+  color: #0B1437;
+  font-family: var(--font-inter), 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  line-height: 1.65;
 }
 
 /* ── Typography ─────────────────────────────────── */
@@ -805,4 +805,223 @@ select.form-input {
 
 .animate-marquee-slow:hover {
   animation-play-state: paused;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   QIMD INSTITUTE DESIGN LAYER
+   Visual-only polish for the public website (admin is excluded).
+   Typography: Poppins (headings, buttons, navigation) + Inter (body).
+   Nothing here changes content or behaviour.
+════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --qx-heading: var(--font-poppins), 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --qx-body: var(--font-inter), 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --qx-navy: #0B1437;
+  --qx-brand: #764DFF;
+  --qx-brand-2: #4999D4;
+  --qx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::selection {
+  background: rgba(118, 77, 255, 0.18);
+  color: #0B1437;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+html:not([data-area="admin"]) {
+  scrollbar-color: #b9a6ff #f3f0ff;
+}
+html:not([data-area="admin"])::-webkit-scrollbar { width: 10px; }
+html:not([data-area="admin"])::-webkit-scrollbar-track { background: #f3f0ff; }
+html:not([data-area="admin"])::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #764DFF, #4999D4);
+  border-radius: 999px;
+  border: 2px solid #f3f0ff;
+}
+
+/* ── Headings: institute typography ─────────────────────────── */
+html:not([data-area="admin"]) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--qx-heading);
+  text-wrap: balance;
+}
+html:not([data-area="admin"]) main :is(h1, h2) {
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+}
+html:not([data-area="admin"]) main :is(h1, h2):is(.font-extrabold, .font-black) {
+  font-weight: 700;
+}
+html:not([data-area="admin"]) main :is(h3, h4):is(.font-extrabold, .font-black) {
+  font-weight: 700;
+}
+html:not([data-area="admin"]) main p {
+  text-wrap: pretty;
+}
+
+/* Fluid, manageable heading sizes on every screen */
+html:not([data-area="admin"]) main :is(h1, h2):is([class*="text-5xl"], [class*="text-6xl"], [class*="text-[56px]"], [class*="text-[60px]"]) {
+  font-size: clamp(1.85rem, 1.2rem + 2.4vw, 3rem);
+}
+html:not([data-area="admin"]) main :is(h1, h2)[class*="text-4xl"]:not([class*="text-5xl"]):not([class*="text-6xl"]),
+html:not([data-area="admin"]) main :is(h1, h2):is([class*="text-[40px]"], [class*="text-[34px]"], [class*="text-[32px]"]) {
+  font-size: clamp(1.6rem, 1.15rem + 1.7vw, 2.35rem);
+}
+html:not([data-area="admin"]) main h2[class*="text-3xl"]:not([class*="text-4xl"]):not([class*="text-5xl"]) {
+  font-size: clamp(1.45rem, 1.1rem + 1.25vw, 1.95rem);
+}
+html:not([data-area="admin"]) .hero-title {
+  font-size: clamp(1.55rem, 1.05rem + 1.9vw, 2.45rem) !important;
+  line-height: 1.22 !important;
+  letter-spacing: -0.025em;
+}
+
+/* Readable minimum for very small labels */
+html:not([data-area="admin"]) [class~="text-[10px]"] { font-size: 11px; }
+html:not([data-area="admin"]) [class~="text-[11px]"] { font-size: 11.5px; }
+
+/* ── Section header system (eyebrow pill + heading + accent bar) ── */
+html:not([data-area="admin"]) main section .text-center > :is(div, span).inline-flex.rounded-full:first-child {
+  font-family: var(--qx-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding-top: 0.42rem;
+  padding-bottom: 0.42rem;
+}
+html:not([data-area="admin"]) main section .text-center > h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin: 0.85rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #764DFF 0%, #BD69F2 50%, #4999D4 100%);
+  transform-origin: center;
+}
+html:not([data-area="admin"]) main section.qx-sec:not(.qx-in) .text-center > h2::after {
+  transform: scaleX(0);
+}
+html:not([data-area="admin"]) main section.qx-in .text-center > h2::after {
+  animation: qxBar 1s var(--qx-ease) 0.35s backwards;
+}
+
+/* ── Buttons & navigation use the heading face ─────────────── */
+html:not([data-area="admin"]) :is(main, header, footer) :is(a, button)[class*="px-"][class*="py-"][class*="rounded"],
+html:not([data-area="admin"]) header nav a,
+html:not([data-area="admin"]) header nav button {
+  font-family: var(--qx-heading);
+  letter-spacing: 0.005em;
+}
+html:not([data-area="admin"]) main :is(a, button)[class*="px-"][class*="py-"][class*="rounded"]:is(.font-extrabold, .font-black) {
+  font-weight: 600;
+}
+
+/* ── Footer typography ──────────────────────────────────────── */
+html:not([data-area="admin"]) footer :is(h3, h4, h5, h6) {
+  font-family: var(--qx-heading);
+  letter-spacing: 0.01em;
+}
+
+/* ── Cards: softer institute elevation ──────────────────────── */
+html:not([data-area="admin"]) main .grid > [class*="rounded-2xl"][class*="bg-white"],
+html:not([data-area="admin"]) main .grid > [class*="rounded-3xl"][class*="bg-white"] {
+  box-shadow: 0 1px 2px rgba(11, 20, 55, 0.04), 0 8px 28px -12px rgba(11, 20, 55, 0.12);
+}
+
+/* Images inside cards zoom gently on hover */
+html:not([data-area="admin"]) main .group:hover img.object-cover {
+  transform: scale(1.04);
+}
+html:not([data-area="admin"]) main .group img.object-cover {
+  transition: transform 0.7s var(--qx-ease);
+}
+
+/* ── Forms ──────────────────────────────────────────────────── */
+html:not([data-area="admin"]) main :is(input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(118, 77, 255, 0.16);
+}
+
+/* ── Rich text (blog / policy pages) ───────────────────────── */
+.blog-details,
+.blog-details p,
+.blog-details li {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #334155;
+}
+.blog-details :is(h1, h2, h3, h4) {
+  font-family: var(--qx-heading);
+  color: #0B1437;
+}
+.blog-details h1 { font-size: clamp(1.7rem, 1.2rem + 1.8vw, 2.4rem) !important; }
+.blog-details h2 { font-size: clamp(1.45rem, 1.1rem + 1.3vw, 2rem) !important; }
+.blog-details h3 { font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem) !important; line-height: 1.35 !important; }
+.blog-details a { color: #5c38d6; text-decoration: underline; text-underline-offset: 3px; }
+.blog-details img { border-radius: 16px; max-width: 100%; height: auto; }
+.blog-details table { display: block; max-width: 100%; overflow-x: auto; }
+.dark .blog-details, .dark .blog-details p, .dark .blog-details li { color: #cbd5e1; }
+.dark .blog-details :is(h1, h2, h3, h4) { color: #fff; }
+
+/* ── Responsive safety net ──────────────────────────────────── */
+html:not([data-area="admin"]) main {
+  overflow-wrap: break-word;
+}
+html:not([data-area="admin"]) main :is(img, video, iframe, svg) {
+  max-width: 100%;
+}
+html:not([data-area="admin"]) main iframe {
+  border: 0;
+}
+@media (max-width: 640px) {
+  /* Prevents iOS zoom when tapping form fields */
+  html:not([data-area="admin"]) :is(main, header) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    font-size: 16px !important;
+  }
+  html:not([data-area="admin"]) main section .text-center > h2::after {
+    width: 48px;
+    height: 3px;
+    margin-top: 0.7rem;
+  }
+  html:not([data-area="admin"]) main :is(a, button)[class*="px-8"][class*="py-4"] {
+    padding: 0.85rem 1.4rem;
+  }
+}
+
+/* ── Scroll reveal animations (driven by SiteMotion) ───────── */
+@keyframes qxUp {
+  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes qxZoom {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes qxBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.qx-item:not(.qx-shown) {
+  opacity: 0;
+}
+.qx-item.qx-shown {
+  animation: qxUp 0.85s var(--qx-ease) var(--qx-d, 0ms) backwards;
+}
+.qx-item.qx-zoom.qx-shown {
+  animation-name: qxZoom;
+  animation-duration: 1s;
+}
+
+/* AOS — smoother institute-grade easing */
+[data-aos] {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .qx-item, .qx-item.qx-shown { opacity: 1 !important; animation: none !important; }
+  [class*="animate-"] { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
