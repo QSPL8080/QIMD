@@ -54,6 +54,9 @@ const LEGAL_LINKS = [
   { href: '/sitemap', label: 'Sitemap', icon: 'solar:map-arrow-square-linear' },
 ]
 
+// Extra contact emails always shown in the footer (skipped if already added in Admin → Footer)
+const EXTRA_FOOTER_EMAILS = [{ id: 'careers-email', label: 'Careers', value: 'career@quickuppinstitute.com' }]
+
 const FALLBACK_FOOTER_LOGO = '/images/logo/footer-qimd.png'
 
 // Footer logo with automatic fallback if the configured image is missing
@@ -109,12 +112,18 @@ const Footer: React.FC = () => {
       : phone
       ? [{ id: 'fallback-phone', value: phone }]
       : []
-  const emailList: Array<{ id: string; label?: string; value: string }> =
+  const baseEmails: Array<{ id: string; label?: string; value: string }> =
     footer?.emails !== undefined
       ? footer.emails.filter((e: any) => e.isActive !== false)
       : siteConfig.email
       ? [{ id: 'fallback-email', value: siteConfig.email }]
       : []
+  const emailList = [
+    ...baseEmails,
+    ...EXTRA_FOOTER_EMAILS.filter(
+      (x) => !baseEmails.some((e) => e.value?.trim().toLowerCase() === x.value.toLowerCase())
+    ),
+  ]
 
   const columns: FooterColumn[] =
     footer?.columns && footer.columns.length > 0 ? (footer.columns as FooterColumn[]) : DEFAULT_COLUMNS
@@ -174,9 +183,10 @@ const Footer: React.FC = () => {
                 </span>
                 <div className="min-w-0">
                   {emailList[0]?.label && <p className="qf-card-label">{emailList[0].label}</p>}
-                  {emailList.map((e) => (
-                    <Link key={e.id} href={`mailto:${e.value}`} className="qf-card-value block break-all">
-                      {e.value}
+                  {emailList.map((e, i) => (
+                    <Link key={e.id} href={`mailto:${e.value}`} className="qf-card-value qf-mail">
+                      {i > 0 && e.label && <span className="qf-mail-tag">{e.label}</span>}
+                      <span className="break-all">{e.value}</span>
                     </Link>
                   ))}
                 </div>
