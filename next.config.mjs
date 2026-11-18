@@ -4,6 +4,14 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: false,
 
+  // Build servers often cap threads/processes. Running page-data collection and
+  // static generation in a single worker avoids "OS can't spawn worker thread
+  // (os error 11)" / SIGABRT crashes during `next build`.
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
+
   images: {
     unoptimized: true,
   },
