@@ -2583,9 +2583,9 @@ html:not([data-area="admin"]) main .qc-main-title { color: #0B1437; }
 .qk {
   --qk-ink: #0E1726;
   --qk-ink-2: #172235;
-  --qk-paper: #F6F4EF;
-  --qk-line: #E4DFD5;
-  --qk-line-2: #D7D0C3;
+  --qk-paper: #F4F6FA;
+  --qk-line: #E5E7EB;
+  --qk-line-2: #D5D9E2;
   --qk-text: #4A5262;
   --qk-muted: #6B7280;
   --qk-accent: #5B3FD9;
@@ -2672,7 +2672,7 @@ html:not([data-area="admin"]) main .qk-h1 {
   align-items: flex-start;
   padding: 14px 16px;
   border-left: 3px solid var(--qk-amber);
-  background: #FFF8EC;
+  background: #FFFFFF;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.6;
@@ -3019,7 +3019,7 @@ html:not([data-area="admin"]) main .qk-head.is-light .qk-h2 { color: #fff; }
   font-size: 15px;
   font-weight: 500;
   color: var(--qk-ink);
-  background: #FBFAF7;
+  background: #F7F8FB;
   border: 1.5px solid var(--qk-line-2);
   outline: none;
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
@@ -3056,7 +3056,7 @@ html:not([data-area="admin"]) main .qk-head.is-light .qk-h2 { color: #fff; }
 .qk .qk-phone input.min-w-0 {
   height: 48px !important;
   font-size: 15px !important;
-  background: #FBFAF7 !important;
+  background: #F7F8FB !important;
   border: 1.5px solid var(--qk-line-2) !important;
   border-radius: 0 6px 6px 0 !important;
   color: var(--qk-ink) !important;
@@ -3081,7 +3081,7 @@ html:not([data-area="admin"]) main .qk-head.is-light .qk-h2 { color: #fff; }
   padding: 22px 16px;
   border: 1.5px dashed var(--qk-line-2);
   border-radius: 8px;
-  background: #FBFAF7;
+  background: #F7F8FB;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -3141,7 +3141,7 @@ html:not([data-area="admin"]) main .qk-head.is-light .qk-h2 { color: #fff; }
 
 .qk-review { display: grid; gap: 1px; background: var(--qk-line); border: 1px solid var(--qk-line); border-radius: 6px; overflow: hidden; }
 @media (min-width: 560px) { .qk-review { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.qk-review > div { padding: 12px 14px; background: #FBFAF7; }
+.qk-review > div { padding: 12px 14px; background: #F7F8FB; }
 .qk-review dt { font-size: 12px; font-weight: 500; color: var(--qk-muted); }
 .qk-review dd { margin-top: 2px; font-family: var(--qx-heading); font-size: 14.5px; font-weight: 600; color: var(--qk-ink); word-break: break-word; }
 .qk-review dd.is-accent { color: var(--qk-accent); }
@@ -3607,11 +3607,11 @@ html:not([data-area="admin"]) :is(.qc-select, .phone-country-btn, form [role="bu
 html:not([data-area="admin"]) .qc-select { background-color: #F2F3F7 !important; }
 html:not([data-area="admin"]) .qc-select.is-open { background-color: #fff !important; box-shadow: 0 0 0 2px rgba(118, 77, 255, 0.55) !important; }
 /* Career pages keep their warm palette */
-html:not([data-area="admin"]) .qk :is(input:not([type="checkbox"]):not([type="file"]), select, textarea) { background-color: #EFECE5 !important; }
+html:not([data-area="admin"]) .qk :is(input:not([type="checkbox"]):not([type="file"]), select, textarea) { background-color: #F2F3F7 !important; }
 html:not([data-area="admin"]) .qk :is(input:not([type="checkbox"]):not([type="file"]), select, textarea):focus { background-color: #fff !important; box-shadow: 0 0 0 2px rgba(91, 63, 217, 0.6) !important; }
 html:not([data-area="admin"]) .qk .phone-country-btn { background-color: #E6E2D8 !important; }
-.qk-upload label { border-style: solid; border-color: transparent; background: #EFECE5; }
-.qk-upload label:hover { border-color: transparent; background: #E8E4DA; }
+.qk-upload label { border-style: solid; border-color: transparent; background: #F2F3F7; }
+.qk-upload label:hover { border-color: transparent; background: #E9EBF1; }
 .qk-upload.has-file label { border-color: transparent; }
 /* Blog search becomes a filled field */
 .qb-search input { border-radius: 8px; padding-left: 40px; height: 44px; }
@@ -3643,11 +3643,11 @@ html:not([data-area="admin"]) :is(main, header, footer, [role="dialog"]) :is(
   border-style: none !important;
 }
 /* Former outline buttons get a soft fill so they stay visible */
-.qk .qk-btn-line { background: #E8E4DA; color: var(--qk-ink); }
+.qk .qk-btn-line { background: #E9EBF1; color: var(--qk-ink); }
 .qk .qk-btn-line:hover { background: var(--qk-ink); color: #fff; }
 .qk .qk-btn-ghost { background: rgba(255, 255, 255, 0.1); }
 .qk .qk-btn-ghost:hover { background: rgba(255, 255, 255, 0.18); }
-.qk-job-apply { background: #EFECE5; }
+.qk-job-apply { background: #F2F3F7; }
 .qb .qb-btn-outline { background: #EDEDF0; }
 .qb .qb-btn-outline:hover { background: var(--qb-ink); color: #fff; }
 .qh-ghost { background: rgba(255, 255, 255, 0.12); }
@@ -4463,3 +4463,4 @@ html:not([data-area="admin"]) main h1.hero-title { font-size: var(--qx-h1) !impo
   .qd-layout.no-toc { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 1024px) { .qd-layout, .qd-layout.no-toc { grid-template-columns: 1fr; } }
+.qk .qk-wrap { max-width: 1400px; }
