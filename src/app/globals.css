@@ -5225,3 +5225,9 @@ html:not([data-area="admin"]) main .qn-guide-sub { margin: 8px 0 0; font-family:
 .qw-film:hover .qw-film-poster .qw-film-media { transform: scale(1.04); opacity: 1; }
 .qw-film-poster::after { content: ''; position: absolute; inset: 0; background: rgba(21, 18, 58, .18); pointer-events: none; }
 .qw-film-play, .qw-film-tag { z-index: 2; }
+/* Hosted vertical testimonial reels */
+.qw-films:has(.is-reel) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.qw .qw-film.is-reel .qw-film-frame { aspect-ratio: 9 / 16; }
+.qw-film-media.is-playing { object-fit: contain; background: #000; }
+@media (max-width: 1100px) { .qw-films:has(.is-reel) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .qw-films:has(.is-reel) { grid-template-columns: minmax(0, 1fr); } .qw .qw-film.is-reel .qw-film-frame { aspect-ratio: 4 / 5; } }

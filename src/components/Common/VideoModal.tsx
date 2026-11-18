@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { isVideoFile } from '@/lib/testimonialVideos'
 
 interface VideoModalProps {
   isOpen: boolean
@@ -33,6 +34,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
 
   if (!isOpen || !videoUrl) return null
 
+  const isFile = isVideoFile(videoUrl)
   const embedSrc = videoUrl.includes('?')
     ? `${videoUrl}&autoplay=1`
     : `${videoUrl}?autoplay=1`
@@ -43,7 +45,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl bg-midnight_text dark:bg-darklight rounded-2xl overflow-hidden shadow-2xl border border-white/20"
+        className={`relative w-full ${isFile ? 'max-w-[440px]' : 'max-w-4xl'} bg-midnight_text dark:bg-darklight rounded-2xl overflow-hidden shadow-2xl border border-white/20`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -62,6 +64,17 @@ const VideoModal: React.FC<VideoModalProps> = ({
         </div>
 
         {/* Video Frame */}
+        {isFile ? (
+          <div className="relative w-full bg-black">
+            <video
+              src={videoUrl}
+              controls
+              autoPlay
+              playsInline
+              className="block w-full max-h-[78vh] object-contain bg-black"
+            />
+          </div>
+        ) : (
         <div className="relative w-full aspect-video bg-black">
           <iframe
             src={embedSrc}
@@ -71,6 +84,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
             allowFullScreen
           />
         </div>
+        )}
       </div>
     </div>
   )

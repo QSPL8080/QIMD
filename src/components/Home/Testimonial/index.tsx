@@ -6,6 +6,7 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import { testimonialsData } from '@/data'
 import type { Testimonial } from '@/types'
 import VideoModal from '@/components/Common/VideoModal'
+import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
   <div className="flex items-center gap-0.5 flex-shrink-0">
@@ -77,11 +78,11 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
         {/* TYPE A: Video Thumbnail Preview if Video Review */}
         {isVideoTestimonial && (
           <div
-            onClick={() => onOpenVideo(testimonial.videoUrl!, testimonial.studentName)}
+            onClick={() => onOpenVideo(resolveTestimonialVideo(testimonial).src || testimonial.videoUrl!, testimonial.studentName)}
             className="relative w-full h-36 rounded-xl overflow-hidden mb-4 group cursor-pointer border border-primary/20"
           >
             <Image
-              src={testimonial.videoThumbnail || testimonial.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80'}
+              src={resolveTestimonialVideo(testimonial).poster || testimonial.videoThumbnail || testimonial.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80'}
               alt={`${testimonial.studentName} Video Review`}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -110,7 +111,7 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
         <span className="text-muted/60 dark:text-white/40">Verified QIMD Student</span>
         {isVideoTestimonial && (
           <button
-            onClick={() => onOpenVideo(testimonial.videoUrl!, testimonial.studentName)}
+            onClick={() => onOpenVideo(resolveTestimonialVideo(testimonial).src || testimonial.videoUrl!, testimonial.studentName)}
             className="text-[#764DFF] dark:text-[#BD69F2] font-bold hover:underline flex items-center gap-1 cursor-pointer !border-0 !border-none !shadow-none !bg-transparent p-0"
           >
             <span>Watch Video</span>

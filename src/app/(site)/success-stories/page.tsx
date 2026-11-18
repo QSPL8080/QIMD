@@ -6,6 +6,7 @@ import { placedStudentsData, testimonialsData, placementPartnersData } from '@/d
 import PlacementCard from '@/components/Common/PlacementCard'
 import VideoModal from '@/components/Common/VideoModal'
 import { getPublicPartnersAction, getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/partnerActions'
+import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
 import { QwHero, QwHead, QwStickers, QwReview, QwVideo, QwCta } from '@/components/WhyQimd/WhyKit'
 
 export default function SuccessStoriesPage() {
@@ -90,7 +91,7 @@ export default function SuccessStoriesPage() {
 
   const playVideo = (review: any) =>
     setSelectedVideo({
-      url: review.videoUrl || 'https://www.youtube.com/embed/L_LUpnjgPso',
+      url: resolveTestimonialVideo(review).src || 'https://www.youtube.com/embed/L_LUpnjgPso',
       title: `${review.studentName} Video Review`,
     })
 

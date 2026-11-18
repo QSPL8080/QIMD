@@ -8,6 +8,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
 
 const WHY_TABS = [
   { href: '/success-stories', label: 'Success Stories' },
@@ -159,11 +160,13 @@ export function youTubeId(url?: string | null): string | null {
 /** Video testimonial as a film frame — shows the real video frame and plays inline */
 export function QwVideo({ review, onPlay }: { review: any; onPlay: () => void }) {
   const [playing, setPlaying] = React.useState(false)
-  const ytId = youTubeId(review.videoUrl)
-  const isFile = !ytId && /\.(mp4|webm|mov)(\?|$)/i.test(review.videoUrl || '')
+  const resolved = resolveTestimonialVideo(review)
+  const videoSrc = resolved.src
+  const ytId = resolved.isLocal ? null : youTubeId(videoSrc)
+  const isFile = resolved.isFile
 
-  // Poster: the video's own YouTube frame → admin thumbnail → student photo
-  const candidates = [ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null, review.videoThumbnail, review.image].filter(Boolean) as string[]
+  // Poster: hosted video frame → the video's own YouTube frame → admin thumbnail → student photo
+  const candidates = [resolved.isLocal ? resolved.poster : null, ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null, review.videoThumbnail, review.image].filter(Boolean) as string[]
   const [posterIdx, setPosterIdx] = React.useState(0)
   const poster = candidates[posterIdx]
   const imgRef = React.useRef<HTMLImageElement>(null)
@@ -176,14 +179,14 @@ export function QwVideo({ review, onPlay }: { review: any; onPlay: () => void })
 
   const embedSrc = ytId
     ? `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1`
-    : review.videoUrl
+    : videoSrc
 
   return (
-    <article className="qw-film">
+    <article className={`qw-film${resolved.isLocal ? ' is-reel' : ''}`}>
       <div className="qw-film-frame">
         {playing ? (
           isFile ? (
-            <video src={review.videoUrl} controls autoPlay playsInline className="qw-film-media" />
+            <video src={videoSrc} poster={resolved.poster || undefined} controls autoPlay playsInline className="qw-film-media is-playing" />
           ) : (
             <iframe
               src={embedSrc}
@@ -195,8 +198,8 @@ export function QwVideo({ review, onPlay }: { review: any; onPlay: () => void })
           )
         ) : (
           <button type="button" className="qw-film-poster" onClick={() => setPlaying(true)} aria-label="Play review video">
-            {isFile && !review.videoThumbnail ? (
-              <video src={`${review.videoUrl}#t=0.5`} preload="metadata" muted playsInline className="qw-film-media" />
+            {isFile && !candidates.length ? (
+              <video src={`${videoSrc}#t=0.5`} preload="metadata" muted playsInline className="qw-film-media" />
             ) : poster ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
