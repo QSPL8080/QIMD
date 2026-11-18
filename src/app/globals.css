@@ -3163,3 +3163,19 @@ html:not([data-area="admin"]) main .qk-cta-title { margin-top: 14px; font-family
 .qk-cta-actions { display: grid; gap: 10px; }
 .qk-cta-actions .qk-btn { width: 100%; justify-content: flex-start; }
 .qk-cta-note { margin-top: 14px; font-family: var(--qx-heading); font-size: 14px; font-weight: 600; color: #E9B45E; }
+
+/* Footer: logo centred at the top of the brand column */
+.qf-brand { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.qf-brand .qf-tagline { margin-top: 18px; max-width: 380px; }
+.qf-brand .qf-socials { justify-content: center; }
+.qf-brand-logo { display: inline-block; transition: transform 0.35s ease; }
+.qf-brand-logo:hover { transform: scale(1.03); }
+.qf-brand-logo img {
+  display: block;
+  width: auto;
+  height: clamp(88px, 9vw, 120px);
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(118, 77, 255, 0.4));
+}
+.qf-watermark { margin-top: 0; }
