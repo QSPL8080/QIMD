@@ -198,11 +198,6 @@ const Footer: React.FC = () => {
         {/* ── Brand + link columns ──────────────────────── */}
         <div className="qf-main">
           <div className="qf-brand">
-            {footer?.logoActive !== false && (
-              <Link href={footer?.logoLink || '/'} className="qf-logo" aria-label="QIMD Home">
-                <FooterLogo src={footer?.logo} alt={footer?.logoAltText || 'Quickupp / QIMD'} />
-              </Link>
-            )}
             <p className="qf-tagline">{siteConfig.tagline}</p>
 
             {socials.length > 0 && (
@@ -278,10 +273,14 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Giant brand watermark */}
-      <div className="qf-watermark" aria-hidden="true">
-        QIMD
-      </div>
+      {/* Large centred brand logo */}
+      {footer?.logoActive !== false && (
+        <div className="qf-biglogo-wrap">
+          <Link href={footer?.logoLink || '/'} className="qf-biglogo" aria-label="QIMD Home">
+            <FooterLogo src={footer?.logo} alt={footer?.logoAltText || 'Quickupp / QIMD'} />
+          </Link>
+        </div>
+      )}
 
       {/* ── Bottom bar: copyright + legal ─────────────── */}
       <div className="qf-bottom">

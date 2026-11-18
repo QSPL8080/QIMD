@@ -2295,3 +2295,36 @@ html:not([data-area="admin"]) main .qc-guide-title {
   box-shadow: none !important;
 }
 .qc-page .qc-phone input.min-w-0 { border-left-width: 1.5px !important; }
+
+/* Footer: large centred logo (replaces the watermark) */
+.qf-tagline { margin-top: 0; }
+.qf-biglogo-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 8px 16px 56px;
+}
+.qf-biglogo-wrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: min(760px, 90vw);
+  height: 180px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgba(118, 77, 255, 0.35), transparent);
+  filter: blur(30px);
+  pointer-events: none;
+}
+.qf-biglogo { position: relative; display: inline-block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.qf-biglogo:hover { transform: scale(1.03); }
+.qf-biglogo img {
+  display: block;
+  width: auto;
+  height: clamp(96px, 16vw, 210px);
+  max-width: min(92vw, 900px);
+  object-fit: contain;
+  filter: drop-shadow(0 14px 40px rgba(118, 77, 255, 0.45));
+}
