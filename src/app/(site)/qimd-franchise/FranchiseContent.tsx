@@ -27,7 +27,7 @@ export default function FranchiseContent() {
     hasCommercialSpace: "Yes",
     preferredCity: "",
     interestDetails: "",
-    agreeContact: true,
+    agreeContact: false,
   };
 
   const [formData, setFormData] = useState(initialFormData);

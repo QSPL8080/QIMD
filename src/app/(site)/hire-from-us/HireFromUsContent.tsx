@@ -34,7 +34,7 @@ const defaultFormData = {
   employmentType: "Full-Time",
   remuneration: "",
   jobDescription: "",
-  agreeContact: true,
+  agreeContact: false,
 };
 
 export default function HireFromUsContent() {

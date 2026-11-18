@@ -12,7 +12,7 @@ export default function ContactContent() {
     email: "",
     course: "",
     message: "",
-    agreeContact: true,
+    agreeContact: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -41,7 +41,7 @@ export default function ContactContent() {
           email: "",
           course: "",
           message: "",
-          agreeContact: true,
+          agreeContact: false,
         });
       }, 3000);
       return () => clearTimeout(timer);
@@ -345,6 +345,7 @@ export default function ContactContent() {
                       <input
                         type="checkbox"
                         id="agreeContactEnquiry"
+                        required
                         checked={formData.agreeContact}
                         onChange={(e) => setFormData({ ...formData, agreeContact: e.target.checked })}
                       />

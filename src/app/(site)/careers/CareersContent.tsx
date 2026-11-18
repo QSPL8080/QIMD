@@ -26,7 +26,7 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
     email: "",
     position: defaultPos,
     experience: "1-3 Years",
-    agreeContact: true,
+    agreeContact: false,
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +43,7 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
           email: "",
           position: defaultPos,
           experience: "1-3 Years",
-          agreeContact: true,
+          agreeContact: false,
         });
         setResumeFile(null);
       }, 3000);

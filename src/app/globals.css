@@ -3179,3 +3179,65 @@ html:not([data-area="admin"]) main .qk-cta-title { margin-top: 14px; font-family
   filter: drop-shadow(0 10px 30px rgba(118, 77, 255, 0.4));
 }
 .qf-watermark { margin-top: 0; }
+
+/* ════════════════════════════════════════════════════════════════════
+   ROUND 2 REFINEMENTS
+════════════════════════════════════════════════════════════════════ */
+
+/* Consent checkboxes: browser "please tick" hint points at the box */
+.qk-consent input, .qc-check input { left: 0; top: 1px; width: 20px; height: 20px; margin: 0; }
+
+/* ── Header: more space between links, small corner radius ── */
+.qh-nav { gap: 6px; padding: 5px 6px; border-radius: 10px; }
+.qh-link { padding: 8px 14px; border-radius: 7px; }
+@media (min-width: 1280px) { .qh-link { padding: 8px 16px; } }
+@media (min-width: 1024px) and (max-width: 1279.98px) { .qh-nav { gap: 2px; padding: 4px; } .qh-link { padding: 7px 10px; } }
+.qh-btn { border-radius: 8px; }
+.qh-btn-arrow { border-radius: 6px; }
+.qh-hire, .qh-ghost { border-radius: 6px; }
+.qh-social { border-radius: 6px; }
+.qh-contact-ic { border-radius: 5px; }
+.qh-drop { border-radius: 10px; }
+.qh-drop::before { border-radius: 2px 0 0 0; }
+.qh-drop-item { border-radius: 7px; }
+.qh-drop-ic { border-radius: 6px; }
+.qh-burger { border-radius: 8px; }
+.qm-drawer { border-radius: 0; }
+.qm-item, .qm-link { border-radius: 8px; }
+.qm-toggle { border-radius: 7px; }
+.qm-cta { border-radius: 8px; }
+.qm-social { border-radius: 6px; }
+
+/* ── Career closing band: no border, balanced layout ── */
+.qk-cta { border-top: 0; }
+.qk-cta-grid { align-items: center; }
+@media (min-width: 1024px) {
+  .qk-cta-side {
+    padding-left: 48px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+.qk-cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.qk-cta-actions .qk-btn { width: auto; justify-content: center; }
+.qk-cta-note { margin-top: 18px; max-width: 420px; line-height: 1.6; }
+
+/* ── Site-wide typography: same weights & rhythm as the Career pages ── */
+html:not([data-area="admin"]) :is(main, header, footer) :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--qx-heading);
+  font-weight: 600 !important;
+}
+html:not([data-area="admin"]) main :is(h1, h2) { letter-spacing: -0.025em; }
+html:not([data-area="admin"]) main :is(h3, h4) { letter-spacing: -0.01em; }
+html:not([data-area="admin"]) :is(main, footer) :is(.font-bold, .font-extrabold, .font-black) {
+  font-weight: 600 !important;
+}
+html:not([data-area="admin"]) main p { line-height: 1.7; }
+html:not([data-area="admin"]) main :is(strong, b) { font-weight: 600; }
+/* Buttons & links styled as buttons */
+html:not([data-area="admin"]) :is(main, header, footer) :is(a, button)[class*="px-"][class*="py-"] { font-weight: 600 !important; }
+/* Section eyebrow pills use the same label style as the Career pages */
+html:not([data-area="admin"]) main section .text-center > :is(div, span).inline-flex.rounded-full:first-child {
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  font-weight: 600 !important;
+}

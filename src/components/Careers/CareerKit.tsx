@@ -209,7 +209,7 @@ export function CkConsent({
 }) {
   return (
     <label htmlFor={id} className="qk-consent">
-      <input type="checkbox" id={id} checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <input type="checkbox" id={id} required checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span className="qk-consent-box" aria-hidden="true">
         <Icon icon="mdi:check-bold" />
       </span>
