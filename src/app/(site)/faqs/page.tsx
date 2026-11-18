@@ -5,6 +5,10 @@ import { siteConfig } from "@/data";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
+// Live data on every request (no database access during `next build`)
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: `FAQs – ${siteConfig.name}`,
   description: "Find answers to frequently asked questions about QIMD Institute's programs, admissions, fees, placements, and more.",

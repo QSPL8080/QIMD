@@ -4,6 +4,10 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { db } from "@/lib/db";
 
+// Live data on every request (no database access during `next build`)
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: `Admission Information – ${siteConfig.name}`,
   description: "Learn about QIMD Institute's admission process, eligibility criteria, program fees, and enrollment procedure.",

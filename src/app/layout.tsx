@@ -115,7 +115,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   let faviconUrl = "/favicon.ico";
-  try {
+  // Skip the database while `next build` pre-renders static pages
+  // (prevents Prisma engine thread exhaustion on the build server).
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+  if (!isBuildPhase) try {
     const ws = await db.websiteSettings.findFirst({ select: { favicon: true } });
     if (ws?.favicon && ws.favicon.trim()) {
       faviconUrl = ws.favicon;

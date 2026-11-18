@@ -11,19 +11,14 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Rendered on request: no database access during `next build`
+// (prevents Prisma engine panics / thread exhaustion on the build server).
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
+export const revalidate = 0;
+
 export async function generateStaticParams() {
-  try {
-    const dbBlogs = await db.blog.findMany({
-      where: { status: "PUBLISHED", isDeleted: false },
-      select: { slug: true },
-    });
-    if (dbBlogs.length > 0) {
-      return dbBlogs.map((b) => ({ slug: b.slug }));
-    }
-  } catch (err) {
-    console.error("Error fetching static blog params:", err);
-  }
-  return blogsData.map((post) => ({ slug: post.slug }));
+  return [];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

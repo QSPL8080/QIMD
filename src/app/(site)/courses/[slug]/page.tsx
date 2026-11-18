@@ -16,19 +16,11 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Rendered on request: no database access during `next build`
+export const dynamicParams = true
+
 export async function generateStaticParams() {
-  try {
-    const dbCourses = await db.course.findMany({
-      where: { status: 'PUBLISHED', isDeleted: false },
-      select: { slug: true },
-    })
-    if (dbCourses.length > 0) {
-      return dbCourses.map((c) => ({ slug: c.slug }))
-    }
-  } catch (err) {
-    console.error('Error fetching static course params:', err)
-  }
-  return coursesData.map((course) => ({ slug: course.slug }))
+  return []
 }
 
 
