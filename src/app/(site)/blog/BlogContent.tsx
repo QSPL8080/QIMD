@@ -3,7 +3,39 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import BlogCard from "@/components/SharedComponent/Blog/blogCard";
+import { format } from "date-fns";
+
+
+// ── Helpers for article display (same cleaning rules as the previous card) ──
+const cleanExcerpt = (excerpt: string) =>
+  (excerpt || "")
+    .replace(/^##\s*Summary\s*/i, "")
+    .replace(/^#+\s*/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .trim();
+
+const formatDate = (blog: any) => {
+  const raw = blog.date || blog.publishedAt;
+  if (!raw) return "Recent";
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? String(raw) : format(d, "MMM dd, yyyy");
+};
+
+const coverOf = (blog: any) =>
+  blog.coverImage || (blog.images && blog.images.length > 0 ? blog.images[0] : "") || "/images/blog/blog-1.jpg";
+
+function ArticleMeta({ blog }: { blog: any }) {
+  return (
+    <div className="qb-meta">
+      <span>{blog.author || "QIMD Team"}</span>
+      <span className="qb-meta-dot" aria-hidden="true" />
+      <span>{formatDate(blog)}</span>
+      <span className="qb-meta-dot" aria-hidden="true" />
+      <span>{blog.readTime || "5 min read"}</span>
+    </div>
+  );
+}
 
 export default function BlogContent({ blogs }: { blogs: any[] }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -39,213 +71,191 @@ export default function BlogContent({ blogs }: { blogs: any[] }) {
     return matchesCat && matchesSearch;
   });
 
+  const topics = [
+    { title: "Digital Marketing", desc: "SEO, PPC & Growth Tactics", icon: "mdi:bullhorn-outline" },
+    { title: "Graphic Design", desc: "Branding & Visual Arts", icon: "mdi:palette-outline" },
+    { title: "Video Editing", desc: "Reels, Shorts & VFX", icon: "mdi:movie-open-play-outline" },
+    { title: "AI Innovations", desc: "Prompt Engineering & Tools", icon: "mdi:robot-outline" },
+  ];
+
+  const [lead, ...rest] = filteredBlogs;
+
   return (
-    <div className="bg-grey dark:bg-dark min-h-screen">
-      {/* 1. HERO HEADER WITH LIGHT PASTEL GRADIENT */}
-      <section
-        className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/80 dark:border-dark_border"
-        style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
-        }}
-      >
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
-            {/* Left Column: Heading & Detailed Description */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left" data-aos="fade-right">
-              <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-2xs backdrop-blur-md">
-                <Icon icon="mdi:post-outline" className="text-[#764DFF] text-base" />
-                <span>QIMD Knowledge Hub</span>
+    <div className="qb">
+      {/* 1. MASTHEAD */}
+      <section className="qb-mast">
+        <div className="qb-wrap">
+          <div className="qb-mast-rule">
+            <span>QIMD Knowledge Hub</span>
+          </div>
+
+          <h1 className="qb-mast-title">
+            Insights That <em>Empower Careers</em>
+          </h1>
+
+          <div className="qb-mast-cols">
+            <p className="qb-dropcap">
+              Welcome to the <strong>QIMD Knowledge Hub</strong> - your trusted resource for industry insights, practical learning, career guidance, and emerging trends in Digital Marketing, Graphic Design, Video Editing, and Artificial Intelligence.
+            </p>
+            <p>
+              Our blogs are written by industry professionals to help students, working professionals, entrepreneurs, and creative enthusiasts stay informed, build practical knowledge, and succeed in today&apos;s digital-first world.
+            </p>
+          </div>
+
+          <div className="qb-index">
+            {topics.map((t, i) => (
+              <div key={i} className="qb-index-item">
+                <span className="qb-index-num">{String(i + 1).padStart(2, "0")}</span>
+                <Icon icon={t.icon} className="qb-index-ic" />
+                <h3>{t.title}</h3>
+                <p>{t.desc}</p>
               </div>
+            ))}
+          </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white leading-tight tracking-tight">
-                Insights That <span className="text-[#764DFF]">Empower Careers</span>
-              </h1>
-
-              <div className="space-y-4 text-slate-700 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium">
-                <p className="text-base sm:text-lg font-bold text-slate-800 dark:text-white">
-                  Welcome to the <strong>QIMD Knowledge Hub</strong> - your trusted resource for industry insights, practical learning, career guidance, and emerging trends in Digital Marketing, Graphic Design, Video Editing, and Artificial Intelligence.
-                </p>
-                <p>
-                  Our blogs are written by industry professionals to help students, working professionals, entrepreneurs, and creative enthusiasts stay informed, build practical knowledge, and succeed in today&apos;s digital-first world.
-                </p>
-              </div>
-
-              <div className="pt-2 flex flex-wrap justify-center lg:justify-start gap-4">
-                <a
-                  href="#articles"
-                  className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-7 py-3.5 rounded-xl transition-all shadow-md flex items-center gap-2"
-                >
-                  <Icon icon="mdi:newspaper-variant-outline" className="text-base" />
-                  <span>Explore Articles</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Right Column: 4 Topic Highlight Cards */}
-            <div className="lg:col-span-5" data-aos="fade-left">
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { title: "Digital Marketing", desc: "SEO, PPC & Growth Tactics", icon: "mdi:bullhorn-outline", color: "text-blue-600 bg-blue-50 dark:bg-blue-950/40" },
-                  { title: "Graphic Design", desc: "Branding & Visual Arts", icon: "mdi:palette-outline", color: "text-purple-600 bg-purple-50 dark:bg-purple-950/40" },
-                  { title: "Video Editing", desc: "Reels, Shorts & VFX", icon: "mdi:movie-open-play-outline", color: "text-pink-600 bg-pink-50 dark:bg-pink-950/40" },
-                  { title: "AI Innovations", desc: "Prompt Engineering & Tools", icon: "mdi:robot-outline", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40" },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="bg-white dark:bg-darklight p-5 rounded-2xl border border-slate-200/80 dark:border-dark_border shadow-2xs hover:shadow-md hover:border-[#764DFF]/40 transition-all space-y-2.5 group"
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${item.color}`}>
-                      <Icon icon={item.icon} />
-                    </div>
-                    <h3 className="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white group-hover:text-[#764DFF] transition-colors leading-tight">
-                      {item.title}
-                    </h3>
-                    <p className="text-[11px] font-medium text-slate-500 dark:text-white/60 leading-tight">
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
+          <div className="qb-mast-cta">
+            <a href="#articles" className="qb-link-btn">
+              <Icon icon="mdi:newspaper-variant-outline" />
+              <span>Explore Articles</span>
+              <Icon icon="mdi:arrow-down" />
+            </a>
           </div>
         </div>
       </section>
 
-      {/* 2. EXPLORE OUR LATEST ARTICLES & CATEGORY FILTERS - DARK GRADIENT */}
-      <section
-        id="articles"
-        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
-        style={{
-          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
-        }}
-      >
-        {/* Subtle Ambient Decorative Glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-          
-          {/* Section Sub-Header */}
-          <div className="text-center max-w-3xl mx-auto mb-10" data-aos="fade-up">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300 mb-2 inline-block">Curated Articles</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
-              Explore Our Latest Articles
-            </h2>
-            <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
+      {/* 2. ARTICLES */}
+      <section id="articles" className="qb-articles">
+        <div className="qb-wrap">
+          <div className="qb-sec-head">
+            <span className="qb-kicker">Curated Articles</span>
+            <h2 className="qb-sec-title">Explore Our Latest Articles</h2>
+            <p className="qb-sec-desc">
               Discover expert-written content covering the latest technologies, marketing strategies, creative trends, AI innovations, and career opportunities. Whether you&apos;re beginning your journey or looking to advance your skills, our articles provide practical insights that you can apply in real-world scenarios.
             </p>
           </div>
 
-          {/* Search & Category Pills */}
-          <div className="mb-12 space-y-6" data-aos="fade-up">
-            {/* Search Input */}
-            <div className="max-w-md mx-auto relative">
+          {/* Filter bar */}
+          <div className="qb-filter">
+            <nav className="qb-cats" aria-label="Article categories">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`qb-cat ${selectedCategory === cat ? "is-active" : ""}`}
+                  aria-pressed={selectedCategory === cat}
+                >
+                  {cat}
+                </button>
+              ))}
+            </nav>
+            <div className="qb-search">
+              <Icon icon="mdi:magnify" className="qb-search-ic" />
               <input
                 type="text"
                 placeholder="Search articles by topic or keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-3.5 bg-white/10 dark:bg-white/10 border border-white/20 rounded-2xl text-xs sm:text-sm text-white placeholder-slate-300 focus:outline-none focus:border-cyan-300 transition-all font-medium backdrop-blur-md shadow-inner"
+                aria-label="Search articles"
               />
-              <Icon icon="mdi:search" className="text-cyan-300 text-xl absolute left-3.5 top-3.5" />
               {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3.5 top-3.5 text-slate-300 hover:text-white"
-                >
-                  <Icon icon="mdi:close" className="text-base" />
+                <button type="button" onClick={() => setSearchQuery("")} className="qb-search-clear" aria-label="Clear search">
+                  <Icon icon="mdi:close" />
                 </button>
               )}
             </div>
-
-            {/* Categories Pills */}
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
-                    selectedCategory === cat
-                      ? "bg-white text-[#180e29] shadow-lg scale-105 border border-white"
-                      : "bg-white/10 text-white/90 border border-white/20 hover:border-cyan-300 hover:bg-white/20 backdrop-blur-md"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
           </div>
 
-          {/* Articles Grid */}
           {filteredBlogs.length === 0 ? (
-            <div className="text-center py-12 bg-white/10 dark:bg-white/10 rounded-3xl border border-white/20 backdrop-blur-md max-w-lg mx-auto">
-              <Icon icon="mdi:file-search-outline" className="text-cyan-300 text-5xl mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-white mb-1">No Articles Found</h3>
-              <p className="text-xs text-slate-200 mb-4">
-                No blog posts match your selected category or search keyword.
-              </p>
-              <button
-                onClick={() => { setSelectedCategory("All"); setSearchQuery(""); }}
-                className="bg-white text-[#180e29] text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors shadow-md"
-              >
+            <div className="qb-empty">
+              <Icon icon="mdi:file-search-outline" className="qb-empty-ic" />
+              <h3>No Articles Found</h3>
+              <p>No blog posts match your selected category or search keyword.</p>
+              <button type="button" onClick={() => { setSelectedCategory("All"); setSearchQuery(""); }} className="qb-link-btn">
                 Reset Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredBlogs.map((blog: any) => (
-                <BlogCard key={blog.id} blog={blog} />
-              ))}
-            </div>
-          )}
+            <>
+              {/* Lead story */}
+              <article className="qb-lead">
+                <Link href={`/blog/${lead.slug}`} className="qb-lead-media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={coverOf(lead)} alt={lead.title} loading="lazy" />
+                </Link>
+                <div className="qb-lead-body">
+                  <span className="qb-kicker">{lead.category || "Digital Marketing"}</span>
+                  <h3 className="qb-lead-title">
+                    <Link href={`/blog/${lead.slug}`}>{lead.title}</Link>
+                  </h3>
+                  <p className="qb-lead-excerpt">{cleanExcerpt(lead.excerpt)}</p>
+                  <ArticleMeta blog={lead} />
+                  <Link href={`/blog/${lead.slug}`} className="qb-read">
+                    <span>Read Full Article</span>
+                    <Icon icon="mdi:arrow-right" />
+                  </Link>
+                </div>
+              </article>
 
+              {/* Magazine grid */}
+              {rest.length > 0 && (
+                <div className="qb-grid">
+                  {rest.map((blog: any) => (
+                    <article key={blog.id} className="qb-card">
+                      <Link href={`/blog/${blog.slug}`} className="qb-card-media">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={coverOf(blog)} alt={blog.title} loading="lazy" />
+                      </Link>
+                      <span className="qb-kicker">{blog.category || "Digital Marketing"}</span>
+                      <h3 className="qb-card-title">
+                        <Link href={`/blog/${blog.slug}`}>{blog.title}</Link>
+                      </h3>
+                      <p className="qb-card-excerpt">{cleanExcerpt(blog.excerpt)}</p>
+                      <div className="qb-card-foot">
+                        <ArticleMeta blog={blog} />
+                        <Link href={`/blog/${blog.slug}`} className="qb-read is-small" aria-label={`Read Full Article: ${blog.title}`}>
+                          <span>Read Full Article</span>
+                          <Icon icon="mdi:arrow-right" />
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
-      {/* 3. LEARN. STAY UPDATED. STAY AHEAD. (CLEAN FULL-WIDTH SECTION) */}
-      <section
-        className="py-16 lg:py-24 border-t border-slate-200/80 dark:border-dark_border overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
-        }}
-      >
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          <div className="text-center space-y-6 max-w-4xl mx-auto" data-aos="fade-up">
-            <div className="inline-flex items-center gap-2 bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-4 py-1.5 rounded-full">
-              <Icon icon="mdi:rocket-launch-outline" className="text-base" />
-              Continuous Growth
+      {/* 3. LEARN. STAY UPDATED. STAY AHEAD. */}
+      <section className="qb-close">
+        <div className="qb-wrap">
+          <div className="qb-close-grid">
+            <div>
+              <span className="qb-kicker">
+                <Icon icon="mdi:rocket-launch-outline" /> Continuous Growth
+              </span>
+              <h2 className="qb-close-title">
+                Learn. Stay Updated. <em>Stay Ahead.</em>
+              </h2>
             </div>
-            
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-              Learn. Stay Updated. <span className="text-[#764DFF]">Stay Ahead.</span>
-            </h2>
-
-            <div className="space-y-3 text-slate-600 dark:text-white/80 text-xs sm:text-sm leading-relaxed font-medium max-w-3xl mx-auto">
+            <div className="qb-close-body">
               <p>
                 Continuous learning is essential in today&apos;s rapidly evolving digital landscape. The QIMD Blog is designed to help you expand your knowledge, sharpen your skills, and stay ahead of industry trends through valuable, experience-driven content.
               </p>
-              <p className="text-slate-800 dark:text-white font-bold text-xs sm:text-sm">
+              <blockquote className="qb-quote">
                 Whether you&apos;re preparing for your first job, advancing your career, or growing your business, our insights are created to support your professional journey every step of the way.
-              </p>
-            </div>
-
-            <div className="pt-4 flex flex-wrap justify-center gap-4">
-              <Link
-                href="/courses"
-                className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold px-8 py-3.5 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center gap-2"
-              >
-                <Icon icon="mdi:school-outline" className="text-base" />
-                <span>Explore Programs</span>
-              </Link>
-              <Link
-                href="/contact"
-                className="border border-[#764DFF] text-[#764DFF] hover:bg-[#764DFF]/5 font-bold px-8 py-3.5 rounded-xl text-xs sm:text-sm transition-all flex items-center gap-2"
-              >
-                <Icon icon="mdi:account-badge-outline" className="text-base" />
-                <span>Contact Admissions</span>
-              </Link>
+              </blockquote>
+              <div className="qb-close-actions">
+                <Link href="/courses" className="qb-btn qb-btn-ink">
+                  <Icon icon="mdi:school-outline" />
+                  <span>Explore Programs</span>
+                </Link>
+                <Link href="/contact" className="qb-btn qb-btn-outline">
+                  <Icon icon="mdi:account-badge-outline" />
+                  <span>Contact Admissions</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
