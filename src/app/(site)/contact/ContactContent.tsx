@@ -100,127 +100,76 @@ export default function ContactContent() {
     }
   };
 
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057")}`;
+
   return (
-    <div className="qc-page bg-white dark:bg-dark min-h-screen">
-      {/* ═══ 1. HERO — classic photo banner ═══ */}
-      <section className="qc-hero">
-        <div className="qc-hero-bg" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/contact/contact-hero.webp" alt="" loading="eager" />
-        </div>
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="max-w-3xl space-y-5" data-aos="fade-up">
-            <nav className="qc-crumbs" aria-label="Breadcrumb">
-              <Link href="/">Home</Link>
-              <span className="qc-crumbs-sep">/</span>
-              <span>Contact Us</span>
-            </nav>
+    <div className="qc-page qn">
+      {/* ═══ 1. CONTACT DESK — intro + enquiry form side by side ═══ */}
+      <section className="qn-desk-sec" id="enquiry-form" data-qx="off">
+        <div className="qn-wrap">
+          <div className="qn-desk">
+            {/* Left: intro & direct lines */}
+            <div className="qn-desk-intro">
+              <nav className="qn-crumbs" aria-label="Breadcrumb">
+                <Link href="/">Home</Link>
+                <Icon icon="solar:alt-arrow-right-linear" />
+                <span>Contact Us</span>
+              </nav>
 
-            <p className="qc-hero-kicker">Contact Us</p>
+              <p className="qn-kicker">
+                <span className="qn-kicker-dot" aria-hidden="true" />
+                Contact Us
+              </p>
 
-            <h1 className="qc-hero-title">
-              Let&apos;s Build Your <span className="qc-hero-accent">Career Together</span>
-            </h1>
+              <h1 className="qn-h1">
+                Let&apos;s Build Your <span className="qn-accent">Career Together</span>
+              </h1>
 
-            <p className="qc-hero-lead">
-              Whether you&apos;re looking to enroll in a program, explore career opportunities, hire skilled professionals, or simply learn more about QIMD, our team is here to assist you.
-            </p>
+              <p className="qn-lead">
+                Whether you&apos;re looking to enroll in a program, explore career opportunities, hire skilled professionals, or simply learn more about QIMD, our team is here to assist you.
+              </p>
 
-            <p className="qc-hero-note">
-              Complete the enquiry form below, and one of our counsellors will get in touch with you shortly.
-            </p>
-          </div>
-        </div>
-      </section>
+              <p className="qn-note">
+                <Icon icon="solar:chat-round-dots-bold" />
+                <span>Complete the enquiry form below, and one of our counsellors will get in touch with you shortly.</span>
+              </p>
 
-      {/* ═══ 2. CONTACT INFO + FORM ═══ */}
-      <section className="qc-main" id="enquiry-form">
-
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-            {/* Left: campus & helpline info */}
-            <div className="lg:col-span-5 space-y-8" data-aos="fade-right">
-              <div className="space-y-4">
-                <div className="qc-eyebrow">
-                  <Icon icon="solar:map-point-wave-bold" />
-                  Visit Our Campus
-                </div>
-                <h3 className="qc-main-title">Experience QIMD Firsthand</h3>
-                <p className="qc-main-lead">
-                  Meet our trainers, explore our facilities, and discover how practical learning can transform your career.
-                </p>
-              </div>
-
-              <div className="qc-info-list">
-                <div className="qc-info">
-                  <span className="qc-info-ic">
-                    <Icon icon="solar:map-point-bold" />
-                  </span>
-                  <div>
-                    <p className="qc-info-label">Address</p>
-                    <p className="qc-info-value">Quickupp Institute of Marketing &amp; Design (QIMD)</p>
-                    <p className="qc-info-sub">Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057</p>
-                  </div>
-                </div>
-
-                <div className="qc-info">
-                  <span className="qc-info-ic">
-                    <Icon icon="solar:clock-circle-bold" />
-                  </span>
-                  <div>
-                    <p className="qc-info-label">Working Hours</p>
-                    <p className="qc-info-value">Monday – Saturday | 9:00 AM – 6:00 PM</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="qc-eyebrow">
+              <div className="qn-lines">
+                <p className="qn-lines-title">
                   <Icon icon="solar:headphones-round-sound-bold" />
                   Helpline &amp; Support
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-                  <Link href="tel:+918087897288" className="qc-quick">
-                    <span className="qc-quick-ic">
-                      <Icon icon="solar:phone-calling-bold" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="qc-info-label">Phone Helpline</span>
-                      <span className="qc-quick-value">+91 8087897288</span>
-                    </span>
-                    <Icon icon="solar:arrow-right-up-linear" className="qc-quick-arrow" />
-                  </Link>
-
-                  <Link href="mailto:info@quickuppinstitute.com" className="qc-quick">
-                    <span className="qc-quick-ic">
-                      <Icon icon="solar:letter-bold" />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="qc-info-label">Email Address</span>
-                      <span className="qc-quick-value break-all">info@quickuppinstitute.com</span>
-                    </span>
-                    <Icon icon="solar:arrow-right-up-linear" className="qc-quick-arrow" />
-                  </Link>
-                </div>
+                </p>
+                <Link href="tel:+918087897288" className="qn-line">
+                  <span className="qn-line-ic"><Icon icon="solar:phone-calling-bold" /></span>
+                  <span className="qn-line-text">
+                    <span className="qn-line-label">Phone Helpline</span>
+                    <span className="qn-line-value">+91 8087897288</span>
+                  </span>
+                  <Icon icon="solar:arrow-right-up-linear" className="qn-line-arrow" />
+                </Link>
+                <Link href="mailto:info@quickuppinstitute.com" className="qn-line">
+                  <span className="qn-line-ic"><Icon icon="solar:letter-bold" /></span>
+                  <span className="qn-line-text">
+                    <span className="qn-line-label">Email Address</span>
+                    <span className="qn-line-value">info@quickuppinstitute.com</span>
+                  </span>
+                  <Icon icon="solar:arrow-right-up-linear" className="qn-line-arrow" />
+                </Link>
               </div>
             </div>
 
             {/* Right: enquiry form */}
-            <div className="lg:col-span-7" data-aos="fade-left">
-              <div className="qc-form-card">
-                <div className="qc-form-head">
-                  <span className="qc-form-head-ic">
-                    <Icon icon="solar:chat-round-call-bold" />
-                  </span>
-                  <div>
-                    <span className="qc-chip">Get In Touch</span>
-                    <h2 className="qc-form-title">Schedule a Free Career Counselling Session</h2>
-                    <p className="qc-form-lead">
-                      Fill out the form below to receive personalized guidance from our admissions experts.
-                    </p>
-                  </div>
-                </div>
+            <div className="qn-desk-form qc-form-card">
+              <div className="qn-form-head">
+                <span className="qn-form-chip">
+                  <Icon icon="solar:chat-round-call-bold" />
+                  Get In Touch
+                </span>
+                <h2 className="qn-form-title">Schedule a Free Career Counselling Session</h2>
+                <p className="qn-form-lead">
+                  Fill out the form below to receive personalized guidance from our admissions experts.
+                </p>
+              </div>
 
                 {submitSuccess ? (
                   <div className="qc-success">
@@ -372,48 +321,73 @@ export default function ContactContent() {
                     </button>
                   </form>
                 )}
-              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 2. VISIT OUR CAMPUS ═══ */}
+      <section className="qn-campus">
+        <div className="qn-wrap">
+          <div className="qn-campus-grid">
+            <div className="qn-campus-intro">
+              <p className="qn-eyebrow">
+                <Icon icon="solar:map-point-wave-bold" />
+                Visit Our Campus
+              </p>
+              <h3 className="qn-h3">Experience QIMD Firsthand</h3>
+              <p>
+                Meet our trainers, explore our facilities, and discover how practical learning can transform your career.
+              </p>
+            </div>
+
+            <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="qn-place">
+              <span className="qn-place-ic"><Icon icon="solar:map-point-bold" /></span>
+              <span className="qn-place-label">Address</span>
+              <span className="qn-place-value">Quickupp Institute of Marketing &amp; Design (QIMD)</span>
+              <span className="qn-place-sub">Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057</span>
+              <Icon icon="solar:arrow-right-up-linear" className="qn-place-arrow" />
+            </a>
+
+            <div className="qn-place is-static">
+              <span className="qn-place-ic"><Icon icon="solar:clock-circle-bold" /></span>
+              <span className="qn-place-label">Working Hours</span>
+              <span className="qn-place-value">Monday – Saturday | 9:00 AM – 6:00 PM</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══ 3. NEED CAREER GUIDANCE? ═══ */}
-      <section className="qc-guide">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="qc-guide-media" data-aos="fade-right">
+      <section className="qn-guide-sec">
+        <div className="qn-wrap">
+          <div className="qn-guide">
+            <div className="qn-guide-photo" aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/images/contact/contact-guidance.webp" alt="Students working on live projects at QIMD" loading="lazy" />
-              <span className="qc-guide-ring" aria-hidden="true" />
             </div>
-
-            <div className="space-y-5" data-aos="fade-left">
-              <div className="qc-eyebrow">
+            <div className="qn-guide-body">
+              <p className="qn-eyebrow is-light">
                 <Icon icon="solar:user-speak-rounded-bold" />
                 Admissions Assistance
-              </div>
-              <h2 className="qc-guide-title">Need Career Guidance?</h2>
-              <p className="qc-guide-lead">
+              </p>
+              <h2 className="qn-h2">Need Career Guidance?</h2>
+              <p className="qn-guide-lead">
                 Our admissions team is available to help you choose the right program based on your career goals, interests, and experience.
               </p>
 
-              <div>
-                <h4 className="qc-guide-sub">Get Personalized Guidance On:</h4>
-                <div className="qc-topics">
-                  {guidanceTopics.map((topic, i) => (
-                    <div key={i} className="qc-topic">
-                      <span className="qc-topic-ic">
-                        <Icon icon="solar:check-circle-bold" />
-                      </span>
-                      <span>{topic}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <h4 className="qn-guide-sub">Get Personalized Guidance On:</h4>
+              <ol className="qn-topics">
+                {guidanceTopics.map((topic, i) => (
+                  <li key={i}>
+                    <span className="qn-topic-num">{String(i + 1).padStart(2, "0")}</span>
+                    <span>{topic}</span>
+                  </li>
+                ))}
+              </ol>
 
-              <p className="qc-guide-cta">
-                <Icon icon="solar:rocket-2-bold" className="shrink-0 text-xl" />
+              <p className="qn-guide-cta">
+                <Icon icon="solar:rocket-2-bold" />
                 <span>Start your journey with QIMD today. We&apos;re here to help you take the next step toward a successful career.</span>
               </p>
             </div>
