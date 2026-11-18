@@ -2540,3 +2540,38 @@ html:not([data-area="admin"]) main .ql-content h3 {
 }
 .dark .ql-content [class*="bg-slate-50"] { background: rgba(118, 77, 255, 0.08) !important; border-color: #332D55 !important; }
 .ql-content .prose > div[class*="border-t"] { border-top: 1px dashed #E2E8F0; }
+
+/* Footer: each extra email gets its own small label */
+.qf-mail-row { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.1); }
+
+/* Contact: info + form section — plain light background (no photo) */
+.qc-main { color: #0B1437; background: #F7F6FB; border-top: 1px solid #ECEAF5; border-bottom: 1px solid #ECEAF5; }
+.dark .qc-main { background: #0F0D1A; color: #fff; border-color: #332D55; }
+html:not([data-area="admin"]) main .qc-main-title { color: #0B1437; }
+.dark .qc-main-title { color: #fff !important; }
+.qc-main-lead { color: #475569; }
+.qc-info-list {
+  gap: 0;
+  background: #fff;
+  border: 1px solid #E9E6F5;
+  box-shadow: 0 14px 34px -24px rgba(11, 20, 55, 0.35);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.qc-info { background: transparent; }
+.qc-info + .qc-info { border-top: 1px solid #F0EEF8; }
+.qc-info-label { color: #764DFF; }
+.qc-info-value { color: #0B1437; }
+.qc-info-sub { color: #64748b; }
+.qc-quick {
+  background: #fff;
+  border: 1px solid #E9E6F5;
+  box-shadow: 0 10px 26px -22px rgba(11, 20, 55, 0.4);
+}
+.qc-quick:hover { background: #fff; border-color: #C9BBFF; box-shadow: 0 16px 32px -20px rgba(118, 77, 255, 0.55); }
+.qc-quick-value { color: #0B1437; }
+.qc-quick-arrow { color: #94a3b8; }
+.qc-quick:hover .qc-quick-arrow { color: #764DFF; }
+.qc-form-card { border: 1px solid #E9E6F5; box-shadow: 0 30px 60px -36px rgba(11, 20, 55, 0.45); }
+.dark .qc-info-list, .dark .qc-quick { background: #1A1730; border-color: #332D55; }
+.dark .qc-info-value, .dark .qc-quick-value { color: #fff; }

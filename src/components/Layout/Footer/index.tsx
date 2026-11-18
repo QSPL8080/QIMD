@@ -184,10 +184,12 @@ const Footer: React.FC = () => {
                 <div className="min-w-0">
                   {emailList[0]?.label && <p className="qf-card-label">{emailList[0].label}</p>}
                   {emailList.map((e, i) => (
-                    <Link key={e.id} href={`mailto:${e.value}`} className="qf-card-value qf-mail">
-                      {i > 0 && e.label && <span className="qf-mail-tag">{e.label}</span>}
-                      <span className="break-all">{e.value}</span>
-                    </Link>
+                    <div key={e.id} className={i > 0 ? 'qf-mail-row' : undefined}>
+                      {i > 0 && e.label && <p className="qf-card-label">{e.label}</p>}
+                      <Link href={`mailto:${e.value}`} className="qf-card-value block break-all">
+                        {e.value}
+                      </Link>
+                    </div>
                   ))}
                 </div>
               </div>

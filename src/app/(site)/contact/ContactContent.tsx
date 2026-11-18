@@ -133,19 +133,15 @@ export default function ContactContent() {
         </div>
       </section>
 
-      {/* ═══ 2. CONTACT INFO + FORM — photo background ═══ */}
+      {/* ═══ 2. CONTACT INFO + FORM ═══ */}
       <section className="qc-main" id="enquiry-form">
-        <div className="qc-main-bg" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/contact/contact-campus.webp" alt="" loading="lazy" />
-        </div>
 
         <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Left: campus & helpline info */}
             <div className="lg:col-span-5 space-y-8" data-aos="fade-right">
               <div className="space-y-4">
-                <div className="qc-eyebrow is-dark">
+                <div className="qc-eyebrow">
                   <Icon icon="solar:map-point-wave-bold" />
                   Visit Our Campus
                 </div>
@@ -179,7 +175,7 @@ export default function ContactContent() {
               </div>
 
               <div className="space-y-4">
-                <div className="qc-eyebrow is-dark">
+                <div className="qc-eyebrow">
                   <Icon icon="solar:headphones-round-sound-bold" />
                   Helpline &amp; Support
                 </div>
