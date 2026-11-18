@@ -159,7 +159,7 @@ export default function ContactContent() {
                   <div>
                     <p className="qc-info-label">Address</p>
                     <p className="qc-info-value">Quickupp Institute of Marketing &amp; Design (QIMD)</p>
-                    <p className="qc-info-sub">Hinjewadi, Pune, Maharashtra</p>
+                    <p className="qc-info-sub">Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057</p>
                   </div>
                 </div>
 

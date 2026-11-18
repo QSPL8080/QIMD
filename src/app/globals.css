@@ -4438,3 +4438,15 @@ html:not([data-area="admin"]) main :is(.qc-guide-title, .qc-sec-title) {
   font-size: var(--qx-h2) !important; font-weight: 600 !important; line-height: 1.18 !important; letter-spacing: -0.02em !important;
 }
 html:not([data-area="admin"]) main h1.hero-title { font-size: var(--qx-h1) !important; line-height: 1.12 !important; letter-spacing: -0.025em !important; }
+
+/* About sub-pages: use more of the screen width */
+.qa .qa-wrap { max-width: 1400px; }
+@media (min-width: 1024px) { .qa .qa-wrap { padding: 0 32px; } }
+
+/* Footer: brand + link columns spread with equal gaps between them */
+@media (min-width: 1024px) {
+  .qf-main { display: flex; justify-content: space-between; align-items: flex-start; gap: 48px; }
+  .qf-main > .qf-brand { flex: 0 1 380px; }
+  .qf-main > .qf-cols { display: contents; }
+  .qf-main .qf-col { flex: 0 1 auto; max-width: 270px; }
+}

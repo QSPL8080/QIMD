@@ -105,7 +105,13 @@ const Footer: React.FC = () => {
     footer?.showSocialIcons !== false ? getSocialItems(socialLinks, 'footer', showWhatsappIcon ? whatsappUrl : null) : []
 
   // Contact data (same sources & rules as before)
-  const showAddress = footer?.address?.active !== false && !!footer?.address?.fullAddress
+  // Institute address — always shown (label & map link still come from the Footer CMS when set)
+  const showAddress = true
+  const addressText = siteConfig.address
+  const addressMapUrl =
+    footer?.address?.googleMapsUrl && footer.address.googleMapsUrl !== 'https://maps.google.com'
+      ? footer.address.googleMapsUrl
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address)}`
   const phoneList: Array<{ id: string; label?: string; value: string }> =
     footer?.phones !== undefined
       ? footer.phones.filter((p: any) => p.isActive !== false)
@@ -148,14 +154,10 @@ const Footer: React.FC = () => {
                   <Icon icon="solar:map-point-bold" />
                 </span>
                 <div className="min-w-0">
-                  {footer.address.label && <p className="qf-card-label">{footer.address.label}</p>}
-                  {footer.address.googleMapsUrl ? (
-                    <a href={footer.address.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="qf-card-value">
-                      {footer.address.fullAddress}
-                    </a>
-                  ) : (
-                    <p className="qf-card-value">{footer.address.fullAddress}</p>
-                  )}
+                  {footer?.address?.label && <p className="qf-card-label">{footer.address.label}</p>}
+                  <a href={addressMapUrl} target="_blank" rel="noopener noreferrer" className="qf-card-value">
+                    {addressText}
+                  </a>
                 </div>
               </div>
             )}

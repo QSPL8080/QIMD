@@ -32,7 +32,7 @@ export const siteConfig = {
     "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities. Offline Learning Only.",
   phone: "+91 90000 00000",
   email: "info@quickuppinstitute.com",
-  address: "Hinjewadi, Pune, Maharashtra, India",
+  address: "Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057",
   whatsapp: "+910000000000",
   socialLinks: {
     instagram: "https://www.instagram.com/quickupp.institute/",
@@ -121,7 +121,7 @@ export const footerLinks = {
 export const contactInfo: ContactInfo = {
   phone: "+91 90000 00000",
   email: "info@quickuppinstitute.com",
-  address: "Hinjewadi, Pune, Maharashtra, India",
+  address: "Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057",
   socialLinks: {
     instagram: "https://instagram.com/qimdinstitute",
     facebook: "https://facebook.com/qimdinstitute",
