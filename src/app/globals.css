@@ -5217,3 +5217,11 @@ html:not([data-area="admin"]) main .qn-guide-sub { margin: 8px 0 0; font-family:
   background: #5B3FD9 !important; background-image: none !important; box-shadow: 0 14px 28px -16px rgba(91, 63, 217, .8) !important;
 }
 .qn .qc-form button.qc-submit.qc-submit[type="submit"]:hover { background: #4A31BD !important; }
+/* Video testimonials: real video frame as poster, inline playback */
+.qw .qw-film-frame { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.qw .qw-film-poster { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0 !important; margin: 0; border: 0 !important; border-radius: 0 !important; background: #0b0a1a !important; cursor: pointer; box-shadow: none !important; }
+.qw-film-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.qw-film-poster .qw-film-media { opacity: .9; transition: transform .6s, opacity .3s; }
+.qw-film:hover .qw-film-poster .qw-film-media { transform: scale(1.04); opacity: 1; }
+.qw-film-poster::after { content: ''; position: absolute; inset: 0; background: rgba(21, 18, 58, .18); pointer-events: none; }
+.qw-film-play, .qw-film-tag { z-index: 2; }

@@ -6,7 +6,6 @@
  */
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Icon } from '@iconify/react/dist/iconify.js'
 
@@ -150,24 +149,74 @@ export function QwReview({ rev, index = 0 }: { rev: any; index?: number }) {
   )
 }
 
-/** Video testimonial as a film frame */
+/** YouTube video id from any YouTube URL (watch, youtu.be, embed, shorts) */
+export function youTubeId(url?: string | null): string | null {
+  if (!url) return null
+  const m = url.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|shorts\/|v\/|watch\?(?:.*&)?v=))([A-Za-z0-9_-]{11})/)
+  return m ? m[1] : null
+}
+
+/** Video testimonial as a film frame — shows the real video frame and plays inline */
 export function QwVideo({ review, onPlay }: { review: any; onPlay: () => void }) {
+  const [playing, setPlaying] = React.useState(false)
+  const ytId = youTubeId(review.videoUrl)
+  const isFile = !ytId && /\.(mp4|webm|mov)(\?|$)/i.test(review.videoUrl || '')
+
+  // Poster: the video's own YouTube frame → admin thumbnail → student photo
+  const candidates = [ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null, review.videoThumbnail, review.image].filter(Boolean) as string[]
+  const [posterIdx, setPosterIdx] = React.useState(0)
+  const poster = candidates[posterIdx]
+  const imgRef = React.useRef<HTMLImageElement>(null)
+  const nextPoster = React.useCallback(() => setPosterIdx((i) => (i + 1 < candidates.length ? i + 1 : i)), [candidates.length])
+  // An image that failed before hydration never fires onError in React — check it once mounted
+  React.useEffect(() => {
+    const img = imgRef.current
+    if (img && img.complete && img.naturalWidth === 0) nextPoster()
+  }, [posterIdx, nextPoster])
+
+  const embedSrc = ytId
+    ? `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1`
+    : review.videoUrl
+
   return (
     <article className="qw-film">
-      <button type="button" className="qw-film-frame" onClick={onPlay} aria-label="Play review video">
-        <Image
-          src={review.videoThumbnail || review.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80'}
-          alt={review.studentName}
-          fill
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
-        <span className="qw-film-play">
-          <Icon icon="mdi:play" />
-        </span>
-        <span className="qw-film-tag">
-          <Icon icon="mdi:video" /> Video Review
-        </span>
-      </button>
+      <div className="qw-film-frame">
+        {playing ? (
+          isFile ? (
+            <video src={review.videoUrl} controls autoPlay playsInline className="qw-film-media" />
+          ) : (
+            <iframe
+              src={embedSrc}
+              title={`${review.studentName} Video Review`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="qw-film-media"
+            />
+          )
+        ) : (
+          <button type="button" className="qw-film-poster" onClick={() => setPlaying(true)} aria-label="Play review video">
+            {isFile && !review.videoThumbnail ? (
+              <video src={`${review.videoUrl}#t=0.5`} preload="metadata" muted playsInline className="qw-film-media" />
+            ) : poster ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={poster}
+                alt={review.studentName}
+                className="qw-film-media"
+                loading="lazy"
+                ref={imgRef}
+                onError={nextPoster}
+              />
+            ) : null}
+            <span className="qw-film-play">
+              <Icon icon="mdi:play" />
+            </span>
+            <span className="qw-film-tag">
+              <Icon icon="mdi:video" /> Video Review
+            </span>
+          </button>
+        )}
+      </div>
       <div className="qw-film-body">
         <div className="qw-film-top">
           <h4>{review.studentName}</h4>
