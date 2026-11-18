@@ -98,7 +98,7 @@ export const metadata: Metadata = {
     ],
     shortcut: ["/favicon.ico"],
     apple: [
-      { url: "/favicon.ico" },
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
     ],
   },
   manifest: "/site.webmanifest",
@@ -107,42 +107,25 @@ export const metadata: Metadata = {
   },
 };
 
-import { db } from "@/lib/db";
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let faviconUrl = "/favicon.ico";
-  // Skip the database while `next build` pre-renders static pages
-  // (prevents Prisma engine thread exhaustion on the build server).
-  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
-  if (!isBuildPhase) try {
-    const ws = await db.websiteSettings.findFirst({ select: { favicon: true } });
-    if (ws?.favicon && ws.favicon.trim()) {
-      faviconUrl = ws.favicon;
-    }
-  } catch (err) {
-    console.error("Layout favicon load error:", err);
-  }
-
-  const isSvg = faviconUrl.endsWith(".svg");
-
+  // Favicon: the Q mark from the QIMD logo (static files in /public)
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} href={faviconUrl} />
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="32x32" href={faviconUrl} />
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="48x48" href={faviconUrl} />
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="96x96" href={faviconUrl} />
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="192x192" href={faviconUrl} />
-        <link rel="icon" type={isSvg ? "image/svg+xml" : "image/png"} sizes="512x512" href={faviconUrl} />
-        <link rel="shortcut icon" href={faviconUrl} />
-        <link rel="apple-touch-icon" sizes="180x180" href={faviconUrl} />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-title" content="QIMD" />
         <meta name="application-name" content="QIMD" />
-        <meta name="msapplication-TileImage" content={faviconUrl} />
+        <meta name="msapplication-TileImage" content="/icon-192.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
