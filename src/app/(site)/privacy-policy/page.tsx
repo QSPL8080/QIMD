@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/data";
+import LegalLayout from "@/components/Common/LegalLayout";
 
 export const metadata: Metadata = {
   title: `Privacy Policy – ${siteConfig.name}`,
@@ -9,21 +10,14 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <section className="section-py bg-grey dark:bg-dark">
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-        <div className="max-w-4xl mx-auto bg-white dark:bg-darklight rounded-2xl shadow-card border border-border dark:border-dark_border p-8 sm:p-10 lg:p-12">
-          {/* Header */}
-          <div className="border-b border-border dark:border-dark_border pb-6 mb-8">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-midnight_text dark:text-white mb-3">
-              PRIVACY POLICY
-            </h1>
-            <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-muted dark:text-white/60 font-medium">
-              <span><strong>Effective Date:</strong> 31 August 2026</span>
-              <span>•</span>
-              <span><strong>Last Updated:</strong> 31 August 2026</span>
-            </div>
-          </div>
-
+    <LegalLayout
+      pageName="Privacy Policy"
+      title="Privacy"
+      highlight="Policy"
+      icon="mdi:shield-lock-outline"
+      effectiveDate="31 August 2026"
+      lastUpdated="31 August 2026"
+    >
           <div className="prose prose-sm sm:prose-base max-w-none text-slate-700 dark:text-white/80 space-y-8 leading-relaxed">
             {/* Introductory Text */}
             <div className="space-y-3 bg-slate-50 dark:bg-white/5 p-4 sm:p-5 rounded-xl border border-slate-200/80 dark:border-white/10">
@@ -283,9 +277,7 @@ export default function PrivacyPolicyPage() {
             </div>
 
           </div>
-        </div>
-      </div>
-    </section>
+    </LegalLayout>
   );
 }
 

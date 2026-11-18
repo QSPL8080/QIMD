@@ -282,6 +282,11 @@ const Footer: React.FC = () => {
         </div>
       )}
 
+      {/* Giant brand watermark */}
+      <div className="qf-watermark" aria-hidden="true">
+        QIMD
+      </div>
+
       {/* ── Bottom bar: copyright + legal ─────────────── */}
       <div className="qf-bottom">
         <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
