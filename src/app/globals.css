@@ -4450,3 +4450,16 @@ html:not([data-area="admin"]) main h1.hero-title { font-size: var(--qx-h1) !impo
   .qf-main > .qf-cols { display: contents; }
   .qf-main .qf-col { flex: 0 1 auto; max-width: 270px; }
 }
+
+/* Blogs (listing + article) and Programs: same wide content area as the About pages */
+.qb .qb-wrap, .qp .qp-wrap { max-width: 1400px; }
+@media (min-width: 1024px) { .qp .qp-wrap { padding: 0 32px; } }
+.qd-head-inner { max-width: 960px; }
+.qd-layout { grid-template-columns: 240px minmax(0, 1fr) 320px; gap: 56px; }
+.qd-article { max-width: 780px; }
+.qd-layout.no-toc { grid-template-columns: minmax(0, 1fr) 320px; }
+@media (max-width: 1200px) {
+  .qd-layout { grid-template-columns: 200px minmax(0, 1fr); gap: 40px; }
+  .qd-layout.no-toc { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 1024px) { .qd-layout, .qd-layout.no-toc { grid-template-columns: 1fr; } }
