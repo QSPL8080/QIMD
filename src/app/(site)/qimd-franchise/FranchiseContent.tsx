@@ -4,6 +4,18 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import PhoneInput from "@/components/Common/PhoneInput";
+import {
+  CareerTabs,
+  CkHero,
+  CkPanel,
+  CkPanelRow,
+  CkHead,
+  CkSteps,
+  CkChecks,
+  CkSuccess,
+  CkConsent,
+  CkCta,
+} from "@/components/Careers/CareerKit";
 
 export default function FranchiseContent() {
   const initialFormData = {
@@ -169,593 +181,269 @@ export default function FranchiseContent() {
   };
 
   return (
-    <div className="bg-grey dark:bg-dark min-h-screen">
-      {/* 1. HERO SECTION - PASTEL CORPORATE LAYOUT */}
-      <section
-        className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-b border-slate-200/60 dark:border-dark_border"
-        style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
-        }}
+    <div className="qk">
+      <CareerTabs />
+
+      {/* 1. HERO */}
+      <CkHero
+        eyebrow="QIMD Franchise Partnership"
+        title={
+          <>
+            Partner With One of India&apos;s <span className="qk-mark">Fast-Growing Practical Learning Institutes</span>
+          </>
+        }
+        actions={
+          <a href="#enquiry-form" className="qk-btn qk-btn-dark">
+            <Icon icon="mdi:rocket-launch-outline" />
+            <span>Apply for Franchise</span>
+          </a>
+        }
+        aside={
+          <CkPanel label="High Return Opportunity" title="Why QIMD Franchise?" badge="High Demand">
+            <CkPanelRow icon="mdi:school" title="Full Academic & LMS Support" text="Turnkey AI-powered curriculum & LMS portal" />
+            <CkPanelRow icon="mdi:bullhorn" title="National Marketing & Leads" text="Centralized marketing and inquiry support" />
+            <CkPanelRow icon="mdi:shield-check" title="100% Operational Guidance" text="Faculty hiring & center launch assistance" />
+          </CkPanel>
+        }
       >
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Left Main Content */}
-            <div className="lg:col-span-7 space-y-6" data-aos="fade-right">
-              <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 text-xs sm:text-sm font-bold px-4 py-2 rounded-full shadow-xs backdrop-blur-md">
-                <Icon icon="mdi:handshake" className="text-primary animate-pulse text-base" />
-                QIMD Franchise Partnership
-              </div>
+        <p>
+          Bring AI-Powered, Practical Education to your city by partnering with <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>.
+        </p>
+        <p>
+          If you&apos;re passionate about education and entrepreneurship, our franchise model gives you the opportunity to establish a successful training institute with complete academic, operational, marketing, and placement support.
+        </p>
+        <p className="qk-note">
+          <Icon icon="mdi:account-tie-outline" className="qk-note-ic" />
+          <span>Whether you&apos;re an entrepreneur, training institute owner, education consultant, or business professional, QIMD provides a proven system to help you build a sustainable education business.</span>
+        </p>
+      </CkHero>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] leading-tight tracking-tight">
-                Partner With One of India&apos;s <br />
-                <span className="text-[#5c38d6]">
-                  Fast-Growing Practical Learning Institutes
-                </span>
-              </h1>
-
-              <div className="space-y-3 text-[#374151] text-xs sm:text-sm leading-relaxed font-medium">
-                <p>
-                  Bring AI-Powered, Practical Education to your city by partnering with <strong>QIMD (Quickupp Institute of Marketing &amp; Design)</strong>.
-                </p>
-                <p>
-                  If you&apos;re passionate about education and entrepreneurship, our franchise model gives you the opportunity to establish a successful training institute with complete academic, operational, marketing, and placement support.
-                </p>
-                <p className="font-bold text-[#111827]">
-                  Whether you&apos;re an entrepreneur, training institute owner, education consultant, or business professional, QIMD provides a proven system to help you build a sustainable education business.
-                </p>
-              </div>
-
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <a
-                  href="#enquiry-form"
-                  className="bg-[#764DFF] hover:bg-[#5c38d6] text-white font-bold text-xs sm:text-sm px-8 py-3.5 rounded-xl transition-all shadow-md flex items-center gap-2"
-                >
-                  <Icon icon="mdi:rocket-launch" className="text-base" />
-                  <span>Apply for Franchise</span>
-                </a>
-              </div>
+      {/* 2. ENQUIRY FORM */}
+      <section className="qk-sec qk-ink" id="enquiry-form">
+        <div className="qk-wrap">
+          <div className="qk-form-grid">
+            <div className="qk-form-intro">
+              <CkHead
+                light
+                index="01"
+                eyebrow="Franchise Partner"
+                title="Start Your Own AI-Powered Training Institute"
+                desc="Fill out the form below, and our Franchise Team will connect with you to discuss the business model, investment, operational support, and partnership process."
+              />
             </div>
 
-            {/* Right Card Column - Key Franchise Highlights */}
-            <div className="lg:col-span-5" data-aos="fade-left">
-              <div className="bg-white/95 dark:bg-dark p-6 sm:p-8 rounded-3xl border border-[#764DFF]/20 shadow-2xl space-y-5 backdrop-blur-md">
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-dark_border">
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#5c38d6] block">High Return Opportunity</span>
-                    <h3 className="text-base font-extrabold text-midnight_text dark:text-white">Why QIMD Franchise?</h3>
-                  </div>
-                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-                    High Demand
-                  </span>
-                </div>
-
-                <div className="space-y-3.5 text-xs text-midnight_text dark:text-white">
-                  <div className="p-3.5 rounded-2xl bg-grey dark:bg-darklight border border-border dark:border-dark_border flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-[#764DFF]/15 text-[#5c38d6] flex items-center justify-center text-xl font-bold shrink-0">
-                      <Icon icon="mdi:school" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-midnight_text dark:text-white">Full Academic &amp; LMS Support</h4>
-                      <p className="text-muted dark:text-white/60 text-[11px]">Turnkey AI-powered curriculum &amp; LMS portal</p>
-                    </div>
+            <div className="qk-sheet">
+              {submitSuccess ? (
+                <CkSuccess
+                  title="Franchise Application Submitted!"
+                  text="Thank you for your interest in QIMD Franchise. Our franchise development manager will contact you within 24 hours."
+                />
+              ) : (
+                <form onSubmit={handleSubmit} className="qk-form">
+                  <div className="qk-field">
+                    <label className="qk-label" htmlFor="qk-f-name">Full Name *</label>
+                    <input id="qk-f-name" type="text" required placeholder="Enter your full name" value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} className="qk-input" />
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-grey dark:bg-darklight border border-border dark:border-dark_border flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-[#764DFF]/15 text-[#5c38d6] flex items-center justify-center text-xl font-bold shrink-0">
-                      <Icon icon="mdi:bullhorn" />
+                  <div className="qk-row-2">
+                    <div className="qk-field">
+                      <label className="qk-label">Mobile Number *</label>
+                      <div className="qk-phone">
+                        <PhoneInput value={formData.mobileNumber} onChange={(val) => setFormData({ ...formData, mobileNumber: val })} required placeholder="Enter mobile number" />
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-midnight_text dark:text-white">National Marketing &amp; Leads</h4>
-                      <p className="text-muted dark:text-white/60 text-[11px]">Centralized marketing and inquiry support</p>
+                    <div className="qk-field">
+                      <label className="qk-label" htmlFor="qk-f-email">Email Address *</label>
+                      <input id="qk-f-email" type="email" required placeholder="Enter email address" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="qk-input" />
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-grey dark:bg-darklight border border-border dark:border-dark_border flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-[#764DFF]/15 text-[#5c38d6] flex items-center justify-center text-xl font-bold shrink-0">
-                      <Icon icon="mdi:shield-check" />
+                  <div className="qk-row-3">
+                    <div className="qk-field">
+                      <label className="qk-label" htmlFor="qk-f-city">City / State *</label>
+                      <input id="qk-f-city" type="text" required placeholder="e.g. Pune, Maharashtra" value={formData.cityState} onChange={(e) => setFormData({ ...formData, cityState: e.target.value })} className="qk-input" />
                     </div>
-                    <div>
-                      <h4 className="font-bold text-midnight_text dark:text-white">100% Operational Guidance</h4>
-                      <p className="text-muted dark:text-white/60 text-[11px]">Faculty hiring &amp; center launch assistance</p>
+                    <div className="qk-field">
+                      <label className="qk-label" htmlFor="qk-f-prof">Current Profession *</label>
+                      <input id="qk-f-prof" type="text" required placeholder="e.g. Business Owner / Institute Owner" value={formData.currentProfession} onChange={(e) => setFormData({ ...formData, currentProfession: e.target.value })} className="qk-input" />
+                    </div>
+                    <div className="qk-field">
+                      <label className="qk-label" htmlFor="qk-f-space">Commercial Space? *</label>
+                      <select id="qk-f-space" value={formData.hasCommercialSpace} onChange={(e) => setFormData({ ...formData, hasCommercialSpace: e.target.value })} className="qk-input qk-select">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </select>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 2. BECOME A QIMD FRANCHISE PARTNER & ENQUIRY FORM (DARK GRADIENT) */}
-      <section
-        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
-        id="enquiry-form"
-        style={{
-          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
-        }}
-      >
-        {/* Subtle Ambient Decorative Glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-          <div className="max-w-4xl mx-auto bg-white/10 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-white/20 shadow-2xl text-white" data-aos="fade-up">
-            <div className="text-center mb-8">
-              <span className="bg-white/15 border border-white/25 text-cyan-300 text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-3 shadow-xs">
-                Franchise Partner
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2 tracking-tight">
-                Start Your Own AI-Powered Training Institute
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-200 font-medium">
-                Fill out the form below, and our Franchise Team will connect with you to discuss the business model, investment, operational support, and partnership process.
-              </p>
-            </div>
-
-            {submitSuccess ? (
-              <div className="p-8 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl text-center space-y-3 backdrop-blur-md">
-                <Icon icon="mdi:check-circle" className="text-emerald-400 text-5xl mx-auto" />
-                <h3 className="text-xl font-bold text-white">Franchise Application Submitted!</h3>
-                <p className="text-xs text-emerald-200 font-medium">
-                  Thank you for your interest in QIMD Franchise. Our franchise development manager will contact you within 24 hours.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
-                {/* Full Name */}
-                <div>
-                  <label className="block font-bold text-white mb-1.5">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter your full name"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
-                  />
-                </div>
-
-                {/* Row: Mobile & Email */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Mobile Number *
-                    </label>
-                    <PhoneInput
-                      value={formData.mobileNumber}
-                      onChange={(val) => setFormData({ ...formData, mobileNumber: val })}
-                      required
-                      placeholder="Enter mobile number"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="Enter email address"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs sm:text-sm shadow-xs"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 2: City/State, Current Business, Commercial Space */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      City / State *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Pune, Maharashtra"
-                      value={formData.cityState}
-                      onChange={(e) => setFormData({ ...formData, cityState: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Current Profession *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Business Owner / Institute Owner"
-                      value={formData.currentProfession}
-                      onChange={(e) => setFormData({ ...formData, currentProfession: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Commercial Space? *
-                    </label>
-                    <select
-                      value={formData.hasCommercialSpace}
-                      onChange={(e) => setFormData({ ...formData, hasCommercialSpace: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs cursor-pointer"
-                    >
-                      <option value="Yes" className="bg-white text-slate-900">Yes</option>
-                      <option value="No" className="bg-white text-slate-900">No</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Row 3: Preferred City & Interest Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-                  <div>
-                    <label className="block font-bold text-white mb-1.5">
-                      Preferred City *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Pune / Mumbai / Nashik"
-                      value={formData.preferredCity}
-                      onChange={(e) => setFormData({ ...formData, preferredCity: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="block font-bold text-white mb-1.5">
-                      Tell Us About Your Interest (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Investment budget, space availability, timeline..."
-                      value={formData.interestDetails}
-                      onChange={(e) => setFormData({ ...formData, interestDetails: e.target.value })}
-                      className="w-full bg-white text-slate-900 border border-slate-200 rounded-xl p-2.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-300 font-medium text-xs shadow-xs"
-                    />
-                  </div>
-                </div>
-
-                {/* Checkbox agreement & Submit */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="checkbox"
-                      id="agreeContactFranchise"
-                      checked={formData.agreeContact}
-                      onChange={(e) => setFormData({ ...formData, agreeContact: e.target.checked })}
-                      className="w-4 h-4 text-primary rounded cursor-pointer"
-                    />
-                    <label htmlFor="agreeContactFranchise" className="text-xs text-slate-200 font-medium cursor-pointer">
-                      I agree to be contacted by the QIMD Franchise Team.
-                    </label>
+                  <div className="qk-row-3">
+                    <div className="qk-field">
+                      <label className="qk-label" htmlFor="qk-f-pref">Preferred City *</label>
+                      <input id="qk-f-pref" type="text" required placeholder="e.g. Pune / Mumbai / Nashik" value={formData.preferredCity} onChange={(e) => setFormData({ ...formData, preferredCity: e.target.value })} className="qk-input" />
+                    </div>
+                    <div className="qk-field qk-span-2">
+                      <label className="qk-label" htmlFor="qk-f-int">Tell Us About Your Interest (Optional)</label>
+                      <input id="qk-f-int" type="text" placeholder="Investment budget, space availability, timeline..." value={formData.interestDetails} onChange={(e) => setFormData({ ...formData, interestDetails: e.target.value })} className="qk-input" />
+                    </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full sm:w-auto bg-gradient-to-r from-primary via-[#8B5CF6] to-[#BD69F2] hover:opacity-95 text-white font-extrabold px-8 py-3.5 rounded-xl text-xs transition-all shadow-xl hover:-translate-y-0.5 cursor-pointer"
-                  >
+                  <CkConsent id="agreeContactFranchise" checked={formData.agreeContact} onChange={(v) => setFormData({ ...formData, agreeContact: v })}>
+                    I agree to be contacted by the QIMD Franchise Team.
+                  </CkConsent>
+
+                  <button type="submit" disabled={isSubmitting} className="qk-btn qk-btn-submit">
                     {isSubmitting ? "Submitting Application..." : "Apply for Franchise"}
+                    {!isSubmitting && <Icon icon="mdi:arrow-right" />}
                   </button>
-                </div>
-              </form>
-            )}
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. WHY PARTNER WITH QIMD? (MODERN 4-CARD HORIZONTAL GRID) */}
-      <section className="py-16 lg:py-20 bg-slate-50/70 dark:bg-darklight border-y border-slate-200/70 dark:border-dark_border" id="why-partner">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10" data-aos="fade-up">
-            <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
-              Strategic Advantages
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-              Why Partner With QIMD?
-            </h2>
-            <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-              Build a scalable, high-margin education business backed by a proven brand and AI-powered curriculum.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 3. WHY PARTNER WITH QIMD? */}
+      <section className="qk-sec qk-white" id="why-partner">
+        <div className="qk-wrap">
+          <CkHead
+            index="02"
+            eyebrow="Strategic Advantages"
+            title="Why Partner With QIMD?"
+            desc="Build a scalable, high-margin education business backed by a proven brand and AI-powered curriculum."
+          />
+          <div className="qk-cells cols-4">
             {whyPartnerReasons.map((reason, i) => (
-              <div
-                key={i}
-                className="bg-white dark:bg-dark p-6 rounded-2xl border border-slate-200/80 dark:border-dark_border shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
-                data-aos="fade-up"
-                data-aos-delay={i * 70}
-              >
-                <div className="space-y-3.5">
-                  <div className="w-11 h-11 rounded-xl bg-[#764DFF]/10 text-[#764DFF] group-hover:bg-[#764DFF] group-hover:text-white transition-colors duration-300 flex items-center justify-center text-xl font-bold">
+              <div key={i} className="qk-cell">
+                <div className="qk-cell-top">
+                  <span className="qk-cell-ic">
                     <Icon icon={reason.icon} />
-                  </div>
-                  <h3 className="text-base font-extrabold text-midnight_text dark:text-white group-hover:text-[#764DFF] transition-colors">
-                    {reason.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-white/70 leading-relaxed">
-                    {reason.desc}
-                  </p>
+                  </span>
+                  <span className="qk-cell-num">{String(i + 1).padStart(2, "0")}</span>
                 </div>
+                <h3 className="qk-cell-title">{reason.title}</h3>
+                <p className="qk-cell-desc">{reason.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. COMPLETE FRANCHISE SUPPORT - DARK GRADIENT */}
-      <section
-        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
-        style={{
-          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
-        }}
-      >
-        {/* Subtle Ambient Decorative Glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2" data-aos="fade-up">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">
-              360° Operational Ecosystem
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Complete Franchise Support
-            </h2>
-            <p className="text-slate-200 text-xs sm:text-sm font-medium">
-              As a QIMD Franchise Partner, you&apos;ll receive full end-to-end assistance across every operational pillar.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* 4. COMPLETE FRANCHISE SUPPORT */}
+      <section className="qk-sec qk-ink">
+        <div className="qk-wrap">
+          <CkHead
+            light
+            index="03"
+            eyebrow="360° Operational Ecosystem"
+            title="Complete Franchise Support"
+            desc="As a QIMD Franchise Partner, you'll receive full end-to-end assistance across every operational pillar."
+          />
+          <div className="qk-pillars">
             {supportPillars.map((pillar, i) => (
-              <div
-                key={i}
-                className="bg-white/10 dark:bg-white/10 backdrop-blur-md p-6 sm:p-7 rounded-3xl border border-white/20 shadow-2xl flex flex-col justify-between text-white"
-                data-aos={i % 2 === 0 ? "fade-right" : "fade-left"}
-                data-aos-duration="800"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/15">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/15 text-cyan-300 flex items-center justify-center text-xl font-bold shadow-sm border border-white/25">
-                        <Icon icon={pillar.icon} />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-extrabold text-white">
-                        {pillar.category}
-                      </h3>
-                    </div>
-                    <span className="text-[10px] font-extrabold bg-white/15 text-cyan-300 px-2.5 py-0.5 rounded-full border border-white/25 backdrop-blur-md">
-                      Pillar 0{i + 1}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                    {pillar.items.map((item, idx) => (
-                      <div
-                        key={idx}
-                        data-aos="fade-up"
-                        data-aos-delay={idx * 100 + 150}
-                        className="flex items-center gap-2.5 bg-white/10 px-3 py-2.5 rounded-xl border border-white/20 text-xs font-semibold text-white shadow-2xs hover:shadow-md hover:border-cyan-300 hover:bg-white/20 transition-all duration-300 group/pill cursor-default"
-                      >
-                        <Icon icon="mdi:check-circle" className="text-cyan-300 text-sm shrink-0 group-hover/pill:scale-125 transition-transform duration-300" />
-                        <span className="leading-tight text-slate-100 group-hover/pill:text-cyan-300 transition-colors">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+              <div key={i} className="qk-pillar">
+                <div className="qk-pillar-head">
+                  <span className="qk-cell-ic">
+                    <Icon icon={pillar.icon} />
+                  </span>
+                  <h3>{pillar.category}</h3>
+                  <span className="qk-pillar-tag">Pillar 0{i + 1}</span>
                 </div>
+                <ul className="qk-pillar-list">
+                  {pillar.items.map((item, idx) => (
+                    <li key={idx}>
+                      <Icon icon="mdi:check" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 5. PROGRAMS YOU CAN OFFER & WHO CAN BECOME A PARTNER (SIDE BY SIDE WITH MIDDLE DIVIDER) */}
-      <section
-        className="py-16 lg:py-20 border-y border-slate-200/70 dark:border-dark_border overflow-hidden"
-        style={{
-          background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #f0e8ff 70%, #dcecfe 100%)',
-        }}
-      >
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
-            
-            {/* Left Side: Programs You Can Offer */}
-            <div className="lg:col-span-6 space-y-6 lg:pr-8 lg:border-r border-slate-200 dark:border-dark_border" data-aos="fade-right">
-              <div>
-                <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
-                  Academic Offerings
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-                  Programs You Can Offer
-                </h2>
-                <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-                  Deliver high-demand, AI-powered practical programs to students and professionals in your region.
-                </p>
-              </div>
-
-              <div className="space-y-2.5">
+      {/* 5. PROGRAMS + WHO CAN BECOME A PARTNER */}
+      <section className="qk-sec">
+        <div className="qk-wrap">
+          <div className="qk-split">
+            <div>
+              <CkHead
+                index="04"
+                eyebrow="Academic Offerings"
+                title="Programs You Can Offer"
+                desc="Deliver high-demand, AI-powered practical programs to students and professionals in your region."
+              />
+              <div className="qk-jobs is-compact">
                 {programsOffered.map((program, i) => (
-                  <div
-                    key={i}
-                    className="p-3.5 rounded-2xl bg-white dark:bg-dark border border-slate-200/80 dark:border-dark_border flex items-center gap-3.5 shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 transition-all"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center text-lg font-bold shrink-0">
+                  <div key={i} className="qk-job">
+                    <span className="qk-job-num">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="qk-job-ic">
                       <Icon icon="mdi:school-outline" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-bold text-midnight_text dark:text-white">
-                      {program}
                     </span>
+                    <span className="qk-job-title">{program}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* Right Side: Who Can Become a Franchise Partner */}
-            <div className="lg:col-span-6 space-y-6 lg:pl-4" data-aos="fade-left">
-              <div>
-                <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block mb-2.5">
-                  Eligibility &amp; Profiles
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-                  Who Can Become a Partner?
-                </h2>
-                <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-                  We welcome passionate business leaders. No prior experience in education required - our team guides you at every step.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
-                {targetPartners.map((partner, i) => (
-                  <div
-                    key={i}
-                    className="bg-white dark:bg-dark border border-slate-200/80 dark:border-dark_border text-midnight_text dark:text-white text-xs font-bold p-3.5 rounded-2xl shadow-2xs hover:shadow-md hover:border-[#764DFF] hover:text-[#764DFF] transition-all flex items-center gap-3"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-[#764DFF]/10 text-[#764DFF] flex items-center justify-center shrink-0">
-                      <Icon icon="mdi:check-circle" className="text-base" />
-                    </div>
-                    <span>{partner}</span>
-                  </div>
-                ))}
-              </div>
+            <div>
+              <CkHead
+                index="05"
+                eyebrow="Eligibility & Profiles"
+                title="Who Can Become a Partner?"
+                desc="We welcome passionate business leaders. No prior experience in education required - our team guides you at every step."
+              />
+              <CkChecks items={targetPartners} cols={2} />
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* 5.5. WHY CHOOSE QIMD? (NORMAL WHITE) */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-dark border-b border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10" data-aos="fade-up">
-            <span className="inline-flex items-center gap-1.5 bg-[#764DFF]/15 border border-[#764DFF]/25 text-[#5c38d6] text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-xs mb-2">
-              Core Benefits
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#111827] dark:text-white tracking-tight">
-              Why Choose QIMD?
-            </h2>
-            <p className="text-slate-600 dark:text-white/70 text-xs sm:text-sm font-medium mt-1">
-              Key pillars that make our franchise partnership model reliable, scalable, and practical.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" data-aos="fade-up">
-            {whyChoosePills.map((pill, i) => (
-              <div
-                key={i}
-                className="bg-slate-50/90 dark:bg-darklight border border-slate-200/80 dark:border-dark_border p-4 rounded-2xl flex items-center gap-3 shadow-2xs hover:shadow-md hover:border-[#764DFF]/50 transition-all group cursor-default"
-              >
-                <div className="w-8 h-8 rounded-xl bg-[#764DFF]/10 text-[#764DFF] group-hover:bg-[#764DFF] group-hover:text-white transition-colors flex items-center justify-center text-sm font-bold shrink-0">
-                  <Icon icon="mdi:star-four-points" />
-                </div>
-                <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white group-hover:text-[#764DFF] transition-colors">
-                  {pill}
-                </span>
-              </div>
-            ))}
-          </div>
+      {/* 6. WHY CHOOSE QIMD? */}
+      <section className="qk-sec qk-white">
+        <div className="qk-wrap">
+          <CkHead
+            index="06"
+            eyebrow="Core Benefits"
+            title="Why Choose QIMD?"
+            desc="Key pillars that make our franchise partnership model reliable, scalable, and practical."
+          />
+          <CkChecks items={whyChoosePills} cols={3} />
         </div>
       </section>
 
-      {/* 6. OUR FRANCHISE PROCESS - DARK GRADIENT */}
-      <section
-        className="py-16 lg:py-24 text-white relative overflow-hidden border-b border-white/10"
-        style={{
-          background: 'linear-gradient(135deg, #180e29 0%, #2b1654 35%, #3e1f7d 70%, #0284c7 100%)',
-        }}
-      >
-        {/* Subtle Ambient Decorative Glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#0284c7]/20 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto max-w-7xl px-4 lg:px-8 relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-14 space-y-2" data-aos="fade-up">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-cyan-300">
-              Onboarding Roadmap
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Our Franchise Process
-            </h2>
-            <p className="text-slate-200 text-xs sm:text-sm font-medium">
-              A simple, structured 6-step process to launch your own QIMD practical training center.
-            </p>
-          </div>
-
-          {/* Connected Steps Horizontal Stepper */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 relative">
-            {franchiseSteps.map((s, i) => (
-              <div
-                key={i}
-                className="relative flex flex-col items-center text-center space-y-3 group"
-                data-aos="fade-up"
-                data-aos-delay={i * 70}
-              >
-                {/* Horizontal Connector Arrow for Desktop */}
-                {i < franchiseSteps.length - 1 && (
-                  <div className="hidden lg:flex items-center justify-center absolute top-5 -right-3 w-6 h-6 text-white/30 z-10">
-                    <Icon icon="mdi:chevron-right" className="text-xl" />
-                  </div>
-                )}
-
-                {/* Step Circle Icon Badge */}
-                <div className="w-12 h-12 rounded-2xl bg-white/15 border border-white/25 text-cyan-300 group-hover:bg-white group-hover:text-[#180e29] group-hover:border-white transition-all duration-300 flex items-center justify-center text-sm font-black shadow-lg backdrop-blur-md shrink-0">
-                  {s.step}
-                </div>
-
-                <div className="space-y-1">
-                  <h4 className="font-extrabold text-white text-xs sm:text-sm group-hover:text-cyan-300 transition-colors">
-                    {s.title}
-                  </h4>
-                  <p className="text-[11px] text-slate-200 leading-relaxed font-medium">
-                    {s.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* 7. OUR FRANCHISE PROCESS */}
+      <section className="qk-sec">
+        <div className="qk-wrap">
+          <CkHead
+            index="07"
+            eyebrow="Onboarding Roadmap"
+            title="Our Franchise Process"
+            desc="A simple, structured 6-step process to launch your own QIMD practical training center."
+          />
+          <CkSteps steps={franchiseSteps} />
         </div>
       </section>
 
-      {/* 7. LET'S BUILD THE FUTURE TOGETHER */}
-      <section className="py-14 lg:py-18 bg-slate-50/80 dark:bg-darklight border-t border-slate-200/80 dark:border-dark_border">
-        <div className="container mx-auto max-w-4xl px-4 text-center space-y-4" data-aos="fade-up">
-          <span className="bg-[#764DFF]/10 text-[#764DFF] text-xs font-extrabold px-3.5 py-1 rounded-full inline-block">
-            Start Your Journey
-          </span>
-          
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-midnight_text dark:text-white tracking-tight">
-            Let&apos;s Build the Future of Practical Education Together
-          </h2>
-          
-          <p className="text-slate-500 dark:text-white/70 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed font-medium">
-            Become a QIMD Franchise Partner and establish a successful education business backed by a practical learning model, AI-powered curriculum, and continuous business support.
-          </p>
-          
-          <div className="pt-2 flex flex-wrap justify-center items-center gap-4">
-            <Link
-              href="tel:+918087897288"
-              className="inline-flex items-center gap-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white font-extrabold px-7 py-3 rounded-xl text-xs sm:text-sm transition-all shadow-md"
-            >
-              <Icon icon="mdi:phone" className="text-base" />
+      {/* 8. LET'S BUILD THE FUTURE TOGETHER */}
+      <CkCta
+        eyebrow="Start Your Journey"
+        icon="mdi:flag-outline"
+        title="Let's Build the Future of Practical Education Together"
+        desc="Become a QIMD Franchise Partner and establish a successful education business backed by a practical learning model, AI-powered curriculum, and continuous business support."
+        actions={
+          <>
+            <Link href="tel:+918087897288" className="qk-btn qk-btn-light">
+              <Icon icon="mdi:phone" />
               <span>Call: +91 80878 97288</span>
             </Link>
-            <Link
-              href="mailto:info@quickuppinstitute.com"
-              className="inline-flex items-center gap-2 bg-white dark:bg-dark text-midnight_text dark:text-white border border-slate-300 dark:border-dark_border font-extrabold px-7 py-3 rounded-xl text-xs sm:text-sm transition-all shadow-2xs hover:border-[#764DFF] hover:text-[#764DFF]"
-            >
-              <Icon icon="mdi:email" className="text-base" />
+            <Link href="mailto:info@quickuppinstitute.com" className="qk-btn qk-btn-ghost">
+              <Icon icon="mdi:email-outline" />
               <span>Email: info@quickuppinstitute.com</span>
             </Link>
-          </div>
-
-          <p className="text-xs font-extrabold text-[#764DFF] pt-1">
-            Start Your QIMD Franchise Journey Today.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        note="Start Your QIMD Franchise Journey Today."
+      />
     </div>
   );
 }
