@@ -122,158 +122,165 @@ export default async function CourseDetailPage({ params }: PageProps) {
   if (!course) notFound();
 
   const courseBanner = course.bannerImage || course.image;
+  const modeLabel = !course.mode || /^offline/i.test(course.mode) ? 'Offline Program' : String(course.mode).replace(/Course/gi, 'Program');
+  const highlights: string[] = course.highlights || course.outcomes || [];
+  const outcomes: string[] = course.outcomes || [];
+  const curriculum: any[] = course.curriculum || [];
 
   return (
-    <>
-      {/* <Breadcrumb
-        title={course.title}
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Programs", href: "/courses" },
-          { label: course.shortTitle },
-        ]}
-      /> */}
+    <div className="qp qp-detail">
+      {/* Header */}
+      <section className="qp-hero qp-dhero" data-qx="off">
+        <div className="qp-wrap">
+          <nav className="qp-crumbs" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <Icon icon="mdi:chevron-right" />
+            <Link href="/courses">Programs</Link>
+            <Icon icon="mdi:chevron-right" />
+            <span>{course.shortTitle}</span>
+          </nav>
 
-      <section className="section-py bg-grey dark:bg-dark">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-
-            {/* Main Content */}
-            <div className="lg:col-span-8">
-              {/* Course Banner Image (Uploaded from Panel) */}
-              {courseBanner && (
-                <div className="relative w-full rounded-2xl overflow-hidden mb-8 shadow-card border border-border dark:border-dark_border">
-                  <Image
-                    src={courseBanner}
-                    alt={course.title}
-                    width={1200}
-                    height={500}
-                    className="w-full h-auto object-cover rounded-2xl"
-                    priority
-                  />
-                </div>
-              )}
-
-
-
-
-              {/* Highlights */}
-              <div className="bg-white dark:bg-darklight rounded-2xl p-6 shadow-card border border-border dark:border-dark_border mb-8">
-                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-5">Program Highlights</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(course.highlights || course.outcomes || []).map((highlight: string, i: number) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                        <Icon icon="mdi:check" className="text-accent text-sm font-bold" />
-                      </div>
-                      <span className="text-sm text-midnight_text dark:text-white font-medium">{highlight}</span>
-                    </div>
-                  ))}
-                </div>
+          <div className="qp-dhero-grid">
+            <div className="qp-dhero-copy">
+              <div className="qp-chips">
+                <span className="qp-chip">
+                  <Icon icon="mdi:clock-outline" />
+                  {course.duration}
+                </span>
+                <span className="qp-chip">
+                  <Icon icon="mdi:school" />
+                  {modeLabel}
+                </span>
               </div>
-
-              {/* Learning Outcomes */}
-              <div className="bg-white dark:bg-darklight rounded-2xl p-6 shadow-card border border-border dark:border-dark_border mb-8">
-                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-5">What You Will Learn</h2>
-                <ul className="space-y-3">
-                  {(course.outcomes || []).map((outcome: string, i: number) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <Icon icon="mdi:star" className="text-secondary text-xs" />
-                      </div>
-                      <span className="text-sm text-muted dark:text-white/70">{outcome}</span>
-                    </li>
-                  ))}
-                </ul>
+              <h1 className="qp-h1">{course.title}</h1>
+              {course.description && <p className="qp-lead">{course.description}</p>}
+              <div className="qp-actions">
+                <a href="#download-brochure" className="qp-btn qp-btn-main">
+                  <Icon icon="mdi:file-download" />
+                  <span>Download Brochure</span>
+                </a>
+                <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="qp-btn qp-btn-ghost">
+                  <Icon icon="mdi:whatsapp" />
+                  <span>Chat on WhatsApp</span>
+                </Link>
               </div>
+            </div>
 
-              {/* Curriculum */}
-              <div className="bg-white dark:bg-darklight rounded-2xl p-6 shadow-card border border-border dark:border-dark_border mb-8">
-                <h2 className="text-xl font-bold text-midnight_text dark:text-white mb-6">Program Curriculum</h2>
-                <div className="space-y-4">
-                  {(course.curriculum || []).map((module: any) => (
-                    <details key={module.moduleNumber} className="group border border-border dark:border-dark_border rounded-xl overflow-hidden">
-                      <summary className="flex items-center justify-between p-4 cursor-pointer bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 transition-colors list-none">
-                        <div className="flex items-center gap-3">
-                          <span className="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
-                            {String(module.moduleNumber).padStart(2, '0')}
-                          </span>
-                          <span className="font-semibold text-midnight_text dark:text-white text-sm">
-                            Module {module.moduleNumber}: {module.title}
-                          </span>
-                        </div>
-                        <Icon
-                          icon="mdi:chevron-down"
-                          className="text-xl text-primary transition-transform duration-300 group-open:rotate-180 flex-shrink-0"
-                        />
+            {courseBanner && (
+              <div className="qp-dhero-media">
+                <Image
+                  src={courseBanner}
+                  alt={course.title}
+                  width={1200}
+                  height={500}
+                  priority
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="qp-dbody">
+        <div className="qp-wrap qp-dgrid">
+          {/* Main Content */}
+          <div className="qp-dmain">
+            {/* Highlights */}
+            <div className="qp-block">
+              <div className="qp-block-head">
+                <span className="qp-block-num">01</span>
+                <h2 className="qp-h3">Program Highlights</h2>
+              </div>
+              <div className="qp-tiles">
+                {highlights.map((highlight: string, i: number) => (
+                  <div key={i} className="qp-tile">
+                    <span className="qp-tile-ic"><Icon icon="mdi:check" /></span>
+                    <span>{highlight}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Learning Outcomes */}
+            <div className="qp-block">
+              <div className="qp-block-head">
+                <span className="qp-block-num">02</span>
+                <h2 className="qp-h3">What You Will Learn</h2>
+              </div>
+              <ol className="qp-learn">
+                {outcomes.map((outcome: string, i: number) => (
+                  <li key={i}>
+                    <Icon icon="mdi:star-four-points" className="qp-learn-ic" />
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Curriculum */}
+            {curriculum.length > 0 && (
+              <div className="qp-block">
+                <div className="qp-block-head">
+                  <span className="qp-block-num">03</span>
+                  <h2 className="qp-h3">Program Curriculum</h2>
+                </div>
+                <div className="qp-modules">
+                  {curriculum.map((module: any) => (
+                    <details key={module.moduleNumber} className="qp-module">
+                      <summary>
+                        <span className="qp-module-num">{String(module.moduleNumber).padStart(2, '0')}</span>
+                        <span className="qp-module-title">
+                          Module {module.moduleNumber}: {module.title}
+                        </span>
+                        <Icon icon="mdi:plus" className="qp-module-ic" />
                       </summary>
-                      <div className="p-4 border-t border-border dark:border-dark_border">
-                        <ul className="space-y-2">
-                          {(module.topics || []).map((topic: any, i: number) => (
-                            <li key={i} className="flex items-center gap-2 text-sm text-muted dark:text-white/60">
-                              <Icon icon="mdi:circle-small" className="text-primary flex-shrink-0" />
-                              {topic.title}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      <ul>
+                        {(module.topics || []).map((topic: any, i: number) => (
+                          <li key={i}>{topic.title}</li>
+                        ))}
+                      </ul>
                     </details>
                   ))}
                 </div>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Sidebar – Enquiry Form */}
-            <div className="lg:col-span-4">
-              <div className="sticky top-24">
-                <div
-                  id="download-brochure"
-                  className="bg-white dark:bg-darklight rounded-2xl shadow-card border border-border dark:border-dark_border p-6 mb-6"
-                >
-                  <div className="text-center mb-5">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                      <Icon icon={course.icon || 'mdi:book-open-page-variant'} className="text-primary text-3xl" />
-                    </div>
-                    <h3 className="text-lg font-bold text-midnight_text dark:text-white">{course.shortTitle?.replace(/Course/gi, 'Program')}</h3>
-
-                  </div>
-                  <EnquiryForm
-                    title="Download Brochure"
-                    showTitle={true}
-                    compact
-                    selectedCourse={course.slug}
-                  />
+          {/* Sidebar – Enquiry Form */}
+          <aside className="qp-dside">
+            <div className="qp-dside-inner">
+              <div id="download-brochure" className="qp-formcard">
+                <div className="qp-formcard-head">
+                  <span className="qp-formcard-ic">
+                    <Icon icon={course.icon || 'mdi:book-open-page-variant'} />
+                  </span>
+                  <h3>{course.shortTitle?.replace(/Course/gi, 'Program')}</h3>
                 </div>
+                <EnquiryForm
+                  title="Download Brochure"
+                  showTitle={true}
+                  compact
+                  selectedCourse={course.slug}
+                />
+              </div>
 
-                {/* Quick Info */}
-                <div className="bg-primary/5 dark:bg-primary/10 rounded-2xl p-5 border border-primary/20">
-                  <h4 className="font-bold text-midnight_text dark:text-white mb-3 text-sm">Need Help?</h4>
-                  <p className="text-xs text-muted dark:text-white/60 mb-3">
-                    Talk to our counsellors for personalized guidance.
-                  </p>
-                  <Link
-                    href={`tel:${siteConfig.phone}`}
-                    className="flex items-center gap-2 text-primary font-semibold text-sm hover:underline"
-                  >
-                    <Icon icon="mdi:phone" />
-                    {siteConfig.phone}
-                  </Link>
-                  <Link
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-[#25D366] font-semibold text-sm hover:underline mt-2"
-                  >
-                    <Icon icon="mdi:whatsapp" />
-                    Chat on WhatsApp
-                  </Link>
-                </div>
+              {/* Quick Info */}
+              <div className="qp-help">
+                <h4>Need Help?</h4>
+                <p>Talk to our counsellors for personalized guidance.</p>
+                <Link href={`tel:${siteConfig.phone}`} className="qp-help-link">
+                  <Icon icon="mdi:phone" />
+                  {siteConfig.phone}
+                </Link>
+                <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="qp-help-link is-wa">
+                  <Icon icon="mdi:whatsapp" />
+                  Chat on WhatsApp
+                </Link>
               </div>
             </div>
-
-          </div>
+          </aside>
         </div>
       </section>
-    </>
+    </div>
   );
 }

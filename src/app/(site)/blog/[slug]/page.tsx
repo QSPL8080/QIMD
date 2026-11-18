@@ -77,7 +77,7 @@ function formatInlineText(text: string) {
           <Link
             key={i}
             href={linkHref}
-            className="text-blue-600 hover:text-blue-800 underline font-medium"
+            className="qd-link"
           >
             {linkText}
           </Link>
@@ -86,7 +86,7 @@ function formatInlineText(text: string) {
     }
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={i} className="font-bold text-slate-900 dark:text-white">
+        <strong key={i} className="qd-strong">
           {part.slice(2, -2)}
         </strong>
       );
@@ -261,269 +261,225 @@ export default async function BlogDetailPage({ params }: PageProps) {
       ? Math.floor(blocks.length / 2)
       : -1;
 
+  const tocList = (
+    <ol className="qd-toc-list">
+      {toc.map((item, i) => (
+        <li key={item.id}>
+          <a href={`#${item.id}`}>
+            <span className="qd-toc-num">{String(i + 1).padStart(2, "0")}</span>
+            <span>{item.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  );
+
   return (
-    <>
-      <section className="section-py bg-grey dark:bg-dark">
-        <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4">
-          
-          {/* Breadcrumb Navigation */}
-          <nav className="mb-4 flex items-center gap-1.5 text-xs text-muted dark:text-white/60 font-medium">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            <Icon icon="ion:chevron-forward" className="text-slate-400 text-xs" />
-            <Link href="/blog" className="hover:text-primary transition-colors">Blogs</Link>
-            <Icon icon="ion:chevron-forward" className="text-slate-400 text-xs" />
-            <span className="text-slate-700 dark:text-white/90 font-semibold truncate max-w-xs sm:max-w-md">{post.title}</span>
+    <div className="qb qd">
+      <span className="qd-progress" aria-hidden="true" />
+
+      {/* Article header */}
+      <div className="qd-head">
+        <div className="qb-wrap">
+          <nav className="qd-crumbs" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <Icon icon="ion:chevron-forward" />
+            <Link href="/blog">Blogs</Link>
+            <Icon icon="ion:chevron-forward" />
+            <span>{post.title}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Main Blog Article Container */}
-            <article className="lg:col-span-8 bg-white dark:bg-darklight rounded-2xl p-6 sm:p-9 shadow-xs border border-border dark:border-dark_border">
-              
-              {/* Featured Cover Image - Full banner visualization */}
-              {heroImage && (
-                <div className="w-full rounded-2xl overflow-hidden mb-6 border border-border/60 dark:border-dark_border/60 shadow-xs bg-slate-950">
-                  <Image
-                    src={heroImage}
-                    alt={post.title}
-                    width={1920}
-                    height={1080}
-                    priority
-                    sizes="(max-width: 768px) 100vw, 900px"
-                    className="w-full h-auto object-contain block rounded-2xl"
-                  />
-                </div>
-              )}
-
-              {/* Meta Info Row */}
-              <div className="flex flex-wrap items-center gap-2.5 mb-3 text-xs">
-                <span className="bg-primary/10 text-primary dark:text-amber-400 font-bold px-3 py-1 rounded-full text-[11px]">
-                  {post.category}
+          <div className="qd-head-inner">
+            <span className="qb-kicker">{post.category}</span>
+            <h1 className="qd-title">{post.title}</h1>
+            <div className="qd-meta">
+              {post.publishedAt && (
+                <span>
+                  <Icon icon="mdi:calendar-outline" /> {post.publishedAt}
                 </span>
-                {post.readTime && (
-                  <span className="text-muted dark:text-white/60 flex items-center gap-1">
-                    <Icon icon="mdi:clock-outline" /> {post.readTime}
-                  </span>
-                )}
-                {post.publishedAt && (
-                  <span className="text-muted dark:text-white/60 flex items-center gap-1">
-                    <Icon icon="mdi:calendar-outline" /> {post.publishedAt}
-                  </span>
-                )}
-                {(post as any).isEdited && (post as any).updatedAt && (
-                  <span className="text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 font-medium px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Icon icon="mdi:pencil-outline" className="text-xs" /> Updated: {(post as any).updatedAt}
-                  </span>
-                )}
-              </div>
-
-              {/* Title (Compact & bold matching Google Doc) */}
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-6 leading-snug">
-                {post.title}
-              </h1>
-
-              {/* ─── TABLE OF CONTENTS (Blue Heading & Bullet links as in Google Docs) ─── */}
-              {toc.length > 0 && (
-                <div className="mb-8 pt-2">
-                  <h2 className="text-base sm:text-lg font-bold text-blue-600 dark:text-blue-400 underline mb-3">
-                    Table of Contents
-                  </h2>
-                  <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                    {toc.map((item) => (
-                      <li key={item.id}>
-                        <a
-                          href={`#${item.id}`}
-                          className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors underline decoration-slate-300 dark:decoration-slate-600 underline-offset-2"
-                        >
-                          {item.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  <hr className="my-6 border-slate-300 dark:border-dark_border" />
-                </div>
               )}
-
-              {/* ─── ARTICLE BODY BLOCKS (Exact document layout & bullet points) ─── */}
-              <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 font-normal">
-                {blocks.map((block, idx) => {
-                  
-                  return (
-                    <React.Fragment key={idx}>
-                      {/* ─── IN-BETWEEN SIDE BY SIDE SUB-IMAGES ─── */}
-                      {idx === midH2BlockIdx && subImages.length > 0 && (
-                        <div className={`grid gap-3 sm:gap-4 my-8 ${subImages.length === 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-3'}`}>
-                          {subImages.map((imgSrc: string, i: number) => (
-                            <div
-                              key={i}
-                              className="w-full rounded-xl overflow-hidden border border-slate-200/80 dark:border-dark_border shadow-xs bg-slate-950"
-                            >
-                              <Image
-                                src={imgSrc}
-                                alt={`${post.title} Preview ${i + 1}`}
-                                width={1920}
-                                height={1080}
-                                sizes="(max-width: 768px) 50vw, 33vw"
-                                className="w-full h-auto object-contain hover:scale-105 transition-transform duration-300 block"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Section H2 Heading */}
-                      {block.type === "h2" && (
-                        <div id={block.id} className="pt-5 scroll-mt-24">
-                          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                            {formatInlineText(block.title || "")}
-                          </h2>
-                        </div>
-                      )}
-
-                      {/* Section H3 / FAQ Question */}
-                      {block.type === "h3" && (
-                        <div id={block.id} className="pt-3 scroll-mt-24">
-                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                            {formatInlineText(block.title || "")}
-                          </h3>
-                        </div>
-                      )}
-
-                      {/* Bulleted List (Clean bullet points matching Google Docs) */}
-                      {block.type === "list" && block.items && (
-                        <ul className="list-disc pl-5 space-y-1.5 my-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
-                          {block.items.map((item, itemIdx) => {
-                            const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
-                            return (
-                              <li key={itemIdx} className="leading-relaxed">
-                                {boldMatch ? (
-                                  <>
-                                    <strong className="font-bold text-slate-900 dark:text-white">{boldMatch[1]}: </strong>
-                                    <span>{formatInlineText(boldMatch[2])}</span>
-                                  </>
-                                ) : (
-                                  formatInlineText(item)
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      )}
-
-                      {/* Date Line (e.g. Sep 01, 2026) */}
-                      {block.type === "date" && (
-                        <p className="text-xs italic text-slate-500 dark:text-slate-400 my-1">
-                          {block.content}
-                        </p>
-                      )}
-
-                      {/* Regular Paragraph */}
-                      {block.type === "paragraph" && block.content && (
-                        <p className="leading-relaxed">
-                          {formatInlineText(block.content)}
-                        </p>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-
-              {/* Topics & Tags */}
-              {post.tags && post.tags.length > 0 && (
-                <div className="mt-8 pt-4 border-t border-slate-100 dark:border-dark_border flex flex-wrap gap-1.5 items-center text-xs">
-                  <span className="font-bold text-slate-900 dark:text-white mr-1 text-[11px]">Topics:</span>
-                  {post.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="text-[11px] bg-slate-100 dark:bg-dark text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full border border-slate-200 dark:border-dark_border"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
+              {post.readTime && (
+                <span>
+                  <Icon icon="mdi:clock-outline" /> {post.readTime}
+                </span>
               )}
-            </article>
-
-            {/* Sidebar */}
-            <aside className="lg:col-span-4 space-y-5">
-              <div className="sticky top-24 space-y-5">
-                
-                {/* Course Enquiry CTA Box */}
-                <div className="bg-slate-900 dark:bg-darklight rounded-2xl p-5 text-white border border-slate-800 shadow-md">
-                  <span className="inline-block bg-primary/20 text-cyan-300 font-bold text-[10px] px-2.5 py-0.5 rounded-full mb-2.5 uppercase tracking-wider">
-                    Practical Training
-                  </span>
-                  <h3 className="font-bold text-sm sm:text-base mb-1.5">Interested in {post.category}?</h3>
-                  <p className="text-white/80 text-xs mb-4 leading-relaxed">
-                    Join QIMD&apos;s offline classroom training in Hinjewadi, Pune. Work on live client projects with mentor access.
-                  </p>
-                  <Link
-                    href="/courses"
-                    className="block text-center bg-secondary hover:bg-amber-400 text-midnight_text font-bold py-2.5 rounded-xl text-xs transition-all shadow-xs"
-                  >
-                    Explore Our Programs
-                  </Link>
-                </div>
-
-                {/* Related Articles Box */}
-                {relatedPosts.length > 0 && (
-                  <div className="bg-white dark:bg-darklight rounded-2xl p-4 sm:p-5 shadow-xs border border-border dark:border-dark_border">
-                    <h4 className="font-bold text-slate-900 dark:text-white mb-3 text-xs sm:text-sm flex items-center gap-1.5">
-                      <Icon icon="ion:newspaper-outline" className="text-primary text-base" />
-                      <span>Other Guides &amp; Articles</span>
-                    </h4>
-                    <div className="space-y-3">
-                      {relatedPosts.map((related) => {
-                        const relatedImg = (related as any).featuredImage || (related as any).coverImage || "/images/courses/digital-marketing.jpg";
-                        return (
-                          <Link
-                            key={related.id || related.slug}
-                            href={`/blog/${related.slug}`}
-                            className="flex gap-2.5 group items-center"
-                          >
-                            <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-slate-900 shrink-0 border border-slate-200 dark:border-slate-800">
-                              <Image
-                                src={relatedImg}
-                                alt={related.title}
-                                fill
-                                sizes="56px"
-                                className="object-cover group-hover:scale-105 transition-transform"
-                              />
-                            </div>
-                            <div>
-                              <p className="text-xs font-semibold text-slate-800 dark:text-white group-hover:text-primary dark:group-hover:text-amber-400 transition-colors line-clamp-2 leading-snug">
-                                {related.title}
-                              </p>
-                              <p className="text-[10px] text-muted dark:text-white/50 mt-0.5">{related.category}</p>
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Free Counselling CTA */}
-                <div className="bg-white dark:bg-darklight rounded-2xl p-4 sm:p-5 shadow-xs border border-border dark:border-dark_border text-center space-y-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-base">
-                    <Icon icon="ion:headset-outline" />
-                  </div>
-                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Need Career Advice?</h4>
-                  <p className="text-[11px] text-muted dark:text-white/70 leading-relaxed">
-                    Talk to our senior career mentors to choose the right track for your goals.
-                  </p>
-                  <Link
-                    href="/contact"
-                    className="inline-block w-full py-2 px-3 rounded-xl border border-primary text-primary hover:bg-primary hover:text-white text-xs font-semibold transition-all"
-                  >
-                    Book Free Counselling
-                  </Link>
-                </div>
-
-              </div>
-            </aside>
+              {(post as any).isEdited && (post as any).updatedAt && (
+                <span className="qd-updated">
+                  <Icon icon="mdi:pencil-outline" /> Updated: {(post as any).updatedAt}
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+
+      {/* Featured cover image */}
+      {heroImage && (
+        <div className="qb-wrap">
+          <figure className="qd-cover">
+            <Image
+              src={heroImage}
+              alt={post.title}
+              width={1920}
+              height={1080}
+              priority
+              sizes="(max-width: 1200px) 100vw, 1136px"
+            />
+          </figure>
+        </div>
+      )}
+
+      <div className="qb-wrap">
+        <div className={`qd-layout${toc.length > 0 ? "" : " no-toc"}`}>
+          {/* Table of contents (desktop rail) */}
+          {toc.length > 0 && (
+            <nav className="qd-toc" aria-label="Table of Contents">
+              <h2 className="qd-toc-title">Table of Contents</h2>
+              {tocList}
+            </nav>
+          )}
+
+          {/* Article */}
+          <article className="qd-article">
+            {toc.length > 0 && (
+              <details className="qd-toc-m">
+                <summary>
+                  <span>Table of Contents</span>
+                  <Icon icon="mdi:chevron-down" />
+                </summary>
+                {tocList}
+              </details>
+            )}
+
+            <div className="qd-body">
+              {blocks.map((block, idx) => (
+                <React.Fragment key={idx}>
+                  {/* In-between sub-images */}
+                  {idx === midH2BlockIdx && subImages.length > 0 && (
+                    <div className={`qd-gallery ${subImages.length === 2 ? 'is-two' : ''}`}>
+                      {subImages.map((imgSrc: string, i: number) => (
+                        <div key={i} className="qd-gallery-item">
+                          <Image
+                            src={imgSrc}
+                            alt={`${post.title} Preview ${i + 1}`}
+                            width={1920}
+                            height={1080}
+                            sizes="(max-width: 768px) 50vw, 33vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {block.type === "h2" && (
+                    <h2 id={block.id} className="qd-h2">
+                      {formatInlineText(block.title || "")}
+                    </h2>
+                  )}
+
+                  {block.type === "h3" && (
+                    <h3 id={block.id} className="qd-h3">
+                      {formatInlineText(block.title || "")}
+                    </h3>
+                  )}
+
+                  {block.type === "list" && block.items && (
+                    <ul className="qd-list">
+                      {block.items.map((item, itemIdx) => {
+                        const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
+                        return (
+                          <li key={itemIdx}>
+                            {boldMatch ? (
+                              <>
+                                <strong className="qd-strong">{boldMatch[1]}: </strong>
+                                <span>{formatInlineText(boldMatch[2])}</span>
+                              </>
+                            ) : (
+                              formatInlineText(item)
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+
+                  {block.type === "date" && <p className="qd-date">{block.content}</p>}
+
+                  {block.type === "paragraph" && block.content && (
+                    <p>{formatInlineText(block.content)}</p>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* Topics & Tags */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="qd-tags">
+                <span className="qd-tags-label">Topics:</span>
+                {post.tags.map((tag, i) => (
+                  <span key={i} className="qd-tag">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </article>
+
+          {/* Sidebar */}
+          <aside className="qd-side">
+            <div className="qd-side-inner">
+              {/* Course Enquiry CTA Box */}
+              <div className="qd-promo">
+                <span className="qd-promo-kicker">Practical Training</span>
+                <h3>Interested in {post.category}?</h3>
+                <p>
+                  Join QIMD&apos;s offline classroom training in Hinjewadi, Pune. Work on live client projects with mentor access.
+                </p>
+                <Link href="/courses" className="qd-btn qd-btn-light">
+                  <span>Explore Our Programs</span>
+                  <Icon icon="mdi:arrow-right" />
+                </Link>
+              </div>
+
+              {/* Related Articles Box */}
+              {relatedPosts.length > 0 && (
+                <div className="qd-related">
+                  <h4 className="qd-side-title">
+                    <Icon icon="ion:newspaper-outline" />
+                    <span>Other Guides &amp; Articles</span>
+                  </h4>
+                  <div className="qd-related-list">
+                    {relatedPosts.map((related) => {
+                      const relatedImg = (related as any).featuredImage || (related as any).coverImage || "/images/courses/digital-marketing.jpg";
+                      return (
+                        <Link key={related.id || related.slug} href={`/blog/${related.slug}`} className="qd-related-item">
+                          <span className="qd-related-img">
+                            <Image src={relatedImg} alt={related.title} fill sizes="72px" />
+                          </span>
+                          <span className="qd-related-text">
+                            <span className="qd-related-title">{related.title}</span>
+                            <span className="qd-related-cat">{related.category}</span>
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Free Counselling CTA */}
+              <div className="qd-help">
+                <span className="qd-help-ic">
+                  <Icon icon="ion:headset-outline" />
+                </span>
+                <h4>Need Career Advice?</h4>
+                <p>Talk to our senior career mentors to choose the right track for your goals.</p>
+                <Link href="/contact" className="qd-btn qd-btn-ink">
+                  Book Free Counselling
+                </Link>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
   );
 }
