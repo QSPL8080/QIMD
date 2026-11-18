@@ -16,6 +16,7 @@ const MobileHeaderLink: React.FC<MobileHeaderLinkProps> = ({ item, onClose }) =>
   const hrefTarget = item?.href || item?.url || '/';
 
   const isActive =
+    path === hrefTarget ||
     (hrefTarget !== '/' && hrefTarget !== '#' && path === hrefTarget) ||
     item.submenu?.some((sub: any) => {
       const subHref = sub.href || sub.url;
@@ -23,65 +24,45 @@ const MobileHeaderLink: React.FC<MobileHeaderLinkProps> = ({ item, onClose }) =>
     });
 
   return (
-    <div className="w-full border-b border-border/50 dark:border-dark_border/50 last:border-0">
+    <div className={`qm-item ${submenuOpen ? 'is-open' : ''}`}>
       {item.submenu ? (
-        <div className="flex items-center justify-between w-full">
+        <div className="flex items-center w-full">
           {hrefTarget === '#' ? (
             <button
               type="button"
               onClick={() => setSubmenuOpen(!submenuOpen)}
-              className={`flex-1 text-left py-3 px-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                isActive
-                  ? 'text-primary bg-primary/5'
-                  : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
-              }`}
+              className={`qm-link ${isActive ? 'is-active' : ''}`}
             >
               {item.label}
             </button>
           ) : (
-            <Link
-              href={hrefTarget}
-              onClick={onClose}
-              className={`flex-1 py-3 px-2 text-sm font-medium rounded-lg transition-colors ${
-                isActive
-                  ? 'text-primary bg-primary/5'
-                  : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
-              }`}
-            >
+            <Link href={hrefTarget} onClick={onClose} className={`qm-link ${isActive ? 'is-active' : ''}`}>
               {item.label}
             </Link>
           )}
           <button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setSubmenuOpen(!submenuOpen);
             }}
             aria-label={`Toggle ${item.label} dropdown`}
-            className="p-3 text-midnight_text dark:text-white hover:text-primary transition-colors cursor-pointer"
+            aria-expanded={submenuOpen}
+            className="qm-toggle"
           >
-            <Icon
-              icon="mdi:chevron-down"
-              className={`text-xl transition-transform duration-200 ${submenuOpen ? 'rotate-180' : ''}`}
-            />
+            <Icon icon="solar:alt-arrow-down-linear" />
           </button>
         </div>
       ) : (
-        <Link
-          href={hrefTarget}
-          onClick={onClose}
-          className={`flex items-center w-full py-3 px-2 text-sm font-medium rounded-lg transition-colors ${
-            path === hrefTarget
-              ? 'text-primary bg-primary/5'
-              : 'text-midnight_text dark:text-white hover:text-primary hover:bg-primary/5'
-          }`}
-        >
+        <Link href={hrefTarget} onClick={onClose} className={`qm-link ${isActive ? 'is-active' : ''}`}>
           {item.label}
+          <Icon icon="solar:arrow-right-linear" className="qm-link-arrow" />
         </Link>
       )}
 
       {submenuOpen && item.submenu && (
-        <div className="pl-4 pb-2 space-y-1">
+        <div className="qm-sub">
           {item.submenu.map((subItem: any, index: number) => {
             const subHref = subItem.href || subItem.url || '/';
             return (
@@ -89,11 +70,7 @@ const MobileHeaderLink: React.FC<MobileHeaderLinkProps> = ({ item, onClose }) =>
                 key={index}
                 href={subHref}
                 onClick={onClose}
-                className={`block py-2 px-3 text-sm rounded-lg transition-colors ${
-                  path === subHref
-                    ? 'text-primary bg-primary/10 font-medium'
-                    : 'text-muted dark:text-white/60 hover:text-primary hover:bg-primary/5'
-                }`}
+                className={`qm-sub-link ${path === subHref ? 'is-active' : ''}`}
               >
                 {subItem.label}
               </Link>

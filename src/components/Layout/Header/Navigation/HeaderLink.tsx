@@ -13,6 +13,7 @@ const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
 
   useEffect(() => {
     const active =
+      (hrefTarget === '/' && path === '/') ||
       (hrefTarget !== '/' && hrefTarget !== '#' && (path === hrefTarget || path.startsWith(hrefTarget))) ||
       item.submenu?.some((sub: any) => {
         const subHref = sub.href || sub.url;
@@ -20,6 +21,11 @@ const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
       });
     setIsActive(!!active);
   }, [path, hrefTarget, item.submenu]);
+
+  // Close dropdown after navigating
+  useEffect(() => {
+    setSubmenuOpen(false);
+  }, [path]);
 
   return (
     <div
@@ -37,50 +43,36 @@ const HeaderLink: React.FC<{ item: any }> = ({ item }) => {
           }
         }}
         suppressHydrationWarning
-        className={`flex items-center gap-0.5 text-[14px] font-medium px-4 py-5 transition-colors duration-200 cursor-pointer ${
-          isActive || submenuOpen
-            ? 'text-primary font-bold'
-            : 'text-[#1E293B] dark:text-white hover:text-primary'
-        }`}
+        aria-haspopup={item.submenu ? 'true' : undefined}
+        aria-expanded={item.submenu ? submenuOpen : undefined}
+        className={`qh-link ${isActive ? 'is-active' : ''} ${submenuOpen ? 'is-open' : ''}`}
       >
-        {item.label}
-        {item.submenu && (
-          <Icon
-            icon="mdi:chevron-down"
-            className={`text-base transition-all duration-200 ${
-              submenuOpen
-                ? 'rotate-180 text-primary'
-                : isActive
-                ? 'text-primary'
-                : 'text-slate-400 group-hover:text-primary'
-            }`}
-          />
-        )}
+        <span>{item.label}</span>
+        {item.submenu && <Icon icon="solar:alt-arrow-down-linear" className="qh-caret" />}
       </Link>
 
       {submenuOpen && item.submenu && (
-        <div
-          className="absolute left-0 top-full min-w-[240px] bg-white dark:bg-dark shadow-lg dark:shadow-darkmd rounded-xl border border-slate-100 dark:border-dark_border z-50 py-1.5 overflow-hidden"
-          data-aos="fade-up"
-          data-aos-duration="200"
-        >
-          {item.submenu.map((subItem: any, index: number) => {
-            const subHref = subItem.href || subItem.url || '/';
-            const isSubActive = path === subHref;
-            return (
-              <Link
-                key={index}
-                href={subHref}
-                className={`block px-4 py-2.5 text-[13px] font-medium transition-colors duration-150 !border-0 !border-none !shadow-none ${
-                  isSubActive
-                    ? 'bg-primary/10 text-primary font-bold'
-                    : 'text-[#334155] dark:text-slate-200 hover:bg-primary/5 hover:text-primary'
-                }`}
-              >
-                {subItem.label}
-              </Link>
-            );
-          })}
+        <div className="qh-drop-wrap">
+          <div className="qh-drop">
+            <div className="qh-drop-title">{item.label}</div>
+            {item.submenu.map((subItem: any, index: number) => {
+              const subHref = subItem.href || subItem.url || '/';
+              const isSubActive = path === subHref;
+              return (
+                <Link
+                  key={index}
+                  href={subHref}
+                  className={`qh-drop-item ${isSubActive ? 'is-active' : ''}`}
+                  style={{ animationDelay: `${index * 40}ms` }}
+                >
+                  <span className="qh-drop-ic">
+                    <Icon icon="solar:arrow-right-linear" />
+                  </span>
+                  <span className="qh-drop-label">{subItem.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
