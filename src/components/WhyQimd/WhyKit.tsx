@@ -57,19 +57,25 @@ export function QwHero({
   return (
     <section className="qw-hero" data-qx="off">
       <div className="qw-wrap">
-        <QwTabs />
-        <div className="qw-hero-body">
-          <QwKicker icon={icon}>{kicker}</QwKicker>
-          <h1 className="qw-h1">{title}</h1>
-          {intro && <div className="qw-hero-intro">{intro}</div>}
-          {actions && <div className="qw-actions">{actions}</div>}
-        </div>
-        {aside && (
-          <div className="qw-hero-aside">
-            <Icon icon="mdi:format-quote-open" className="qw-hero-aside-ic" />
-            <div>{aside}</div>
+        <div className={`qw-hero-grid${aside ? '' : ' is-single'}`}>
+          <div className="qw-hero-body">
+            <QwKicker icon={icon}>{kicker}</QwKicker>
+            <h1 className="qw-h1">{title}</h1>
+            {intro && <div className="qw-hero-intro">{intro}</div>}
+            {actions && <div className="qw-actions">{actions}</div>}
           </div>
-        )}
+          {aside && (
+            <aside className="qw-hero-aside">
+              <Icon icon="mdi:format-quote-open" className="qw-hero-aside-ic" />
+              <div>{aside}</div>
+            </aside>
+          )}
+        </div>
+      </div>
+      <div className="qw-tabs-bar">
+        <div className="qw-wrap">
+          <QwTabs />
+        </div>
       </div>
     </section>
   )
