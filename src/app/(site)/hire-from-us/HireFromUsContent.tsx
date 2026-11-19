@@ -459,9 +459,9 @@ export default function HireFromUsContent() {
               <Icon icon="mdi:phone" />
               <span>Call: +91 8237024479</span>
             </Link>
-            <Link href="mailto:placements@quickuppinstitute.com" className="qk-btn qk-btn-ghost">
+            <Link href="mailto:career@quickuppinstitute.com" className="qk-btn qk-btn-ghost">
               <Icon icon="mdi:email-outline" />
-              <span>Email: placements@quickuppinstitute.com</span>
+              <span>Email: career@quickuppinstitute.com</span>
             </Link>
           </>
         }
