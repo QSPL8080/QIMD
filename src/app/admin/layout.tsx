@@ -1,7 +1,8 @@
 import React from 'react'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getAdminSession, isSeoRole } from '@/lib/auth'
+import { getAdminSession, isSeoRole, isSuperAdminRole } from '@/lib/auth'
+import { countBinItems } from '@/lib/binData'
 import AdminShell from './AdminShell'
 
 export const dynamic = 'force-dynamic'
@@ -25,5 +26,19 @@ export default async function AdminLayout({
     }
   }
 
-  return <AdminShell session={session}>{children}</AdminShell>
+  // Bin count for the Super Admin's top bar
+  let binCount: number | null = null
+  if (isSuperAdminRole(session.roleName)) {
+    try {
+      binCount = await countBinItems()
+    } catch {
+      binCount = 0
+    }
+  }
+
+  return (
+    <AdminShell session={session} binCount={binCount}>
+      {children}
+    </AdminShell>
+  )
 }

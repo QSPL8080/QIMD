@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
 import {
   saveJobOpeningAction,
   trashJobOpeningAction,
@@ -125,12 +126,12 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
   }
 
   const handleTrash = async (id: string) => {
-    if (!confirm('Move job opening to Trash?')) return
+    if (!await confirmDialog('Move job opening to the Bin?')) return
     const res = await trashJobOpeningAction(id)
     if (res.success) {
       setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, isDeleted: true } : j)))
       setSelectedIds((prev) => prev.filter((x) => x !== id))
-      setMsg({ type: 'success', text: 'Job opening moved to Trash' })
+      setMsg({ type: 'success', text: 'Job opening moved to the Bin' })
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to trash job opening' })
     }
@@ -148,7 +149,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
   }
 
   const handleDeletePermanently = async (id: string) => {
-    if (!confirm('Permanently delete this job opening?')) return
+    if (!await confirmDialog('Permanently delete this job opening?')) return
     const res = await deleteJobOpeningPermanentlyAction(id)
     if (res.success) {
       setJobs((prev) => prev.filter((j) => j.id !== id))
@@ -160,12 +161,12 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
   }
 
   const handleBulkTrash = async () => {
-    if (!confirm(`Move ${selectedIds.length} job openings to Trash?`)) return
+    if (!await confirmDialog(`Move ${selectedIds.length} job openings to the Bin?`)) return
     const res = await bulkTrashJobOpeningsAction(selectedIds)
     if (res.success) {
       setJobs((prev) => prev.map((j) => (selectedIds.includes(j.id) ? { ...j, isDeleted: true } : j)))
       setSelectedIds([])
-      setMsg({ type: 'success', text: `${selectedIds.length} job openings moved to Trash` })
+      setMsg({ type: 'success', text: `${selectedIds.length} job openings moved to the Bin` })
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to bulk trash job openings' })
     }
@@ -210,30 +211,6 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-            <button
-              onClick={() => handleTabChange(false)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                !showTrash
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:briefcase-outline" className="w-4 h-4 text-[#764DFF]" />
-              Active ({activeJobs.length})
-            </button>
-            <button
-              onClick={() => handleTabChange(true)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                showTrash
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:trash-outline" className="w-4 h-4" />
-              Trash ({trashJobs.length})
-            </button>
-          </div>
 
           {!showTrash && (
             <button
@@ -315,7 +292,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
                   <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
-                  Move Selected to Trash ({selectedIds.length})
+                  Move Selected to Bin ({selectedIds.length})
                 </button>
               )}
             </div>
@@ -401,7 +378,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                           <button
                             onClick={() => handleTrash(j.id)}
                             className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Move to Trash"
+                            title="Move to the Bin"
                           >
                             <Icon icon="ion:trash-outline" className="w-4 h-4" />
                           </button>

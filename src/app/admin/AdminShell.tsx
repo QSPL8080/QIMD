@@ -14,6 +14,8 @@ interface AdminShellProps {
     email: string
     roleName: string
   }
+  /** Items in the Bin; only passed for the Super Admin */
+  binCount?: number | null
   children: React.ReactNode
 }
 
@@ -23,7 +25,7 @@ type NavGroup = { title: string; items: NavItem[]; show?: boolean }
 const isSuperAdminRole = (role: string) => role === 'SUPER_ADMIN' || role === 'Super Admin'
 const isSeoRole = (role: string) => role === 'SEO'
 
-export default function AdminShell({ session, children }: AdminShellProps) {
+export default function AdminShell({ session, binCount = null, children }: AdminShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
 
@@ -140,9 +142,18 @@ export default function AdminShell({ session, children }: AdminShellProps) {
               <span>View Website</span>
             </Link>
           </div>
+          <div className="qad-top-right">
+            {binCount !== null && (
+              <Link href="/admin/bin" className={`qad-bin-link${pathname?.startsWith('/admin/bin') ? ' is-active' : ''}`}>
+                <Icon icon="ion:trash-bin-outline" />
+                <span>Bin</span>
+                {binCount > 0 && <span className="qad-bin-count">{binCount}</span>}
+              </Link>
+            )}
           <div className="qad-account">
             <Icon icon="ion:person-circle-outline" />
             <span className="qad-account-email">{session.email}</span>
+          </div>
           </div>
         </header>
 

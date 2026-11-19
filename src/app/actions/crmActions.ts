@@ -1,5 +1,7 @@
 'use server'
 
+import { recordTrash, clearTrash } from '@/lib/trash'
+
 import { db } from '@/lib/db'
 import { coursesData } from '@/data'
 import {
@@ -9,7 +11,7 @@ import {
   franchiseEnquirySchema,
   hireRequestSchema,
 } from '@/lib/validations'
-import { requireAdminSession } from '@/lib/auth'
+import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 // --- PUBLIC FORM SUBMISSIONS ---
@@ -276,9 +278,37 @@ export async function trashEnquiryAction(
 
 
     revalidatePath(`/admin/enquiries/${type}`)
-    return { success: true, message: 'Record moved to Trash' }
+    await recordTrash(type, id, session)
+    return { success: true, message: 'Record moved to the Bin' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash record' }
+  }
+}
+
+/** Move several enquiries to the Bin (any admin). */
+export async function bulkTrashEnquiryAction(
+  type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
+  ids: string[]
+) {
+  const session = await requireAdminSession()
+  if (!ids || ids.length === 0) {
+    return { success: false, error: 'No IDs provided' }
+  }
+
+  try {
+    const where = { id: { in: ids } }
+    const data = { isDeleted: true }
+    if (type === 'contact') await db.contactEnquiry.updateMany({ where, data })
+    else if (type === 'admission') await db.admissionEnquiry.updateMany({ where, data })
+    else if (type === 'career') await db.careerEnquiry.updateMany({ where, data })
+    else if (type === 'franchise') await db.franchisePartnerEnquiry.updateMany({ where, data })
+    else if (type === 'hire') await db.companyPlacementEnquiry.updateMany({ where, data })
+
+    revalidatePath(`/admin/enquiries/${type}`)
+    await recordTrash(type, ids, session)
+    return { success: true, message: `${ids.length} record(s) moved to the Bin` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to move records to the Bin' }
   }
 }
 
@@ -286,7 +316,7 @@ export async function restoreEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   id: string
 ) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
 
   try {
     if (type === 'contact') await db.contactEnquiry.update({ where: { id }, data: { isDeleted: false } })
@@ -297,6 +327,7 @@ export async function restoreEnquiryAction(
 
 
     revalidatePath(`/admin/enquiries/${type}`)
+    await clearTrash(type, id)
     return { success: true, message: 'Record restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore record' }
@@ -307,7 +338,7 @@ export async function deleteEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   id: string
 ) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
 
   try {
     if (type === 'contact') await db.contactEnquiry.delete({ where: { id } })
@@ -318,6 +349,7 @@ export async function deleteEnquiryAction(
 
 
     revalidatePath(`/admin/enquiries/${type}`)
+    await clearTrash(type, id)
     return { success: true, message: 'Record permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete record' }
@@ -331,7 +363,7 @@ export async function bulkDeleteEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   ids: string[]
 ) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
 
   if (!ids || ids.length === 0) {
     return { success: false, error: 'No IDs provided' }
@@ -352,6 +384,7 @@ export async function bulkDeleteEnquiryAction(
 
 
     revalidatePath(`/admin/enquiries/${type}`)
+    await clearTrash(type, ids)
     return { success: true, message: `${deletedCount} record(s) permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to bulk delete records' }

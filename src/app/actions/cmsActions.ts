@@ -1,5 +1,7 @@
 'use server'
 
+import { recordTrash, clearTrash } from '@/lib/trash'
+
 import { db } from '@/lib/db'
 import {
   blogSchema,
@@ -7,7 +9,7 @@ import {
   testimonialSchema,
   faqSchema,
 } from '@/lib/validations'
-import { requireAdminSession, requireBlogEditorSession } from '@/lib/auth'
+import { requireAdminSession, requireBlogEditorSession, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -90,6 +92,7 @@ export async function trashBlogAction(id: string) {
     await db.blog.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await recordTrash('blog', id, session)
     return { success: true, message: 'Blog moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash blog' }
@@ -97,11 +100,12 @@ export async function trashBlogAction(id: string) {
 }
 
 export async function restoreBlogAction(id: string) {
-  const session = await requireBlogEditorSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.blog.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await clearTrash('blog', id)
     return { success: true, message: 'Blog restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore blog' }
@@ -109,7 +113,7 @@ export async function restoreBlogAction(id: string) {
 }
 
 export async function deleteBlogAction(id: string) {
-  const session = await requireBlogEditorSession()
+  const session = await requireSuperAdminSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const blog = await db.blog.findUnique({ where: { id } })
@@ -127,6 +131,7 @@ export async function deleteBlogAction(id: string) {
 
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await clearTrash('blog', id)
     return { success: true, message: 'Blog permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete blog' }
@@ -212,6 +217,7 @@ export async function trashPlacementAction(id: string) {
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
     revalidatePath('/')
+    await recordTrash('placement', id, session)
     return { success: true, message: 'Placement moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash placement' }
@@ -219,12 +225,13 @@ export async function trashPlacementAction(id: string) {
 }
 
 export async function restorePlacementAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.placement.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
     revalidatePath('/')
+    await clearTrash('placement', id)
     return { success: true, message: 'Placement restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore placement' }
@@ -232,7 +239,7 @@ export async function restorePlacementAction(id: string) {
 }
 
 export async function deletePlacementAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const placement = await db.placement.findUnique({ where: { id } })
@@ -249,6 +256,7 @@ export async function deletePlacementAction(id: string) {
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
     revalidatePath('/')
+    await clearTrash('placement', id)
     return { success: true, message: 'Placement record permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete placement' }
@@ -312,6 +320,7 @@ export async function trashGalleryItemAction(id: string) {
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await recordTrash('gallery', id, session)
     return { success: true, message: 'Gallery item moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash gallery item' }
@@ -319,12 +328,13 @@ export async function trashGalleryItemAction(id: string) {
 }
 
 export async function restoreGalleryItemAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.gallery.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await clearTrash('gallery', id)
     return { success: true, message: 'Gallery item restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore gallery item' }
@@ -332,12 +342,13 @@ export async function restoreGalleryItemAction(id: string) {
 }
 
 export async function deleteGalleryItemAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.gallery.delete({ where: { id } })
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await clearTrash('gallery', id)
     return { success: true, message: 'Gallery item permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete gallery item' }
@@ -421,6 +432,7 @@ export async function trashTestimonialAction(id: string) {
     await db.testimonial.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/')
     revalidatePath('/admin/testimonials')
+    await recordTrash('testimonial', id, session)
     return { success: true, message: 'Testimonial moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash testimonial' }
@@ -428,11 +440,12 @@ export async function trashTestimonialAction(id: string) {
 }
 
 export async function restoreTestimonialAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.testimonial.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/')
     revalidatePath('/admin/testimonials')
+    await clearTrash('testimonial', id)
     return { success: true, message: 'Testimonial restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore testimonial' }
@@ -440,7 +453,7 @@ export async function restoreTestimonialAction(id: string) {
 }
 
 export async function deleteTestimonialAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const testimonial = await db.testimonial.findUnique({ where: { id } })
@@ -454,6 +467,7 @@ export async function deleteTestimonialAction(id: string) {
     revalidatePath('/')
     revalidatePath('/placements')
     revalidatePath('/admin/testimonials')
+    await clearTrash('testimonial', id)
     return { success: true, message: 'Testimonial permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete testimonial' }
@@ -494,6 +508,7 @@ export async function trashFaqAction(id: string) {
     await db.faq.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await recordTrash('faq', id, session)
     return { success: true, message: 'FAQ moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash FAQ' }
@@ -501,11 +516,12 @@ export async function trashFaqAction(id: string) {
 }
 
 export async function restoreFaqAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.faq.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await clearTrash('faq', id)
     return { success: true, message: 'FAQ restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore FAQ' }
@@ -513,11 +529,12 @@ export async function restoreFaqAction(id: string) {
 }
 
 export async function deleteFaqAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.faq.delete({ where: { id } })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await clearTrash('faq', id)
     return { success: true, message: 'FAQ permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete FAQ' }
@@ -584,6 +601,7 @@ export async function trashStudentReviewAction(id: string) {
     await db.studentReview.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await recordTrash('review', id, session)
     return { success: true, message: 'Student review moved to Trash' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash review' }
@@ -591,11 +609,12 @@ export async function trashStudentReviewAction(id: string) {
 }
 
 export async function restoreStudentReviewAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     await db.studentReview.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await clearTrash('review', id)
     return { success: true, message: 'Student review restored' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore review' }
@@ -603,7 +622,7 @@ export async function restoreStudentReviewAction(id: string) {
 }
 
 export async function deleteStudentReviewAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const item = await db.studentReview.findUnique({ where: { id } })
@@ -613,6 +632,7 @@ export async function deleteStudentReviewAction(id: string) {
     await db.studentReview.delete({ where: { id } })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await clearTrash('review', id)
     return { success: true, message: 'Student review permanently deleted' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete review' }
@@ -634,6 +654,7 @@ export async function bulkTrashBlogsAction(ids: string[]) {
     })
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await recordTrash('blog', ids, session)
     return { success: true, message: `${ids.length} blogs moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash blogs' }
@@ -641,7 +662,7 @@ export async function bulkTrashBlogsAction(ids: string[]) {
 }
 
 export async function bulkRestoreBlogsAction(ids: string[]) {
-  const session = await requireBlogEditorSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.blog.updateMany({
@@ -650,6 +671,7 @@ export async function bulkRestoreBlogsAction(ids: string[]) {
     })
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await clearTrash('blog', ids)
     return { success: true, message: `${ids.length} blogs restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore blogs' }
@@ -657,7 +679,7 @@ export async function bulkRestoreBlogsAction(ids: string[]) {
 }
 
 export async function bulkDeleteBlogsPermanentlyAction(ids: string[]) {
-  const session = await requireBlogEditorSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
@@ -672,6 +694,7 @@ export async function bulkDeleteBlogsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/blog')
     revalidatePath('/admin/blogs')
+    await clearTrash('blog', ids)
     return { success: true, message: `${ids.length} blogs permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete blogs' }
@@ -689,6 +712,7 @@ export async function bulkTrashTestimonialsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/testimonials')
+    await recordTrash('testimonial', ids, session)
     return { success: true, message: `${ids.length} testimonials moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash testimonials' }
@@ -696,7 +720,7 @@ export async function bulkTrashTestimonialsAction(ids: string[]) {
 }
 
 export async function bulkRestoreTestimonialsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.testimonial.updateMany({
@@ -705,6 +729,7 @@ export async function bulkRestoreTestimonialsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/testimonials')
+    await clearTrash('testimonial', ids)
     return { success: true, message: `${ids.length} testimonials restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore testimonials' }
@@ -712,7 +737,7 @@ export async function bulkRestoreTestimonialsAction(ids: string[]) {
 }
 
 export async function bulkDeleteTestimonialsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
@@ -725,6 +750,7 @@ export async function bulkDeleteTestimonialsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/testimonials')
+    await clearTrash('testimonial', ids)
     return { success: true, message: `${ids.length} testimonials permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete testimonials' }
@@ -742,6 +768,7 @@ export async function bulkTrashReviewsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await recordTrash('review', ids, session)
     return { success: true, message: `${ids.length} reviews moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash reviews' }
@@ -749,7 +776,7 @@ export async function bulkTrashReviewsAction(ids: string[]) {
 }
 
 export async function bulkRestoreReviewsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.studentReview.updateMany({
@@ -758,6 +785,7 @@ export async function bulkRestoreReviewsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await clearTrash('review', ids)
     return { success: true, message: `${ids.length} reviews restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore reviews' }
@@ -765,7 +793,7 @@ export async function bulkRestoreReviewsAction(ids: string[]) {
 }
 
 export async function bulkDeleteReviewsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
@@ -778,6 +806,7 @@ export async function bulkDeleteReviewsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/reviews')
+    await clearTrash('review', ids)
     return { success: true, message: `${ids.length} reviews permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete reviews' }
@@ -795,6 +824,7 @@ export async function bulkTrashPlacementsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
+    await recordTrash('placement', ids, session)
     return { success: true, message: `${ids.length} placement records moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash placements' }
@@ -802,7 +832,7 @@ export async function bulkTrashPlacementsAction(ids: string[]) {
 }
 
 export async function bulkRestorePlacementsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.placement.updateMany({
@@ -811,6 +841,7 @@ export async function bulkRestorePlacementsAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
+    await clearTrash('placement', ids)
     return { success: true, message: `${ids.length} placement records restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore placements' }
@@ -818,7 +849,7 @@ export async function bulkRestorePlacementsAction(ids: string[]) {
 }
 
 export async function bulkDeletePlacementsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
@@ -832,6 +863,7 @@ export async function bulkDeletePlacementsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/placements')
     revalidatePath('/admin/placements')
+    await clearTrash('placement', ids)
     return { success: true, message: `${ids.length} placement records permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete placements' }
@@ -849,6 +881,7 @@ export async function bulkTrashFaqsAction(ids: string[]) {
     })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await recordTrash('faq', ids, session)
     return { success: true, message: `${ids.length} FAQs moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash FAQs' }
@@ -856,7 +889,7 @@ export async function bulkTrashFaqsAction(ids: string[]) {
 }
 
 export async function bulkRestoreFaqsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.faq.updateMany({
@@ -865,6 +898,7 @@ export async function bulkRestoreFaqsAction(ids: string[]) {
     })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await clearTrash('faq', ids)
     return { success: true, message: `${ids.length} FAQs restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore FAQs' }
@@ -872,7 +906,7 @@ export async function bulkRestoreFaqsAction(ids: string[]) {
 }
 
 export async function bulkDeleteFaqsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.faq.deleteMany({
@@ -880,6 +914,7 @@ export async function bulkDeleteFaqsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
+    await clearTrash('faq', ids)
     return { success: true, message: `${ids.length} FAQs permanently deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete FAQs' }
@@ -898,6 +933,7 @@ export async function bulkTrashGalleryItemsAction(ids: string[]) {
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await recordTrash('gallery', ids, session)
     return { success: true, message: `${ids.length} gallery items moved to Trash` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash gallery items' }
@@ -905,7 +941,7 @@ export async function bulkTrashGalleryItemsAction(ids: string[]) {
 }
 
 export async function bulkRestoreGalleryItemsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.gallery.updateMany({
@@ -915,6 +951,7 @@ export async function bulkRestoreGalleryItemsAction(ids: string[]) {
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await clearTrash('gallery', ids)
     return { success: true, message: `${ids.length} gallery items restored` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore gallery items' }
@@ -922,7 +959,7 @@ export async function bulkRestoreGalleryItemsAction(ids: string[]) {
 }
 
 export async function bulkDeleteGalleryItemsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
@@ -935,6 +972,7 @@ export async function bulkDeleteGalleryItemsAction(ids: string[]) {
     revalidatePath('/')
     revalidatePath('/gallery')
     revalidatePath('/admin/gallery')
+    await clearTrash('gallery', ids)
     return { success: true, message: `${ids.length} gallery items deleted` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete gallery items' }

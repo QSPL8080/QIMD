@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useTransition } from 'react'
 import {
   updateEnquiryStatusAction,
-  deleteEnquiryAction,
-  bulkDeleteEnquiryAction,
+  trashEnquiryAction,
+  bulkTrashEnquiryAction,
   bulkUpdateEnquiryStatusAction,
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
@@ -96,7 +96,7 @@ export default function AdminContactLeadsPage() {
 
   const handleDelete = async (id: string) => {
     startTransition(async () => {
-      const res = await deleteEnquiryAction('contact', id)
+      const res = await trashEnquiryAction('contact', id)
       if (res.success) {
         setStatusMsg({ type: 'success', text: 'Contact lead deleted successfully' })
         setLeads((prev) => prev.filter((item) => item.id !== id))
@@ -111,7 +111,7 @@ export default function AdminContactLeadsPage() {
 
   const handleBulkDelete = async () => {
     startTransition(async () => {
-      const res = await bulkDeleteEnquiryAction('contact', selectedIds)
+      const res = await bulkTrashEnquiryAction('contact', selectedIds)
       if (res.success) {
         setStatusMsg({ type: 'success', text: res.message || 'Selected records deleted' })
         setLeads((prev) => prev.filter((item) => !selectedIds.includes(item.id)))
@@ -460,7 +460,7 @@ export default function AdminContactLeadsPage() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900 text-sm">Delete this enquiry?</h3>
-              <p className="text-xs text-slate-500 mt-1">This lead will be permanently deleted and cannot be recovered.</p>
+              <p className="text-xs text-slate-500 mt-1">This lead will be moved to the Bin. Only the Super Admin can restore or delete them for good.</p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <button
@@ -489,7 +489,7 @@ export default function AdminContactLeadsPage() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} selected enquiries?</h3>
-              <p className="text-xs text-slate-500 mt-1">These records will be permanently deleted and cannot be recovered.</p>
+              <p className="text-xs text-slate-500 mt-1">These records will be moved to the Bin. Only the Super Admin can restore or delete them for good.</p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <button
@@ -502,7 +502,7 @@ export default function AdminContactLeadsPage() {
                 onClick={handleBulkDelete}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >
-                Delete All
+                Move to Bin
               </button>
             </div>
           </div>

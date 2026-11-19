@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
 import {
   saveFaqAction,
   trashFaqAction,
@@ -64,10 +65,10 @@ export default function AdminFaqsPage() {
   }
 
   const handleTrash = async (id: string) => {
-    if (!confirm('Move FAQ to Trash?')) return
+    if (!await confirmDialog('Move FAQ to the Bin?')) return
     const res = await trashFaqAction(id)
     if (res.success) {
-      setStatusMsg({ type: 'success', text: 'Moved to Trash' })
+      setStatusMsg({ type: 'success', text: 'Moved to the Bin' })
       fetchFaqs()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to trash FAQ' })
@@ -85,7 +86,7 @@ export default function AdminFaqsPage() {
   }
 
   const handleDeletePermanently = async (id: string) => {
-    if (!confirm('WARNING: Permanently delete this FAQ?')) return
+    if (!await confirmDialog('WARNING: Permanently delete this FAQ?')) return
     const res = await deleteFaqAction(id)
     if (res.success) {
       setStatusMsg({ type: 'success', text: 'FAQ permanently deleted' })
@@ -119,11 +120,11 @@ export default function AdminFaqsPage() {
   }
 
   const handleBulkTrash = async () => {
-    if (!confirm(`Move ${selectedIds.length} FAQs to Trash?`)) return
+    if (!await confirmDialog(`Move ${selectedIds.length} FAQs to the Bin?`)) return
     const res = await bulkTrashFaqsAction(selectedIds)
     if (res.success) {
       setSelectedIds([])
-      setStatusMsg({ type: 'success', text: `${selectedIds.length} FAQs moved to Trash` })
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} FAQs moved to the Bin` })
       fetchFaqs()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk trash FAQs' })
@@ -169,30 +170,6 @@ export default function AdminFaqsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-            <button
-              onClick={() => handleTabChange(false)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                !showTrash
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:list-outline" className="w-4 h-4 text-emerald-600" />
-              Active ({activeFaqs.length})
-            </button>
-            <button
-              onClick={() => handleTabChange(true)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                showTrash
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:trash-outline" className="w-4 h-4" />
-              Trash ({trashFaqs.length})
-            </button>
-          </div>
 
           <button
             onClick={() => {
@@ -261,7 +238,7 @@ export default function AdminFaqsPage() {
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
                   <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
-                  Move Selected to Trash ({selectedIds.length})
+                  Move Selected to Bin ({selectedIds.length})
                 </button>
               )}
             </div>
@@ -336,7 +313,7 @@ export default function AdminFaqsPage() {
                         <button
                           onClick={() => handleTrash(f.id)}
                           className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                          title="Move to Trash"
+                          title="Move to the Bin"
                         >
                           <Icon icon="ion:trash-outline" className="w-5 h-5" />
                         </button>

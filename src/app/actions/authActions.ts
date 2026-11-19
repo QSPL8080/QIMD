@@ -21,7 +21,7 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
       where: { email: validated.data.email },
     })
 
-    if (!user || !user.status) {
+    if (!user || !user.status || user.isDeleted) {
       return { success: false, error: 'Invalid email or account is inactive.' }
     }
 

@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { saveBannerAction, deleteBannerPermanentlyAction } from '@/app/actions/bannerActions'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
+import { saveBannerAction, trashBannerAction } from '@/app/actions/bannerActions'
 import { Icon } from '@iconify/react'
 
 export interface BannerItem {
@@ -91,8 +92,8 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this banner image?')) return
-    const res = await deleteBannerPermanentlyAction(id)
+    if (!await confirmDialog('Move this banner to the Bin?')) return
+    const res = await trashBannerAction(id)
     if (res.success) window.location.reload()
     else alert(res.error)
   }

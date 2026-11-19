@@ -1,8 +1,10 @@
 'use server'
 
+import { recordTrash, clearTrash } from '@/lib/trash'
+
 import { db } from '@/lib/db'
 import { jobOpeningSchema } from '@/lib/validations'
-import { requireAdminSession } from '@/lib/auth'
+import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -47,6 +49,7 @@ export async function trashJobOpeningAction(id: string) {
     })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await recordTrash('job', id, session)
     return { success: true, message: 'Job opening moved to Trash.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash job opening.' }
@@ -54,7 +57,7 @@ export async function trashJobOpeningAction(id: string) {
 }
 
 export async function restoreJobOpeningAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!id || !UUID_REGEX.test(id)) {
       return { success: false, error: 'Invalid job opening ID' }
@@ -65,6 +68,7 @@ export async function restoreJobOpeningAction(id: string) {
     })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await clearTrash('job', id)
     return { success: true, message: 'Job opening restored from Trash.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore job opening.' }
@@ -72,7 +76,7 @@ export async function restoreJobOpeningAction(id: string) {
 }
 
 export async function deleteJobOpeningPermanentlyAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     if (!id || !UUID_REGEX.test(id)) {
       return { success: false, error: 'Invalid job opening ID' }
@@ -80,6 +84,7 @@ export async function deleteJobOpeningPermanentlyAction(id: string) {
     await db.jobOpening.delete({ where: { id } })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await clearTrash('job', id)
     return { success: true, message: 'Job opening permanently deleted.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete job opening.' }
@@ -97,6 +102,7 @@ export async function bulkTrashJobOpeningsAction(ids: string[]) {
     })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await recordTrash('job', validIds, session)
     return { success: true, message: `${validIds.length} job openings moved to Trash.` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash job openings.' }
@@ -104,7 +110,7 @@ export async function bulkTrashJobOpeningsAction(ids: string[]) {
 }
 
 export async function bulkRestoreJobOpeningsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
     if (validIds.length === 0) return { success: false, error: 'No valid job openings selected.' }
@@ -114,6 +120,7 @@ export async function bulkRestoreJobOpeningsAction(ids: string[]) {
     })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await clearTrash('job', validIds)
     return { success: true, message: `${validIds.length} job openings restored.` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore job openings.' }
@@ -121,7 +128,7 @@ export async function bulkRestoreJobOpeningsAction(ids: string[]) {
 }
 
 export async function bulkDeleteJobOpeningsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   try {
     const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
     if (validIds.length === 0) return { success: false, error: 'No valid job openings selected.' }
@@ -130,6 +137,7 @@ export async function bulkDeleteJobOpeningsPermanentlyAction(ids: string[]) {
     })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
+    await clearTrash('job', validIds)
     return { success: true, message: `${validIds.length} job openings permanently deleted.` }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete job openings.' }

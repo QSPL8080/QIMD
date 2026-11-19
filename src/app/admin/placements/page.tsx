@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
 import {
   savePlacementAction,
   trashPlacementAction,
@@ -123,10 +124,10 @@ export default function AdminPlacementsPage() {
   }
 
   const handleTrash = async (id: string) => {
-    if (!confirm('Move placement record to Trash?')) return
+    if (!await confirmDialog('Move placement record to the Bin?')) return
     const res = await trashPlacementAction(id)
     if (res.success) {
-      setStatusMsg({ type: 'success', text: 'Placement moved to Trash' })
+      setStatusMsg({ type: 'success', text: 'Placement moved to the Bin' })
       fetchPlacements()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to trash placement' })
@@ -144,7 +145,7 @@ export default function AdminPlacementsPage() {
   }
 
   const handleDeletePermanently = async (id: string) => {
-    if (!confirm('WARNING: Permanently delete placement record?')) return
+    if (!await confirmDialog('WARNING: Permanently delete placement record?')) return
     const res = await deletePlacementAction(id)
     if (res.success) {
       setStatusMsg({ type: 'success', text: 'Placement record permanently deleted' })
@@ -178,11 +179,11 @@ export default function AdminPlacementsPage() {
   }
 
   const handleBulkTrash = async () => {
-    if (!confirm(`Move ${selectedIds.length} placement records to Trash?`)) return
+    if (!await confirmDialog(`Move ${selectedIds.length} placement records to the Bin?`)) return
     const res = await bulkTrashPlacementsAction(selectedIds)
     if (res.success) {
       setSelectedIds([])
-      setStatusMsg({ type: 'success', text: `${selectedIds.length} placement records moved to Trash` })
+      setStatusMsg({ type: 'success', text: `${selectedIds.length} placement records moved to the Bin` })
       fetchPlacements()
     } else {
       setStatusMsg({ type: 'error', text: res.error || 'Failed to bulk trash placements' })
@@ -227,30 +228,6 @@ export default function AdminPlacementsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
-            <button
-              onClick={() => handleTabChange(false)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                !showTrash
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:list-outline" className="w-4 h-4 text-amber-500" />
-              Active ({activePlacements.length})
-            </button>
-            <button
-              onClick={() => handleTabChange(true)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                showTrash
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Icon icon="ion:trash-outline" className="w-4 h-4" />
-              Trash ({trashPlacements.length})
-            </button>
-          </div>
 
           <button
             onClick={() => openForm()}
@@ -331,7 +308,7 @@ export default function AdminPlacementsPage() {
                     className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <Icon icon="ion:trash-outline" className="w-3.5 h-3.5" />
-                    Move Selected to Trash ({selectedIds.length})
+                    Move Selected to Bin ({selectedIds.length})
                   </button>
                 )}
               </div>
@@ -433,7 +410,7 @@ export default function AdminPlacementsPage() {
                           <button
                             onClick={() => handleTrash(p.id)}
                             className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                            title="Move to Trash"
+                            title="Move to the Bin"
                           >
                             <Icon icon="ion:trash-outline" className="w-5 h-5" />
                           </button>

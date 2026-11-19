@@ -1,8 +1,10 @@
 'use server'
 
+import { recordTrash, clearTrash } from '@/lib/trash'
+
 import { db } from '@/lib/db'
 import { userSchema } from '@/lib/validations'
-import { requireAdminSession, hashPassword, isSuperAdminRole } from '@/lib/auth'
+import { requireAdminSession, requireSuperAdminSession, hashPassword, isSuperAdminRole } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 export async function saveUserAction(data: any, id?: string) {
@@ -90,6 +92,7 @@ export async function trashUserAction(id: string) {
 
 
     revalidatePath('/admin/users')
+    await recordTrash('user', id, session)
     return { success: true, message: 'User moved to Trash.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to trash user.' }
@@ -97,7 +100,7 @@ export async function trashUserAction(id: string) {
 }
 
 export async function restoreUserAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can restore users.' }
   }
@@ -110,6 +113,7 @@ export async function restoreUserAction(id: string) {
 
 
     revalidatePath('/admin/users')
+    await clearTrash('user', id)
     return { success: true, message: 'User restored from Trash.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to restore user.' }
@@ -117,7 +121,7 @@ export async function restoreUserAction(id: string) {
 }
 
 export async function deleteUserPermanentlyAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireSuperAdminSession()
   if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can permanently delete users.' }
   }
@@ -126,6 +130,7 @@ export async function deleteUserPermanentlyAction(id: string) {
     await db.user.delete({ where: { id } })
 
     revalidatePath('/admin/users')
+    await clearTrash('user', id)
     return { success: true, message: 'User account permanently deleted.' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to permanently delete user.' }

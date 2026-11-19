@@ -1,7 +1,8 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { requireAdminSession } from '@/lib/auth'
+import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
+import { recordTrash, clearTrash } from '@/lib/trash'
 import { revalidatePath } from 'next/cache'
 import { safeDeleteUnusedFile } from '@/lib/mediaService'
 
@@ -79,8 +80,36 @@ export async function saveBannerAction(
   }
 }
 
+/** Move a banner to the Bin (any admin). */
+export async function trashBannerAction(id: string) {
+  const session = await requireAdminSession()
+  try {
+    await db.banner.update({ where: { id }, data: { isDeleted: true } })
+    revalidatePath('/admin/banners')
+    revalidatePath('/')
+    await recordTrash('banner', id, session)
+    return { success: true, message: 'Banner moved to the Bin' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to move banner to the Bin' }
+  }
+}
+
+/** Bring a banner back from the Bin (Super Admin). */
+export async function restoreBannerAction(id: string) {
+  await requireSuperAdminSession()
+  try {
+    await db.banner.update({ where: { id }, data: { isDeleted: false } })
+    revalidatePath('/admin/banners')
+    revalidatePath('/')
+    await clearTrash('banner', id)
+    return { success: true, message: 'Banner restored' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to restore banner' }
+  }
+}
+
 export async function deleteBannerPermanentlyAction(id: string) {
-  await requireAdminSession()
+  await requireSuperAdminSession()
   try {
     const existing = await db.banner.findUnique({ where: { id } })
     if (existing) {
@@ -92,6 +121,7 @@ export async function deleteBannerPermanentlyAction(id: string) {
     }
     revalidatePath('/admin/banners')
     revalidatePath('/')
+    await clearTrash('banner', id)
     return { success: true, message: 'Banner deleted successfully from database' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete banner' }

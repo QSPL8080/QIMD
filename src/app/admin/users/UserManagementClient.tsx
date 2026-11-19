@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
 import {
   saveUserAction,
   trashUserAction,
@@ -97,7 +98,7 @@ export default function UserManagementClient({
   }
 
   const handleTrash = async (id: string) => {
-    if (!confirm('Are you sure you want to move this user to Trash?')) return
+    if (!await confirmDialog('Are you sure you want to move this user to the Bin?')) return
     const res = await trashUserAction(id)
     if (res.success) window.location.reload()
     else alert(res.error)
@@ -110,7 +111,7 @@ export default function UserManagementClient({
   }
 
   const handleDeletePermanently = async (id: string) => {
-    if (!confirm('WARNING: Permanently delete this user? This cannot be undone.')) return
+    if (!await confirmDialog('WARNING: Permanently delete this user? This cannot be undone.')) return
     const res = await deleteUserPermanentlyAction(id)
     if (res.success) window.location.reload()
     else alert(res.error)
@@ -131,17 +132,6 @@ export default function UserManagementClient({
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowTrash(!showTrash)}
-            className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors flex items-center gap-2 ${
-              showTrash
-                ? 'bg-amber-50 border-amber-300 text-amber-800'
-                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Icon icon="ion:trash-outline" className="w-4.5 h-4.5" />
-            {showTrash ? 'View Active Users' : 'View Trash'}
-          </button>
 
           <button
             onClick={handleOpenAdd}
@@ -271,7 +261,7 @@ export default function UserManagementClient({
                             <button
                               onClick={() => handleTrash(u.id)}
                               className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                              title="Move to Trash"
+                              title="Move to the Bin"
                             >
                               <Icon icon="ion:trash-outline" className="w-4 h-4" />
                             </button>

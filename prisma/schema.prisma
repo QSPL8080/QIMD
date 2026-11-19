@@ -331,6 +331,22 @@ model Banner {
   @@map("banners")
 }
 
+/// Central Bin: who moved a record to the Bin and when.
+/// The record itself stays in its own table with is_deleted = true.
+model TrashEntry {
+  id            String   @id @default(uuid()) @db.Uuid
+  entityType    String   @map("entity_type") @db.VarChar(50)
+  entityId      String   @map("entity_id") @db.Uuid
+  deletedById   String?  @map("deleted_by_id") @db.Uuid
+  deletedByName String?  @map("deleted_by_name") @db.VarChar(150)
+  deletedByRole String?  @map("deleted_by_role") @db.VarChar(50)
+  deletedAt     DateTime @default(now()) @map("deleted_at")
+
+  @@unique([entityType, entityId])
+  @@index([deletedAt])
+  @@map("trash_entries")
+}
+
 enum ContentStatus {
   DRAFT
   PUBLISHED

@@ -51,7 +51,7 @@ export async function getAdminSession(): Promise<SessionUser | null> {
       where: { id: decoded.userId },
     })
 
-    if (!user || !user.status) return null
+    if (!user || !user.status || user.isDeleted) return null
 
     return {
       id: user.id,
