@@ -5623,3 +5623,16 @@ html:not([data-area="admin"]) main .qo-prog-title { margin: 0; font-family: var(
 .qo-emi-logo { width: auto; min-width: 140px; height: 70px; padding: 6px 22px; background: transparent; border-radius: 0; }
 .qo-emi-logo img { max-height: 46px; }
 .qw-partner-img { filter: none; opacity: 1; }
+
+/* Why sub-pages — closing CTA after a dark section: give it its own breathing room */
+.qw-sec-dark + .qw-sec-cta { padding-top: 96px; }
+.qw-cta .qw-actions { z-index: 1; min-width: 300px; }
+.qw .qw-cta .qw-btn-glass { background: var(--qw-navy); color: #fff; }
+.qw .qw-cta .qw-btn-glass:hover { background: #0D0B26; color: #fff; }
+@media (max-width: 1024px) {
+  .qw-sec-dark + .qw-sec-cta { padding-top: 72px; }
+  .qw-cta .qw-actions { min-width: 0; }
+}
+@media (max-width: 640px) {
+  .qw-sec-dark + .qw-sec-cta { padding-top: 56px; }
+}
