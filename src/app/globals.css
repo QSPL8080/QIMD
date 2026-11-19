@@ -6329,3 +6329,30 @@ html:not([data-area="admin"]) .qo-hero .qo-checks { --qi: #C4B5FD; }
   .qo-hero .qo-hero-form { padding: 18px 16px; }
   .qo-hero .qo-btn { flex: 1 1 auto; justify-content: center; }
 }
+
+/* ================================================================
+   HOME PROGRAMS — tabs in a row, program poster + details below
+   ================================================================ */
+.qo-prog { grid-template-columns: 1fr; gap: 14px; }
+.qo-prog-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.qo .qo-prog-tab, .qo-prog-tab { border-radius: 14px; }
+.qo-prog-tab:hover { transform: translateY(-2px); }
+.qo-prog-panel { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; border-radius: 16px; }
+.qo-prog-media.is-poster { align-self: center; width: 100%; border-radius: 16px 0 0 16px; overflow: hidden; min-height: 0; height: auto; aspect-ratio: 16 / 9; background: #fff; }
+.qo-prog-track.is-scroll .qo-prog-media.is-poster { height: auto; min-height: 0; }
+.qo-prog-media.is-poster img { object-fit: contain; }
+.qo-prog-panel .qo-prog-body { justify-content: center; gap: 12px; padding: 22px 30px; }
+.qo-prog-panel .qo-prog-points { gap: 8px; }
+.qo-prog-panel .qo-prog-points li { font-size: 14px; }
+.qo-prog-panel .qo-prog-desc { -webkit-line-clamp: 2; }
+.qo-prog-panel .qo-prog-actions { margin-top: 4px; padding-top: 4px; }
+.qo-prog-chips span.is-popular { background: #D9922B; color: #fff; }
+@media (max-width: 1100px) {
+  .qo-prog-panel { grid-template-columns: 1fr; }
+  .qo-prog-media.is-poster { aspect-ratio: 16 / 9; }
+}
+@media (max-width: 760px) {
+  .qo-prog-tabs { grid-template-columns: 1fr; gap: 8px; }
+  .qo-prog-panel .qo-prog-body { padding: 22px 18px; }
+}
+@media (max-width: 1100px) { .qo-prog-media.is-poster { border-radius: 16px 16px 0 0; } }

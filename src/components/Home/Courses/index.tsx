@@ -15,6 +15,13 @@ function modeLabel(mode?: string) {
     : mode.replace(/Course/gi, 'Program');
 }
 
+/** Program posters (same artwork as the hero banners), by program slug */
+const PROGRAM_POSTERS: Record<string, string> = {
+  'ai-video-editing': '/images/programs/video-editing-poster.jpg',
+  'ai-digital-marketing': '/images/programs/digital-marketing-poster.jpg',
+  'ai-graphic-design': '/images/programs/graphic-design-poster.jpg',
+};
+
 /** Home: program showcase — programs change one by one as you scroll (desktop), tap to switch (mobile) */
 const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
   const [active, setActive] = useState(0);
@@ -68,7 +75,8 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
   if (!courses || courses.length === 0) return null;
 
   const course = courses[Math.min(active, courses.length - 1)];
-  const courseImage = course.image || course.bannerImage;
+  const courseImage = PROGRAM_POSTERS[course.slug] || course.image || course.bannerImage;
+  const isPoster = Boolean(PROGRAM_POSTERS[course.slug]);
   const highlightsList: string[] =
     course.highlights || course.learningOutcomes || ['100% Practical Training', 'AI Tools Integration', 'Live Client Projects', '100% Placement Support'];
 
@@ -124,7 +132,7 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
 
           {/* Selected program */}
           <article key={course.id} className="qo-prog-panel" role="tabpanel">
-            <Link href={`/courses/${course.slug}`} className="qo-prog-media" aria-label={course.title}>
+            <Link href={`/courses/${course.slug}`} className={`qo-prog-media${isPoster ? " is-poster" : ""}`} aria-label={course.title}>
               {courseImage ? (
                 <Image
                   src={courseImage}
@@ -132,18 +140,19 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
                   fill
                   unoptimized
                   quality={100}
-                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  sizes="(max-width: 1024px) 100vw, 55vw"
+                  priority={active === 0}
                 />
               ) : (
                 <span className="qo-prog-fallback">
                   <Icon icon={course.icon || 'mdi:book-open-page-variant'} />
                 </span>
               )}
-              {course.featured && <span className="qo-prog-badge">Popular</span>}
             </Link>
 
             <div className="qo-prog-body">
               <div className="qo-prog-chips">
+                {course.featured && <span className="is-popular">Popular</span>}
                 <span>
                   <Icon icon="mdi:clock-outline" />
                   {course.duration}
