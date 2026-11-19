@@ -37,6 +37,8 @@ model User {
   @@map("users")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "CourseCategory" table and its data are not dropped.
 model CourseCategory {
   id           String   @id @default(uuid()) @db.Uuid
   name         String   @db.VarChar(150)
@@ -54,6 +56,8 @@ model CourseCategory {
   @@map("course_categories")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "Trainer" table and its data are not dropped.
 model Trainer {
   id              String   @id @default(uuid()) @db.Uuid
   fullName        String   @map("full_name") @db.VarChar(200)
@@ -83,6 +87,8 @@ model Trainer {
   @@map("trainers")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "TeamMember" table and its data are not dropped.
 model TeamMember {
   id             String   @id @default(uuid()) @db.Uuid
   fullName       String   @map("full_name") @db.VarChar(200)
@@ -109,6 +115,8 @@ model TeamMember {
   @@map("teams")
 }
 
+// LEGACY — programs are now fixed in src/data/index.ts (coursesData).
+// The table is kept so existing admission leads and placements keep their program link.
 model Course {
   id                 String             @id @default(uuid()) @db.Uuid
   categoryId         String             @map("category_id") @db.Uuid
@@ -288,6 +296,8 @@ model StudentReview {
   @@map("student_reviews")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "Partner" table and its data are not dropped.
 model Partner {
   id           String   @id @default(uuid()) @db.Uuid
   name         String   @db.VarChar(200)
@@ -304,6 +314,8 @@ model Partner {
   @@map("partners")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "EmiPartner" table and its data are not dropped.
 model EmiPartner {
   id           String   @id @default(uuid()) @db.Uuid
   name         String   @db.VarChar(200)
@@ -467,6 +479,8 @@ model CompanyPlacementEnquiry {
   @@map("company_placement_enquiries")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "WebsiteSettings" table and its data are not dropped.
 model WebsiteSettings {
   id               String   @id @default(uuid()) @db.Uuid
   websiteName      String   @default("QIMD - Quickup Institute of Marketing & Design") @map("website_name") @db.VarChar(255)
@@ -490,6 +504,8 @@ model WebsiteSettings {
   @@map("website_settings")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "Report" table and its data are not dropped.
 model Report {
   id            String       @id @default(uuid()) @db.Uuid
   reportName    String       @map("report_name") @db.VarChar(200)
@@ -504,6 +520,8 @@ model Report {
   @@map("reports")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "NotificationLog" table and its data are not dropped.
 model NotificationLog {
   id               String         @id @default(uuid()) @db.Uuid
   recipient        String         @db.VarChar(255)
@@ -517,6 +535,8 @@ model NotificationLog {
   @@map("notification_logs")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "AuditLog" table and its data are not dropped.
 model AuditLog {
   id        String   @id @default(uuid()) @db.Uuid
   userId    String?  @map("user_id") @db.Uuid
@@ -534,6 +554,8 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "WebPage" table and its data are not dropped.
 model WebPage {
   id              String        @id @default(uuid()) @db.Uuid
   pageName        String        @map("page_name") @db.VarChar(150)
@@ -556,6 +578,8 @@ model WebPage {
   @@map("web_pages")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "PageSection" table and its data are not dropped.
 model PageSection {
   id           String        @id @default(uuid()) @db.Uuid
   pageId       String?       @map("page_id") @db.Uuid
@@ -583,6 +607,8 @@ model PageSection {
   @@map("page_sections")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "HeaderSettings" table and its data are not dropped.
 model HeaderSettings {
   id               String   @id @default(uuid()) @db.Uuid
   logo             String?
@@ -606,6 +632,8 @@ model HeaderSettings {
   @@map("header_settings")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "HeaderContactItem" table and its data are not dropped.
 model HeaderContactItem {
   id           String   @id @default(uuid()) @db.Uuid
   type         String   @db.VarChar(50)
@@ -620,6 +648,8 @@ model HeaderContactItem {
   @@map("header_contact_items")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "FooterSettings" table and its data are not dropped.
 model FooterSettings {
   id              String   @id @default(uuid()) @db.Uuid
   logo            String?
@@ -642,6 +672,8 @@ model FooterSettings {
   @@map("footer_settings")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "FooterContactItem" table and its data are not dropped.
 model FooterContactItem {
   id           String   @id @default(uuid()) @db.Uuid
   type         String   @db.VarChar(50)
@@ -656,6 +688,8 @@ model FooterContactItem {
   @@map("footer_contact_items")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "FooterColumn" table and its data are not dropped.
 model FooterColumn {
   id           String             @id @default(uuid()) @db.Uuid
   title        String             @db.VarChar(150)
@@ -672,6 +706,8 @@ model FooterColumn {
   @@map("footer_columns")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "FooterColumnLink" table and its data are not dropped.
 model FooterColumnLink {
   id           String       @id @default(uuid()) @db.Uuid
   columnId     String       @map("column_id") @db.Uuid
@@ -710,6 +746,8 @@ model Banner {
   @@map("banners")
 }
 
+// LEGACY — no longer managed from the admin panel or used by the website.
+// Kept only so the existing "Brochure" table and its data are not dropped.
 model Brochure {
   id        String   @id @default(uuid()) @db.Uuid
   title     String   @db.VarChar(255)

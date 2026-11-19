@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { coursesData } from '@/data'
 import {
   saveTestimonialAction,
   trashTestimonialAction,
@@ -14,7 +15,7 @@ import { Icon } from '@iconify/react'
 
 export default function AdminTestimonialsPage() {
   const [testimonials, setTestimonials] = useState<any[]>([])
-  const [courses, setCourses] = useState<any[]>([])
+  const courses = coursesData.map((c) => ({ id: c.id, courseName: c.title }))
   const [loading, setLoading] = useState(true)
   const [editingItem, setEditingItem] = useState<any | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -34,9 +35,6 @@ export default function AdminTestimonialsPage() {
       const data = await res.json()
       setTestimonials(data.testimonials || [])
 
-      const coursesRes = await fetch('/api/admin/courses')
-      const coursesData = await coursesRes.json()
-      setCourses(coursesData.courses || [])
     } catch (err) {
       console.error('Failed to fetch testimonials:', err)
     } finally {

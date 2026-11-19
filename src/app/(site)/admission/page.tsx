@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/data";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { db } from "@/lib/db";
 
 // Live data on every request (no database access during `next build`)
 export const dynamic = "force-dynamic";
@@ -24,17 +23,6 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
 export default async function AdmissionPage() {
   let whatsappUrl: string = siteConfig.socialLinks.whatsapp;
   let callingPhone: string = siteConfig.phone;
-  try {
-    const ws = await db.websiteSettings.findFirst({ select: { whatsappNumber: true, contactPhone: true } });
-    if (ws?.whatsappNumber) {
-      whatsappUrl = ws.whatsappNumber.startsWith('http')
-        ? ws.whatsappNumber
-        : `https://wa.me/${ws.whatsappNumber.replace(/[^\d]/g, '')}`;
-    }
-    if (ws?.contactPhone) {
-      callingPhone = ws.contactPhone;
-    }
-  } catch (err) {}
 
   return (
     <>

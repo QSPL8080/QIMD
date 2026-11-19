@@ -26,25 +26,6 @@ export async function isFileReferencedInDb(
     if (b.content && b.content.includes(cleanUrl)) return true
   }
 
-  // 2. Check Courses (bannerImage, gallery)
-  const courses = await db.course.findMany({
-    where: excludeRecord?.table === 'course' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, bannerImage: true, gallery: true },
-  })
-  for (const c of courses) {
-    if (c.bannerImage === cleanUrl) return true
-    if (Array.isArray(c.gallery) && (c.gallery as string[]).includes(cleanUrl)) return true
-  }
-
-  // 3. Check Trainers (photo)
-  const trainers = await db.trainer.findMany({
-    where: excludeRecord?.table === 'trainer' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, photo: true },
-  })
-  for (const t of trainers) {
-    if (t.photo === cleanUrl) return true
-  }
-
   // 4. Check Placements (studentPhoto, companyLogo, videoThumbnail)
   const placements = await db.placement.findMany({
     where: excludeRecord?.table === 'placement' ? { id: { not: excludeRecord.id } } : {},
@@ -70,40 +51,6 @@ export async function isFileReferencedInDb(
   })
   for (const g of galleryItems) {
     if (g.fileUrl === cleanUrl || g.thumbnail === cleanUrl) return true
-  }
-
-  // 7. Check Partners (logo)
-  const partners = await db.partner.findMany({
-    where: excludeRecord?.table === 'partner' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, logo: true },
-  })
-  for (const p of partners) {
-    if (p.logo === cleanUrl) return true
-  }
-
-  // 8. Check EmiPartners (logo)
-  const emiPartners = await db.emiPartner.findMany({
-    where: excludeRecord?.table === 'emiPartner' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, logo: true },
-  })
-  for (const e of emiPartners) {
-    if (e.logo === cleanUrl) return true
-  }
-
-  // 9. Check WebsiteSettings (logo, favicon)
-  const settings = await db.websiteSettings.findMany({
-    select: { logo: true, favicon: true },
-  })
-  for (const s of settings) {
-    if (s.logo === cleanUrl || s.favicon === cleanUrl) return true
-  }
-
-  // 10. Check PageSections (image)
-  const sections = await db.pageSection.findMany({
-    select: { image: true },
-  })
-  for (const sec of sections) {
-    if (sec.image === cleanUrl) return true
   }
 
   // 11. Check Users (profileImage)

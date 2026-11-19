@@ -35,12 +35,10 @@ export default function HeroBannerCarousel() {
       fetchBanners()
     }
     window.addEventListener('bannerUpdated', handleUpdate)
-    window.addEventListener('websiteSettingsUpdated', handleUpdate)
 
     return () => {
       isMounted = false
       window.removeEventListener('bannerUpdated', handleUpdate)
-      window.removeEventListener('websiteSettingsUpdated', handleUpdate)
     }
   }, [])
 

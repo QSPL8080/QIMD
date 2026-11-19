@@ -180,13 +180,6 @@ export default function AdminJobApplicationsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <a
-            href="/api/export?type=careers"
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
-          >
-            <Icon icon="ion:download-outline" className="w-4 h-4" />
-            Export CSV
-          </a>
         </div>
       </div>
 

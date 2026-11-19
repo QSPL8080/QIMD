@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/data";
-import { getDynamicTrainers } from "@/lib/getDynamicData";
+import { siteConfig, trainersData } from "@/data";
 import TrainersContent from "./TrainersContent";
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Our Trainers – ${siteConfig.name}`,
@@ -13,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.qimd.in/trainers" },
 };
 
-export default async function TrainersPage() {
-  const trainers = await getDynamicTrainers();
+export default function TrainersPage() {
+  const trainers = trainersData as any[];
   return <TrainersContent trainers={trainers} />;
 }

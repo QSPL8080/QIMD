@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import { placedStudentsData, testimonialsData, placementPartnersData } from '@/data'
 import PlacementCard from '@/components/Common/PlacementCard'
 import VideoModal from '@/components/Common/VideoModal'
-import { getPublicPartnersAction, getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/partnerActions'
+import { getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/publicActions'
 import { QwHero, QwHead, QwStickers, QwCta } from '@/components/WhyQimd/WhyKit'
 
 const PlacementPartnerLogo: React.FC<{ partner: any }> = ({ partner }) => {
@@ -93,17 +93,12 @@ const PlacementPhilosophySection: React.FC<{ hiringIndustries: string[] }> = ({ 
 
 export default function PlacementsPage() {
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
-  const [hiringPartners, setHiringPartners] = useState(placementPartnersData)
+  const hiringPartners = placementPartnersData
   const [allTestimonials, setAllTestimonials] = useState<any[]>(testimonialsData)
   const [placedStudents, setPlacedStudents] = useState<any[]>(placedStudentsData)
   const [studentReviewsList, setStudentReviewsList] = useState<any[]>([])
 
   useEffect(() => {
-    getPublicPartnersAction('HIRING').then((data) => {
-      if (data && data.length > 0) {
-        setHiringPartners(data as any)
-      }
-    })
     getPublicTestimonialsAction().then((data) => {
       if (data && data.length > 0) {
         setAllTestimonials(data as any)

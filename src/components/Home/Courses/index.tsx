@@ -169,10 +169,6 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
                 <Link href={`/courses/${course.slug}`} className="qo-btn qo-btn-main">
                   View Program
                 </Link>
-                <Link href={`/brochure/${course.slug}`} target="_blank" rel="noopener noreferrer" className="qo-btn qo-btn-soft">
-                  <Icon icon="mdi:file-download" />
-                  Download Brochure
-                </Link>
               </div>
             </div>
           </article>

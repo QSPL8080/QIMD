@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useWebsiteSettings } from "@/app/context/WebsiteSettingsContext";
+import { siteSettings } from "@/data/siteSettings";
 import { AboutTabs, QaKicker, QaHead, QaCheck } from "@/components/About/AboutKit";
 
 export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: any[] }) {
-  const { phone, teamGroupPhoto } = useWebsiteSettings();
+  const { phone, teamGroupPhoto } = siteSettings;
   const contactPhone = phone || "+91 80878 97288";
 
   // Auto-rotating active card index (0 -> 1 -> 2) every 5 seconds

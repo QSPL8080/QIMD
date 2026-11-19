@@ -6,41 +6,22 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 // import Breadcrumb from "@/components/Common/Breadcrumb";
 import EnquiryForm from "@/components/Common/EnquiryForm";
 import { coursesData, siteConfig } from "@/data";
-import { db } from "@/lib/db";
-
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Rendered on request: no database access during `next build`
-export const dynamicParams = true
-
-export async function generateStaticParams() {
-  return []
+export function generateStaticParams() {
+  return coursesData.map((c) => ({ slug: c.slug }));
 }
 
+function findCourse(slug: string) {
+  return coursesData.find((c) => c.slug === slug) || null;
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  let course: any = null;
-  try {
-    const dbCourse = await db.course.findFirst({
-      where: {
-        OR: [{ slug }, { slug: { contains: slug } }],
-        isActive: true,
-        status: 'PUBLISHED',
-        isDeleted: false,
-      },
-    });
-    if (dbCourse) {
-      course = { title: dbCourse.courseName, description: dbCourse.shortDescription || dbCourse.description };
-    }
-  } catch (err) {}
-
+  const course = findCourse(slug);
   if (!course) return { title: "Program Not Found" };
   return {
     title: `${course.title} – ${siteConfig.name}`,
@@ -56,68 +37,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CourseDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  let course: any = null;
-
-  let whatsappUrl: string = siteConfig.socialLinks.whatsapp;
-  try {
-    const ws = await db.websiteSettings.findFirst({ select: { whatsappNumber: true } });
-    if (ws?.whatsappNumber) {
-      whatsappUrl = ws.whatsappNumber.startsWith('http')
-        ? ws.whatsappNumber
-        : `https://wa.me/${ws.whatsappNumber.replace(/[^\d]/g, '')}`;
-    }
-  } catch (err) {}
-
-  try {
-    // Extract core course key (e.g. 'digital-marketing', 'graphic-design', 'video-editing')
-    const coreKey = slug
-      .replace('ai-powered-', '')
-      .replace('ai-', '')
-      .replace('-course', '');
-
-    const dbCourse = await db.course.findFirst({
-      where: {
-        OR: [
-          { slug: slug },
-          { slug: { contains: slug } },
-          { slug: { contains: coreKey } },
-          { courseName: { contains: coreKey, mode: 'insensitive' } },
-        ],
-        isActive: true,
-        status: 'PUBLISHED',
-        isDeleted: false,
-      },
-      include: { category: true, trainer: true },
-    });
-
-    if (dbCourse) {
-      const syllabusLines = dbCourse.syllabus ? dbCourse.syllabus.split('\n').filter(Boolean) : [];
-      const courseImg = dbCourse.bannerImage || '/images/courses/digital-marketing.jpg';
-
-      course = {
-        id: dbCourse.id,
-        title: dbCourse.courseName,
-        shortTitle: dbCourse.courseName,
-        slug: dbCourse.slug,
-        category: dbCourse.category?.name || 'General',
-        duration: dbCourse.duration || '6 Months',
-        mode: dbCourse.courseMode || 'Offline',
-        description: dbCourse.description || dbCourse.shortDescription || '',
-        bannerImage: courseImg,
-        image: courseImg,
-        fees: dbCourse.fees ? Number(dbCourse.fees) : 45000,
-        discountPrice: dbCourse.discountPrice ? Number(dbCourse.discountPrice) : 35000,
-        eligibility: dbCourse.eligibility || 'Open for all',
-        highlights: dbCourse.learningOutcomes ? dbCourse.learningOutcomes.split('\n').filter(Boolean) : ['Live Client Projects', 'AI-Powered Tools & Workflows', '100% Practical Learning', '100% Placement Support'],
-        outcomes: dbCourse.learningOutcomes ? dbCourse.learningOutcomes.split('\n').filter(Boolean) : ['Master industry tools & workflows', 'Build a professional portfolio', 'Get industry certifications'],
-        curriculum: syllabusLines.length > 0
-          ? syllabusLines.map((line, idx) => ({ moduleNumber: idx + 1, title: line, topics: [{ title: line }] }))
-          : [],
-      };
-    }
-  } catch (err) {
-    console.error('Error loading dynamic course detail:', err);
-  }
+  const course: any = findCourse(slug);
+  const whatsappUrl: string = siteConfig.socialLinks.whatsapp;
 
   if (!course) notFound();
 
@@ -155,10 +76,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
               <h1 className="qp-h1">{course.title}</h1>
               {course.description && <p className="qp-lead">{course.description}</p>}
               <div className="qp-actions">
-                <a href="#download-brochure" className="qp-btn qp-btn-main">
-                  <Icon icon="mdi:file-download" />
-                  <span>Download Brochure</span>
-                </a>
                 <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="qp-btn qp-btn-ghost">
                   <Icon icon="mdi:whatsapp" />
                   <span>Chat on WhatsApp</span>
@@ -225,7 +142,14 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   <h2 className="qp-h3">Program Curriculum</h2>
                 </div>
                 <div className="qp-modules">
-                  {curriculum.map((module: any) => (
+                  {curriculum.map((module: any) => (module.topics || []).length === 0 ? (
+                    <div key={module.moduleNumber} className="qp-module is-static">
+                      <div className="qp-module-row">
+                        <span className="qp-module-num">{String(module.moduleNumber).padStart(2, '0')}</span>
+                        <span className="qp-module-title">Module {module.moduleNumber}: {module.title}</span>
+                      </div>
+                    </div>
+                  ) : (
                     <details key={module.moduleNumber} className="qp-module">
                       <summary>
                         <span className="qp-module-num">{String(module.moduleNumber).padStart(2, '0')}</span>
@@ -249,7 +173,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
           {/* Sidebar – Enquiry Form */}
           <aside className="qp-dside">
             <div className="qp-dside-inner">
-              <div id="download-brochure" className="qp-formcard">
+              <div id="enquire" className="qp-formcard">
                 <div className="qp-formcard-head">
                   <span className="qp-formcard-ic">
                     <Icon icon={course.icon || 'mdi:book-open-page-variant'} />
@@ -257,7 +181,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   <h3>{course.shortTitle?.replace(/Course/gi, 'Program')}</h3>
                 </div>
                 <EnquiryForm
-                  title="Download Brochure"
+                  title="Enquire Now"
                   showTitle={true}
                   compact
                   selectedCourse={course.slug}

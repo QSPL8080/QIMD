@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useWebsiteSettings } from "@/app/context/WebsiteSettingsContext";
+import { siteSettings } from "@/data/siteSettings";
 import { AboutTabs, QaKicker, QaHead, QaCheck } from "@/components/About/AboutKit";
 
 const TrainerCard: React.FC<{ trainer: any; index: number }> = ({
@@ -46,7 +46,7 @@ const TrainerCard: React.FC<{ trainer: any; index: number }> = ({
 };
 
 export default function TrainersContent({ trainers }: { trainers: any[] }) {
-  const { teamGroupPhoto } = useWebsiteSettings();
+  const { teamGroupPhoto } = siteSettings;
 
   const marketingTrainer = trainers.find((t) => t.category === "MARKETING") || trainers[0];
   const designTrainer = trainers.find((t) => t.category === "DESIGN") || trainers[1];

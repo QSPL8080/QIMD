@@ -9,7 +9,6 @@ import Aoscompo from "@/utils/aos";
 import SiteMotion from "@/components/Common/SiteMotion";
 import NextTopLoader from "nextjs-toploader";
 import { siteConfig } from "@/data";
-import { WebsiteSettingsProvider } from "@/app/context/WebsiteSettingsContext";
 
 // Self-hosted institute fonts (Poppins for headings, Inter for body) — no build-time network needed
 const poppins = localFont({
@@ -145,7 +144,6 @@ export default async function RootLayout({
           enableSystem={true}
           defaultTheme="light"
         >
-          <WebsiteSettingsProvider>
             <Aoscompo>
               <Header />
               <main>{children}</main>
@@ -153,7 +151,6 @@ export default async function RootLayout({
             </Aoscompo>
             <ScrollToTop />
             <SiteMotion />
-          </WebsiteSettingsProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -3,7 +3,6 @@
 import { db } from '@/lib/db'
 import { userSchema } from '@/lib/validations'
 import { requireAdminSession, hashPassword } from '@/lib/auth'
-import { createAuditLog } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
 
 export async function saveUserAction(data: any, id?: string) {
@@ -41,12 +40,6 @@ export async function saveUserAction(data: any, id?: string) {
         data: updateData,
       })
 
-      await createAuditLog({
-        userId: session.id,
-        module: 'USER_MANAGEMENT',
-        action: 'UPDATE_USER',
-        recordId: id,
-      })
     } else {
       // Create User
       if (!password || password.trim() === '') {
@@ -70,12 +63,6 @@ export async function saveUserAction(data: any, id?: string) {
         },
       })
 
-      await createAuditLog({
-        userId: session.id,
-        module: 'USER_MANAGEMENT',
-        action: 'CREATE_USER',
-        recordId: created.id,
-      })
     }
 
     revalidatePath('/admin/users')
@@ -101,12 +88,6 @@ export async function trashUserAction(id: string) {
       data: { isDeleted: true },
     })
 
-    await createAuditLog({
-      userId: session.id,
-      module: 'USER_MANAGEMENT',
-      action: 'MOVE_USER_TO_TRASH',
-      recordId: id,
-    })
 
     revalidatePath('/admin/users')
     return { success: true, message: 'User moved to Trash.' }
@@ -127,12 +108,6 @@ export async function restoreUserAction(id: string) {
       data: { isDeleted: false },
     })
 
-    await createAuditLog({
-      userId: session.id,
-      module: 'USER_MANAGEMENT',
-      action: 'RESTORE_USER',
-      recordId: id,
-    })
 
     revalidatePath('/admin/users')
     return { success: true, message: 'User restored from Trash.' }
@@ -149,12 +124,6 @@ export async function deleteUserPermanentlyAction(id: string) {
 
   try {
     await db.user.delete({ where: { id } })
-    await createAuditLog({
-      userId: session.id,
-      module: 'USER_MANAGEMENT',
-      action: 'PERMANENT_DELETE_USER',
-      recordId: id,
-    })
 
     revalidatePath('/admin/users')
     return { success: true, message: 'User account permanently deleted.' }

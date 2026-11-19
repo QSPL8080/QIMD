@@ -1,61 +1,12 @@
 import { db } from './db'
-import { unstable_cache } from 'next/cache'
 import {
-  coursesData,
-  trainersData,
   blogsData,
   placedStudentsData,
   testimonialsData,
   faqsData,
-  placementPartnersData,
-  emiPartnersData,
   galleryData,
 } from '@/data'
 
-
-export const getDynamicCourses = unstable_cache(
-  async () => {
-    try {
-      const dbCourses = await db.course.findMany({
-        where: { isActive: true, status: 'PUBLISHED', isDeleted: false },
-        include: { category: true, trainer: true },
-        orderBy: { displayOrder: 'asc' },
-      })
-
-      if (dbCourses.length > 0) {
-        return dbCourses.map((c) => {
-          const courseImg = c.bannerImage || '/images/courses/digital-marketing.jpg';
-          const safeTitle = c.courseName ? c.courseName.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : 'AI Practical Program';
-          const safeMode = c.courseMode ? c.courseMode.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') : 'Offline Program';
-          return {
-            id: c.id,
-            title: safeTitle,
-            slug: c.slug,
-            category: c.category?.name?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program') || 'General',
-            duration: c.duration || '6 Months',
-            mode: safeMode,
-            shortDescription: c.shortDescription || '',
-            description: c.description || '',
-            bannerImage: courseImg,
-            image: courseImg,
-            fees: c.fees ? Number(c.fees) : 45000,
-            discountPrice: c.discountPrice ? Number(c.discountPrice) : 35000,
-            eligibility: c.eligibility || 'Open for all',
-            syllabus: c.syllabus ? c.syllabus.split('\n').filter(Boolean) : [],
-            learningOutcomes: c.learningOutcomes ? c.learningOutcomes.split('\n').filter(Boolean) : [],
-            outcomes: c.learningOutcomes ? c.learningOutcomes.split('\n').filter(Boolean) : [],
-            featured: c.featured,
-          }
-        })
-      }
-    } catch (err) {
-      console.error('Error fetching dynamic courses:', err)
-    }
-    return []
-  },
-  ['dynamic-courses'],
-  { revalidate: 60, tags: ['courses'] }
-)
 
 function cleanBlogExcerpt(content: string, metaDescription?: string | null): string {
   if (metaDescription && metaDescription.trim().length > 10) {
@@ -100,34 +51,6 @@ export async function getDynamicBlogs() {
     console.error('Error fetching dynamic blogs:', err)
   }
   return blogsData
-}
-
-export async function getDynamicTrainers() {
-  try {
-    const dbTrainers = await db.trainer.findMany({
-      where: { isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
-    })
-
-    if (dbTrainers.length > 0) {
-      return dbTrainers.map((t) => ({
-        id: t.id,
-        name: t.fullName,
-        photo: t.photo || '/images/trainers/trainer1.jpg',
-        designation: t.designation || 'Senior Instructor',
-        category: (t as any).category || 'MARKETING',
-        qualification: t.qualification || '',
-        experience: t.experience || '8+ Years',
-        biography: t.biography || '',
-        skills: Array.isArray(t.skills) ? t.skills : ['AI Tools', 'Practical Training'],
-        linkedin: t.linkedin || '#',
-        instagram: t.instagram || '#',
-      }))
-    }
-  } catch (err) {
-    console.error('Error fetching dynamic trainers:', err)
-  }
-  return trainersData
 }
 
 export async function getDynamicPlacements() {
@@ -240,44 +163,6 @@ export async function getDynamicJobOpenings() {
   return []
 }
 
-export async function getDynamicHiringPartners() {
-  try {
-    const partners = await db.partner.findMany({
-      where: { type: 'HIRING', isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
-    })
-    if (partners.length > 0) {
-      return partners.map((p) => ({
-        id: p.id,
-        name: p.name,
-        logo: p.logo,
-      }))
-    }
-  } catch (err) {
-    console.error('Error fetching dynamic hiring partners:', err)
-  }
-  return placementPartnersData
-}
-
-export async function getDynamicEmiPartners() {
-  try {
-    const emis = await db.emiPartner.findMany({
-      where: { isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
-    })
-    if (emis.length > 0) {
-      return emis.map((e) => ({
-        id: e.id,
-        name: e.name,
-        logo: e.logo,
-      }))
-    }
-  } catch (err) {
-    console.error('Error fetching dynamic EMI partners:', err)
-  }
-  return emiPartnersData
-}
-
 export async function getDynamicGallery() {
   try {
     const gallery = await db.gallery.findMany({
@@ -298,64 +183,3 @@ export async function getDynamicGallery() {
   }
   return galleryData
 }
-
-export async function getDynamicPageSections(pageKey: string) {
-  try {
-    const sections = await db.pageSection.findMany({
-      where: { pageKey: pageKey.toUpperCase(), status: 'PUBLISHED', isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
-    })
-    const sectionMap: Record<string, any> = {}
-    sections.forEach((s) => {
-      const cloned = { ...s }
-      if (cloned.buttonText) cloned.buttonText = cloned.buttonText.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
-      if (cloned.sectionTitle) cloned.sectionTitle = cloned.sectionTitle.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
-      if (cloned.subtitle) cloned.subtitle = cloned.subtitle.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program');
-      sectionMap[cloned.sectionKey] = cloned
-    })
-    return sectionMap
-  } catch (err) {
-    console.error(`Error fetching page sections for ${pageKey}:`, err)
-    return {}
-  }
-}
-
-export async function getDynamicOrderedPageSections(pageKey: string) {
-  try {
-    const sections = await db.pageSection.findMany({
-      where: { pageKey: pageKey.toUpperCase(), status: 'PUBLISHED', isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
-    })
-    return sections
-  } catch (err) {
-    console.error(`Error fetching ordered page sections for ${pageKey}:`, err)
-    return []
-  }
-}
-
-export async function getDynamicPageData(pageKey: string) {
-  try {
-    const page = await db.webPage.findFirst({
-      where: { pageKey: pageKey.toUpperCase(), status: 'PUBLISHED', isDeleted: false },
-      include: {
-        sections: {
-          where: { status: 'PUBLISHED', isActive: true, isDeleted: false },
-          orderBy: { displayOrder: 'asc' },
-        },
-      },
-    })
-    if (page) {
-      const sectionMap: Record<string, any> = {}
-      page.sections.forEach((s) => {
-        sectionMap[s.sectionKey] = s
-      })
-      return { page, sections: sectionMap }
-    }
-  } catch (err) {
-    console.error(`Error fetching dynamic page data for ${pageKey}:`, err)
-  }
-  return { page: null, sections: {} }
-}
-
-
-

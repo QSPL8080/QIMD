@@ -3,7 +3,6 @@
 import { db } from '@/lib/db'
 import { jobOpeningSchema } from '@/lib/validations'
 import { requireAdminSession } from '@/lib/auth'
-import { createAuditLog } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -22,12 +21,10 @@ export async function saveJobOpeningAction(data: any, id?: string) {
         where: { id },
         data: validated.data,
       })
-      await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'UPDATE_JOB', recordId: id })
     } else {
       resultJob = await db.jobOpening.create({
         data: validated.data,
       })
-      await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'CREATE_JOB', recordId: resultJob.id })
     }
 
     revalidatePath('/careers')
@@ -48,7 +45,6 @@ export async function trashJobOpeningAction(id: string) {
       where: { id },
       data: { isDeleted: true },
     })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'TRASH_JOB', recordId: id })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: 'Job opening moved to Trash.' }
@@ -67,7 +63,6 @@ export async function restoreJobOpeningAction(id: string) {
       where: { id },
       data: { isDeleted: false },
     })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'RESTORE_JOB', recordId: id })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: 'Job opening restored from Trash.' }
@@ -83,7 +78,6 @@ export async function deleteJobOpeningPermanentlyAction(id: string) {
       return { success: false, error: 'Invalid job opening ID' }
     }
     await db.jobOpening.delete({ where: { id } })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'PERMANENT_DELETE_JOB', recordId: id })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: 'Job opening permanently deleted.' }
@@ -101,7 +95,6 @@ export async function bulkTrashJobOpeningsAction(ids: string[]) {
       where: { id: { in: validIds } },
       data: { isDeleted: true },
     })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'BULK_TRASH_JOBS', recordId: validIds.join(',') })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: `${validIds.length} job openings moved to Trash.` }
@@ -119,7 +112,6 @@ export async function bulkRestoreJobOpeningsAction(ids: string[]) {
       where: { id: { in: validIds } },
       data: { isDeleted: false },
     })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'BULK_RESTORE_JOBS', recordId: validIds.join(',') })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: `${validIds.length} job openings restored.` }
@@ -136,7 +128,6 @@ export async function bulkDeleteJobOpeningsPermanentlyAction(ids: string[]) {
     await db.jobOpening.deleteMany({
       where: { id: { in: validIds } },
     })
-    await createAuditLog({ userId: session.id, module: 'CAREER_OPENINGS', action: 'BULK_PERMANENT_DELETE_JOBS', recordId: validIds.join(',') })
     revalidatePath('/careers')
     revalidatePath('/admin/careers')
     return { success: true, message: `${validIds.length} job openings permanently deleted.` }

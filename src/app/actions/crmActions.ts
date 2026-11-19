@@ -1,6 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
+import { coursesData } from '@/data'
 import {
   contactEnquirySchema,
   admissionEnquirySchema,
@@ -8,7 +9,6 @@ import {
   franchiseEnquirySchema,
   hireRequestSchema,
 } from '@/lib/validations'
-import { createAuditLog, createNotificationLog } from '@/lib/audit'
 import { requireAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
@@ -38,12 +38,6 @@ export async function submitContactEnquiryAction(data: {
       },
     })
 
-    await createNotificationLog({
-      recipient: validated.data.email,
-      notificationType: 'CONTACT_ENQUIRY_RECEIVED',
-      subject: 'Thank you for contacting QIMD',
-      deliveryStatus: 'SENT',
-    })
 
     return { success: true, message: 'Your enquiry has been submitted successfully! Our team will contact you shortly.' }
   } catch (err: any) {
@@ -67,63 +61,30 @@ export async function submitAdmissionEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
+    // Link the lead to its program. Programs are fixed in the website code (coursesData);
+    // the existing programs table is only used to keep the program shown on each lead.
     let resolvedCourseId: string | null = null
-    let activeBrochureUrl: string | null = null
-    let activeBrochureTitle: string | null = null
-    let courseName: string | null = null
+    let programTitle: string | null = null
 
     if (validated.data.courseId && validated.data.courseId.trim() !== '') {
       const rawInput = validated.data.courseId.trim()
-      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawInput)
-
-      let courseRecord = null
-      if (isUuid) {
-        courseRecord = await db.course.findFirst({
-          where: { id: rawInput, isDeleted: false },
-        })
-      }
-
-      if (!courseRecord) {
-        // Strip common prefix/suffixes if any
-        const coreKey = rawInput
-          .replace('ai-powered-', '')
-          .replace('ai-', '')
-          .replace('-course', '')
-
-        courseRecord = await db.course.findFirst({
+      const program = coursesData.find((c) => c.slug === rawInput || c.title === rawInput)
+      programTitle = program?.title || rawInput
+      try {
+        const courseRecord = await db.course.findFirst({
           where: {
-            OR: [
-              { slug: rawInput },
-              { slug: { contains: rawInput } },
-              { slug: { contains: coreKey } },
-              { courseName: { contains: rawInput, mode: 'insensitive' } },
-              { courseName: { contains: coreKey, mode: 'insensitive' } },
-            ],
-            isDeleted: false,
+            OR: [{ slug: program?.slug || rawInput }, { courseName: { equals: programTitle, mode: 'insensitive' } }],
           },
+          select: { id: true },
         })
-      }
-
-      if (courseRecord) {
-        resolvedCourseId = courseRecord.id
-        courseName = courseRecord.courseName
-
-        // Find the active brochure associated with this specific course ID
-        const activeBrochure = await db.brochure.findFirst({
-          where: {
-            courseId: courseRecord.id,
-            isActive: true,
-            isDeleted: false,
-          },
-          orderBy: { updatedAt: 'desc' },
-        })
-
-        if (activeBrochure) {
-          activeBrochureUrl = activeBrochure.fileUrl
-          activeBrochureTitle = activeBrochure.title
-        }
+        resolvedCourseId = courseRecord?.id || null
+      } catch {
+        resolvedCourseId = null
       }
     }
+
+    const programNote = !resolvedCourseId && programTitle ? `Program: ${programTitle}` : null
+    const message = [programNote, validated.data.message].filter(Boolean).join('\n') || null
 
     const enquiry = await db.admissionEnquiry.create({
       data: {
@@ -133,18 +94,11 @@ export async function submitAdmissionEnquiryAction(data: {
         courseId: resolvedCourseId,
         city: validated.data.city || null,
         qualification: validated.data.qualification || null,
-        message: validated.data.message || null,
+        message,
         status: 'NEW',
       },
-      include: { course: true },
     })
 
-    await createNotificationLog({
-      recipient: validated.data.email,
-      notificationType: 'ADMISSION_ENQUIRY_RECEIVED',
-      subject: 'QIMD Admission & Brochure Request Confirmation',
-      deliveryStatus: 'SENT',
-    })
 
     try {
       revalidatePath('/admin/enquiries/admission')
@@ -154,9 +108,6 @@ export async function submitAdmissionEnquiryAction(data: {
       success: true,
       message: 'Thank you! Admission enquiry received.',
       enquiryId: enquiry.id,
-      brochureUrl: activeBrochureUrl,
-      brochureTitle: activeBrochureTitle,
-      courseName: courseName,
     }
   } catch (err: any) {
     console.error('Admission enquiry error:', err)
@@ -192,12 +143,6 @@ export async function submitCareerApplicationAction(data: {
       },
     })
 
-    await createNotificationLog({
-      recipient: validated.data.email,
-      notificationType: 'CAREER_APPLICATION_RECEIVED',
-      subject: 'QIMD Job Application Received Confirmation',
-      deliveryStatus: 'SENT',
-    })
 
     return { success: true, message: 'Application submitted successfully! HR will review your application.' }
   } catch (err: any) {
@@ -236,12 +181,6 @@ export async function submitFranchiseEnquiryAction(data: {
       },
     })
 
-    await createNotificationLog({
-      recipient: validated.data.email,
-      notificationType: 'FRANCHISE_ENQUIRY_RECEIVED',
-      subject: 'QIMD Franchise Partnership Proposal Confirmation',
-      deliveryStatus: 'SENT',
-    })
 
     return { success: true, message: 'Franchise partnership proposal received! Our expansion team will get in touch.' }
   } catch (err: any) {
@@ -282,12 +221,6 @@ export async function submitHireRequestAction(data: {
       },
     })
 
-    await createNotificationLog({
-      recipient: validated.data.email,
-      notificationType: 'HIRE_REQUEST_RECEIVED',
-      subject: 'QIMD Corporate Hiring Requirement Confirmation',
-      deliveryStatus: 'SENT',
-    })
 
     return { success: true, message: 'Hiring request submitted! Our placement team will share top candidate profiles.' }
   } catch (err: any) {
@@ -335,12 +268,6 @@ export async function updateEnquiryStatusAction(
       })
     }
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: 'UPDATE_STATUS',
-      recordId: id,
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: 'Status updated successfully' }
@@ -362,12 +289,6 @@ export async function trashEnquiryAction(
     else if (type === 'franchise') await db.franchisePartnerEnquiry.update({ where: { id }, data: { isDeleted: true } })
     else if (type === 'hire') await db.companyPlacementEnquiry.update({ where: { id }, data: { isDeleted: true } })
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: 'TRASH_RECORD',
-      recordId: id,
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: 'Record moved to Trash' }
@@ -389,12 +310,6 @@ export async function restoreEnquiryAction(
     else if (type === 'franchise') await db.franchisePartnerEnquiry.update({ where: { id }, data: { isDeleted: false } })
     else if (type === 'hire') await db.companyPlacementEnquiry.update({ where: { id }, data: { isDeleted: false } })
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: 'RESTORE_RECORD',
-      recordId: id,
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: 'Record restored' }
@@ -445,12 +360,6 @@ export async function deleteEnquiryAction(
     else if (type === 'franchise') await db.franchisePartnerEnquiry.delete({ where: { id } })
     else if (type === 'hire') await db.companyPlacementEnquiry.delete({ where: { id } })
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: 'PERMANENT_DELETE_RECORD',
-      recordId: id,
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: 'Record permanently deleted' }
@@ -513,11 +422,6 @@ export async function bulkDeleteEnquiryAction(
       deletedCount++
     }
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: 'BULK_DELETE_CLOSED_RECORDS',
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: `${deletedCount} record(s) permanently deleted` }
@@ -569,12 +473,6 @@ export async function bulkUpdateEnquiryStatusAction(
       })
     }
 
-    await createAuditLog({
-      userId: session.id,
-      module: `CRM_${type.toUpperCase()}`,
-      action: `BULK_SET_STATUS_${status.toUpperCase()}`,
-      recordId: ids.slice(0, 10).join(',') + (ids.length > 10 ? ` (+${ids.length - 10} more)` : ''),
-    })
 
     revalidatePath(`/admin/enquiries/${type}`)
     return { success: true, message: `Successfully marked ${ids.length} lead(s) as ${status}` }

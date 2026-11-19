@@ -11,14 +11,10 @@ import GalleryPreviewSection from "@/components/Home/Gallery";
 import EmiSection from "@/components/Home/Emi";
 import CareerCounsellingCTA from "@/components/Home/CareerCounselling";
 import FaqsSection from "@/components/Home/Faqs";
-import { siteConfig } from "@/data";
+import { siteConfig, coursesData, placementPartnersData, emiPartnersData } from "@/data";
 import {
-  getDynamicCourses,
-  getDynamicPageSections,
   getDynamicPlacements,
   getDynamicTestimonials,
-  getDynamicHiringPartners,
-  getDynamicEmiPartners,
   getDynamicGallery,
 } from "@/lib/getDynamicData";
 
@@ -37,30 +33,21 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const courses = await getDynamicCourses();
-  const sections = await getDynamicPageSections("HOME");
   const placements = await getDynamicPlacements();
   const testimonials = await getDynamicTestimonials();
-  const hiringPartners = await getDynamicHiringPartners();
-  const emiPartners = await getDynamicEmiPartners();
   const galleryItems = await getDynamicGallery();
-
-  const isEnabled = (key: string) => {
-    if (!sections || !sections[key]) return true;
-    return sections[key].isActive !== false && sections[key].status !== 'DRAFT';
-  };
 
   return (
     <>
-      {isEnabled("HERO") && <HeroSection section={sections?.HERO} />}
-      {isEnabled("COURSES") && <CoursesSection courses={courses} />}
-      {isEnabled("WHY_QIMD") && <WhyQimdSection />}
-      {isEnabled("TESTIMONIALS") && <TestimonialsSection testimonials={testimonials} />}
-      {isEnabled("PLACEMENT") && <PlacementsSection testimonials={testimonials} partners={hiringPartners} />}
-      {isEnabled("EMI_PARTNERS") && <EmiSection emiPartners={emiPartners} />}
-      {isEnabled("GALLERY") && <GalleryPreviewSection items={galleryItems} />}
-      {isEnabled("ENQUIRY_FORM") && <CareerCounsellingCTA />}
-      {isEnabled("FAQ") && <FaqsSection limit={10} />}
+      <HeroSection />
+      <CoursesSection courses={coursesData} />
+      <WhyQimdSection />
+      <TestimonialsSection testimonials={testimonials} />
+      <PlacementsSection testimonials={testimonials} partners={placementPartnersData} />
+      <EmiSection emiPartners={emiPartnersData} />
+      <GalleryPreviewSection items={galleryItems} />
+      <CareerCounsellingCTA />
+      <FaqsSection limit={10} />
     </>
   );
 }

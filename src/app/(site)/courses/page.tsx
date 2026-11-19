@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { siteConfig } from "@/data";
-import { getDynamicCourses } from "@/lib/getDynamicData";
+import { siteConfig, coursesData } from "@/data";
 import type { Course } from "@/types";
-
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 
 export const metadata: Metadata = {
   title: `Programs – ${siteConfig.name}`,
@@ -21,8 +17,8 @@ function modeLabel(mode?: string) {
     : mode.replace(/Course/gi, 'Program');
 }
 
-export default async function CoursesPage() {
-  const courses = (await getDynamicCourses()) as unknown as Course[];
+export default function CoursesPage() {
+  const courses: Course[] = coursesData;
 
   return (
     <div className="qp">
@@ -117,15 +113,6 @@ export default async function CoursesPage() {
                     <Link href={`/courses/${course.slug}`} className="qp-btn qp-btn-main">
                       <span>View Program</span>
                       <Icon icon="mdi:arrow-top-right" />
-                    </Link>
-                    <Link
-                      href={`/brochure/${course.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="qp-btn qp-btn-ghost"
-                    >
-                      <Icon icon="mdi:file-download" />
-                      <span>Download Brochure</span>
                     </Link>
                   </div>
                 </div>

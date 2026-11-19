@@ -8,7 +8,7 @@ import Logo from './Logo'
 import HeaderLink from './Navigation/HeaderLink'
 import MobileHeaderLink from './Navigation/MobileHeaderLink'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { useWebsiteSettings } from '@/app/context/WebsiteSettingsContext'
+import { siteSettings } from '@/data/siteSettings'
 import { getSocialItems } from '../socials'
 
 const Header: React.FC = () => {
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const [sticky, setSticky] = useState(false)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
 
-  const { header, socialLinks, phone } = useWebsiteSettings()
+  const { header, socialLinks, phone } = siteSettings
 
   // Shrink + elevate the bar once the page scrolls
   useEffect(() => {
@@ -48,7 +48,7 @@ const Header: React.FC = () => {
     setNavbarOpen(false)
   }, [pathUrl])
 
-  if (pathUrl?.startsWith('/admin') || pathUrl?.startsWith('/brochure')) return null
+  if (pathUrl?.startsWith('/admin')) return null
 
   const activeNavItems = headerData
 

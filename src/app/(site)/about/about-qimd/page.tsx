@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/data";
-import { getDynamicTrainers } from "@/lib/getDynamicData";
+import { siteConfig, trainersData } from "@/data";
 import AboutContent from "../AboutContent";
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `About QIMD – ${siteConfig.name}`,
@@ -12,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.qimd.in/about/about-qimd" },
 };
 
-export default async function AboutQimdPage() {
-  const dynamicTrainers = await getDynamicTrainers();
+export default function AboutQimdPage() {
+  const dynamicTrainers = trainersData as any[];
   return <AboutContent dynamicTrainers={dynamicTrainers} />;
 }

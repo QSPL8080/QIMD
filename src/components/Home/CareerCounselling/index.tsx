@@ -1,32 +1,11 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { siteConfig } from '@/data'
 import EnquiryForm from '@/components/Common/EnquiryForm'
 
 const CareerCounsellingCTA: React.FC = () => {
-  const [highlightForm, setHighlightForm] = useState(false)
-
-  const handleBrochureDownload = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setHighlightForm(true)
-    const formCard = document.getElementById('career-counselling-form-card')
-    if (formCard) {
-      formCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      // Focus strictly the input inside THIS beside form
-      const nameInput = formCard.querySelector('input[name="name"]') as HTMLInputElement || formCard.querySelector('input') as HTMLInputElement
-      if (nameInput) {
-        setTimeout(() => {
-          nameInput.focus()
-        }, 150)
-      }
-    }
-    setTimeout(() => {
-      setHighlightForm(false)
-    }, 3500)
-  }
-
   const counselStats = [
     { icon: 'mdi:account-group-outline', label: '10,000+', sub: 'Trained Students' },
     { icon: 'mdi:briefcase-check-outline', label: '100%', sub: 'Job Assistance' },
@@ -62,10 +41,6 @@ const CareerCounsellingCTA: React.FC = () => {
           </div>
 
           <div className="qo-counsel-actions">
-            <button type="button" onClick={handleBrochureDownload} className="qo-counsel-btn is-primary">
-              <Icon icon="mdi:file-download-outline" />
-              <span>Download Brochure</span>
-            </button>
             <Link href="/contact" className="qo-counsel-btn">
               <Icon icon="mdi:email-outline" />
               <span>Contact Us</span>
@@ -81,10 +56,9 @@ const CareerCounsellingCTA: React.FC = () => {
           </div>
         </div>
 
-        <div id="career-counselling-form-card" className={`qo-counsel-form${highlightForm ? ' is-highlight' : ''}`}>
+        <div id="career-counselling-form-card" className="qo-counsel-form">
           <div className="qo-counsel-form-head">
             <h3>Get Personalized Guidance</h3>
-            {highlightForm && <span className="qo-counsel-hint">Fill Form Below ↓</span>}
           </div>
           <p>Fill in your details below and an expert counsellor will contact you within 30 minutes.</p>
           <EnquiryForm showTitle={false} compact />

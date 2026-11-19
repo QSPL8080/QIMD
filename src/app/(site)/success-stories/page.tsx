@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 import { placedStudentsData, testimonialsData, placementPartnersData } from '@/data'
 import PlacementCard from '@/components/Common/PlacementCard'
 import VideoModal from '@/components/Common/VideoModal'
-import { getPublicPartnersAction, getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/partnerActions'
+import { getPublicTestimonialsAction, getPublicPlacementsAction, getPublicStudentReviewsAction } from '@/app/actions/publicActions'
 import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
 import { QwHero, QwHead, QwStickers, QwReview, QwCta } from '@/components/WhyQimd/WhyKit'
 

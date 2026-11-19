@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useWebsiteSettings } from "@/app/context/WebsiteSettingsContext";
+import { siteSettings } from "@/data/siteSettings";
 import { AboutTabs, QaKicker, QaHead } from "@/components/About/AboutKit";
 
 export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: any[] } = {}) {
-  const { phone } = useWebsiteSettings();
+  const { phone } = siteSettings;
   const contactPhone = phone || "+91 80878 97288";
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 

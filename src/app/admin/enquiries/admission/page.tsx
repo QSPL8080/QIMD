@@ -9,6 +9,11 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 
+/** Program for a lead: linked program row, or the program noted in the message */
+function programOf(lead: any): string {
+  return lead?.course?.courseName || lead?.message?.match(/^Program: (.+)$/m)?.[1] || 'Not specified'
+}
+
 export default function AdminAdmissionLeadsPage() {
   const [leads, setLeads] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -42,7 +47,7 @@ export default function AdminAdmissionLeadsPage() {
     const matchesSearch =
       lead.studentName.toLowerCase().includes(search.toLowerCase()) ||
       lead.email.toLowerCase().includes(search.toLowerCase()) ||
-      (lead.course?.courseName || '').toLowerCase().includes(search.toLowerCase())
+      programOf(lead).toLowerCase().includes(search.toLowerCase())
 
     let matchesStatus = true
     if (statusFilter === 'PENDING') {
@@ -177,13 +182,6 @@ export default function AdminAdmissionLeadsPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <a
-            href="/api/export?type=admission"
-            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl transition-colors shadow-xs flex items-center gap-2"
-          >
-            <Icon icon="ion:download-outline" className="w-4.5 h-4.5" />
-            Export CSV
-          </a>
         </div>
       </div>
 
@@ -359,7 +357,7 @@ export default function AdminAdmissionLeadsPage() {
                       </a>
                     </td>
                     <td className="p-4 text-slate-800 font-semibold text-sm">
-                      {lead.course?.courseName || 'AI Practical Program'}
+                      {programOf(lead)}
                     </td>
                     <td className="p-4">{getStatusBadge(lead.status)}</td>
                     <td className="p-4 text-right">
@@ -423,7 +421,7 @@ export default function AdminAdmissionLeadsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-0">
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Interested Program</span>
-                  <span className="text-slate-900 font-bold block truncate" title={selectedLead.course?.courseName}>{selectedLead.course?.courseName || 'AI Practical Program'}</span>
+                  <span className="text-slate-900 font-bold block truncate" title={programOf(selectedLead)}>{programOf(selectedLead)}</span>
                 </div>
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">City</span>

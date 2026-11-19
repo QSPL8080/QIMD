@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { testimonialsData, placedStudentsData } from '@/data'
 import VideoModal from '@/components/Common/VideoModal'
-import { getPublicTestimonialsAction, getPublicStudentReviewsAction, getPublicPlacementsAction } from '@/app/actions/partnerActions'
+import { getPublicTestimonialsAction, getPublicStudentReviewsAction, getPublicPlacementsAction } from '@/app/actions/publicActions'
 import { resolveTestimonialVideo } from '@/lib/testimonialVideos'
 import { QwHero, QwHead, QwStickers, QwReview, QwVideo, QwCta } from '@/components/WhyQimd/WhyKit'
 

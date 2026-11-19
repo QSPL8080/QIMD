@@ -1,7 +1,6 @@
 'use server'
 
 import { requireAdminSession } from '@/lib/auth'
-import { createAuditLog } from '@/lib/audit'
 import fs from 'fs'
 import path from 'path'
 
@@ -50,11 +49,6 @@ export async function uploadMediaAction(formData: FormData) {
 
     const publicUrl = `/uploads/${folder.toLowerCase().replace(/[^a-z0-9]/g, '-')}/${uniqueName}`
 
-    await createAuditLog({
-      userId: session.id,
-      module: 'MEDIA_LIBRARY',
-      action: 'UPLOAD_FILE',
-    })
 
     return {
       success: true,

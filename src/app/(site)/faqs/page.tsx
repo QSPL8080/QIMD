@@ -15,18 +15,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.qimd.in/faqs" },
 };
 
-import { db } from "@/lib/db";
 
 export default async function FaqsPage() {
   let whatsappUrl: string = siteConfig.socialLinks.whatsapp;
-  try {
-    const ws = await db.websiteSettings.findFirst({ select: { whatsappNumber: true } });
-    if (ws?.whatsappNumber) {
-      whatsappUrl = ws.whatsappNumber.startsWith('http')
-        ? ws.whatsappNumber
-        : `https://wa.me/${ws.whatsappNumber.replace(/[^\d]/g, '')}`;
-    }
-  } catch (err) {}
 
   return (
     <>

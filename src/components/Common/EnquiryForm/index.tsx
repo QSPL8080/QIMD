@@ -40,7 +40,6 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
   const [errors, setErrors] = useState<Partial<EnquiryFormData>>({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [downloadInfo, setDownloadInfo] = useState<{ url: string; title?: string } | null>(null);
   const [courseOpen, setCourseOpen] = useState(false);
   const courseDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +54,6 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
     if (submitted) {
       const timer = setTimeout(() => {
         setSubmitted(false);
-        setDownloadInfo(null);
         setForm({
           name: "",
           phone: "",
@@ -110,35 +108,6 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
     }
   };
 
-  const downloadingRef = useRef(false);
-
-  const triggerBrochureDownload = (brochureUrl: string, courseParam: string, courseName?: string) => {
-    if (downloadingRef.current) return;
-    downloadingRef.current = true;
-    setTimeout(() => {
-      downloadingRef.current = false;
-    }, 3000);
-
-    const downloadApiUrl = `/api/public/brochures/download?file=${encodeURIComponent(brochureUrl)}&courseId=${encodeURIComponent(courseParam || '')}`;
-
-    // Single reliable download trigger using hidden <a> element
-    try {
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = downloadApiUrl;
-      a.setAttribute('download', '');
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        try {
-          document.body.removeChild(a);
-        } catch {}
-      }, 3000);
-    } catch (err) {
-      console.error('Error triggering brochure download:', err);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -175,14 +144,6 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
         setLoading(false);
         if (res.success) {
           setSubmitted(true);
-          if (res.brochureUrl) {
-            const downloadApiUrl = `/api/public/brochures/download?file=${encodeURIComponent(res.brochureUrl)}&courseId=${encodeURIComponent(effectiveCourse || '')}`;
-            setDownloadInfo({
-              url: downloadApiUrl,
-              title: res.brochureTitle || res.courseName || 'Brochure',
-            });
-            triggerBrochureDownload(res.brochureUrl, effectiveCourse, (res.courseName || res.brochureTitle) ?? undefined);
-          }
           onSubmit?.(form);
         } else {
           alert(res.error || 'Failed to submit form');
@@ -204,22 +165,10 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
         <p className="text-muted dark:text-white/70 text-xs sm:text-sm max-w-xs leading-relaxed">
           {formType === 'contact' 
             ? "Your message has been sent successfully. Our team will get back to you shortly."
-            : downloadInfo?.url
-              ? "Your program brochure download has started automatically! Our admissions counsellor will get in touch with you shortly."
-              : "We've received your admission enquiry. Our admissions counsellor will get in touch with you shortly."}
+            : "We've received your admission enquiry. Our admissions counsellor will get in touch with you shortly."}
         </p>
-        {downloadInfo?.url && (
-          <a
-            href={downloadInfo.url}
-            download
-            className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-white bg-primary hover:bg-darkprimary px-4 py-2 rounded-xl transition-all shadow-md hover:-translate-y-0.5"
-          >
-            <Icon icon="mdi:download" className="text-base" />
-            Click here to download brochure
-          </a>
-        )}
         <button
-          onClick={() => { setSubmitted(false); setDownloadInfo(null); setForm(INITIAL_FORM); }}
+          onClick={() => { setSubmitted(false); setForm(INITIAL_FORM); }}
           className="mt-4 text-primary text-xs font-bold hover:underline flex items-center gap-1"
         >
           <Icon icon="mdi:arrow-left" className="text-sm" />
@@ -230,7 +179,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
   }
 
   // Dynamic titles and button labels
-  const formTitle = title || (formType === 'contact' ? "Send Us a Message" : "Fill The Form & Download The Brochure");
+  const formTitle = title || (formType === 'contact' ? "Send Us a Message" : "Fill The Form");
   const formSubtitle = subtitle || (formType === 'contact' ? "Fill out the form below and we will get back to you shortly." : "");
 
   return (
@@ -534,7 +483,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({
           ) : (
             <>
               <Icon icon={formType === 'contact' ? "mdi:send" : "mdi:download"} className="text-base" />
-              {formType === 'contact' ? "Send Message" : "Submit & Download Brochure"}
+              {formType === 'contact' ? "Send Message" : "Submit Enquiry"}
             </>
           )}
         </button>

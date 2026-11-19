@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { siteConfig } from '@/data'
-import { useWebsiteSettings } from '@/app/context/WebsiteSettingsContext'
+import { siteSettings } from '@/data/siteSettings'
 import { getSocialItems } from '../socials'
 
 type FooterLinkItem = { id: string; title: string; url: string; openInNewTab?: boolean; linkType?: string }
@@ -87,9 +87,9 @@ const FooterLogo: React.FC<{ src?: string; alt: string }> = ({ src, alt }) => {
 const Footer: React.FC = () => {
   const pathname = usePathname()
   const currentYear = new Date().getFullYear()
-  const { footer, socialLinks, phone } = useWebsiteSettings()
+  const { footer, socialLinks, phone } = siteSettings
 
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/brochure')) return null
+  if (pathname?.startsWith('/admin')) return null
 
   const whatsappNum = (footer?.whatsapp?.number || socialLinks?.whatsapp || siteConfig.whatsapp || '').replace(/[^\d+]/g, '')
   const whatsappUrl = whatsappNum.startsWith('+')

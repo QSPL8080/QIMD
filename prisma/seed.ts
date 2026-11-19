@@ -1,13 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import {
-  coursesData,
-  trainersData,
   blogsData,
   placedStudentsData,
   testimonialsData,
   faqsData,
-  placementPartnersData,
-  emiPartnersData,
   galleryData,
   jobOpeningsData,
 } from '../src/data'
@@ -16,141 +12,6 @@ const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Starting QIMD Full Website Migration to PostgreSQL Database...')
-
-  // 1. Course Categories & Courses
-  let defaultCategory = await prisma.courseCategory.findFirst({
-    where: { slug: 'ai-courses' },
-  })
-  if (!defaultCategory) {
-    defaultCategory = await prisma.courseCategory.create({
-      data: {
-        name: 'AI Practical Programs',
-        slug: 'ai-courses',
-        description: 'Industry-Oriented AI Powered Training Programs',
-        status: true,
-      },
-    })
-  }
-
-  for (const c of coursesData) {
-    const existing = await prisma.course.findFirst({
-      where: { slug: c.slug },
-    })
-    if (!existing) {
-      await prisma.course.create({
-        data: {
-          courseName: c.title,
-          slug: c.slug,
-          categoryId: defaultCategory.id,
-          description: c.description || c.title,
-          bannerImage: c.image,
-          duration: c.duration || '6 Months',
-          fees: 45000,
-          discountPrice: 35000,
-          learningOutcomes: Array.isArray(c.outcomes) ? c.outcomes.join('\n') : '',
-          status: 'PUBLISHED',
-          isActive: true,
-        },
-      })
-    } else {
-      await prisma.course.update({
-        where: { id: existing.id },
-        data: {
-          courseName: c.title,
-          description: c.description || c.title,
-          status: 'PUBLISHED',
-          isActive: true,
-        },
-      })
-    }
-  }
-
-  // 2. Trainers Migration & Teams Migration (Strict 3 Team Members in teams table & trainers table)
-  const validTrainerNames = trainersData.map(t => t.fullName)
-  await prisma.trainer.deleteMany({
-    where: {
-      fullName: { notIn: validTrainerNames }
-    }
-  })
-  await prisma.teamMember.deleteMany({
-    where: {
-      fullName: { notIn: validTrainerNames }
-    }
-  })
-
-  for (let i = 0; i < trainersData.length; i++) {
-    const t = trainersData[i]
-    
-    // Seed trainers table
-    const existingTrainer = await prisma.trainer.findFirst({
-      where: { fullName: t.name || t.fullName },
-    })
-    if (!existingTrainer) {
-      await prisma.trainer.create({
-        data: {
-          fullName: t.name || t.fullName,
-          photo: t.photo,
-          designation: t.designation,
-          qualification: t.qualification,
-          experience: t.experience,
-          biography: t.biography,
-          skills: [t.specialization || 'AI Tools'],
-          linkedin: t.linkedin || '#',
-          displayOrder: i + 1,
-          isActive: true,
-        },
-      })
-    } else {
-      await prisma.trainer.update({
-        where: { id: existingTrainer.id },
-        data: {
-          designation: t.designation,
-          qualification: t.qualification,
-          experience: t.experience,
-          biography: t.biography,
-          photo: t.photo,
-          displayOrder: i + 1,
-          isDeleted: false,
-          isActive: true,
-        }
-      })
-    }
-
-    // Seed teams table
-    const existingTeamMember = await prisma.teamMember.findFirst({
-      where: { fullName: t.name || t.fullName },
-    })
-    if (!existingTeamMember) {
-      await prisma.teamMember.create({
-        data: {
-          fullName: t.name || t.fullName,
-          photo: t.photo,
-          designation: t.designation,
-          qualification: t.qualification,
-          experience: t.experience,
-          biography: t.biography,
-          skills: [t.specialization || 'AI Tools'],
-          linkedin: t.linkedin || '#',
-          displayOrder: i + 1,
-          isActive: true,
-        },
-      })
-    } else {
-      await prisma.teamMember.update({
-        where: { id: existingTeamMember.id },
-        data: {
-          designation: t.designation,
-          qualification: t.qualification,
-          experience: t.experience,
-          biography: t.biography,
-          photo: t.photo,
-          displayOrder: i + 1,
-          isDeleted: false,
-          isActive: true,
-        }
-      })
-    }
-  }
 
   // 3. Blogs Migration (Clean and seed 4 official blogs)
   const validSlugs = blogsData.map(b => b.slug)
@@ -324,43 +185,6 @@ async function main() {
     }
   }
 
-  // 8. Hiring Partners Migration
-  for (let i = 0; i < placementPartnersData.length; i++) {
-    const partner = placementPartnersData[i]
-    const existing = await prisma.partner.findFirst({
-      where: { name: partner.name },
-    })
-    if (!existing) {
-      await prisma.partner.create({
-        data: {
-          name: partner.name,
-          logo: partner.logo,
-          type: 'HIRING',
-          displayOrder: i + 1,
-          isActive: true,
-        },
-      })
-    }
-  }
-
-  // 9. EMI Partners Migration
-  for (let i = 0; i < emiPartnersData.length; i++) {
-    const emi = emiPartnersData[i]
-    const existing = await prisma.emiPartner.findFirst({
-      where: { name: emi.name },
-    })
-    if (!existing) {
-      await prisma.emiPartner.create({
-        data: {
-          name: emi.name,
-          logo: emi.logo,
-          displayOrder: i + 1,
-          isActive: true,
-        },
-      })
-    }
-  }
-
   // 10. Gallery Migration
   for (let i = 0; i < galleryData.length; i++) {
     const g = galleryData[i] as any
@@ -417,105 +241,6 @@ async function main() {
     }
   }
 
-  // 12. Global Database Cleanup: Ensure all footer columns, links, and page sections use "Program"
-  try {
-    const footerColumns = await prisma.footerColumn.findMany({ include: { links: true } })
-    for (const col of footerColumns) {
-      const newTitle = col.title?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
-      if (newTitle && newTitle !== col.title) {
-        await prisma.footerColumn.update({ where: { id: col.id }, data: { title: newTitle } })
-      }
-      for (const link of col.links) {
-        const newLinkTitle = link.title?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
-        if (newLinkTitle && newLinkTitle !== link.title) {
-          await prisma.footerColumnLink.update({ where: { id: link.id }, data: { title: newLinkTitle } })
-        }
-      }
-    }
-
-    const pageSections = await prisma.pageSection.findMany()
-    for (const sec of pageSections) {
-      const newBtn = sec.buttonText?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
-      const newTitle = sec.sectionTitle?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
-      const newSub = sec.subtitle?.replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
-      if (newBtn !== sec.buttonText || newTitle !== sec.sectionTitle || newSub !== sec.subtitle) {
-        await prisma.pageSection.update({
-          where: { id: sec.id },
-          data: {
-            buttonText: newBtn || sec.buttonText,
-            sectionTitle: newTitle || sec.sectionTitle,
-            subtitle: newSub || sec.subtitle,
-          },
-        })
-      }
-    }
-    // 13. Student Reviews Migration (Full Names)
-    const defaultStudentReviews = [
-      {
-        studentName: "Rohan Verma",
-        course: "Digital Marketing Program",
-        rating: 5,
-        review: "I joined QIMD for the Digital Marketing Program and had a really good learning experience. The best part was the practical training and live projects. We learned about SEO, social media marketing, Google Ads and other digital marketing tools with practical examples. The trainers were supportive and cleared our doubts whenever needed.",
-        displayOrder: 1,
-        isActive: true,
-      },
-      {
-        studentName: "Sneha More",
-        course: "Digital Marketing Program",
-        rating: 5,
-        review: "I was looking for a good digital marketing institute in Pune and joined QIMD after checking the program details. The training was practical and easy to understand. I especially liked the live project sessions because they helped me understand how digital marketing works for real businesses.",
-        displayOrder: 2,
-        isActive: true,
-      },
-      {
-        studentName: "Aniket Kulkarni",
-        course: "Graphic Design Program",
-        rating: 5,
-        review: "My experience of Graphic Design Program with Pune’s QIMD was great. The program covered practical designing concepts and gave us assignments to work on. The trainers were helpful and guided us throughout the learning process.",
-        displayOrder: 3,
-        isActive: true,
-      },
-      {
-        studentName: "Pooja Sharma",
-        course: "Video Editing Program",
-        rating: 5,
-        review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive.",
-        displayOrder: 4,
-        isActive: true,
-      },
-    ]
-
-    for (const sr of defaultStudentReviews) {
-      const existing = await prisma.studentReview.findFirst({
-        where: {
-          OR: [
-            { studentName: sr.studentName },
-            { studentName: sr.studentName.split(' ')[0] + ' ' + sr.studentName.split(' ')[1][0] + '.' },
-            { studentName: sr.studentName.split(' ')[0] + ' ' + sr.studentName.split(' ')[1][0] }
-          ]
-        }
-      })
-      if (existing) {
-        await prisma.studentReview.update({
-          where: { id: existing.id },
-          data: {
-            studentName: sr.studentName,
-            course: sr.course,
-            review: sr.review,
-            rating: sr.rating,
-          }
-        })
-      } else {
-        await prisma.studentReview.create({
-          data: sr
-        })
-      }
-    }
-  } catch (err) {
-    console.warn('Note on footer/sections/reviews cleanup:', err)
-  }
-
-  console.log('✅ Successful Full Website Content Migration to PostgreSQL Database!')
 }
 
 main()

@@ -44,7 +44,6 @@ export interface Course {
   curriculum?: CourseModule[];
   icon?: string;
   image?: string;
-  brochureUrl?: string;
   featured?: boolean;
 }
 
@@ -169,12 +168,6 @@ export interface EnquiryFormData {
   courseInterest: string;
   message?: string;
   subject?: string;
-}
-
-export interface BrochureFormData {
-  name: string;
-  phone: string;
-  email: string;
 }
 
 // ─── Contact ────────────────────────────────────────────────

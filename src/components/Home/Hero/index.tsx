@@ -112,7 +112,7 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
             <HeroBannerCarousel />
           </div>
           <div className="qo-hero-form">
-            <EnquiryForm title="Fill The Form & Download Brochure" showTitle={true} />
+            <EnquiryForm title="Fill The Form" showTitle={true} />
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@
 import { comparePassword, setAdminSessionCookie, clearAdminSessionCookie, signJwtToken, getAdminSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { loginSchema } from '@/lib/validations'
-import { createAuditLog } from '@/lib/audit'
 import { redirect } from 'next/navigation'
 
 export async function loginAdminAction(prevState: any, formData: FormData) {
@@ -43,11 +42,6 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
 
     // Log activity (non-blocking)
     try {
-      await createAuditLog({
-        userId: user.id,
-        module: 'AUTH',
-        action: 'ADMIN_LOGIN_SUCCESS',
-      })
     } catch (e) {
       console.warn('Audit log write warning during login:', e)
     }
@@ -62,11 +56,6 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
 export async function logoutAdminAction() {
   const session = await getAdminSession()
   if (session) {
-    await createAuditLog({
-      userId: session.id,
-      module: 'AUTH',
-      action: 'ADMIN_LOGOUT',
-    })
   }
   await clearAdminSessionCookie()
   redirect('/admin/login')
