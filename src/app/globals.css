@@ -5841,3 +5841,18 @@ html:not([data-area="admin"]) .qf-watermark {
 }
 @keyframes qfFlow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
 @media (prefers-reduced-motion: reduce) { html:not([data-area="admin"]) .qf-watermark { animation: none; } }
+
+/* Home hero — stats as a full-width navy band */
+.qo-stats-band { position: relative; z-index: 1; margin-top: 56px; background: var(--qo-navy); }
+.qo-stats-band .qo-stats { margin-top: 0; border-radius: 0; background: transparent; }
+.qo-stats-band .qo-stat { padding: 36px 28px; }
+.qo-stats-band .qo-stat:first-child { padding-left: 0; }
+.qo-hero::before { height: 100%; }
+@media (max-width: 1024px) {
+  .qo-stats-band { margin-top: 40px; }
+  .qo-stats-band .qo-stat:nth-child(3) { padding-left: 0; }
+}
+@media (max-width: 640px) {
+  .qo-stats-band .qo-stat { padding: 24px 16px; }
+  .qo-stats-band .qo-stat:nth-child(odd) { padding-left: 0; }
+}

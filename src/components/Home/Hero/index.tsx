@@ -21,14 +21,14 @@ function CounterItem({ stat, index }: { stat: { value: string; label: string }, 
         entries.forEach(entry => {
           if (entry.isIntersecting && !hasAnimated) {
             setHasAnimated(true);
-            const duration = 3000; // 3 seconds for clear, smooth counting
+            const duration = 6000; // slow, readable count-up
             const startTime = performance.now();
 
             const animate = (currentTime: number) => {
               const elapsedTime = currentTime - startTime;
               const progress = Math.min(elapsedTime / duration, 1);
-              // Smooth easeOutExpo curve
-              const easeOutProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+              // Gentle ease-in-out so the numbers visibly tick up from start to finish
+              const easeOutProgress = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
               const currentCount = Math.floor(easeOutProgress * numericValue);
 
               setCount(currentCount);
@@ -118,11 +118,13 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
       </div>
 
       {/* Counter stats */}
-      <div className="qo-wrap">
-        <div className="qo-stats">
-          {statsData.map((stat, index) => (
-            <CounterItem key={index} stat={stat} index={index} />
-          ))}
+      <div className="qo-stats-band">
+        <div className="qo-wrap">
+          <div className="qo-stats">
+            {statsData.map((stat, index) => (
+              <CounterItem key={index} stat={stat} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
