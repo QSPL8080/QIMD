@@ -5,9 +5,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Icon } from '@iconify/react'
 
-/** Program for a lead: linked program row, or the program noted in the message */
+/** Program for a lead (saved in the lead message as "Program: …") */
 function programOf(lead: any): string {
-  return lead?.course?.courseName || lead?.message?.match(/^Program: (.+)$/m)?.[1] || 'Not specified'
+  return lead?.message?.match(/^Program: (.+)$/m)?.[1] || 'Not specified'
 }
 
 const statusClass = (status: string) =>
@@ -48,7 +48,7 @@ export default async function AdminDashboardPage() {
     db.studentReview.count({ where: { isDeleted: false } }),
     db.faq.count({ where: { isDeleted: false } }),
     db.gallery.count({ where: { isDeleted: false } }),
-    db.admissionEnquiry.findMany({ where: { isDeleted: false }, take: 6, orderBy: { createdAt: 'desc' }, include: { course: true } }),
+    db.admissionEnquiry.findMany({ where: { isDeleted: false }, take: 6, orderBy: { createdAt: 'desc' } }),
     db.contactEnquiry.findMany({ where: { isDeleted: false }, take: 5, orderBy: { createdAt: 'desc' } }),
     db.blog.findMany({ where: { isDeleted: false }, take: 4, orderBy: { createdAt: 'desc' } }),
   ])

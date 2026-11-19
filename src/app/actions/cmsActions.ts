@@ -166,7 +166,6 @@ export async function savePlacementAction(data: any, id?: string) {
       companyLogo: data.companyLogo || null,
       package: data.package || null,
       designation: data.designation || null,
-      courseId: data.courseId || null,
       courseName: data.courseName || null,
       location: data.location || null,
       joiningYear: data.joiningYear || null,

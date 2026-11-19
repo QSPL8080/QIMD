@@ -22,7 +22,6 @@ export async function GET(request: Request) {
     } else if (type === 'admission') {
       enquiries = await db.admissionEnquiry.findMany({
         where: { isDeleted: false },
-        include: { course: true },
         orderBy: { createdAt: 'desc' },
       })
     } else if (type === 'career') {

@@ -22,144 +22,17 @@ model User {
   createdAt                         DateTime                  @default(now()) @map("created_at")
   updatedAt                         DateTime                  @updatedAt @map("updated_at")
   assignedAdmissionEnquiries        AdmissionEnquiry[]
-  auditLogs                         AuditLog[]
   blogs                             Blog[]
   assignedCompanyPlacementEnquiries CompanyPlacementEnquiry[]
   assignedContactEnquiries          ContactEnquiry[]
   faqs                              Faq[]
   assignedFranchisePartnerEnquiries FranchisePartnerEnquiry[]
   galleryItems                      Gallery[]
-  reports                           Report[]
   testimonials                      Testimonial[]
 
   @@index([email])
   @@index([status, isDeleted])
   @@map("users")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "CourseCategory" table and its data are not dropped.
-model CourseCategory {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(150)
-  slug         String   @unique @db.VarChar(150)
-  description  String?
-  displayOrder Int      @default(0) @map("display_order")
-  status       Boolean  @default(true)
-  isDeleted    Boolean  @default(false) @map("is_deleted")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  courses      Course[]
-
-  @@index([slug])
-  @@index([status, isDeleted])
-  @@map("course_categories")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "Trainer" table and its data are not dropped.
-model Trainer {
-  id              String   @id @default(uuid()) @db.Uuid
-  fullName        String   @map("full_name") @db.VarChar(200)
-  photo           String?
-  designation     String?  @db.VarChar(150)
-  qualification   String?  @db.VarChar(255)
-  experience      String?  @db.VarChar(100)
-  biography       String?
-  skills          Json?
-  certifications  String?
-  linkedin        String?
-  instagram       String?
-  email           String?  @db.VarChar(255)
-  phone           String?  @db.VarChar(20)
-  featured        Boolean  @default(false)
-  displayOrder    Int      @default(0) @map("display_order")
-  metaTitle       String?  @map("meta_title") @db.VarChar(255)
-  metaDescription String?  @map("meta_description")
-  isActive        Boolean  @default(true) @map("is_active")
-  isDeleted       Boolean  @default(false) @map("is_deleted")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  courses         Course[]
-
-  @@index([isActive, isDeleted])
-  @@index([featured])
-  @@map("trainers")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "TeamMember" table and its data are not dropped.
-model TeamMember {
-  id             String   @id @default(uuid()) @db.Uuid
-  fullName       String   @map("full_name") @db.VarChar(200)
-  photo          String?
-  designation    String?  @db.VarChar(150)
-  qualification  String?  @db.VarChar(255)
-  experience     String?  @db.VarChar(100)
-  biography      String?
-  skills         Json?
-  certifications String?
-  linkedin       String?
-  instagram      String?
-  email          String?  @db.VarChar(255)
-  phone          String?  @db.VarChar(20)
-  featured       Boolean  @default(false)
-  displayOrder   Int      @default(0) @map("display_order")
-  isActive       Boolean  @default(true) @map("is_active")
-  isDeleted      Boolean  @default(false) @map("is_deleted")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  @@index([isActive, isDeleted])
-  @@index([featured])
-  @@map("teams")
-}
-
-// LEGACY — programs are now fixed in src/data/index.ts (coursesData).
-// The table is kept so existing admission leads and placements keep their program link.
-model Course {
-  id                 String             @id @default(uuid()) @db.Uuid
-  categoryId         String             @map("category_id") @db.Uuid
-  trainerId          String?            @map("trainer_id") @db.Uuid
-  courseName         String             @map("course_name") @db.VarChar(255)
-  slug               String             @unique @db.VarChar(255)
-  shortDescription   String?            @map("short_description")
-  description        String?
-  bannerImage        String?            @map("banner_image")
-  gallery            Json?
-  duration           String?            @db.VarChar(100)
-  fees               Decimal?           @db.Decimal(10, 2)
-  discountPrice      Decimal?           @map("discount_price") @db.Decimal(10, 2)
-  eligibility        String?
-  courseMode         String             @default("Offline") @map("course_mode") @db.VarChar(50)
-  level              String?            @db.VarChar(100)
-  syllabus           String?
-  learningOutcomes   String?            @map("learning_outcomes")
-  certification      String?
-  brochure           String?
-  demoVideo          String?            @map("demo_video")
-  featured           Boolean            @default(false)
-  displayOrder       Int                @default(0) @map("display_order")
-  metaTitle          String?            @map("meta_title") @db.VarChar(255)
-  metaDescription    String?            @map("meta_description")
-  canonicalUrl       String?            @map("canonical_url")
-  status             ContentStatus      @default(PUBLISHED)
-  isActive           Boolean            @default(true) @map("is_active")
-  isDeleted          Boolean            @default(false) @map("is_deleted")
-  createdAt          DateTime           @default(now()) @map("created_at")
-  updatedAt          DateTime           @updatedAt @map("updated_at")
-  admissionEnquiries AdmissionEnquiry[]
-  brochures          Brochure[]
-  category           CourseCategory     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  trainer            Trainer?           @relation(fields: [trainerId], references: [id])
-  placements         Placement[]
-
-  @@index([slug])
-  @@index([categoryId])
-  @@index([trainerId])
-  @@index([status, isActive, isDeleted])
-  @@index([featured])
-  @@map("courses")
 }
 
 model Blog {
@@ -201,7 +74,6 @@ model Placement {
   companyLogo    String?   @map("company_logo")
   package        String?   @db.VarChar(100)
   designation    String?   @db.VarChar(150)
-  courseId       String?   @map("course_id") @db.Uuid
   courseName     String?   @map("course_name") @db.VarChar(150)
   placementDate  DateTime? @map("placement_date")
   location       String?   @db.VarChar(150)
@@ -217,9 +89,7 @@ model Placement {
   isDeleted      Boolean   @default(false) @map("is_deleted")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
-  course         Course?   @relation(fields: [courseId], references: [id])
 
-  @@index([courseId])
   @@index([isActive, isDeleted])
   @@index([featured])
   @@map("placements")
@@ -296,41 +166,6 @@ model StudentReview {
   @@map("student_reviews")
 }
 
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "Partner" table and its data are not dropped.
-model Partner {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(200)
-  logo         String
-  type         String   @default("HIRING") @db.VarChar(50)
-  websiteUrl   String?  @map("website_url")
-  displayOrder Int      @default(0) @map("display_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  isDeleted    Boolean  @default(false) @map("is_deleted")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([type, isActive, isDeleted])
-  @@map("partners")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "EmiPartner" table and its data are not dropped.
-model EmiPartner {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String   @db.VarChar(200)
-  logo         String
-  description  String?
-  displayOrder Int      @default(0) @map("display_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  isDeleted    Boolean  @default(false) @map("is_deleted")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([isActive, isDeleted])
-  @@map("emi_partners")
-}
-
 model Faq {
   id           String   @id @default(uuid()) @db.Uuid
   question     String
@@ -372,7 +207,6 @@ model AdmissionEnquiry {
   studentName   String        @map("student_name") @db.VarChar(200)
   email         String        @db.VarChar(255)
   phone         String        @db.VarChar(20)
-  courseId      String?       @map("course_id") @db.Uuid
   city          String?       @db.VarChar(150)
   qualification String?       @db.VarChar(150)
   message       String?
@@ -383,10 +217,8 @@ model AdmissionEnquiry {
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
   assignedTo    User?         @relation(fields: [assignedToId], references: [id])
-  course        Course?       @relation(fields: [courseId], references: [id])
 
   @@index([status, isDeleted])
-  @@index([courseId])
   @@index([assignedToId])
   @@map("admission_enquiries")
 }
@@ -479,253 +311,6 @@ model CompanyPlacementEnquiry {
   @@map("company_placement_enquiries")
 }
 
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "WebsiteSettings" table and its data are not dropped.
-model WebsiteSettings {
-  id               String   @id @default(uuid()) @db.Uuid
-  websiteName      String   @default("QIMD - Quickup Institute of Marketing & Design") @map("website_name") @db.VarChar(255)
-  logo             String?
-  favicon          String?
-  contactEmail     String?  @map("contact_email") @db.VarChar(255)
-  contactPhone     String?  @map("contact_phone") @db.VarChar(20)
-  whatsappNumber   String?  @map("whatsapp_number") @db.VarChar(20)
-  address          String?
-  googleMap        String?  @map("google_map")
-  googleAnalytics  String?  @map("google_analytics")
-  searchConsole    String?  @map("search_console")
-  socialLinks      Json?    @map("social_links")
-  homepageSections Json?    @map("homepage_sections")
-  footerContent    Json?    @map("footer_content")
-  robotsTxt        String?  @map("robots_txt")
-  sitemap          String?
-  theme            Theme    @default(LIGHT)
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  @@map("website_settings")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "Report" table and its data are not dropped.
-model Report {
-  id            String       @id @default(uuid()) @db.Uuid
-  reportName    String       @map("report_name") @db.VarChar(200)
-  reportType    String       @map("report_type") @db.VarChar(100)
-  generatedById String       @map("generated_by") @db.Uuid
-  generatedAt   DateTime     @default(now()) @map("generated_at")
-  filePath      String       @map("file_path")
-  format        ReportFormat @default(PDF)
-  generatedBy   User         @relation(fields: [generatedById], references: [id], onDelete: Cascade)
-
-  @@index([generatedById])
-  @@map("reports")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "NotificationLog" table and its data are not dropped.
-model NotificationLog {
-  id               String         @id @default(uuid()) @db.Uuid
-  recipient        String         @db.VarChar(255)
-  notificationType String         @map("notification_type") @db.VarChar(100)
-  subject          String         @db.VarChar(255)
-  deliveryStatus   DeliveryStatus @default(SENT) @map("delivery_status")
-  errorMessage     String?        @map("error_message")
-  sentAt           DateTime       @default(now()) @map("sent_at")
-
-  @@index([deliveryStatus])
-  @@map("notification_logs")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "AuditLog" table and its data are not dropped.
-model AuditLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String?  @map("user_id") @db.Uuid
-  module    String   @db.VarChar(150)
-  action    String   @db.VarChar(100)
-  recordId  String?  @map("record_id") @db.Uuid
-  ipAddress String?  @map("ip_address") @db.VarChar(100)
-  userAgent String?  @map("user_agent")
-  createdAt DateTime @default(now()) @map("created_at")
-  user      User?    @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([module])
-  @@index([createdAt])
-  @@map("audit_logs")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "WebPage" table and its data are not dropped.
-model WebPage {
-  id              String        @id @default(uuid()) @db.Uuid
-  pageName        String        @map("page_name") @db.VarChar(150)
-  slug            String        @unique @db.VarChar(150)
-  pageKey         String        @unique @map("page_key") @db.VarChar(100)
-  description     String?
-  status          ContentStatus @default(PUBLISHED)
-  metaTitle       String?       @map("meta_title") @db.VarChar(255)
-  metaDescription String?       @map("meta_description")
-  canonicalUrl    String?       @map("canonical_url")
-  ogImage         String?       @map("og_image")
-  isDeleted       Boolean       @default(false) @map("is_deleted")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  sections        PageSection[]
-
-  @@index([slug])
-  @@index([pageKey])
-  @@index([status, isDeleted])
-  @@map("web_pages")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "PageSection" table and its data are not dropped.
-model PageSection {
-  id           String        @id @default(uuid()) @db.Uuid
-  pageId       String?       @map("page_id") @db.Uuid
-  pageKey      String        @map("page_key") @db.VarChar(100)
-  sectionKey   String        @map("section_key") @db.VarChar(100)
-  sectionType  String?       @default("CUSTOM") @map("section_type") @db.VarChar(100)
-  sectionTitle String?       @map("section_title") @db.VarChar(255)
-  subtitle     String?
-  content      String?
-  image        String?
-  buttonText   String?       @map("button_text") @db.VarChar(150)
-  buttonUrl    String?       @map("button_url") @db.VarChar(255)
-  extraData    Json?         @map("extra_data")
-  displayOrder Int           @default(0) @map("display_order")
-  status       ContentStatus @default(PUBLISHED)
-  isActive     Boolean       @default(true) @map("is_active")
-  isDeleted    Boolean       @default(false) @map("is_deleted")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  webPage      WebPage?      @relation(fields: [pageId], references: [id], onDelete: Cascade)
-
-  @@index([pageKey, sectionKey])
-  @@index([pageKey, isActive, isDeleted])
-  @@index([pageId])
-  @@map("page_sections")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "HeaderSettings" table and its data are not dropped.
-model HeaderSettings {
-  id               String   @id @default(uuid()) @db.Uuid
-  logo             String?
-  logoAltText      String?  @default("QIMD Logo") @map("logo_alt_text") @db.VarChar(255)
-  logoLink         String?  @default("/") @map("logo_link") @db.VarChar(255)
-  logoActive       Boolean  @default(true) @map("logo_active")
-  showSocialLinks  Boolean  @default(true) @map("show_social_links")
-  hireFromUsText   String?  @default("Hire From Us") @map("hire_from_us_text") @db.VarChar(150)
-  hireFromUsUrl    String?  @default("/hire-from-us") @map("hire_from_us_url") @db.VarChar(255)
-  hireFromUsNewTab Boolean  @default(false) @map("hire_from_us_new_tab")
-  hireFromUsActive Boolean  @default(true) @map("hire_from_us_active")
-  enquireNowText   String?  @default("Enquire Now") @map("enquire_now_text") @db.VarChar(150)
-  enquireNowUrl    String?  @default("/contact") @map("enquire_now_url") @db.VarChar(255)
-  enquireNowNewTab Boolean  @default(false) @map("enquire_now_new_tab")
-  enquireNowActive Boolean  @default(true) @map("enquire_now_active")
-  whatsappText     String?  @default("WhatsApp") @map("whatsapp_text") @db.VarChar(150)
-  whatsappNumber   String?  @map("whatsapp_number") @db.VarChar(50)
-  whatsappActive   Boolean  @default(true) @map("whatsapp_active")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  @@map("header_settings")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "HeaderContactItem" table and its data are not dropped.
-model HeaderContactItem {
-  id           String   @id @default(uuid()) @db.Uuid
-  type         String   @db.VarChar(50)
-  label        String   @db.VarChar(150)
-  value        String   @db.VarChar(255)
-  displayOrder Int      @default(0) @map("display_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([type, isActive])
-  @@map("header_contact_items")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "FooterSettings" table and its data are not dropped.
-model FooterSettings {
-  id              String   @id @default(uuid()) @db.Uuid
-  logo            String?
-  logoAltText     String?  @default("QIMD Footer Logo") @map("logo_alt_text") @db.VarChar(255)
-  logoLink        String?  @default("/") @map("logo_link") @db.VarChar(255)
-  logoActive      Boolean  @default(true) @map("logo_active")
-  showSocialIcons Boolean  @default(true) @map("show_social_icons")
-  addressLabel    String?  @default("Physical Institute Address") @map("address_label") @db.VarChar(150)
-  fullAddress     String?
-  googleMapsUrl   String?  @map("google_maps_url")
-  addressActive   Boolean  @default(true) @map("address_active")
-  whatsappText    String?  @default("Chat with Us on WhatsApp") @map("whatsapp_text") @db.VarChar(150)
-  whatsappNumber  String?  @map("whatsapp_number") @db.VarChar(50)
-  whatsappActive   Boolean  @default(true) @map("whatsapp_active")
-  showScrollToTop  Boolean  @default(true) @map("show_scroll_to_top")
-  copyrightText    String?  @map("copyright_text") @db.VarChar(255)
-  showBottomLinks  Boolean  @default(false) @map("show_bottom_links")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  @@map("footer_settings")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "FooterContactItem" table and its data are not dropped.
-model FooterContactItem {
-  id           String   @id @default(uuid()) @db.Uuid
-  type         String   @db.VarChar(50)
-  label        String   @db.VarChar(150)
-  value        String   @db.VarChar(255)
-  displayOrder Int      @default(0) @map("display_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@index([type, isActive])
-  @@map("footer_contact_items")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "FooterColumn" table and its data are not dropped.
-model FooterColumn {
-  id           String             @id @default(uuid()) @db.Uuid
-  title        String             @db.VarChar(150)
-  description  String?
-  icon         String?            @db.VarChar(100)
-  displayOrder Int                @default(0) @map("display_order")
-  isActive     Boolean            @default(true) @map("is_active")
-  createdAt    DateTime           @default(now()) @map("created_at")
-  updatedAt    DateTime           @updatedAt @map("updated_at")
-  links        FooterColumnLink[]
-
-  @@index([displayOrder])
-  @@index([isActive])
-  @@map("footer_columns")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "FooterColumnLink" table and its data are not dropped.
-model FooterColumnLink {
-  id           String       @id @default(uuid()) @db.Uuid
-  columnId     String       @map("column_id") @db.Uuid
-  title        String       @db.VarChar(150)
-  url          String       @db.VarChar(255)
-  linkType     String       @default("INTERNAL") @map("link_type") @db.VarChar(50)
-  openInNewTab Boolean      @default(false) @map("open_in_new_tab")
-  displayOrder Int          @default(0) @map("display_order")
-  isActive     Boolean      @default(true) @map("is_active")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  column       FooterColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
-
-  @@index([columnId])
-  @@index([displayOrder])
-  @@map("footer_column_links")
-}
-
 model Banner {
   id           String   @id @default(uuid()) @db.Uuid
   badge        String?  @default("CAREER BOOSTER") @db.VarChar(100)
@@ -744,25 +329,6 @@ model Banner {
 
   @@index([isActive, isDeleted])
   @@map("banners")
-}
-
-// LEGACY — no longer managed from the admin panel or used by the website.
-// Kept only so the existing "Brochure" table and its data are not dropped.
-model Brochure {
-  id        String   @id @default(uuid()) @db.Uuid
-  title     String   @db.VarChar(255)
-  courseId  String   @map("course_id") @db.Uuid
-  fileUrl   String   @map("file_url")
-  fileSize  String?  @map("file_size") @db.VarChar(50)
-  isActive  Boolean  @default(true) @map("is_active")
-  isDeleted Boolean  @default(false) @map("is_deleted")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@index([courseId])
-  @@index([isActive, isDeleted])
-  @@map("brochures")
 }
 
 enum ContentStatus {

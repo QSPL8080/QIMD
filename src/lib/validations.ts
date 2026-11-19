@@ -101,7 +101,6 @@ export const placementSchema = z.object({
   companyLogo: z.string().optional().nullable(),
   package: z.string().optional().nullable(),
   designation: z.string().optional().nullable(),
-  courseId: z.string().uuid().optional().nullable(),
   courseName: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   joiningYear: z.string().optional().nullable(),

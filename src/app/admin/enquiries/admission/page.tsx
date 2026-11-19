@@ -9,9 +9,9 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 
-/** Program for a lead: linked program row, or the program noted in the message */
+/** Program for a lead (saved in the lead message as "Program: …") */
 function programOf(lead: any): string {
-  return lead?.course?.courseName || lead?.message?.match(/^Program: (.+)$/m)?.[1] || 'Not specified'
+  return lead?.message?.match(/^Program: (.+)$/m)?.[1] || 'Not specified'
 }
 
 export default function AdminAdmissionLeadsPage() {

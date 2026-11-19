@@ -61,29 +61,15 @@ export async function submitAdmissionEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    // Link the lead to its program. Programs are fixed in the website code (coursesData);
-    // the existing programs table is only used to keep the program shown on each lead.
-    let resolvedCourseId: string | null = null
+    // Programs are fixed in the website code (coursesData); the lead keeps the program name in its message.
     let programTitle: string | null = null
-
     if (validated.data.courseId && validated.data.courseId.trim() !== '') {
       const rawInput = validated.data.courseId.trim()
       const program = coursesData.find((c) => c.slug === rawInput || c.title === rawInput)
       programTitle = program?.title || rawInput
-      try {
-        const courseRecord = await db.course.findFirst({
-          where: {
-            OR: [{ slug: program?.slug || rawInput }, { courseName: { equals: programTitle, mode: 'insensitive' } }],
-          },
-          select: { id: true },
-        })
-        resolvedCourseId = courseRecord?.id || null
-      } catch {
-        resolvedCourseId = null
-      }
     }
 
-    const programNote = !resolvedCourseId && programTitle ? `Program: ${programTitle}` : null
+    const programNote = programTitle ? `Program: ${programTitle}` : null
     const message = [programNote, validated.data.message].filter(Boolean).join('\n') || null
 
     const enquiry = await db.admissionEnquiry.create({
@@ -91,7 +77,6 @@ export async function submitAdmissionEnquiryAction(data: {
         studentName: validated.data.studentName,
         email: validated.data.email,
         phone: validated.data.phone,
-        courseId: resolvedCourseId,
         city: validated.data.city || null,
         qualification: validated.data.qualification || null,
         message,
