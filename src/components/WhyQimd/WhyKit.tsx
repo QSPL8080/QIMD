@@ -4,6 +4,7 @@
  * WhyKit — shared "wall of fame" UI for the Why QIMD sub-pages:
  * Success Stories · Our Placements · Reviews & Testimonials · Life at QIMD
  */
+import GoogleReviewCard from '@/components/Common/GoogleReviewCard'
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -127,32 +128,18 @@ export function QwStickers({ items, light = false }: { items: { label: string; i
   )
 }
 
-/** Text review as a speech bubble with the author underneath */
-export function QwReview({ rev, index = 0 }: { rev: any; index?: number }) {
+/** Text review in the shared Google-review style card */
+export function QwReview({ rev }: { rev: any; index?: number }) {
   const name = rev.studentName || rev.name || 'Anonymous Student'
   const courseName = rev.courseTaken || rev.course || 'QIMD Program'
   return (
-    <figure className={`qw-review t${index % 3}`}>
-      <blockquote className="qw-bubble">
-        <div className="qw-bubble-top">
-          <QwStars rating={rev.rating || 5} />
-          <span className="qw-bubble-course">{courseName}</span>
-        </div>
-        <p>&quot;{rev.review}&quot;</p>
-      </blockquote>
-      <figcaption className="qw-author">
-        {rev.photo || rev.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={rev.photo || rev.image} alt={name} />
-        ) : (
-          <span className="qw-author-initial">{name.charAt(0)}</span>
-        )}
-        <span>
-          <strong>{name}</strong>
-          <small>Verified Student</small>
-        </span>
-      </figcaption>
-    </figure>
+    <GoogleReviewCard
+      name={name}
+      program={courseName}
+      rating={rev.rating || 5}
+      review={rev.review || ''}
+      photo={rev.photo || rev.image || null}
+    />
   )
 }
 

@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import { placementPartnersData } from '@/data'
+import GoogleReviewCard from '@/components/Common/GoogleReviewCard'
 
 const studentReviewsList = [
   {
@@ -33,14 +34,6 @@ const studentReviewsList = [
     review: "I joined QIMD to learn video editing and really enjoyed the practical sessions. We worked on different types of videos and learned how to improve editing, storytelling and presentation. The overall learning environment was very supportive."
   }
 ]
-
-const StarRating: React.FC<{ rating?: number }> = ({ rating = 5 }) => (
-  <span className="qo-stars" aria-label={`${rating} out of 5`}>
-    {Array.from({ length: 5 }).map((_, i) => (
-      <Icon key={i} icon="mdi:star" className={i < rating ? 'is-on' : ''} />
-    ))}
-  </span>
-)
 
 const PartnerLogoItem: React.FC<{ partner: any }> = ({ partner }) => {
   const fallback = placementPartnersData.find(
@@ -96,20 +89,13 @@ const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[]; testim
 
           <div className="qo-review-cards">
             {studentReviewsList.map((item, index) => (
-              <figure key={index} className="qo-review">
-                <div className="qo-review-top">
-                  <StarRating rating={item.rating} />
-                  <span className="qo-review-program">{item.program}</span>
-                </div>
-                <blockquote>&quot;{item.review}&quot;</blockquote>
-                <figcaption>
-                  <span className="qo-review-initial">{item.initial}</span>
-                  <span>
-                    <strong>{item.name}</strong>
-                    <small>Verified Student</small>
-                  </span>
-                </figcaption>
-              </figure>
+              <GoogleReviewCard
+                key={index}
+                name={item.name}
+                program={item.program}
+                rating={item.rating}
+                review={item.review}
+              />
             ))}
           </div>
         </div>
