@@ -5728,3 +5728,116 @@ html:not([data-area="admin"]) :is(.qw-panel-head, .qw-role-head, .qy-sub-head) >
 }
 html:not([data-area="admin"]) .qf-card-ic { box-shadow: none; }
 html:not([data-area="admin"]) .qm-cta { --qi: currentColor; }
+
+/* ================================================================
+   HEADER v3 — clean ink utility strip + crisp white bar,
+   neutral segmented navigation, quiet dropdowns.
+   ================================================================ */
+html:not([data-area="admin"]) .qh-topbar { background: #15123A; border-bottom: 0; color: rgba(255, 255, 255, .72); font-size: 12.5px; }
+html:not([data-area="admin"]) .qh-topbar::before { display: none; }
+html:not([data-area="admin"]) .qh-topbar .min-h-\[40px\] { min-height: 38px; }
+html:not([data-area="admin"]) .qh-contact { color: rgba(255, 255, 255, .72); gap: 8px; }
+html:not([data-area="admin"]) .qh-contact:hover { color: #fff; }
+html:not([data-area="admin"]) .qh-contact-ic { background: transparent !important; width: auto; height: auto; font-size: 14px; }
+html:not([data-area="admin"]) .qh-hire {
+  background: transparent; box-shadow: none; color: #fff; padding: 5px 12px; border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, .18); font-weight: 600; letter-spacing: .01em;
+}
+html:not([data-area="admin"]) .qh-hire:hover { background: #fff; color: #15123A; box-shadow: none; transform: none; --qi: #15123A; }
+html:not([data-area="admin"]) .qh-social { width: 26px; height: 26px; background: transparent; border-radius: 6px; }
+
+/* Main bar */
+html:not([data-area="admin"]) .qh-main {
+  background: #fff; border-bottom: 1px solid #ECEDF2;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+html:not([data-area="admin"]) .qh-main.is-stuck {
+  background: rgba(255, 255, 255, .88); -webkit-backdrop-filter: saturate(180%) blur(14px); backdrop-filter: saturate(180%) blur(14px);
+  border-bottom-color: transparent; box-shadow: 0 1px 0 #ECEDF2, 0 14px 30px -22px rgba(21, 18, 58, .45);
+}
+html:not([data-area="admin"]) .qh-row { padding: 12px 0; gap: 24px; }
+html:not([data-area="admin"]) .qh-main.is-stuck .qh-row { padding: 8px 0; }
+html:not([data-area="admin"]) .qh-glow-line { display: none; }
+
+/* Segmented navigation: neutral track, active item is a raised white pill */
+html:not([data-area="admin"]) .qh-nav {
+  gap: 2px; padding: 4px; border-radius: 10px; background: #F4F6FA; border: 1px solid #ECEDF2;
+}
+html:not([data-area="admin"]) .qh-link {
+  padding: 9px 16px; border-radius: 7px; font-size: 14.5px; font-weight: 500; color: #55546B; background: transparent; box-shadow: none;
+}
+html:not([data-area="admin"]) .qh-link:hover,
+html:not([data-area="admin"]) .qh-link.is-open { color: #15123A; background: rgba(255, 255, 255, .7); }
+html:not([data-area="admin"]) .qh-link.is-active,
+html:not([data-area="admin"]) .qh-link.is-active:hover,
+html:not([data-area="admin"]) .qh-link.is-active.is-open {
+  color: #15123A; font-weight: 600; background: #fff;
+  box-shadow: 0 1px 2px rgba(21, 18, 58, .08), 0 4px 12px -6px rgba(21, 18, 58, .18);
+}
+html:not([data-area="admin"]) .qh-link.is-active { --qi: #15123A; }
+html:not([data-area="admin"]) .qh-link.is-active::after {
+  content: ''; position: absolute; left: 50%; bottom: 3px; width: 14px; height: 2px; border-radius: 2px; background: #5B3FD9; transform: translateX(-50%);
+}
+html:not([data-area="admin"]) .qh-caret { opacity: .6; }
+@media (min-width: 1440px) { html:not([data-area="admin"]) .qh-nav { gap: 4px; } html:not([data-area="admin"]) .qh-link { padding: 9px 18px; } }
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  html:not([data-area="admin"]) .qh-nav { gap: 0; padding: 3px; }
+  html:not([data-area="admin"]) .qh-link { padding: 8px 10px; font-size: 13.5px; }
+  html:not([data-area="admin"]) .qh-row { gap: 12px; }
+}
+
+/* Dropdown */
+html:not([data-area="admin"]) .qh-drop-wrap { padding-top: 12px; }
+html:not([data-area="admin"]) .qh-drop {
+  min-width: 300px; padding: 8px; border-radius: 12px; border: 1px solid #ECEDF2;
+  box-shadow: 0 24px 48px -20px rgba(21, 18, 58, .28), 0 2px 6px rgba(21, 18, 58, .05);
+}
+html:not([data-area="admin"]) .qh-drop::before { border-color: #ECEDF2; }
+html:not([data-area="admin"]) .qh-drop-title { padding: 8px 12px 6px; color: #8A8AA0; }
+html:not([data-area="admin"]) .qh-drop-item { padding: 10px 12px; border-radius: 8px; color: #15123A; font-size: 14px; }
+html:not([data-area="admin"]) .qh-drop-item + .qh-drop-item { margin-top: 2px; }
+html:not([data-area="admin"]) .qh-drop-item:hover,
+html:not([data-area="admin"]) .qh-drop-item.is-active { background: #F4F6FA; color: #15123A; }
+html:not([data-area="admin"]) .qh-drop-ic { width: 30px; height: 30px; border-radius: 7px; background: #fff; border: 1px solid #ECEDF2; }
+html:not([data-area="admin"]) :is(.qh-drop-item:hover, .qh-drop-item.is-active) .qh-drop-ic { transform: none; border-color: #15123A; }
+
+/* Header buttons */
+html:not([data-area="admin"]) .qh-btn { height: 42px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+html:not([data-area="admin"]) .qh-main .qh-btn-wa {
+  background: #fff; color: #15123A; border: 1px solid #E3E5EB !important; box-shadow: none !important; padding: 0 16px;
+}
+html:not([data-area="admin"]) .qh-main .qh-btn-wa svg.iconify { color: #25D366 !important; }
+html:not([data-area="admin"]) .qh-main .qh-btn-wa:hover { background: #F4F6FA; color: #15123A; border-color: #D5D8E0 !important; transform: none; }
+html:not([data-area="admin"]) .qh-btn-primary { background: #15123A; color: #fff; padding: 0 6px 0 18px; box-shadow: 0 8px 18px -10px rgba(21, 18, 58, .6); }
+html:not([data-area="admin"]) .qh-btn-primary:hover { background: #2A2560; transform: none; }
+html:not([data-area="admin"]) .qh-btn-arrow { width: 30px; height: 30px; border-radius: 6px; }
+html:not([data-area="admin"]) .qh-burger { background: #F4F6FA; border: 1px solid #ECEDF2; }
+
+/* Mobile drawer */
+html:not([data-area="admin"]) .qm-drawer-head { background: #fff; border-bottom: 1px solid #ECEDF2; }
+html:not([data-area="admin"]) .qm-item.is-open { background: #F4F6FA; }
+html:not([data-area="admin"]) .qm-link:hover,
+html:not([data-area="admin"]) .qm-link.is-active { color: #15123A; }
+html:not([data-area="admin"]) .qm-link.is-active { font-weight: 600; }
+html:not([data-area="admin"]) .qm-toggle { background: #F4F6FA; color: #15123A; }
+html:not([data-area="admin"]) .qm-sub-link.is-active { color: #15123A; font-weight: 600; }
+html:not([data-area="admin"]) .qm-cta-primary { background: #15123A; box-shadow: none; }
+html:not([data-area="admin"]) .qm-cta-outline { background: #fff; border: 1px solid #E3E5EB; color: #15123A; }
+html:not([data-area="admin"]) .qm-drawer .qm-cta-wa { box-shadow: none !important; }
+
+/* ================================================================
+   FOOTER — QIMD wordmark in the logo gradient, slowly flowing,
+   fading into the footer at the bottom
+   ================================================================ */
+html:not([data-area="admin"]) .qf-watermark {
+  background: linear-gradient(100deg, #C0189F 0%, #8F30C0 18%, #3C78F0 36%, #00A8F0 50%, #3C78F0 64%, #8F30C0 82%, #C0189F 100%);
+  background-size: 300% 100%;
+  width: fit-content; margin-left: auto; margin-right: auto; padding: 0 .04em;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-mask-image: linear-gradient(180deg, #000 30%, rgba(0, 0, 0, .55) 62%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 30%, rgba(0, 0, 0, .55) 62%, transparent 96%);
+  opacity: .9;
+  animation: qfFlow 14s linear infinite;
+}
+@keyframes qfFlow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-area="admin"]) .qf-watermark { animation: none; } }
