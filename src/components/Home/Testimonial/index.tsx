@@ -29,7 +29,7 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
   const open = () => onOpenVideo(resolved.src || testimonial.videoUrl!, testimonial.studentName)
 
   return (
-    <article className={`qo-voice${resolved.isLocal ? ' is-reel' : ''}`}>
+    <article className="qo-voice">
       {isVideoTestimonial && (
         <button type="button" onClick={open} className="qo-voice-media" aria-label="Play video review">
           <Image
@@ -37,31 +37,25 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
             alt={`${testimonial.studentName} Video Review`}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"
+            className={resolved.isLocal ? 'is-reel' : ''}
           />
-          <span className="qo-voice-play">
-            <Icon icon="mdi:play" />
-          </span>
           <span className="qo-voice-tag">
             <Icon icon="mdi:video" /> Video Review
+          </span>
+          <span className="qo-voice-play">
+            <Icon icon="mdi:play" />
           </span>
         </button>
       )}
 
       <div className="qo-voice-body">
-        <div className="qo-voice-person">
-          <div className="qo-voice-avatar">
-            {testimonial.image ? (
-              <Image src={testimonial.image} alt={testimonial.studentName} width={44} height={44} />
-            ) : (
-              <Icon icon="mdi:account" />
-            )}
-          </div>
-          <div className="qo-voice-who">
-            <h4>{testimonial.studentName}</h4>
-            <p>{testimonial.courseTaken || (testimonial as any).course}</p>
-            {testimonial.company && <p className="qo-voice-company">@ {testimonial.company}</p>}
-          </div>
+        <div className="qo-voice-top">
           <StarRating rating={testimonial.rating} />
+        </div>
+        <div className="qo-voice-who">
+          <h4>{testimonial.studentName}</h4>
+          <p>{testimonial.courseTaken || (testimonial as any).course}</p>
+          {testimonial.company && <p className="qo-voice-company">@ {testimonial.company}</p>}
         </div>
 
         {testimonial.heading && <h5 className="qo-voice-heading">&quot;{testimonial.heading}&quot;</h5>}
@@ -69,7 +63,10 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
         <p className="qo-voice-quote">&quot;{testimonial.review}&quot;</p>
 
         <div className="qo-voice-foot">
-          <span>Verified QIMD Student</span>
+          <span>
+            <Icon icon="mdi:check-decagram" />
+            Verified QIMD Student
+          </span>
           {isVideoTestimonial && (
             <button type="button" onClick={open} className="qo-voice-watch">
               <span>Watch Video</span>
@@ -91,18 +88,22 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials 
 
   return (
     <section className="qo-sec qo-voices" id="testimonials">
-      <div className="qo-wrap qo-voices-grid">
+      <div className="qo-wrap">
         <div className="qo-voices-head">
-          <span className="qo-kicker is-light">
-            <Icon icon="mdi:video-outline" />
-            Real Student Stories
-          </span>
-          <h2 className="qo-h2 is-light">Student Video Testimonials</h2>
-          <p>Hear directly from our students about their learning experience, practical training, and career growth.</p>
-          <Link href="/reviews-testimonials" className="qo-btn qo-btn-light">
-            <span>View All Reviews</span>
-            <Icon icon="mdi:arrow-right" />
-          </Link>
+          <div>
+            <span className="qo-kicker is-light">
+              <Icon icon="mdi:video-outline" />
+              Real Student Stories
+            </span>
+            <h2 className="qo-h2 is-light">Student Video Testimonials</h2>
+          </div>
+          <div className="qo-voices-side">
+            <p>Hear directly from our students about their learning experience, practical training, and career growth.</p>
+            <Link href="/reviews-testimonials" className="qo-btn qo-btn-light">
+              <span>View All Reviews</span>
+              <Icon icon="mdi:arrow-right" />
+            </Link>
+          </div>
         </div>
 
         <div className="qo-voices-list">

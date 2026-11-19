@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { statsData, heroBadges, siteConfig, coursesData } from "@/data";
+import { statsData, heroBadges, siteConfig } from "@/data";
 import EnquiryForm from "@/components/Common/EnquiryForm";
 import HeroBannerCarousel from "./HeroBannerCarousel";
 
@@ -61,13 +61,6 @@ function CounterItem({ stat, index }: { stat: { value: string; label: string }, 
 }
 
 const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchFocused, setSearchFocused] = useState(false);
-
-  const searchResults = searchQuery.length > 1
-    ? coursesData.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
-    : [];
-
   const title = section?.sectionTitle || "India's First Industry-Oriented & AI Powered Marketing & Design Institute";
   const subtitle = section?.subtitle || "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities.";
   const buttonText = section?.buttonText || "Explore Programs";
@@ -78,42 +71,6 @@ const HeroSection: React.FC<{ section?: any }> = ({ section }) => {
       <div className="qo-wrap qo-hero-grid">
         {/* LEFT: search, headline, highlights, actions */}
         <div className="qo-hero-copy">
-          <div className="qo-search">
-            <div className="qo-search-label">
-              <Icon icon="mdi:magnify" />
-              <span>Quick Program Search</span>
-            </div>
-            <div className="qo-search-field">
-              <input
-                type="text"
-                placeholder="Search for programs (e.g. Graphic Design, Marketing)..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
-              />
-              {searchQuery && (
-                <button type="button" onClick={() => setSearchQuery('')} className="qo-search-clear" aria-label="Clear search">
-                  <Icon icon="mdi:close" />
-                </button>
-              )}
-            </div>
-
-            {searchFocused && searchResults.length > 0 && (
-              <div className="qo-search-results">
-                {searchResults.map(c => (
-                  <Link key={c.id} href={`/courses/${c.slug}`} className="qo-search-item">
-                    <Icon icon="mdi:book-open-page-variant" />
-                    <span>{c.title}</span>
-                  </Link>
-                ))}
-              </div>
-            )}
-            {searchFocused && searchQuery.length > 1 && searchResults.length === 0 && (
-              <p className="qo-search-empty">No matching programs found</p>
-            )}
-          </div>
-
           <span className="qo-badge">
             <span className="qo-badge-dot" aria-hidden="true" />
             {siteConfig.fullName}

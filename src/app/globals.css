@@ -5567,3 +5567,59 @@ html:not([data-area="admin"]) main .qo-prog-title { margin: 0; font-family: var(
   .qo-mosaic > .qo-tile:nth-child(6) { grid-column: span 2; }
 }
 @media (max-width: 640px) { .qo-mosaic { grid-auto-rows: 140px; } }
+
+/* ── Home v2 tweaks ── */
+/* Hero without search: content starts with the badge */
+.qo-hero { padding-top: 56px; }
+.qo-hero-copy { gap: 22px; }
+
+/* Programs: sticky scroll-driven showcase (desktop) */
+.qo-prog-track.is-scroll { position: relative; }
+.qo-prog-track.is-scroll .qo-prog-sticky { position: sticky; top: 112px; }
+.qo-prog-track.is-scroll .qo-prog-media { min-height: 0; height: min(520px, calc(100vh - 230px)); }
+.qo-prog-tab { position: relative; overflow: hidden; }
+.qo-prog-tab-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--qo-amber); transform-origin: 0 50%; transition: transform .15s linear; }
+
+/* Video testimonials: professional white cards, cropped frame, aligned */
+.qo-voices { padding: 104px 0; }
+.qo-voices-head { position: static; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 64px; align-items: end; margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.qo-voices-head > div:first-child { display: grid; gap: 14px; justify-items: start; }
+.qo-voices-side { display: grid; gap: 18px; justify-items: start; }
+.qo-voices-side p { margin: 0; font-size: 16px; line-height: 1.75; color: rgba(255, 255, 255, .75); }
+.qo-voices-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
+.qo-voice { display: flex; flex-direction: column; height: 100%; border-radius: 20px; overflow: hidden; background: #fff; color: var(--qo-text); transition: transform .3s, box-shadow .3s; }
+.qo-voice:hover { transform: translateY(-6px); box-shadow: 0 30px 50px -30px rgba(0, 0, 0, .6); }
+.qo-voice-media, .qo-voice.is-reel .qo-voice-media { position: relative; display: block; width: 100%; aspect-ratio: 16 / 10; flex-shrink: 0; }
+.qo-voice-media img { object-fit: cover; object-position: center 30%; }
+.qo-voice-media img.is-reel { object-position: center 38%; transform: scale(1.35); transform-origin: center 38%; }
+.qo-voice:hover .qo-voice-media img { transform: scale(1.04); }
+.qo-voice:hover .qo-voice-media img.is-reel { transform: scale(1.42); }
+.qo-voice-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(21, 18, 58, .55), rgba(21, 18, 58, 0) 55%); pointer-events: none; }
+.qo-voice-play { z-index: 2; top: auto; left: auto; right: 16px; bottom: 16px; margin: 0; width: 50px; height: 50px; font-size: 24px; box-shadow: 0 0 0 7px rgba(255, 255, 255, .25); }
+.qo-voice-tag { z-index: 2; top: 14px; left: 14px; }
+.qo-voice-body { display: flex; flex-direction: column; gap: 10px; padding: 22px 24px 20px; flex: 1; }
+.qo-voice-top { display: flex; align-items: center; justify-content: space-between; }
+.qo-voice-who h4 { margin: 0; font-family: var(--qx-heading); font-size: 18px; font-weight: 600; color: var(--qo-ink); }
+.qo-voice-who p { margin: 3px 0 0; font-size: 13.5px; font-weight: 500; color: var(--qo-purple); line-height: 1.4; }
+.qo-voice-who .qo-voice-company { color: var(--qo-muted); font-weight: 400; }
+.qo-voice-heading { margin: 4px 0 0; font-family: var(--qx-heading); font-size: 15px; font-weight: 600; color: var(--qo-ink); }
+.qo-voice-quote { margin: 4px 0 0; font-size: 14.5px; font-style: normal; line-height: 1.7; color: var(--qo-text); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.qo-voice-foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--qo-line); display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--qo-muted); }
+.qo-voice-foot > span { display: inline-flex; align-items: center; gap: 5px; }
+.qo-voice-foot > span svg { color: var(--qo-purple); font-size: 15px; }
+.qo-voice-watch { color: var(--qo-purple) !important; }
+.qo-voice-watch svg { color: var(--qo-purple); }
+@media (max-width: 1024px) {
+  .qo-voices-head { grid-template-columns: 1fr; }
+  .qo-voices-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) { .qo-voices-list { grid-template-columns: 1fr; } .qo-voices { padding: 64px 0; } }
+
+/* Logos in their own colours, no tile backgrounds */
+.qo-partner { width: auto; min-width: 150px; height: 80px; padding: 8px 26px; background: transparent; border-radius: 0; }
+.qo-partner-img { max-height: 52px; filter: none; opacity: 1; }
+.qo-partner:hover .qo-partner-img { transform: scale(1.06); }
+.qo-emi-belt { padding: 6px 0; background: transparent; }
+.qo-emi-logo { width: auto; min-width: 140px; height: 70px; padding: 6px 22px; background: transparent; border-radius: 0; }
+.qo-emi-logo img { max-height: 46px; }
+.qw-partner-img { filter: none; opacity: 1; }

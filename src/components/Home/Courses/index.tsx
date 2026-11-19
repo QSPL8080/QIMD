@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -15,9 +15,56 @@ function modeLabel(mode?: string) {
     : mode.replace(/Course/gi, 'Program');
 }
 
-/** Home: program showcase — pick a program on the left, see it on the right */
+/** Home: program showcase — programs change one by one as you scroll (desktop), tap to switch (mobile) */
 const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
   const [active, setActive] = useState(0);
+  const [scrollMode, setScrollMode] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const count = courses?.length || 0;
+
+  // Scroll-driven switching only where the sticky panel fits the screen
+  useEffect(() => {
+    const check = () => setScrollMode(count > 1 && window.innerWidth >= 1024 && window.innerHeight >= 720);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [count]);
+
+  useEffect(() => {
+    if (!scrollMode) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const el = trackRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const total = el.offsetHeight - window.innerHeight;
+        const p = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 0.9999) : 0;
+        setProgress(p);
+        setActive(Math.floor(p * count));
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [scrollMode, count]);
+
+  const selectProgram = useCallback((i: number) => {
+    const el = trackRef.current;
+    if (scrollMode && el) {
+      const total = el.offsetHeight - window.innerHeight;
+      const top = el.getBoundingClientRect().top + window.scrollY + (total * (i + 0.5)) / count;
+      window.scrollTo({ top, behavior: 'smooth' });
+    } else {
+      setActive(i);
+    }
+  }, [scrollMode, count]);
+
   if (!courses || courses.length === 0) return null;
 
   const course = courses[Math.min(active, courses.length - 1)];
@@ -40,6 +87,12 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
           </p>
         </div>
 
+        <div
+          ref={trackRef}
+          className={`qo-prog-track${scrollMode ? " is-scroll" : ""}`}
+          style={scrollMode ? { height: `calc(100vh + ${(count - 1) * 70}vh)` } : undefined}
+        >
+        <div className="qo-prog-sticky">
         <div className="qo-prog">
           {/* Program picker */}
           <div className="qo-prog-tabs" role="tablist" aria-label="Programs">
@@ -49,8 +102,7 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
                 type="button"
                 role="tab"
                 aria-selected={i === active}
-                onClick={() => setActive(i)}
-                onMouseEnter={() => setActive(i)}
+                onClick={() => selectProgram(i)}
                 className={`qo-prog-tab${i === active ? " is-active" : ""}`}
               >
                 <span className="qo-prog-num">{String(i + 1).padStart(2, "0")}</span>
@@ -59,6 +111,13 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
                   <span className="qo-prog-tab-meta">{c.duration} · {modeLabel(c.mode)}</span>
                 </span>
                 <Icon icon="mdi:arrow-right" className="qo-prog-tab-arrow" />
+                {scrollMode && i === active && (
+                  <span
+                    className="qo-prog-tab-progress"
+                    style={{ transform: `scaleX(${Math.min(1, Math.max(0, progress * count - i))})` }}
+                    aria-hidden="true"
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -117,6 +176,8 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
               </div>
             </div>
           </article>
+        </div>
+        </div>
         </div>
 
         <div className="qo-center">
