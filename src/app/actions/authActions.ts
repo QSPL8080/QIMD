@@ -46,7 +46,7 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
       console.warn('Audit log write warning during login:', e)
     }
 
-    return { success: true, redirect: '/admin/dashboard' }
+    return { success: true, redirect: user.role === 'SEO' ? '/admin/blogs' : '/admin/dashboard' }
   } catch (err: any) {
     console.error('Login action error details:', err)
     return { success: false, error: err.message || 'An unexpected server error occurred.' }

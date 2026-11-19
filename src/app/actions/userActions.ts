@@ -2,14 +2,14 @@
 
 import { db } from '@/lib/db'
 import { userSchema } from '@/lib/validations'
-import { requireAdminSession, hashPassword } from '@/lib/auth'
+import { requireAdminSession, hashPassword, isSuperAdminRole } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 export async function saveUserAction(data: any, id?: string) {
   const session = await requireAdminSession()
 
   // Verify Super Admin
-  if (session.roleName !== 'Super Admin') {
+  if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can manage user accounts.' }
   }
 
@@ -74,7 +74,7 @@ export async function saveUserAction(data: any, id?: string) {
 
 export async function trashUserAction(id: string) {
   const session = await requireAdminSession()
-  if (session.roleName !== 'Super Admin') {
+  if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can delete users.' }
   }
 
@@ -98,7 +98,7 @@ export async function trashUserAction(id: string) {
 
 export async function restoreUserAction(id: string) {
   const session = await requireAdminSession()
-  if (session.roleName !== 'Super Admin') {
+  if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can restore users.' }
   }
 
@@ -118,7 +118,7 @@ export async function restoreUserAction(id: string) {
 
 export async function deleteUserPermanentlyAction(id: string) {
   const session = await requireAdminSession()
-  if (session.roleName !== 'Super Admin') {
+  if (!isSuperAdminRole(session.roleName)) {
     return { success: false, error: 'FORBIDDEN: Only Super Admin can permanently delete users.' }
   }
 

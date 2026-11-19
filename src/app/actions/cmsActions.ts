@@ -7,14 +7,14 @@ import {
   testimonialSchema,
   faqSchema,
 } from '@/lib/validations'
-import { requireAdminSession } from '@/lib/auth'
+import { requireAdminSession, requireBlogEditorSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // --- BLOGS CMS ---
 export async function saveBlogAction(data: any, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     const validated = blogSchema.safeParse(data)
     if (!validated.success) {
@@ -85,7 +85,7 @@ export async function saveBlogAction(data: any, id?: string) {
 }
 
 export async function trashBlogAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     await db.blog.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/blog')
@@ -97,7 +97,7 @@ export async function trashBlogAction(id: string) {
 }
 
 export async function restoreBlogAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     await db.blog.update({ where: { id }, data: { isDeleted: false } })
     revalidatePath('/blog')
@@ -109,7 +109,7 @@ export async function restoreBlogAction(id: string) {
 }
 
 export async function deleteBlogAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const blog = await db.blog.findUnique({ where: { id } })
@@ -625,7 +625,7 @@ export async function deleteStudentReviewAction(id: string) {
 
 // 3. Blogs Bulk Actions
 export async function bulkTrashBlogsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.blog.updateMany({
@@ -641,7 +641,7 @@ export async function bulkTrashBlogsAction(ids: string[]) {
 }
 
 export async function bulkRestoreBlogsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.blog.updateMany({
@@ -657,7 +657,7 @@ export async function bulkRestoreBlogsAction(ids: string[]) {
 }
 
 export async function bulkDeleteBlogsPermanentlyAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')

@@ -1,11 +1,11 @@
 'use server'
 
-import { requireAdminSession } from '@/lib/auth'
+import { requireBlogEditorSession } from '@/lib/auth'
 import fs from 'fs'
 import path from 'path'
 
 export async function uploadMediaAction(formData: FormData) {
-  const session = await requireAdminSession()
+  const session = await requireBlogEditorSession()
 
   try {
     const file = formData.get('file') as File | null
@@ -62,7 +62,7 @@ export async function uploadMediaAction(formData: FormData) {
 }
 
 export async function deleteUnusedImageAction(fileUrl: string) {
-  await requireAdminSession()
+  await requireBlogEditorSession()
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
     const deleted = await safeDeleteUnusedFile(fileUrl)

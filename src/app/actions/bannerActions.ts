@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { requireContentManagerSession } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { safeDeleteUnusedFile } from '@/lib/mediaService'
 
@@ -20,7 +20,7 @@ export async function saveBannerAction(
   },
   id?: string
 ) {
-  await requireContentManagerSession()
+  await requireAdminSession()
 
   try {
     if (id) {
@@ -80,7 +80,7 @@ export async function saveBannerAction(
 }
 
 export async function deleteBannerPermanentlyAction(id: string) {
-  await requireContentManagerSession()
+  await requireAdminSession()
   try {
     const existing = await db.banner.findUnique({ where: { id } })
     if (existing) {

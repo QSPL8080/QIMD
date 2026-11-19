@@ -20,8 +20,8 @@ interface AdminShellProps {
 type NavItem = { href: string; label: string; icon: string }
 type NavGroup = { title: string; items: NavItem[]; show?: boolean }
 
-const isContentManager = (role: string) => role === 'Content Manager' || role === 'CONTENT_MANAGER'
-const isAdminRole = (role: string) => ['SUPER_ADMIN', 'Super Admin', 'ADMIN', 'Admin'].includes(role)
+const isSuperAdminRole = (role: string) => role === 'SUPER_ADMIN' || role === 'Super Admin'
+const isSeoRole = (role: string) => role === 'SEO'
 
 export default function AdminShell({ session, children }: AdminShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -37,14 +37,20 @@ export default function AdminShell({ session, children }: AdminShellProps) {
     return <>{children}</>
   }
 
-  const groups: NavGroup[] = [
+  const seoGroups: NavGroup[] = [
+    {
+      title: 'Website Content',
+      items: [{ href: '/admin/blogs', label: 'Blogs & Articles', icon: 'ion:document-text-outline' }],
+    },
+  ]
+
+  const adminGroups: NavGroup[] = [
     {
       title: 'Overview',
       items: [{ href: '/admin/dashboard', label: 'Dashboard', icon: 'ion:grid-outline' }],
     },
     {
       title: 'Leads',
-      show: !isContentManager(session.roleName),
       items: [
         { href: '/admin/enquiries/admission', label: 'Admission Enquiries', icon: 'ion:school-outline' },
         { href: '/admin/enquiries/contact', label: 'Contact Enquiries', icon: 'ion:mail-outline' },
@@ -68,10 +74,12 @@ export default function AdminShell({ session, children }: AdminShellProps) {
     },
     {
       title: 'Access',
-      show: isAdminRole(session.roleName),
+      show: isSuperAdminRole(session.roleName),
       items: [{ href: '/admin/users', label: 'Admin Users', icon: 'ion:people-outline' }],
     },
   ]
+
+  const groups = isSeoRole(session.roleName) ? seoGroups : adminGroups
 
   const isActive = (href: string) => pathname === href || (href !== '/admin/dashboard' && pathname?.startsWith(href + '/'))
 
@@ -82,7 +90,7 @@ export default function AdminShell({ session, children }: AdminShellProps) {
       {/* Sidebar */}
       <aside className={`qad-side${mobileMenuOpen ? ' is-open' : ''}`}>
         <div className="qad-brand">
-          <Link href="/admin/dashboard" className="qad-brand-link" aria-label="QIMD Admin">
+          <Link href={isSeoRole(session.roleName) ? '/admin/blogs' : '/admin/dashboard'} className="qad-brand-link" aria-label="QIMD Admin">
             <Image src="/images/logo/footer-qimd.png" alt="QIMD" width={180} height={70} priority />
           </Link>
           <button onClick={() => setMobileMenuOpen(false)} className="qad-icon-btn qad-only-mobile" title="Close menu">

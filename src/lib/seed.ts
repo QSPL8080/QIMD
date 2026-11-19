@@ -19,11 +19,10 @@ export async function seedDatabase() {
   const activeEmails = [
     'superadmin@gmail.com',
     'admin@gmail.com',
-    'employee@gmail.com',
-    'cm@gmail.com',
+    'seo@qimd.com', // SEO blog editor (created separately; not reset here)
   ]
 
-  // Remove all users except the 4 required CMS/CRM accounts
+  // Remove all users except the required CMS/CRM accounts
   await db.user.deleteMany({
     where: {
       email: {
@@ -35,8 +34,6 @@ export async function seedDatabase() {
   // Password hashes
   const superadminHash = await hashPassword('Superadmin@123')
   const adminHash = await hashPassword('Admin@123')
-  const employeeHash = await hashPassword('Employee@123')
-  const cmHash = await hashPassword('Content@123')
 
   // Super Admin
   const adminUser = await db.user.upsert({
@@ -78,48 +75,8 @@ export async function seedDatabase() {
     },
   })
 
-  // Employee
-  await db.user.upsert({
-    where: {
-      email: 'employee@gmail.com',
-    },
-    update: {
-      passwordHash: employeeHash,
-      status: true,
-      role: 'EMPLOYEE',
-    },
-    create: {
-      fullName: 'Staff Employee',
-      email: 'employee@gmail.com',
-      passwordHash: employeeHash,
-      phone: '+919000000002',
-      role: 'EMPLOYEE',
-      status: true,
-    },
-  })
-
-  // Content Manager
-  await db.user.upsert({
-    where: {
-      email: 'cm@gmail.com',
-    },
-    update: {
-      passwordHash: cmHash,
-      status: true,
-      role: 'CONTENT_MANAGER',
-    },
-    create: {
-      fullName: 'Content Manager',
-      email: 'cm@gmail.com',
-      passwordHash: cmHash,
-      phone: '+919000000003',
-      role: 'CONTENT_MANAGER',
-      status: true,
-    },
-  })
-
   console.log(
-    'CMS/CRM user accounts seeded successfully: superadmin@gmail.com, admin@gmail.com, employee@gmail.com, cm@gmail.com'
+    'CMS/CRM user accounts seeded successfully: superadmin@gmail.com, admin@gmail.com'
   )
 
   // ============================================================

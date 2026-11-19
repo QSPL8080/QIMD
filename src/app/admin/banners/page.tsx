@@ -1,13 +1,13 @@
 import React from 'react'
 import { db } from '@/lib/db'
-import { requireContentManagerSession } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/auth'
 import BannerManagementClient from './BannerManagementClient'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function AdminBannersPage() {
-  await requireContentManagerSession()
+  await requireAdminSession()
 
   const banners = await db.banner.findMany({
     where: { isDeleted: false },

@@ -14,7 +14,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  // Pass the path on so the admin layout can apply role-based page access
+  const headers = new Headers(request.headers)
+  headers.set('x-pathname', pathname)
+  return NextResponse.next({ request: { headers } })
 }
 
 export const config = {
