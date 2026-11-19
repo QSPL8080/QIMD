@@ -69,6 +69,7 @@ export const siteSettings = {
           { id: 'op-1', title: 'AI Powered Digital Marketing Program', url: '/courses/ai-digital-marketing', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 0 },
           { id: 'op-2', title: 'AI Powered Graphic Design Program', url: '/courses/ai-graphic-design', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1 },
           { id: 'op-3', title: 'AI Powered Video Editing Program', url: '/courses/ai-video-editing', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3 },
+          { id: 'op-all', title: 'View All Programs', url: '/courses', linkType: 'BUTTON', openInNewTab: false, displayOrder: 4 },
         ],
       },
       {
