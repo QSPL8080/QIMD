@@ -1,59 +1,128 @@
+'use client'
+
+import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { coursesData } from "@/data";
-import CourseCard from "@/components/Common/CourseCard";
 
 interface CoursesSectionProps {
   courses?: any[];
 }
 
-const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
-  if (!courses || courses.length === 0) return null;
-  return (
-    <section
-      className="py-16 lg:py-24 relative overflow-hidden text-midnight_text border-y border-slate-200/80 dark:border-dark_border"
-      id="courses"
-      style={{
-        background: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, #e8dcff 75%, #c8e0fe 100%)',
-      }}
-    >
-      {/* Subtle Ambient Glow */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#764DFF]/10 rounded-full blur-3xl pointer-events-none -z-0" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#38bdf8]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+function modeLabel(mode?: string) {
+  return !mode || mode === 'Offline' || mode === 'Offline Only' || mode === 'Offline Course'
+    ? 'Offline Program'
+    : mode.replace(/Course/gi, 'Program');
+}
 
-      <div className="container mx-auto lg:max-w-(--breakpoint-xl) md:max-w-(--breakpoint-md) px-4 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-12" data-aos="fade-up">
-          <div className="inline-flex items-center gap-2 bg-[#764DFF]/15 text-[#5c38d6] border border-[#764DFF]/25 px-4 py-1.5 rounded-full text-xs font-bold backdrop-blur-md mb-3 shadow-xs">
-            <Icon icon="mdi:book-open-page-variant" className="text-base text-[#764DFF]" />
-            <span>Our Programs</span>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#111827] dark:text-white mb-4 tracking-tight">
-            Our Most In-Demand Training Programs
-          </h2>
-          <p className="text-slate-700 dark:text-white/80 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-medium">
+/** Home: program showcase — pick a program on the left, see it on the right */
+const CoursesSection: React.FC<CoursesSectionProps> = ({ courses = [] }) => {
+  const [active, setActive] = useState(0);
+  if (!courses || courses.length === 0) return null;
+
+  const course = courses[Math.min(active, courses.length - 1)];
+  const courseImage = course.image || course.bannerImage;
+  const highlightsList: string[] =
+    course.highlights || course.learningOutcomes || ['100% Practical Training', 'AI Tools Integration', 'Live Client Projects', '100% Placement Support'];
+
+  return (
+    <section className="qo-sec qo-programs" id="courses">
+      <div className="qo-wrap">
+        <div className="qo-head">
+          <span className="qo-kicker">
+            <Icon icon="mdi:book-open-page-variant" />
+            Our Programs
+          </span>
+          <h2 className="qo-h2">Our Most In-Demand Training Programs</h2>
+          <p className="qo-lead">
             Practical, AI-powered training programs designed to make you job-ready from day one.
             All programs are offline with live client projects and 100% placement support.
           </p>
         </div>
 
-        {/* Course Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course, index) => (
-            <div key={course.id} data-aos="fade-up" data-aos-delay={index * 100}>
-              <CourseCard course={course} showBrochure={true} />
+        <div className="qo-prog">
+          {/* Program picker */}
+          <div className="qo-prog-tabs" role="tablist" aria-label="Programs">
+            {courses.map((c, i) => (
+              <button
+                key={c.id}
+                type="button"
+                role="tab"
+                aria-selected={i === active}
+                onClick={() => setActive(i)}
+                onMouseEnter={() => setActive(i)}
+                className={`qo-prog-tab${i === active ? " is-active" : ""}`}
+              >
+                <span className="qo-prog-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="qo-prog-tab-text">
+                  <span className="qo-prog-tab-title">{c.title}</span>
+                  <span className="qo-prog-tab-meta">{c.duration} · {modeLabel(c.mode)}</span>
+                </span>
+                <Icon icon="mdi:arrow-right" className="qo-prog-tab-arrow" />
+              </button>
+            ))}
+          </div>
+
+          {/* Selected program */}
+          <article key={course.id} className="qo-prog-panel" role="tabpanel">
+            <Link href={`/courses/${course.slug}`} className="qo-prog-media" aria-label={course.title}>
+              {courseImage ? (
+                <Image
+                  src={courseImage}
+                  alt={course.title}
+                  fill
+                  unoptimized
+                  quality={100}
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                />
+              ) : (
+                <span className="qo-prog-fallback">
+                  <Icon icon={course.icon || 'mdi:book-open-page-variant'} />
+                </span>
+              )}
+              {course.featured && <span className="qo-prog-badge">Popular</span>}
+            </Link>
+
+            <div className="qo-prog-body">
+              <div className="qo-prog-chips">
+                <span>
+                  <Icon icon="mdi:clock-outline" />
+                  {course.duration}
+                </span>
+                <span>
+                  <Icon icon="mdi:school" />
+                  {modeLabel(course.mode)}
+                </span>
+              </div>
+              <h3 className="qo-prog-title">
+                <Link href={`/courses/${course.slug}`}>{course.title}</Link>
+              </h3>
+              <p className="qo-prog-desc">{course.description}</p>
+              <ul className="qo-prog-points">
+                {highlightsList.slice(0, 4).map((highlight, index) => (
+                  <li key={index}>
+                    <Icon icon="mdi:check-circle" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="qo-prog-actions">
+                <Link href={`/courses/${course.slug}`} className="qo-btn qo-btn-main">
+                  View Program
+                </Link>
+                <Link href={`/brochure/${course.slug}`} target="_blank" rel="noopener noreferrer" className="qo-btn qo-btn-soft">
+                  <Icon icon="mdi:file-download" />
+                  Download Brochure
+                </Link>
+              </div>
             </div>
-          ))}
+          </article>
         </div>
 
-        {/* View All CTA */}
-        <div className="text-center mt-12" data-aos="fade-up">
-          <Link
-            href="/courses"
-            className="inline-flex items-center gap-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white font-extrabold px-8 py-4 rounded-xl text-sm sm:text-base transition-all duration-200 hover:scale-105 shadow-xl"
-          >
+        <div className="qo-center">
+          <Link href="/courses" className="qo-btn qo-btn-dark">
             <span>View All Programs</span>
-            <Icon icon="mdi:arrow-right" className="text-lg" />
+            <Icon icon="mdi:arrow-right" />
           </Link>
         </div>
       </div>
