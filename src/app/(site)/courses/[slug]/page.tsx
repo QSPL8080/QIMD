@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { programSeo } from "@/data/programSeo";
-import ProgramSeoContent, { ProgramSeoSchema } from "@/components/Programs/ProgramSeoContent";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -25,19 +23,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const course = findCourse(slug);
   if (!course) return { title: "Program Not Found" };
-  const seo = programSeo[slug];
-  if (seo) {
-    return {
-      title: { absolute: seo.metaTitle },
-      description: seo.metaDescription,
-      alternates: { canonical: `https://quickuppinstitute.com/courses/${slug}` },
-      openGraph: {
-        title: seo.metaTitle,
-        description: seo.metaDescription,
-        url: `https://quickuppinstitute.com/courses/${slug}`,
-      },
-    };
-  }
   return {
     title: `${course.title} – ${siteConfig.name}`,
     description: course.description,
@@ -56,7 +41,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const whatsappUrl: string = siteConfig.socialLinks.whatsapp;
 
   if (!course) notFound();
-  const seo = programSeo[slug];
 
   const courseBanner = course.bannerImage || course.image;
   const modeLabel = !course.mode || /^offline/i.test(course.mode) ? 'Offline Program' : String(course.mode).replace(/Course/gi, 'Program');
@@ -65,8 +49,7 @@ export default async function CourseDetailPage({ params }: PageProps) {
   const curriculum: any[] = course.curriculum || [];
 
   return (
-    <div className={`qp qp-detail${seo ? ' qs-page' : ''}`}>
-      {seo && <ProgramSeoSchema seo={seo} slug={slug} />}
+    <div className="qp qp-detail">
       {/* Header */}
       <section className="qp-hero qp-dhero" data-qx="off">
         <div className="qp-wrap">
@@ -90,20 +73,8 @@ export default async function CourseDetailPage({ params }: PageProps) {
                   {modeLabel}
                 </span>
               </div>
-              {seo ? (
-                <>
-                  <h1 className="qp-h1">{seo.h1}</h1>
-                  <p className="qs-tagline">{seo.tagline}</p>
-                  {seo.intro.map((p, i) => (
-                    <p key={i} className="qp-lead qs-lead">{p}</p>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <h1 className="qp-h1">{course.title}</h1>
-                  {course.description && <p className="qp-lead">{course.description}</p>}
-                </>
-              )}
+              <h1 className="qp-h1">{course.title}</h1>
+              {course.description && <p className="qp-lead">{course.description}</p>}
               <div className="qp-actions">
                 <Link href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="qp-btn qp-btn-ghost">
                   <Icon icon="mdi:whatsapp" />
@@ -131,7 +102,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
         <div className="qp-wrap qp-dgrid">
           {/* Main Content */}
           <div className="qp-dmain">
-            {seo ? <ProgramSeoContent seo={seo} /> : (<>
             {/* Highlights */}
             <div className="qp-block">
               <div className="qp-block-head">
@@ -198,7 +168,6 @@ export default async function CourseDetailPage({ params }: PageProps) {
                 </div>
               </div>
             )}
-            </>)}
           </div>
 
           {/* Sidebar – Enquiry Form */}

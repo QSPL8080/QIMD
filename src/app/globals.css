@@ -6193,9 +6193,28 @@ html[data-area="admin"] [class~="font-extrabold"] { font-weight: 700; }
 .qbin-modal-actions .qbin-btn { flex: 1; justify-content: center; }
 
 /* ================================================================
-   PROGRAM SEO PAGE (e.g. /courses/ai-graphic-design)
+   SEO LANDING PAGES (/digital-marketing-courses-pune, /video-editing-courses-pune,
+   /graphic-design-courses-pune)
    ================================================================ */
-.qs-page .qp-dhero-copy .qp-h1 { max-width: 15ch; }
+.qs-page .qp-dhero-copy .qp-h1 { max-width: 16ch; margin-top: 0; }
+.qs-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 56px; align-items: start; }
+.qs-page .qp-dhero .qp-lead { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.qs-hero-form { scroll-margin-top: 110px; }
+.qs-prose-gap { margin-bottom: 18px; }
+.qs-prog { display: grid; border-radius: 16px; overflow: hidden; background: #fff; border: 1px solid #ECEDF2; transition: border-color .2s; }
+.qs-prog:hover { border-color: #15123A; }
+.qs-prog-img { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #F4F6FA; }
+.qs-prog-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qs-prog-body { display: grid; gap: 8px; padding: 16px 18px 18px; }
+.qs-prog-body strong { font-family: var(--qx-heading); font-size: 15.5px; font-weight: 600; color: #15123A; line-height: 1.4; }
+.qs-prog-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #5B3FD9; }
+.qs-prog-link svg { font-size: 16px; transition: transform .2s; }
+.qs-prog:hover .qs-prog-link svg { transform: translateX(3px); }
+.qp .qs-help-cta { margin-top: 10px; justify-content: center; width: 100%; }
+@media (max-width: 1024px) {
+  .qs-hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .qs-hero-form { max-width: 560px; }
+}
 .qs-tagline { margin: 4px 0 0; font-family: var(--qx-heading); font-size: clamp(16px, 1.4vw, 19px); font-weight: 600; color: #D9922B; line-height: 1.4; }
 .qs-lead { margin-top: 0 !important; font-size: 15.5px !important; }
 .qs-page .qp-dhero-copy { gap: 14px; }

@@ -66,10 +66,10 @@ export const siteSettings = {
         title: 'Our Programs',
         displayOrder: 3,
         links: [
-          { id: 'op-1', title: 'AI Powered Digital Marketing Program', url: '/courses/ai-digital-marketing', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 0 },
-          { id: 'op-2', title: 'AI Powered Graphic Design Program', url: '/courses/ai-graphic-design', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1 },
-          { id: 'op-3', title: 'AI Powered Video Editing Program', url: '/courses/ai-video-editing', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3 },
-          { id: 'op-all', title: 'View All Programs', url: '/courses', linkType: 'BUTTON', openInNewTab: false, displayOrder: 4 },
+          { id: 'op-1', title: 'Digital Marketing Courses in Pune', url: '/digital-marketing-courses-pune', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 0 },
+          { id: 'op-2', title: 'Graphic Design Courses in Pune', url: '/graphic-design-courses-pune', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 1 },
+          { id: 'op-3', title: 'Video Editing Courses in Pune', url: '/video-editing-courses-pune', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 2 },
+          { id: 'op-all', title: 'View All Programs', url: '/courses', linkType: 'INTERNAL', openInNewTab: false, displayOrder: 3 },
         ],
       },
       {

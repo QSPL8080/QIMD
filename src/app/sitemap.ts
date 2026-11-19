@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { coursesData, blogsData, eventsData } from "@/data";
+import { seoPages } from "@/data/seoPages";
 
 const BASE_URL = "https://www.qimd.in";
 
@@ -23,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/terms-and-conditions`, priority: 0.3, changeFrequency: "yearly" as const },
     { url: `${BASE_URL}/refund-policy`, priority: 0.3, changeFrequency: "yearly" as const },
     { url: `${BASE_URL}/sitemap`, priority: 0.4, changeFrequency: "monthly" as const },
+    ...seoPages.map((p) => ({ url: `${BASE_URL}/${p.path}`, priority: 0.9, changeFrequency: "monthly" as const })),
   ];
 
   const coursePages = coursesData.map((course) => ({
