@@ -59,7 +59,7 @@ export default async function AdmissionPage() {
                   "Career switchers from any field or background",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-muted dark:text-white/70">
-                    <span className="text-primary font-bold mt-0.5">✓</span>
+                    <span className="text-midnight_text dark:text-white font-bold mt-0.5">✓</span>
                     {item}
                   </li>
                 ))}
@@ -116,7 +116,7 @@ export default async function AdmissionPage() {
                   "Lifetime alumni support",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-muted dark:text-white/70">
-                    <span className="text-accent font-bold">✓</span>
+                    <span className="text-midnight_text dark:text-white font-bold">✓</span>
                     {item}
                   </li>
                 ))}

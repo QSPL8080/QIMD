@@ -5636,3 +5636,95 @@ html:not([data-area="admin"]) main .qo-prog-title { margin: 0; font-family: var(
 @media (max-width: 640px) {
   .qw-sec-dark + .qw-sec-cta { padding-top: 56px; }
 }
+
+/* ================================================================
+   MONOCHROME ICONS — every icon on the public site is black (site ink)
+   on light surfaces and white on dark surfaces. Icon tiles are neutral.
+   --qi carries the icon tone down the tree; the innermost surface wins.
+   ================================================================ */
+html:not([data-area="admin"]) { --qi-ink: #15123A; --qi-tile: #F1F2F5; }
+html:not([data-area="admin"]) svg.iconify { color: var(--qi, var(--qi-ink)) !important; }
+
+/* Dark surfaces → white icons */
+html:not([data-area="admin"]) :is(
+  .qh-topbar, footer.qf, .qf,
+  .qw-sec-dark, .qw-hero-aside, .qw-role-head, .qw-film-poster, .qw-badge-tl,
+  .qy-sec-navy, .qy-stair:last-child,
+  .qk-ink, .qk-cta, .qk-panel, .qk-pillar,
+  .qo-counsel, .qo-voices, .qo-why-intro,
+  .qa-tile-night, .qa-tile-accent, .qa-video, .qa-kicker, .qa-check-ic,
+  .qn-desk-intro, .qn-guide, .qn-guide-cta,
+  .qp, .qp-help, .qp-row, .qp-formcard-ic, .qp-tile-ic,
+  .bg-gradient-to-br, .bg-gradient-to-r, .bg-gradient-to-tr, .bg-primary
+) { --qi: #fff; }
+
+/* Light surfaces (cards / forms that sit inside dark sections) → black icons */
+html:not([data-area="admin"]) :is(
+  .qo-voice, .qo-counsel-form, .qo-hero-form,
+  .qp-block, .qp-formcard, .qp-module,
+  .qn-desk-form, .qk-sheet, .qk-cell, .qw-polaroid, .qw-review, .qo-review,
+  .qa-tile-white, .qa-point, .qw-story, .qw-index-card
+) { --qi: var(--qi-ink); }
+html:not([data-area="admin"]) .qk-cells.is-light .qk-cell { --qi: #fff; }
+
+/* Buttons: filled/dark → white icon, light/soft/outline → black icon */
+html:not([data-area="admin"]) :is(
+  [class*="-btn-main"], [class*="-btn-dark"], [class*="-btn-ink"], [class*="-btn-accent"],
+  [class*="-btn-glass"], [class*="-btn-submit"], [class*="-btn-ghost"], .qc-submit,
+  .qh-hire, .qh-link.is-active, .qo-prog-tab.is-active, .qa-tab.is-active,
+  .qf-legal-link.is-active, .whatsapp-float
+) { --qi: #fff; }
+html:not([data-area="admin"]) :is(
+  [class*="-btn-light"], [class*="-btn-soft"], [class*="-btn-outline"], [class*="-btn-line"],
+  [class*="-btn-lime"], .qk-job-apply, .qw-polaroid-play, .qo-voice-play, .qw-film-play, .bg-secondary,
+  .qo-counsel-btn.is-primary, .qw-film-tag, .qo-voice-tag, .ql-meta-chip, .ql-crumb
+) { --qi: var(--qi-ink); }
+/* WhatsApp keeps its own brand colour; form-field adornments stay quiet grey */
+html:not([data-area="admin"]) :is([class*="-btn-wa"], .qp-help-link.is-wa, .qc-input-wrap, .qc-select, .phone-country-btn, [class*="text-gray-4"]) { --qi: currentColor; }
+
+/* Neutral icon tiles on light surfaces */
+html:not([data-area="admin"]) :is(.qa-ic, .qk-job-ic, .qk-list-ic, .qk-upload-ic, .qy-joiner-ic, .qy-reason-ic, .qo-why-ic, .qh-drop-ic, .qo-faq-ic) {
+  background: var(--qi-tile); --qi: var(--qi-ink);
+}
+html:not([data-area="admin"]) :is(.qa-tile-night, .qa-tile-accent) .qa-ic { background: rgba(255, 255, 255, .1); --qi: #fff; }
+
+/* Solid accent tiles (were purple / amber) → black tile, white icon */
+html:not([data-area="admin"]) :is(.qw-index-ic, .qw-story-ic, .qk-check-ic, .qd-help-ic, .qy-sub-ic, .qn-place-ic, .qw-panel-ic, .qo-emi-ic) {
+  background: var(--qi-ink); --qi: #fff;
+}
+html:not([data-area="admin"]) .qw-sec-dark .qw-panel-ic { background: rgba(255, 255, 255, .1); }
+html:not([data-area="admin"]) .qa-play { background: #fff; --qi: var(--qi-ink); }
+
+/* Tiles on dark surfaces */
+html:not([data-area="admin"]) :is(.qf-card-ic, .qp-point-ic, .qn-line-ic, .qh-contact-ic) { background: rgba(255, 255, 255, .08); --qi: #fff; }
+html:not([data-area="admin"]) .qh-btn-arrow { background: rgba(255, 255, 255, .14); --qi: #fff; }
+
+/* Hover / active states */
+html:not([data-area="admin"]) :is(.qh-drop-item:hover, .qh-drop-item.is-active) .qh-drop-ic { background: var(--qi-ink); --qi: #fff; }
+html:not([data-area="admin"]) .qw-index-card:hover { --qi: #fff; }
+html:not([data-area="admin"]) .qw-index-card:hover .qw-index-ic { background: rgba(255, 255, 255, .12); }
+html:not([data-area="admin"]) .qo-why-card:hover { --qi: #fff; }
+html:not([data-area="admin"]) .qo-why-card:hover .qo-why-ic { background: rgba(255, 255, 255, .1); --qi: #fff; }
+html:not([data-area="admin"]) .qw-love:hover .qw-love-ic { background: var(--qi-ink); --qi: #fff; }
+html:not([data-area="admin"]) .qn .qn-line:hover .qn-line-ic { background: #fff; --qi: var(--qi-ink); }
+html:not([data-area="admin"]) .qw-sticker:hover { --qi: #fff; }
+html:not([data-area="admin"]) .qk-job:hover .qk-job-apply { --qi: #fff; }
+
+/* Social icons: white on the dark header strip, footer; black in the light mobile drawer; no brand colours on hover */
+html:not([data-area="admin"]) :is(.qh-social, .qf-social) { --qi: #fff; }
+html:not([data-area="admin"]) .qm-social { --qi: var(--qi-ink); }
+html:not([data-area="admin"]) :is(.qh-social, .qm-social, .qf-social):hover,
+html:not([data-area="admin"]) :is(.qh-social, .qm-social, .qf-social)[data-net]:hover { background: var(--qi-ink) !important; border-color: transparent !important; --qi: #fff; }
+html:not([data-area="admin"]) :is(.qh-social, .qf-social):is(:hover, [data-net]:hover) { background: #fff !important; --qi: var(--qi-ink); }
+html:not([data-area="admin"]) :is(.qh-social, .qm-social, .qf-social) svg.iconify--logos { filter: grayscale(1) brightness(0); }
+html:not([data-area="admin"]) :is(.qh-social, .qf-social):not(:hover) svg.iconify--logos { filter: grayscale(1) brightness(0) invert(1); }
+
+/* Scroll-to-top button */
+html:not([data-area="admin"]) button.bg-gradient-to-tr.rounded-full { background: var(--qi-ink) !important; box-shadow: 0 10px 24px rgba(21, 18, 58, .22) !important; }
+
+/* Icon tiles in Why sub-page panel / role headers were picking up the subtitle span rule (tiny, off-centre icon) */
+html:not([data-area="admin"]) :is(.qw-panel-head, .qw-role-head, .qy-sub-head) > :is(.qw-panel-ic, .qw-role-ic, .qy-sub-ic) {
+  display: inline-flex; align-items: center; justify-content: center; margin-top: 0; font-size: 22px; letter-spacing: 0; text-transform: none;
+}
+html:not([data-area="admin"]) .qf-card-ic { box-shadow: none; }
+html:not([data-area="admin"]) .qm-cta { --qi: currentColor; }
