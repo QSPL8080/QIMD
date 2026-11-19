@@ -274,28 +274,14 @@ export default function AdminAdmissionLeadsPage() {
               Mark Pending
             </button>
 
-            {(() => {
-              const closedSelectedCount = selectedIds.filter((id) => {
-                const l = leads.find((item) => item.id === id)
-                return l?.status === 'CLOSED' || l?.status === 'REJECTED'
-              }).length
-
-              return (
-                <button
-                  onClick={() => setBulkDeleteConfirm(true)}
-                  disabled={isPending || closedSelectedCount === 0}
-                  title={closedSelectedCount === 0 ? "Only CLOSED leads can be deleted." : `Delete ${closedSelectedCount} closed leads`}
-                  className={`px-3 py-1.5 border text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs ${
-                    closedSelectedCount > 0
-                      ? 'bg-white hover:bg-rose-50 text-rose-700 border-slate-200 hover:border-rose-300 cursor-pointer'
-                      : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-60'
-                  }`}
-                >
-                  <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
-                  Delete {closedSelectedCount > 0 ? `(${closedSelectedCount})` : ''}
-                </button>
-              )
-            })()}
+            <button
+              onClick={() => setBulkDeleteConfirm(true)}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-slate-200 hover:border-rose-300 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-50"
+            >
+              <Icon icon="ion:trash-outline" className="w-3.5 h-3.5 text-rose-600" />
+              Delete ({selectedIds.length})
+            </button>
           </div>
         </div>
       )}
@@ -461,19 +447,13 @@ export default function AdminAdmissionLeadsPage() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-              {selectedLead.status === 'CLOSED' ? (
-                <button
-                  onClick={() => setConfirmDeleteId(selectedLead.id)}
-                  className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
-                >
-                  <Icon icon="ion:trash-outline" className="w-4 h-4" />
-                  Delete Lead
-                </button>
-              ) : (
-                <span className="text-[11px] text-slate-400 italic">
-                  Only CLOSED enquiries can be deleted
-                </span>
-              )}
+              <button
+                onClick={() => setConfirmDeleteId(selectedLead.id)}
+                className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
+              >
+                <Icon icon="ion:trash-outline" className="w-4 h-4" />
+                Delete Lead
+              </button>
 
               <button
                 onClick={() => setSelectedLead(null)}
@@ -523,7 +503,7 @@ export default function AdminAdmissionLeadsPage() {
               <Icon icon="ion:alert-circle" className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} closed admission leads?</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} selected admission leads?</h3>
               <p className="text-xs text-slate-500 mt-1">These records will be permanently deleted and cannot be recovered.</p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">

@@ -454,20 +454,13 @@ export default function AdminCorporateHirePage() {
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-              {/* Delete button only shows for CLOSED enquiries */}
-              {selectedReq.status === 'CLOSED' ? (
-                <button
-                  onClick={() => setConfirmDeleteId(selectedReq.id)}
-                  className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
-                >
-                  <Icon icon="ion:trash-outline" className="w-4 h-4" />
-                  Delete Request
-                </button>
-              ) : (
-                <span className="text-[11px] text-slate-400 italic">
-                  Only CLOSED enquiries can be deleted
-                </span>
-              )}
+              <button
+                onClick={() => setConfirmDeleteId(selectedReq.id)}
+                className="px-4 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold rounded-xl text-xs transition-colors flex items-center gap-1.5"
+              >
+                <Icon icon="ion:trash-outline" className="w-4 h-4" />
+                Delete Request
+              </button>
 
               <button
                 onClick={() => setSelectedReq(null)}
@@ -517,7 +510,7 @@ export default function AdminCorporateHirePage() {
               <Icon icon="ion:alert-circle" className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} closed requests?</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Delete {selectedIds.length} selected requests?</h3>
               <p className="text-xs text-slate-500 mt-1">These records will be permanently deleted and cannot be recovered.</p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
