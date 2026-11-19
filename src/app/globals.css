@@ -6201,15 +6201,6 @@ html[data-area="admin"] [class~="font-extrabold"] { font-weight: 700; }
 .qs-page .qp-dhero .qp-lead { display: block; -webkit-line-clamp: unset; overflow: visible; }
 .qs-hero-form { scroll-margin-top: 110px; }
 .qs-prose-gap { margin-bottom: 18px; }
-.qs-prog { display: grid; border-radius: 16px; overflow: hidden; background: #fff; border: 1px solid #ECEDF2; transition: border-color .2s; }
-.qs-prog:hover { border-color: #15123A; }
-.qs-prog-img { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #F4F6FA; }
-.qs-prog-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.qs-prog-body { display: grid; gap: 8px; padding: 16px 18px 18px; }
-.qs-prog-body strong { font-family: var(--qx-heading); font-size: 15.5px; font-weight: 600; color: #15123A; line-height: 1.4; }
-.qs-prog-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: #5B3FD9; }
-.qs-prog-link svg { font-size: 16px; transition: transform .2s; }
-.qs-prog:hover .qs-prog-link svg { transform: translateX(3px); }
 .qp .qs-help-cta { margin-top: 10px; justify-content: center; width: 100%; }
 @media (max-width: 1024px) {
   .qs-hero-grid { grid-template-columns: 1fr; gap: 32px; }

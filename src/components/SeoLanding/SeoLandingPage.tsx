@@ -1,11 +1,10 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Icon } from '@iconify/react/dist/iconify.js'
 import EnquiryForm from '@/components/Common/EnquiryForm'
-import { coursesData, siteConfig } from '@/data'
+import { siteConfig } from '@/data'
 import { getSeoPage, type SeoPage } from '@/data/seoPages'
 
 const SITE = 'https://quickuppinstitute.com'
@@ -82,7 +81,6 @@ function Schemas({ page }: { page: SeoPage }) {
 export default function SeoLandingPage({ path }: { path: string }) {
   const page = getSeoPage(path)
   if (!page) notFound()
-  const course: any = coursesData.find((c) => c.slug === page.program)
   const whatsappUrl: string = siteConfig.socialLinks.whatsapp
 
   return (
@@ -224,21 +222,6 @@ export default function SeoLandingPage({ path }: { path: string }) {
 
           <aside className="qp-dside">
             <div className="qp-dside-inner">
-              {course && (
-                <Link href={`/courses/${course.slug}`} className="qs-prog">
-                  {course.image && (
-                    <span className="qs-prog-img">
-                      <Image src={course.image} alt={course.title} width={600} height={340} />
-                    </span>
-                  )}
-                  <span className="qs-prog-body">
-                    <strong>{course.title}</strong>
-                    <span className="qs-prog-link">
-                      View program <Icon icon="solar:arrow-right-linear" />
-                    </span>
-                  </span>
-                </Link>
-              )}
               <div className="qp-help">
                 <h4>Need Help?</h4>
                 <p>Talk to our counsellors for personalized guidance.</p>
