@@ -6051,7 +6051,7 @@ html[data-area="admin"] [class~="font-extrabold"] { font-weight: 700; }
 @media (max-width: 640px) { .qad-top { padding: 0 14px; } .qad-main { padding: 16px; } .qad-account-email { max-width: 140px; } }
 
 /* Dashboard */
-.qad-dash { display: grid; gap: 28px; max-width: 1400px; }
+.qad-dash { display: grid; gap: 28px; width: 100%; }
 .qad-welcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; padding: 26px 28px; border-radius: 12px; background: #15123A; color: rgba(255, 255, 255, .75); }
 .qad-kicker { display: inline-block; margin-bottom: 6px; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #D9922B; }
 .qad-h1 { margin: 0; font-size: clamp(22px, 2.2vw, 28px); font-weight: 600; color: #fff; line-height: 1.2; }
