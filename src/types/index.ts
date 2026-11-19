@@ -44,6 +44,7 @@ export interface Course {
   curriculum?: CourseModule[];
   icon?: string;
   image?: string;
+  bannerImage?: string;
   featured?: boolean;
 }
 

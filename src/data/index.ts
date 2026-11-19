@@ -211,6 +211,7 @@ export const coursesData: Course[] = [
     duration: "6 Months",
     mode: "Offline Program",
     image: "/images/courses/video-editing.jpg",
+    bannerImage: "/images/programs/video-editing-poster.jpg",
     featured: true,
     highlights: [
       "Edit broadcast-quality cinematic videos and commercial ads",
@@ -245,6 +246,7 @@ export const coursesData: Course[] = [
     duration: "6 Months",
     mode: "Offline Program",
     image: "/images/courses/digital-marketing.jpg",
+    bannerImage: "/images/programs/digital-marketing-poster.jpg",
     featured: true,
     highlights: [
       "Run high-converting multi-channel digital marketing campaigns",
@@ -279,6 +281,7 @@ export const coursesData: Course[] = [
     duration: "6 Months",
     mode: "Offline Program",
     image: "/images/courses/graphic-design.jpg",
+    bannerImage: "/images/programs/graphic-design-poster.jpg",
     featured: true,
     highlights: [
       "Create professional brand identities, corporate logos, and social media creatives",
