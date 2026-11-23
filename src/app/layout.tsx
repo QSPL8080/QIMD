@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import GoogleTagManager from "@/components/Common/GoogleTagManager";
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
@@ -101,6 +102,9 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
+  verification: {
+    google: "8aEpBmUy2zgfG_RNwXH2VgGgIvxho0BVWqWqXjzTbyk",
+  },
   alternates: {
     canonical: "https://www.qimd.in",
   },
@@ -152,6 +156,7 @@ export default async function RootLayout({
             <ScrollToTop />
             <SiteMotion />
         </ThemeProvider>
+        <GoogleTagManager />
       </body>
     </html>
   );

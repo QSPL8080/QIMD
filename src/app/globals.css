@@ -6356,3 +6356,33 @@ html:not([data-area="admin"]) .qo-hero .qo-checks { --qi: #C4B5FD; }
   .qo-prog-panel .qo-prog-body { padding: 22px 18px; }
 }
 @media (max-width: 1100px) { .qo-prog-media.is-poster { border-radius: 16px 16px 0 0; } }
+
+/* ================================================================
+   ADMIN — notifications bell + account menu
+   ================================================================ */
+.qad-pop { position: relative; display: inline-flex; min-width: 0; }
+.qad-account { cursor: pointer; border: 0; transition: background-color .2s; }
+.qad-account:hover { background: #ECEAF6; }
+.qad-account .qad-account-caret { font-size: 14px; color: #55546B; }
+.qad-bell { position: relative; width: 38px; height: 38px; display: inline-grid; place-items: center; border-radius: 8px; border: 0; background: #F4F6FA; color: #15123A; font-size: 19px; cursor: pointer; transition: background-color .2s; }
+.qad-bell:hover, .qad-bell.is-open { background: #ECEAF6; }
+.qad-bell-count { position: absolute; top: -5px; right: -5px; min-width: 19px; height: 19px; padding: 0 5px; display: inline-grid; place-items: center; border-radius: 10px; background: #D9922B; color: #15123A; font-size: 10.5px; font-weight: 700; border: 2px solid #fff; }
+.qad-pop-panel { position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; background: #fff; border: 1px solid #ECEDF2; border-radius: 12px; box-shadow: 0 18px 40px -16px rgba(21, 18, 58, .25); }
+.qad-menu { min-width: 200px; padding: 6px; display: grid; }
+.qad-menu button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 0; border-radius: 8px; background: transparent; color: #15123A; font-size: 13.5px; font-weight: 600; text-align: left; cursor: pointer; }
+.qad-menu button:hover { background: #F4F6FA; }
+.qad-menu button svg { font-size: 17px; }
+.qad-notes { width: min(380px, calc(100vw - 28px)); overflow: hidden; }
+.qad-notes-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #ECEDF2; }
+.qad-notes-head strong { font-size: 14px; color: #15123A; }
+.qad-notes-head button { border: 0; background: none; color: #5B3FD9; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.qad-notes ul { list-style: none; margin: 0; padding: 0; max-height: 380px; overflow-y: auto; }
+.qad-notes li { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #F4F6FA; }
+.qad-notes li:last-child { border-bottom: 0; }
+.qad-notes li.is-unread { background: #F7F5FE; }
+.qad-notes-ic { width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; border-radius: 8px; background: #EEEAFB; color: #15123A; font-size: 16px; }
+.qad-notes-body { display: grid; gap: 3px; min-width: 0; }
+.qad-notes-body strong { font-size: 13px; font-weight: 600; color: #15123A; line-height: 1.4; }
+.qad-notes-body small { font-size: 11.5px; color: #6B6A80; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qad-notes-empty { margin: 0; padding: 28px 16px; text-align: center; font-size: 13px; color: #6B6A80; }
+@media (max-width: 640px) { .qad-pop-panel.qad-notes { right: -96px; } }

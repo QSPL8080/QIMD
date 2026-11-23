@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Icon } from '@iconify/react'
 import { logoutAdminAction } from '@/app/actions/authActions'
+import { NotificationBell, AccountMenu, type TopNotification } from './AdminTopActions'
 
 interface AdminShellProps {
   session: {
@@ -16,6 +17,8 @@ interface AdminShellProps {
   }
   /** Items in the Bin; only passed for the Super Admin */
   binCount?: number | null
+  /** Notifications; only passed for the Super Admin */
+  notifications?: { items: TopNotification[]; unread: number } | null
   children: React.ReactNode
 }
 
@@ -26,7 +29,7 @@ const isSuperAdminRole = (role: string) => role === 'SUPER_ADMIN' || role === 'S
 const isSeoRole = (role: string) => role === 'SEO'
 const isLeadManagerRole = (role: string) => role === 'LEAD_MANAGER'
 
-export default function AdminShell({ session, binCount = null, children }: AdminShellProps) {
+export default function AdminShell({ session, binCount = null, notifications = null, children }: AdminShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
 
@@ -146,6 +149,7 @@ export default function AdminShell({ session, binCount = null, children }: Admin
             </Link>
           </div>
           <div className="qad-top-right">
+            {notifications && <NotificationBell items={notifications.items} unread={notifications.unread} />}
             {binCount !== null && (
               <Link href="/admin/bin" className={`qad-bin-link${pathname?.startsWith('/admin/bin') ? ' is-active' : ''}`}>
                 <Icon icon="ion:trash-bin-outline" />
@@ -153,10 +157,7 @@ export default function AdminShell({ session, binCount = null, children }: Admin
                 {binCount > 0 && <span className="qad-bin-count">{binCount}</span>}
               </Link>
             )}
-          <div className="qad-account">
-            <Icon icon="ion:person-circle-outline" />
-            <span className="qad-account-email">{session.email}</span>
-          </div>
+            <AccountMenu email={session.email} />
           </div>
         </header>
 

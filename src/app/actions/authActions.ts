@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'
 export async function loginAdminAction(prevState: any, formData: FormData) {
   try {
     const rawData = {
-      email: formData.get('email') as string,
+      email: String(formData.get('email') || '').trim(),
       password: formData.get('password') as string,
     }
 
@@ -17,8 +17,8 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const user = await db.user.findUnique({
-      where: { email: validated.data.email },
+    const user = await db.user.findFirst({
+      where: { email: { equals: validated.data.email, mode: 'insensitive' } },
     })
 
     if (!user || !user.status || user.isDeleted) {

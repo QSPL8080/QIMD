@@ -57,8 +57,7 @@ export default function UserManagementClient({
 
     let matchesRole = true
     if (roleFilter !== 'ALL') {
-      const rName = u.role || ''
-      matchesRole = rName.toLowerCase().includes(roleFilter.toLowerCase())
+      matchesRole = (u.role || 'ADMIN') === roleFilter
     }
 
     let matchesStatus = true

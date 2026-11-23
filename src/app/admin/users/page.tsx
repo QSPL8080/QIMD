@@ -19,8 +19,20 @@ export default async function UserManagementPage() {
     )
   }
 
+  // Never send password hashes to the browser
   const users = await db.user.findMany({
     orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      phone: true,
+      role: true,
+      status: true,
+      isDeleted: true,
+      lastLogin: true,
+      createdAt: true,
+    },
   })
 
   return (

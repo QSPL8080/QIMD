@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getAdminSession, isLeadManagerRole, isSeoRole, isSuperAdminRole } from '@/lib/auth'
 import { countBinItems } from '@/lib/binData'
+import { getNotifications } from '@/lib/notifications'
 import AdminShell from './AdminShell'
 
 export const dynamic = 'force-dynamic'
@@ -36,16 +37,18 @@ export default async function AdminLayout({
 
   // Bin count for the Super Admin's top bar
   let binCount: number | null = null
+  let notifications: Awaited<ReturnType<typeof getNotifications>> | null = null
   if (isSuperAdminRole(session.roleName)) {
     try {
       binCount = await countBinItems()
     } catch {
       binCount = 0
     }
+    notifications = await getNotifications(30)
   }
 
   return (
-    <AdminShell session={session} binCount={binCount}>
+    <AdminShell session={session} binCount={binCount} notifications={notifications}>
       {children}
     </AdminShell>
   )
