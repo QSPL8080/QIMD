@@ -11,7 +11,7 @@ import {
   franchiseEnquirySchema,
   hireRequestSchema,
 } from '@/lib/validations'
-import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
+import { requireLeadsSession, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 // --- PUBLIC FORM SUBMISSIONS ---
@@ -225,7 +225,7 @@ export async function updateEnquiryStatusAction(
   remarks?: string,
   assignedToId?: string
 ) {
-  const session = await requireAdminSession()
+  const session = await requireLeadsSession()
 
   try {
     if (type === 'contact') {
@@ -267,7 +267,7 @@ export async function trashEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   id: string
 ) {
-  const session = await requireAdminSession()
+  const session = await requireLeadsSession()
 
   try {
     if (type === 'contact') await db.contactEnquiry.update({ where: { id }, data: { isDeleted: true } })
@@ -290,7 +290,7 @@ export async function bulkTrashEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   ids: string[]
 ) {
-  const session = await requireAdminSession()
+  const session = await requireLeadsSession()
   if (!ids || ids.length === 0) {
     return { success: false, error: 'No IDs provided' }
   }
@@ -400,7 +400,7 @@ export async function bulkUpdateEnquiryStatusAction(
   ids: string[],
   status: any
 ) {
-  const session = await requireAdminSession()
+  const session = await requireLeadsSession()
 
   if (!ids || ids.length === 0) {
     return { success: false, error: 'No items selected' }

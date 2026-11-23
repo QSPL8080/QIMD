@@ -178,6 +178,7 @@ export default function UserManagementClient({
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="ADMIN">Admin</option>
             <option value="SEO">SEO (Blogs only)</option>
+            <option value="LEAD_MANAGER">Lead Manager (Leads only)</option>
           </select>
 
           <select
@@ -367,6 +368,7 @@ export default function UserManagementClient({
                   <option value="SUPER_ADMIN">SUPER_ADMIN - Full System Access</option>
                   <option value="ADMIN">ADMIN - Administrator Access</option>
                   <option value="SEO">SEO - Blogs Only</option>
+                  <option value="LEAD_MANAGER">LEAD_MANAGER - Leads Only</option>
                 </select>
               </div>
 

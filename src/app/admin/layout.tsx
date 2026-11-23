@@ -1,7 +1,7 @@
 import React from 'react'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getAdminSession, isSeoRole, isSuperAdminRole } from '@/lib/auth'
+import { getAdminSession, isLeadManagerRole, isSeoRole, isSuperAdminRole } from '@/lib/auth'
 import { countBinItems } from '@/lib/binData'
 import AdminShell from './AdminShell'
 
@@ -23,6 +23,14 @@ export default async function AdminLayout({
     const pathname = (await headers()).get('x-pathname') || ''
     if (pathname !== '/admin/blogs' && !pathname.startsWith('/admin/blogs/')) {
       redirect('/admin/blogs')
+    }
+  }
+
+  // The Lead Manager role may only use the Leads section
+  if (isLeadManagerRole(session.roleName)) {
+    const pathname = (await headers()).get('x-pathname') || ''
+    if (!pathname.startsWith('/admin/enquiries/')) {
+      redirect('/admin/enquiries/admission')
     }
   }
 
