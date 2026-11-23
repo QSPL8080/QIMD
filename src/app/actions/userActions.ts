@@ -136,3 +136,24 @@ export async function deleteUserPermanentlyAction(id: string) {
     return { success: false, error: err.message || 'Failed to permanently delete user.' }
   }
 }
+
+/** Super Admin sets a new password for any user. */
+export async function resetUserPasswordAction(id: string, password: string) {
+  await requireSuperAdminSession()
+
+  const pwd = String(password || '').trim()
+  if (pwd.length < 6) {
+    return { success: false, error: 'Password must be at least 6 characters.' }
+  }
+
+  try {
+    await db.user.update({
+      where: { id },
+      data: { passwordHash: await hashPassword(pwd) },
+    })
+    revalidatePath('/admin/users')
+    return { success: true, message: 'Password updated.' }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to update password.' }
+  }
+}

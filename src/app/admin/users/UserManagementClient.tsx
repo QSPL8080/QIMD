@@ -7,8 +7,10 @@ import {
   trashUserAction,
   restoreUserAction,
   deleteUserPermanentlyAction,
+  resetUserPasswordAction,
 } from '@/app/actions/userActions'
 import { Icon } from '@iconify/react'
+import PasswordField from '@/components/Admin/PasswordField'
 
 interface UserItem {
   id: string
@@ -38,6 +40,14 @@ export default function UserManagementClient({
   const [editingUser, setEditingUser] = useState<UserItem | null>(null)
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [formPassword, setFormPassword] = useState('')
+  // Reset password
+  const [resetUser, setResetUser] = useState<UserItem | null>(null)
+  const [resetPassword, setResetPassword] = useState('')
+  const [resetError, setResetError] = useState('')
+  // Login details shown after a password is set
+  const [credentials, setCredentials] = useState<{ name: string; email: string; password: string } | null>(null)
+  const [credCopied, setCredCopied] = useState(false)
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
@@ -59,12 +69,14 @@ export default function UserManagementClient({
   })
 
   const handleOpenAdd = () => {
+    setFormPassword('')
     setEditingUser(null)
     setModalOpen(true)
     setMsg(null)
   }
 
   const handleOpenEdit = (u: UserItem) => {
+    setFormPassword('')
     setEditingUser(u)
     setModalOpen(true)
     setMsg(null)
@@ -91,10 +103,45 @@ export default function UserManagementClient({
     if (res.success) {
       setMsg({ type: 'success', text: res.message || 'Saved successfully' })
       setModalOpen(false)
-      window.location.reload()
+      if (rawData.password) {
+        setCredentials({ name: String(rawData.fullName || ''), email: String(rawData.email || ''), password: String(rawData.password) })
+      } else {
+        window.location.reload()
+      }
     } else {
       setMsg({ type: 'error', text: res.error || 'Failed to save' })
     }
+  }
+
+  const handleOpenReset = (u: UserItem) => {
+    setResetUser(u)
+    setResetPassword('')
+    setResetError('')
+  }
+
+  const handleResetSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!resetUser) return
+    setLoading(true)
+    setResetError('')
+    const res = await resetUserPasswordAction(resetUser.id, resetPassword)
+    setLoading(false)
+    if (res.success) {
+      setCredentials({ name: resetUser.fullName, email: resetUser.email, password: resetPassword })
+      setResetUser(null)
+    } else {
+      setResetError(res.error || 'Failed to update password')
+    }
+  }
+
+  const copyCredentials = async () => {
+    if (!credentials) return
+    const text = `Login: ${typeof window !== 'undefined' ? window.location.origin : ''}/admin/login\nEmail: ${credentials.email}\nPassword: ${credentials.password}`
+    try {
+      await navigator.clipboard.writeText(text)
+      setCredCopied(true)
+      setTimeout(() => setCredCopied(false), 1500)
+    } catch {}
   }
 
   const handleTrash = async (id: string) => {
@@ -258,6 +305,13 @@ export default function UserManagementClient({
                           >
                             <Icon icon="ion:create-outline" className="w-5 h-5" />
                           </button>
+                          <button
+                            onClick={() => handleOpenReset(u)}
+                            className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            title="Set New Password"
+                          >
+                            <Icon icon="ion:key-outline" className="w-5 h-5" />
+                          </button>
                           {u.id !== currentUserId && (
                             <button
                               onClick={() => handleTrash(u.id)}
@@ -338,13 +392,7 @@ export default function UserManagementClient({
                 <label className="block font-semibold text-slate-700 mb-1">
                   Password {editingUser ? '(Leave blank to keep unchanged)' : '(Required)'}
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  required={!editingUser}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                  placeholder="••••••••"
-                />
+                <PasswordField value={formPassword} onChange={setFormPassword} required={!editingUser} />
               </div>
 
               <div>
@@ -401,6 +449,65 @@ export default function UserManagementClient({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Set New Password */}
+      {resetUser && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <h3 className="text-base font-bold text-slate-900">Set New Password</h3>
+              <button onClick={() => setResetUser(null)} className="text-slate-400 hover:text-slate-600" title="Close">
+                <Icon icon="ion:close" className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleResetSave} className="space-y-4 text-xs">
+              <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
+                <p className="font-semibold text-slate-900 text-sm">{resetUser.fullName}</p>
+                <p className="text-slate-500">{resetUser.email}</p>
+              </div>
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">New Password</label>
+                <PasswordField value={resetPassword} onChange={setResetPassword} required />
+                <p className="mt-2 text-slate-500">Current passwords are stored securely and can&apos;t be shown. Set a new one and share it with the user.</p>
+              </div>
+              {resetError && <p className="text-rose-600 font-semibold">{resetError}</p>}
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onClick={() => setResetUser(null)} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200">
+                  Cancel
+                </button>
+                <button type="submit" disabled={loading} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60">
+                  {loading ? 'Saving...' : 'Save Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Login details after a password is set */}
+      {credentials && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+              <Icon icon="ion:checkmark-circle-outline" className="w-5 h-5 text-emerald-600" />
+              <h3 className="text-base font-bold text-slate-900">Password Saved</h3>
+            </div>
+            <p className="text-xs text-slate-600">Share these login details with {credentials.name || 'the user'}. The password won&apos;t be shown again after you close this.</p>
+            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2 text-sm">
+              <div className="flex justify-between gap-3"><span className="text-slate-500">Email</span><span className="font-semibold text-slate-900 break-all text-right">{credentials.email}</span></div>
+              <div className="flex justify-between gap-3"><span className="text-slate-500">Password</span><span className="font-mono font-semibold text-slate-900 break-all text-right">{credentials.password}</span></div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 text-xs">
+              <button type="button" onClick={copyCredentials} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 text-slate-800 font-semibold hover:bg-slate-200">
+                <Icon icon={credCopied ? 'ion:checkmark-outline' : 'ion:copy-outline'} className="w-4 h-4" />
+                {credCopied ? 'Copied' : 'Copy Login Details'}
+              </button>
+              <button type="button" onClick={() => { setCredentials(null); window.location.reload() }} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">
+                Done
+              </button>
+            </div>
           </div>
         </div>
       )}
