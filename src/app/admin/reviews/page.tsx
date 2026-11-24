@@ -41,46 +41,15 @@ export default function AdminStudentReviewsPage() {
     fetchItems()
   }, [])
 
-  const [photoUrl, setPhotoUrl] = useState<string>('')
-  const [uploadingPhoto, setUploadingPhoto] = useState(false)
-
   const openForm = (item?: any) => {
     if (item) {
       setEditingItem(item)
       setStarRating(item.rating || 5)
-      setPhotoUrl(item.photo || '')
     } else {
       setEditingItem(null)
       setStarRating(5)
-      setPhotoUrl('')
     }
     setIsFormOpen(true)
-  }
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setUploadingPhoto(true)
-    const formData = new FormData()
-    formData.append('file', file)
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
-      if (data.success && data.url) {
-        setPhotoUrl(data.url)
-      } else {
-        alert(data.error || 'Failed to upload photo')
-      }
-    } catch (err) {
-      alert('Error uploading file')
-    } finally {
-      setUploadingPhoto(false)
-    }
   }
 
   const filteredItems = reviews.filter((r) => (showTrash ? r.isDeleted : !r.isDeleted))
@@ -91,7 +60,6 @@ export default function AdminStudentReviewsPage() {
 
     const payload = {
       studentName: formData.get('studentName') as string,
-      photo: photoUrl.trim() || null,
       course: formData.get('course') as string,
       company: formData.get('company') as string,
       rating: starRating,
@@ -303,7 +271,7 @@ export default function AdminStudentReviewsPage() {
               <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
                 <tr>
                   <th className="p-4 w-10"></th>
-                  <th className="p-4">Student &amp; Photo</th>
+                  <th className="p-4">Student</th>
                   <th className="p-4">Program &amp; Company</th>
                   <th className="p-4">Star Rating</th>
                   <th className="p-4">Review Text</th>
@@ -327,17 +295,9 @@ export default function AdminStudentReviewsPage() {
                       />
                     </td>
                     <td className="p-4 flex items-center gap-3">
-                      {r.photo ? (
-                        <img
-                          src={r.photo}
-                          alt={r.studentName}
-                          className="w-9 h-9 rounded-full object-cover border border-slate-200"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center text-xs border border-indigo-100">
-                          {r.studentName ? r.studentName.charAt(0) : 'S'}
-                        </div>
-                      )}
+                      <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center text-xs border border-indigo-100 shrink-0">
+                        {r.studentName ? r.studentName.trim().charAt(0).toUpperCase() : 'S'}
+                      </div>
                       <span className="font-bold text-slate-900">{r.studentName}</span>
                     </td>
                     <td className="p-4">
@@ -426,42 +386,6 @@ export default function AdminStudentReviewsPage() {
                   placeholder="e.g. Rohan V."
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-indigo-600"
                 />
-              </div>
-
-              {/* Profile Photo (Optional) */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                  Profile Photo (Optional)
-                </label>
-                <div className="flex items-center gap-3">
-                  {photoUrl ? (
-                    <img
-                      src={photoUrl}
-                      alt="Student Preview"
-                      className="w-12 h-12 rounded-full object-cover border border-slate-200 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
-                      <Icon icon="ion:person-outline" className="w-6 h-6" />
-                    </div>
-                  )}
-                  <div className="flex-1 space-y-2">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                      disabled={uploadingPhoto}
-                      className="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                    />
-                    <input
-                      type="text"
-                      value={photoUrl}
-                      onChange={(e) => setPhotoUrl(e.target.value)}
-                      placeholder="Or paste photo URL..."
-                      className="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-indigo-600"
-                    />
-                  </div>
-                </div>
               </div>
 
               <div>

@@ -138,7 +138,6 @@ export function QwReview({ rev }: { rev: any; index?: number }) {
       program={courseName}
       rating={rev.rating || 5}
       review={rev.review || ''}
-      photo={rev.photo || rev.image || null}
     />
   )
 }

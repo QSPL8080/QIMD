@@ -71,20 +71,23 @@ export async function getPublicStudentReviewsAction() {
   try {
     const list = await db.studentReview.findMany({
       where: { isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
+      orderBy: [{ displayOrder: 'asc' }, { createdAt: 'desc' }],
     })
-    return list.map((r) => ({
-      id: r.id,
-      name: r.studentName,
-      studentName: r.studentName,
-      photo: r.photo || null,
-      image: r.photo || null,
-      course: r.course || 'AI Practical Course',
-      courseTaken: r.course || 'AI Practical Course',
-      rating: r.rating || 5,
-      review: r.review,
-      company: r.company || '',
-    }))
+    return list.map((r) => {
+      const courseName = (r.course || 'AI Practical Program').replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program')
+      return {
+        id: r.id,
+        name: r.studentName,
+        studentName: r.studentName,
+        initial: r.studentName ? r.studentName.trim().charAt(0).toUpperCase() : 'S',
+        course: courseName,
+        courseTaken: courseName,
+        program: courseName,
+        rating: r.rating || 5,
+        review: r.review,
+        company: r.company || '',
+      }
+    })
   } catch (err) {
     console.error('Error in getPublicStudentReviewsAction:', err)
     return []

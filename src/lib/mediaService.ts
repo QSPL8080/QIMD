@@ -110,6 +110,14 @@ export async function safeDeleteUnusedFile(
       if (pathPart && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
         await supabaseAdmin.storage.from('qimd-media').remove([pathPart])
       }
+      if (pathPart) {
+        const localBackup = path.join(process.cwd(), 'public', 'uploads', pathPart)
+        if (fs.existsSync(localBackup)) {
+          try {
+            fs.unlinkSync(localBackup)
+          } catch (_) {}
+        }
+      }
     } catch (e) {
       console.error('Error removing file from Supabase storage:', e)
     }

@@ -63,7 +63,7 @@ export default function AdminGalleryPage() {
   }, [])
 
   const filteredGallery = gallery.filter(
-    (g) => (showTrash ? g.isDeleted : !g.isDeleted) && !brokenIds.has(g.id)
+    (g) => (showTrash ? g.isDeleted : !g.isDeleted)
   )
 
   const handleOpenUpload = (item?: GalleryItem) => {
@@ -179,8 +179,8 @@ export default function AdminGalleryPage() {
     }
   }
 
-  const activeGallery = gallery.filter((g) => !g.isDeleted && !brokenIds.has(g.id))
-  const trashGallery = gallery.filter((g) => g.isDeleted && !brokenIds.has(g.id))
+  const activeGallery = gallery.filter((g) => !g.isDeleted)
+  const trashGallery = gallery.filter((g) => g.isDeleted)
 
   const toggleSelectId = (id: string) => {
     setSelectedIds((prev) =>
@@ -385,6 +385,11 @@ export default function AdminGalleryPage() {
                       <span className="text-[10px] font-bold block truncate max-w-[120px]">
                         {item.altText || 'Video File'}
                       </span>
+                    </div>
+                  ) : brokenIds.has(item.id) ? (
+                    <div className="text-center p-3 text-slate-400 bg-slate-800 w-full h-full flex flex-col items-center justify-center">
+                      <Icon icon="ion:image-outline" className="w-8 h-8 text-slate-500 mb-1" />
+                      <span className="text-[10px] font-semibold text-slate-400">Media Preview</span>
                     </div>
                   ) : (
                     <img

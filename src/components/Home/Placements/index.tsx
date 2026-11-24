@@ -67,10 +67,17 @@ const PartnerLogoItem: React.FC<{ partner: any }> = ({ partner }) => {
   )
 }
 
-const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[]; testimonials?: any[] }> = ({
+const PlacementsSection: React.FC<{
+  placements?: any[];
+  partners?: any[];
+  testimonials?: any[];
+  studentReviews?: any[];
+}> = ({
   partners,
+  studentReviews,
 }) => {
   const displayPartners = partners && partners.length > 0 ? partners : placementPartnersData
+  const displayReviews = studentReviews && studentReviews.length > 0 ? studentReviews : studentReviewsList
 
   return (
     <section className="qo-sec qo-reviews" id="student-reviews">
@@ -88,11 +95,11 @@ const PlacementsSection: React.FC<{ placements?: any[]; partners?: any[]; testim
           </div>
 
           <div className="qo-review-cards">
-            {studentReviewsList.map((item, index) => (
+            {displayReviews.map((item, index) => (
               <GoogleReviewCard
-                key={index}
-                name={item.name}
-                program={item.program}
+                key={item.id || index}
+                name={item.name || item.studentName}
+                program={item.program || item.course}
                 rating={item.rating}
                 review={item.review}
               />

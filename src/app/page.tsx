@@ -17,6 +17,7 @@ import {
   getDynamicTestimonials,
   getDynamicGallery,
   getDynamicFaqs,
+  getDynamicStudentReviews,
 } from "@/lib/getDynamicData";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default async function HomePage() {
   const testimonials = await getDynamicTestimonials();
   const galleryItems = await getDynamicGallery();
   const faqs = await getDynamicFaqs();
+  const studentReviews = await getDynamicStudentReviews();
 
   return (
     <>
@@ -45,7 +47,11 @@ export default async function HomePage() {
       <CoursesSection courses={coursesData} />
       <WhyQimdSection />
       <TestimonialsSection testimonials={testimonials} />
-      <PlacementsSection testimonials={testimonials} partners={placementPartnersData} />
+      <PlacementsSection
+        testimonials={testimonials}
+        partners={placementPartnersData}
+        studentReviews={studentReviews}
+      />
       <EmiSection emiPartners={emiPartnersData} />
       <GalleryPreviewSection items={galleryItems} />
       <CareerCounsellingCTA />

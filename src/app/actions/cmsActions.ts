@@ -276,6 +276,10 @@ export async function saveGalleryItemAction(data: {
 }, id?: string) {
   const session = await requireAdminSession()
   try {
+    if (!data.fileUrl || typeof data.fileUrl !== 'string' || !data.fileUrl.trim()) {
+      return { success: false, error: 'File URL is required' }
+    }
+
     if (id) {
       const updated = await db.gallery.update({
         where: { id },
@@ -357,6 +361,12 @@ export async function restoreGalleryItemAction(id: string) {
 export async function deleteGalleryItemAction(id: string) {
   const session = await requireSuperAdminSession()
   try {
+    const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
+    const item = await db.gallery.findUnique({ where: { id } })
+    if (item) {
+      if (item.fileUrl) await safeDeleteUnusedFile(item.fileUrl, { table: 'gallery', id: item.id })
+      if (item.thumbnail) await safeDeleteUnusedFile(item.thumbnail, { table: 'gallery', id: item.id })
+    }
     await db.gallery.delete({ where: { id } })
     revalidatePath('/')
     revalidatePath('/gallery')
@@ -620,30 +630,43 @@ export async function saveStudentReviewAction(data: {
         data: {
           studentName: data.studentName,
           photo: data.photo || null,
-          course: data.course || 'AI Practical Course',
+          course: data.course || 'AI Practical Program',
           rating: Number(data.rating) || 5,
           review: data.review,
           company: data.company || null,
-          displayOrder: Number(data.displayOrder) || 0,
+          ...(data.displayOrder !== undefined ? { displayOrder: Number(data.displayOrder) } : {}),
           isActive: data.isActive !== undefined ? data.isActive : true,
         },
       })
     } else {
+      let displayOrder = Number(data.displayOrder)
+      if (!displayOrder || displayOrder <= 0) {
+        const lastReview = await db.studentReview.findFirst({
+          where: { isDeleted: false },
+          orderBy: { displayOrder: 'desc' },
+          select: { displayOrder: true },
+        })
+        displayOrder = (lastReview?.displayOrder || 0) + 1
+      }
+
       const created = await db.studentReview.create({
         data: {
           studentName: data.studentName,
           photo: data.photo || null,
-          course: data.course || 'AI Practical Course',
+          course: data.course || 'AI Practical Program',
           rating: Number(data.rating) || 5,
           review: data.review,
           company: data.company || null,
-          displayOrder: Number(data.displayOrder) || 0,
+          displayOrder,
           isActive: data.isActive !== undefined ? data.isActive : true,
         },
       })
     }
 
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     return { success: true, message: 'Student review saved successfully' }
   } catch (err: any) {
@@ -655,7 +678,10 @@ export async function trashStudentReviewAction(id: string) {
   const session = await requireAdminSession()
   try {
     await db.studentReview.update({ where: { id }, data: { isDeleted: true } })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await recordTrash('review', id, session)
     return { success: true, message: 'Student review moved to Trash' }
@@ -668,7 +694,10 @@ export async function restoreStudentReviewAction(id: string) {
   const session = await requireSuperAdminSession()
   try {
     await db.studentReview.update({ where: { id }, data: { isDeleted: false } })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await clearTrash('review', id)
     return { success: true, message: 'Student review restored' }
@@ -686,7 +715,10 @@ export async function deleteStudentReviewAction(id: string) {
       await safeDeleteUnusedFile(item.photo, { table: 'studentReview', id })
     }
     await db.studentReview.delete({ where: { id } })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await clearTrash('review', id)
     return { success: true, message: 'Student review permanently deleted' }
@@ -822,7 +854,10 @@ export async function bulkTrashReviewsAction(ids: string[]) {
       where: { id: { in: ids } },
       data: { isDeleted: true },
     })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await recordTrash('review', ids, session)
     return { success: true, message: `${ids.length} reviews moved to Trash` }
@@ -839,7 +874,10 @@ export async function bulkRestoreReviewsAction(ids: string[]) {
       where: { id: { in: ids } },
       data: { isDeleted: false },
     })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await clearTrash('review', ids)
     return { success: true, message: `${ids.length} reviews restored` }
@@ -860,7 +898,10 @@ export async function bulkDeleteReviewsPermanentlyAction(ids: string[]) {
     await db.studentReview.deleteMany({
       where: { id: { in: ids } },
     })
+    revalidatePath('/')
+    revalidatePath('/reviews-testimonials')
     revalidatePath('/placements')
+    revalidatePath('/success-stories')
     revalidatePath('/admin/reviews')
     await clearTrash('review', ids)
     return { success: true, message: `${ids.length} reviews permanently deleted` }

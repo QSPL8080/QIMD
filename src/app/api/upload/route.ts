@@ -74,6 +74,10 @@ export async function POST(req: NextRequest) {
           .from(BUCKET_NAME)
           .getPublicUrl(uniqueName)
         fileUrl = publicUrlData.publicUrl
+        // Keep a dual local backup copy for offline safety
+        try {
+          saveToLocalStorage(buffer, uniqueName)
+        } catch (_) {}
       }
     } else {
       // No Supabase config — use local /public/uploads/ (development)

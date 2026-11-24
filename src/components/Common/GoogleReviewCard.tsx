@@ -30,12 +30,9 @@ export default function GoogleReviewCard({ name, program, rating = 5, review, ph
   return (
     <figure className="qg-card">
       <figcaption className="qg-head">
-        {photo ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="qg-avatar" src={photo} alt={name} />
-        ) : (
-          <span className="qg-avatar" aria-hidden="true">{name.charAt(0)}</span>
-        )}
+        <span className="qg-avatar" aria-hidden="true">
+          {name ? name.trim().charAt(0).toUpperCase() : 'S'}
+        </span>
         <span className="qg-who">
           <strong>{name}</strong>
           <small>Verified Student</small>

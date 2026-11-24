@@ -185,3 +185,28 @@ export async function getDynamicGallery() {
   }
   return galleryData
 }
+
+export async function getDynamicStudentReviews() {
+  try {
+    const dbReviews = await db.studentReview.findMany({
+      where: { isActive: true, isDeleted: false },
+      orderBy: [{ displayOrder: 'asc' }, { createdAt: 'desc' }],
+    })
+    if (dbReviews.length > 0) {
+      return dbReviews.map((r) => ({
+        id: r.id,
+        name: r.studentName,
+        studentName: r.studentName,
+        initial: r.studentName ? r.studentName.trim().charAt(0).toUpperCase() : 'S',
+        program: (r.course || 'AI Practical Program').replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program'),
+        course: (r.course || 'AI Practical Program').replace(/\bCourses\b/gi, 'Programs').replace(/\bCourse\b/gi, 'Program'),
+        rating: r.rating || 5,
+        review: r.review,
+        company: r.company || '',
+      }))
+    }
+  } catch (err) {
+    console.error('Error fetching dynamic student reviews:', err)
+  }
+  return []
+}
