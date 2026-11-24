@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
-    const faqs = await db.faq.findMany({ orderBy: { displayOrder: 'asc' } })
+    const faqs = await db.faq.findMany({ orderBy: [{ displayOrder: 'asc' }, { createdAt: 'asc' }] })
     return NextResponse.json({ faqs })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })

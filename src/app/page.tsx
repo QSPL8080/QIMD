@@ -16,6 +16,7 @@ import {
   getDynamicPlacements,
   getDynamicTestimonials,
   getDynamicGallery,
+  getDynamicFaqs,
 } from "@/lib/getDynamicData";
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default async function HomePage() {
   const placements = await getDynamicPlacements();
   const testimonials = await getDynamicTestimonials();
   const galleryItems = await getDynamicGallery();
+  const faqs = await getDynamicFaqs();
 
   return (
     <>
@@ -47,7 +49,7 @@ export default async function HomePage() {
       <EmiSection emiPartners={emiPartnersData} />
       <GalleryPreviewSection items={galleryItems} />
       <CareerCounsellingCTA />
-      <FaqsSection limit={10} />
+      <FaqsSection limit={10} items={faqs} />
     </>
   );
 }

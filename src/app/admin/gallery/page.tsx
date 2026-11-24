@@ -360,7 +360,7 @@ export default function AdminGalleryPage() {
             )}
           </div>
         ) : (
-          filteredGallery.map((item) => {
+          filteredGallery.map((item, idx) => {
             const isVideo = item.mediaType === 'VIDEO' || item.fileUrl.endsWith('.mp4')
 
             return (
@@ -397,7 +397,7 @@ export default function AdminGalleryPage() {
                     />
                   )}
 
-                  <span className="absolute top-2 left-2 bg-slate-900/80 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">
+                  <span className="absolute top-2 right-2 bg-slate-900/80 text-white text-[9px] font-bold px-2 py-0.5 rounded backdrop-blur-xs">
                     {item.category || 'General'}
                   </span>
                 </div>

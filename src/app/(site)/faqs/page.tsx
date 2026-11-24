@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // import Breadcrumb from "@/components/Common/Breadcrumb";
 import FaqsSection from "@/components/Home/Faqs";
 import { siteConfig } from "@/data";
+import { getDynamicFaqs } from "@/lib/getDynamicData";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 
 export default async function FaqsPage() {
   let whatsappUrl: string = siteConfig.socialLinks.whatsapp;
+  const faqs = await getDynamicFaqs();
 
   return (
     <>
@@ -29,7 +31,7 @@ export default async function FaqsPage() {
         ]}
       /> */}
 
-      <FaqsSection />
+      <FaqsSection items={faqs} />
 
       {/* Still Have Questions */}
       <section className="section-py bg-gradient-to-br from-primary to-darkprimary">

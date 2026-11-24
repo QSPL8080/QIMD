@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   try {
-    const gallery = await db.gallery.findMany({ orderBy: { createdAt: 'desc' } })
+    const gallery = await db.gallery.findMany({ orderBy: [{ displayOrder: 'asc' }, { createdAt: 'desc' }] })
     return NextResponse.json({ gallery })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })

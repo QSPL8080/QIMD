@@ -272,6 +272,7 @@ export async function saveGalleryItemAction(data: {
   altText?: string
   caption?: string
   featured?: boolean
+  displayOrder?: number
 }, id?: string) {
   const session = await requireAdminSession()
   try {
@@ -287,9 +288,20 @@ export async function saveGalleryItemAction(data: {
           altText: data.altText || 'QIMD Gallery Media',
           caption: data.caption || null,
           featured: data.featured || false,
+          ...(data.displayOrder !== undefined ? { displayOrder: Number(data.displayOrder) } : {}),
         },
       })
     } else {
+      let displayOrder = Number(data.displayOrder)
+      if (!displayOrder || displayOrder <= 0) {
+        const lastItem = await db.gallery.findFirst({
+          where: { isDeleted: false },
+          orderBy: { displayOrder: 'desc' },
+          select: { displayOrder: true },
+        })
+        displayOrder = (lastItem?.displayOrder || 0) + 1
+      }
+
       const created = await db.gallery.create({
         data: {
           album: data.album || 'General',
@@ -300,6 +312,7 @@ export async function saveGalleryItemAction(data: {
           altText: data.altText || 'QIMD Gallery Media',
           caption: data.caption || null,
           featured: data.featured || false,
+          displayOrder,
           createdById: session.id,
         },
       })
@@ -505,6 +518,7 @@ export async function saveFaqAction(data: any, id?: string) {
       })
     }
 
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     return { success: true, message: 'FAQ saved' }
@@ -531,6 +545,7 @@ export async function reorderFaqsAction(orderedIds: string[]) {
     )
     await db.$transaction(updates)
 
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     return { success: true, message: 'FAQ sequence updated successfully' }
@@ -544,6 +559,7 @@ export async function trashFaqAction(id: string) {
   const session = await requireAdminSession()
   try {
     await db.faq.update({ where: { id }, data: { isDeleted: true } })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await recordTrash('faq', id, session)
@@ -557,6 +573,7 @@ export async function restoreFaqAction(id: string) {
   const session = await requireSuperAdminSession()
   try {
     await db.faq.update({ where: { id }, data: { isDeleted: false } })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await clearTrash('faq', id)
@@ -570,6 +587,7 @@ export async function deleteFaqAction(id: string) {
   const session = await requireSuperAdminSession()
   try {
     await db.faq.delete({ where: { id } })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await clearTrash('faq', id)
@@ -917,6 +935,7 @@ export async function bulkTrashFaqsAction(ids: string[]) {
       where: { id: { in: ids } },
       data: { isDeleted: true },
     })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await recordTrash('faq', ids, session)
@@ -934,6 +953,7 @@ export async function bulkRestoreFaqsAction(ids: string[]) {
       where: { id: { in: ids } },
       data: { isDeleted: false },
     })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await clearTrash('faq', ids)
@@ -950,6 +970,7 @@ export async function bulkDeleteFaqsPermanentlyAction(ids: string[]) {
     await db.faq.deleteMany({
       where: { id: { in: ids } },
     })
+    revalidatePath('/')
     revalidatePath('/faqs')
     revalidatePath('/admin/faqs')
     await clearTrash('faq', ids)

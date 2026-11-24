@@ -134,7 +134,7 @@ export async function getDynamicFaqs() {
   try {
     const dbFaqs = await db.faq.findMany({
       where: { isActive: true, isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
+      orderBy: [{ displayOrder: 'asc' }, { createdAt: 'asc' }],
     })
 
     if (dbFaqs.length > 0) {
@@ -167,15 +167,17 @@ export async function getDynamicGallery() {
   try {
     const gallery = await db.gallery.findMany({
       where: { isDeleted: false },
-      orderBy: { displayOrder: 'asc' },
+      orderBy: [{ displayOrder: 'asc' }, { createdAt: 'desc' }],
     })
     if (gallery.length > 0) {
       return gallery.map((g) => ({
         id: g.id,
         src: g.fileUrl,
+        fileUrl: g.fileUrl,
         alt: g.altText || 'QIMD Gallery Image',
         category: g.category || 'Classroom',
         caption: g.caption || '',
+        mediaType: g.mediaType || 'IMAGE',
       }))
     }
   } catch (err) {

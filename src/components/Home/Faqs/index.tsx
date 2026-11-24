@@ -22,11 +22,13 @@ const FaqItem: React.FC<FaqItemProps> = ({ faq, index }) => {
 
 interface FaqsSectionProps {
   limit?: number;
+  items?: FAQ[];
 }
 
-/** Home: FAQs — sticky heading + single accordion column */
-const FaqsSection: React.FC<FaqsSectionProps> = ({ limit }) => {
-  const displayFaqs = limit ? faqsData.slice(0, limit) : faqsData;
+/** Home & FAQs: FAQs — sticky heading + single accordion column */
+const FaqsSection: React.FC<FaqsSectionProps> = ({ limit, items }) => {
+  const source = items && items.length > 0 ? items : faqsData;
+  const displayFaqs = limit ? source.slice(0, limit) : source;
 
   return (
     <section className="qo-sec qo-faqs" id="faqs">

@@ -47,7 +47,7 @@ function GalleryContent() {
   const fetchPublicGallery = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/public-gallery')
+      const res = await fetch('/api/public-gallery', { cache: 'no-store' })
       const data = await res.json()
       if (data.success && Array.isArray(data.items) && data.items.length > 0) {
         setGalleryItems(data.items)
