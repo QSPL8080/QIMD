@@ -486,9 +486,20 @@ export async function saveFaqAction(data: any, id?: string) {
     if (id) {
       await db.faq.update({ where: { id }, data: validated.data })
     } else {
+      let displayOrder = Number(validated.data.displayOrder)
+      if (!displayOrder || displayOrder <= 0) {
+        const lastFaq = await db.faq.findFirst({
+          where: { isDeleted: false },
+          orderBy: { displayOrder: 'desc' },
+          select: { displayOrder: true },
+        })
+        displayOrder = (lastFaq?.displayOrder || 0) + 1
+      }
+
       const created = await db.faq.create({
         data: {
           ...validated.data,
+          displayOrder,
           createdById: session.id,
         },
       })
@@ -499,6 +510,33 @@ export async function saveFaqAction(data: any, id?: string) {
     return { success: true, message: 'FAQ saved' }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to save FAQ' }
+  }
+}
+
+/**
+ * Reorder FAQs sequence in database.
+ */
+export async function reorderFaqsAction(orderedIds: string[]) {
+  await requireAdminSession()
+  if (!orderedIds || orderedIds.length === 0) {
+    return { success: false, error: 'No FAQ IDs provided' }
+  }
+
+  try {
+    const updates = orderedIds.map((id, index) =>
+      db.faq.update({
+        where: { id },
+        data: { displayOrder: index + 1 },
+      })
+    )
+    await db.$transaction(updates)
+
+    revalidatePath('/faqs')
+    revalidatePath('/admin/faqs')
+    return { success: true, message: 'FAQ sequence updated successfully' }
+  } catch (err: any) {
+    console.error('Error reordering FAQs:', err)
+    return { success: false, error: err.message || 'Failed to update FAQ sequence' }
   }
 }
 

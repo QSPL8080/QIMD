@@ -10,6 +10,7 @@ import {
   bulkTrashFaqsAction,
   bulkRestoreFaqsAction,
   bulkDeleteFaqsPermanentlyAction,
+  reorderFaqsAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
 
@@ -22,6 +23,7 @@ export default function AdminFaqsPage() {
   const [showTrash, setShowTrash] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [bulkConfirmModal, setBulkConfirmModal] = useState<boolean>(false)
+  const [isReordering, setIsReordering] = useState(false)
 
   const fetchFaqs = async () => {
     setLoading(true)
@@ -42,14 +44,87 @@ export default function AdminFaqsPage() {
 
   const filteredFaqs = faqs.filter((f) => (showTrash ? f.isDeleted : !f.isDeleted))
 
+  const handleMoveUp = async (idx: number) => {
+    if (idx <= 0 || isReordering) return
+    setIsReordering(true)
+
+    const currentList = [...filteredFaqs]
+    const temp = currentList[idx]
+    currentList[idx] = currentList[idx - 1]
+    currentList[idx - 1] = temp
+
+    // Optimistically update faqs in state with new displayOrder values
+    const updatedWithOrder = currentList.map((item, i) => ({
+      ...item,
+      displayOrder: i + 1,
+    }))
+
+    const deletedFaqs = faqs.filter((f) => f.isDeleted)
+    setFaqs([...updatedWithOrder, ...deletedFaqs])
+
+    try {
+      const orderedIds = updatedWithOrder.map((f) => f.id)
+      const res = await reorderFaqsAction(orderedIds)
+      if (res.success) {
+        setStatusMsg({ type: 'success', text: `Moved FAQ sequence up` })
+      } else {
+        setStatusMsg({ type: 'error', text: res.error || 'Failed to update FAQ order' })
+        fetchFaqs()
+      }
+    } catch (err: any) {
+      console.error('Reorder error:', err)
+      fetchFaqs()
+    } finally {
+      setIsReordering(false)
+    }
+  }
+
+  const handleMoveDown = async (idx: number) => {
+    if (idx >= filteredFaqs.length - 1 || isReordering) return
+    setIsReordering(true)
+
+    const currentList = [...filteredFaqs]
+    const temp = currentList[idx]
+    currentList[idx] = currentList[idx + 1]
+    currentList[idx + 1] = temp
+
+    // Optimistically update faqs in state with new displayOrder values
+    const updatedWithOrder = currentList.map((item, i) => ({
+      ...item,
+      displayOrder: i + 1,
+    }))
+
+    const deletedFaqs = faqs.filter((f) => f.isDeleted)
+    setFaqs([...updatedWithOrder, ...deletedFaqs])
+
+    try {
+      const orderedIds = updatedWithOrder.map((f) => f.id)
+      const res = await reorderFaqsAction(orderedIds)
+      if (res.success) {
+        setStatusMsg({ type: 'success', text: `Moved FAQ sequence down` })
+      } else {
+        setStatusMsg({ type: 'error', text: res.error || 'Failed to update FAQ order' })
+        fetchFaqs()
+      }
+    } catch (err: any) {
+      console.error('Reorder error:', err)
+      fetchFaqs()
+    } finally {
+      setIsReordering(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
 
+    const rawOrder = Number(formData.get('displayOrder'))
+    const displayOrder = rawOrder > 0 ? rawOrder : editingItem ? editingItem.displayOrder : activeFaqs.length + 1
+
     const payload = {
       question: formData.get('question') as string,
       answer: formData.get('answer') as string,
-      displayOrder: Number(formData.get('displayOrder')) || 0,
+      displayOrder,
       isActive: formData.get('isActive') === 'true',
     }
 
@@ -260,7 +335,7 @@ export default function AdminFaqsPage() {
             <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
               <tr>
                 <th className="p-4 w-10"></th>
-                <th className="p-4">#</th>
+                <th className="p-4 whitespace-nowrap"># Sequence</th>
                 <th className="p-4">Question</th>
                 <th className="p-4">Answer</th>
                 <th className="p-4">Status</th>
@@ -283,7 +358,36 @@ export default function AdminFaqsPage() {
                       className="w-4 h-4 rounded cursor-pointer"
                     />
                   </td>
-                  <td className="p-4 font-bold text-slate-400 text-sm">{idx + 1}</td>
+                  <td className="p-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-600 text-xs w-6 text-center">
+                        {idx + 1}
+                      </span>
+                      {!showTrash && (
+                        <div className="inline-flex items-center bg-slate-100/90 border border-slate-200 rounded-lg p-0.5 shadow-2xs">
+                          <button
+                            type="button"
+                            onClick={() => handleMoveUp(idx)}
+                            disabled={idx === 0 || isReordering}
+                            className="p-1 rounded text-slate-600 hover:text-amber-700 hover:bg-white disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all cursor-pointer disabled:cursor-not-allowed"
+                            title={idx === 0 ? 'Already at top' : 'Move Up in sequence'}
+                          >
+                            <Icon icon="ion:arrow-up" className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="w-[1px] h-3 bg-slate-300 mx-0.5"></div>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveDown(idx)}
+                            disabled={idx === filteredFaqs.length - 1 || isReordering}
+                            className="p-1 rounded text-slate-600 hover:text-amber-700 hover:bg-white disabled:opacity-20 disabled:hover:bg-transparent disabled:hover:text-slate-400 transition-all cursor-pointer disabled:cursor-not-allowed"
+                            title={idx === filteredFaqs.length - 1 ? 'Already at bottom' : 'Move Down in sequence'}
+                          >
+                            <Icon icon="ion:arrow-down" className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                   <td className="p-4 font-semibold text-slate-900 text-base max-w-xs">{f.question}</td>
                   <td className="p-4 text-slate-600 font-medium text-sm line-clamp-2 max-w-md">{f.answer}</td>
                   <td className="p-4">
@@ -381,13 +485,16 @@ export default function AdminFaqsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">Display Order</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Display Sequence</label>
                   <input
                     type="number"
                     name="displayOrder"
-                    defaultValue={editingItem?.displayOrder || 0}
+                    defaultValue={editingItem ? editingItem.displayOrder : activeFaqs.length + 1}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900"
                   />
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    {editingItem ? 'Position in sequence.' : 'Defaults to the end of the sequence.'}
+                  </span>
                 </div>
 
                 <div>
