@@ -8,12 +8,15 @@ import {
   bulkUpdateEnquiryStatusAction,
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
+import { exportToCsv } from '@/lib/exportCsv'
 
 export default function AdminJobApplicationsPage() {
   const [applications, setApplications] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [search, setSearch] = useState('')
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
   const [selectedApp, setSelectedApp] = useState<any | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -38,6 +41,22 @@ export default function AdminJobApplicationsPage() {
     fetchApplications()
   }, [])
 
+  // Dynamic monthly calculation: Automatically updates for whatever the current calendar month & year is
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth()
+  const currentMonthName = now.toLocaleString('default', { month: 'long', year: 'numeric' })
+
+  const totalCount = applications.length
+  const monthlyCount = applications.filter((item) => {
+    const d = new Date(item.createdAt)
+    return d.getFullYear() === currentYear && d.getMonth() === currentMonth
+  }).length
+  const pendingCount = applications.filter((item) => item.status === 'PENDING' || item.status === 'NEW').length
+  const shortlistedCount = applications.filter(
+    (item) => item.status === 'SHORTLISTED' || item.status === 'CONTACTED' || item.status === 'HIRED'
+  ).length
+
   const filteredApps = applications.filter((app) => {
     const matchesSearch =
       app.fullName.toLowerCase().includes(search.toLowerCase()) ||
@@ -53,8 +72,59 @@ export default function AdminJobApplicationsPage() {
       matchesStatus = app.status === 'CLOSED' || app.status === 'REJECTED'
     }
 
-    return matchesSearch && matchesStatus
+    let matchesDate = true
+    if (fromDate) {
+      const from = new Date(fromDate)
+      from.setHours(0, 0, 0, 0)
+      matchesDate = matchesDate && new Date(app.createdAt) >= from
+    }
+    if (toDate) {
+      const to = new Date(toDate)
+      to.setHours(23, 59, 59, 999)
+      matchesDate = matchesDate && new Date(app.createdAt) <= to
+    }
+
+    return matchesSearch && matchesStatus && matchesDate
   })
+
+  const handleExport = () => {
+    const targetApps =
+      selectedIds.length > 0
+        ? filteredApps.filter((a) => selectedIds.includes(a.id))
+        : filteredApps
+
+    if (targetApps.length === 0) {
+      setStatusMsg({ type: 'error', text: 'No job applications to export' })
+      return
+    }
+
+    const headers = [
+      'ID',
+      'Date Applied',
+      'Applicant Name',
+      'Email',
+      'Phone',
+      'Applied Position',
+      'Resume Link',
+      'Cover Letter',
+      'Status',
+    ]
+
+    const rows = targetApps.map((app) => [
+      app.id,
+      new Date(app.createdAt).toLocaleString(),
+      app.fullName,
+      app.email,
+      app.phone || '',
+      app.jobTitle,
+      app.resume,
+      app.coverLetter || '',
+      app.status,
+    ])
+
+    exportToCsv(`career_enquiries_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows)
+    setStatusMsg({ type: 'success', text: `Exported ${targetApps.length} career applications to CSV` })
+  }
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     startTransition(async () => {
@@ -179,7 +249,76 @@ export default function AdminJobApplicationsPage() {
             Manage incoming career applicant resumes, position applications, and candidate evaluation status
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleExport}
+            disabled={filteredApps.length === 0}
+            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            title="Download CSV export"
+          >
+            <Icon icon="ion:download-outline" className="w-4 h-4" />
+            <span>
+              {selectedIds.length > 0
+                ? `Export Selected (${selectedIds.length})`
+                : `Export All (${filteredApps.length})`}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Metrics / Counter Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Count */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Total Applications</span>
+            <span className="text-2xl font-black text-slate-900 mt-1 block">{totalCount}</span>
+            <span className="text-[11px] text-slate-400 font-medium">All time job applicants</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <Icon icon="ion:briefcase-outline" className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Total Monthly Count - Refreshes automatically every month */}
+        <div className="bg-white p-5 rounded-2xl border border-purple-200/80 bg-linear-to-br from-white to-purple-50/20 shadow-xs flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-purple-900 uppercase tracking-wider">This Month</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">
+                Auto-Refreshes
+              </span>
+            </div>
+            <span className="text-2xl font-black text-purple-700 mt-1 block">{monthlyCount}</span>
+            <span className="text-[11px] text-slate-500 font-medium">{currentMonthName} count</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-xs">
+            <Icon icon="ion:calendar-outline" className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Pending Review */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Pending Review</span>
+            <span className="text-2xl font-black text-amber-600 mt-1 block">{pendingCount}</span>
+            <span className="text-[11px] text-slate-400 font-medium">New applicants</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <Icon icon="ion:time-outline" className="w-6 h-6" />
+          </div>
+        </div>
+
+        {/* Shortlisted / Contacted */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+          <div>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Shortlisted</span>
+            <span className="text-2xl font-black text-purple-600 mt-1 block">{shortlistedCount}</span>
+            <span className="text-[11px] text-slate-400 font-medium">In evaluation</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <Icon icon="ion:checkmark-circle-outline" className="w-6 h-6" />
+          </div>
         </div>
       </div>
 
@@ -195,34 +334,126 @@ export default function AdminJobApplicationsPage() {
         </div>
       )}
 
-      {/* Filter Bar with Status Dropdown & Search */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="relative flex-1 w-full">
-          <input
-            type="text"
-            placeholder="Search applicant name, email, or position..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-purple-600 focus:bg-white transition-all"
-          />
-          <Icon icon="ion:search-outline" className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+      {/* Filter Bar with Status Dropdown, Date Filters, and Select All */}
+      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          {/* Search Box */}
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="Search applicant name, email, or position..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-purple-600 focus:bg-white transition-all"
+            />
+            <Icon icon="ion:search-outline" className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+          </div>
+
+          {/* Status Dropdown */}
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-slate-600 whitespace-nowrap">Status Filter:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setSelectedIds([])
+              }}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold focus:outline-none focus:border-purple-600"
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="CONTACTED">Contacted</option>
+              <option value="CLOSED">Closed</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <label className="text-xs font-semibold text-slate-600 whitespace-nowrap">Status Filter:</label>
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value)
-              setSelectedIds([])
-            }}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 font-semibold focus:outline-none focus:border-purple-600 w-full sm:w-auto"
-          >
-            <option value="ALL">All Statuses</option>
-            <option value="PENDING">Pending</option>
-            <option value="CONTACTED">Contacted</option>
-            <option value="CLOSED">Closed</option>
-          </select>
+        {/* Secondary Toolbar: From-To Date Filters & Select All Button */}
+        <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          {/* Date Range Picker */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="text-xs font-bold text-slate-600 flex items-center gap-1">
+              <Icon icon="ion:calendar-clear-outline" className="w-4 h-4 text-slate-500" />
+              Date Filter:
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs text-slate-400 font-medium">From:</span>
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => {
+                  setFromDate(e.target.value)
+                  setSelectedIds([])
+                }}
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-purple-600"
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs text-slate-400 font-medium">To:</span>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => {
+                  setToDate(e.target.value)
+                  setSelectedIds([])
+                }}
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-purple-600"
+              />
+            </div>
+
+            {(fromDate || toDate) && (
+              <button
+                onClick={() => {
+                  setFromDate('')
+                  setToDate('')
+                  setSelectedIds([])
+                }}
+                className="text-xs text-rose-600 hover:text-rose-700 font-semibold px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors flex items-center gap-1 cursor-pointer"
+                title="Clear date filter"
+              >
+                <Icon icon="ion:close-circle-outline" className="w-3.5 h-3.5" />
+                Clear Dates
+              </button>
+            )}
+          </div>
+
+          {/* Action buttons: Select All and Export */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleSelectAll}
+              disabled={filteredApps.length === 0}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                selectedIds.length > 0 && selectedIds.length === filteredApps.length
+                  ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              <Icon
+                icon={
+                  selectedIds.length > 0 && selectedIds.length === filteredApps.length
+                    ? 'ion:checkbox'
+                    : selectedIds.length > 0
+                    ? 'ion:remove-circle-outline'
+                    : 'ion:square-outline'
+                }
+                className="w-4 h-4"
+              />
+              <span>
+                {selectedIds.length === filteredApps.length && filteredApps.length > 0
+                  ? 'Deselect All'
+                  : `Select All (${filteredApps.length})`}
+              </span>
+            </button>
+
+            <button
+              onClick={handleExport}
+              disabled={filteredApps.length === 0}
+              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              <Icon icon="ion:download-outline" className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Export CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -270,6 +501,15 @@ export default function AdminJobApplicationsPage() {
             >
               <Icon icon="ion:time-outline" className="w-3.5 h-3.5 text-amber-600" />
               Mark Pending
+            </button>
+
+            <button
+              onClick={handleExport}
+              disabled={isPending}
+              className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 shadow-2xs"
+            >
+              <Icon icon="ion:download-outline" className="w-3.5 h-3.5 text-emerald-700" />
+              Export Selected ({selectedIds.length})
             </button>
 
             <button

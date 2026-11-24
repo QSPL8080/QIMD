@@ -13,6 +13,7 @@ import {
 } from '@/lib/validations'
 import { requireLeadsSession, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { sendEnquiryNotificationEmail } from '@/lib/mail'
 
 // --- PUBLIC FORM SUBMISSIONS ---
 
@@ -40,6 +41,19 @@ export async function submitContactEnquiryAction(data: {
       },
     })
 
+    // Email notification to info@quickuppinstitute.com
+    sendEnquiryNotificationEmail({
+      type: 'contact',
+      title: 'Contact Enquiry',
+      name: validated.data.fullName,
+      email: validated.data.email,
+      phone: validated.data.phone,
+      details: {
+        'Subject': validated.data.subject || 'General Enquiry',
+        'Message': validated.data.message,
+      },
+      submittedAt: enquiry.createdAt,
+    }).catch((err) => console.error('Failed to dispatch contact enquiry notification:', err))
 
     return { success: true, message: 'Your enquiry has been submitted successfully! Our team will contact you shortly.' }
   } catch (err: any) {
@@ -86,6 +100,21 @@ export async function submitAdmissionEnquiryAction(data: {
       },
     })
 
+    // Email notification to info@quickuppinstitute.com
+    sendEnquiryNotificationEmail({
+      type: 'admission',
+      title: 'Admission Enquiry',
+      name: validated.data.studentName,
+      email: validated.data.email,
+      phone: validated.data.phone,
+      details: {
+        'Interested Program': programTitle || 'Not specified',
+        'City': validated.data.city || 'N/A',
+        'Qualification': validated.data.qualification || 'N/A',
+        'Enquiry Message': validated.data.message || 'N/A',
+      },
+      submittedAt: enquiry.createdAt,
+    }).catch((err) => console.error('Failed to dispatch admission enquiry notification:', err))
 
     try {
       revalidatePath('/admin/enquiries/admission')
@@ -117,7 +146,7 @@ export async function submitCareerApplicationAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    await db.careerEnquiry.create({
+    const enquiry = await db.careerEnquiry.create({
       data: {
         fullName: validated.data.fullName,
         email: validated.data.email,
@@ -130,6 +159,20 @@ export async function submitCareerApplicationAction(data: {
       },
     })
 
+    // Email notification to info@quickuppinstitute.com
+    sendEnquiryNotificationEmail({
+      type: 'career',
+      title: 'Career Job Application',
+      name: validated.data.fullName,
+      email: validated.data.email,
+      phone: validated.data.phone,
+      details: {
+        'Position Applied For': validated.data.jobTitle,
+        'Resume Link': validated.data.resume,
+        'Cover Letter / Message': validated.data.coverLetter || 'N/A',
+      },
+      submittedAt: enquiry.createdAt,
+    }).catch((err) => console.error('Failed to dispatch career application notification:', err))
 
     return { success: true, message: 'Application submitted successfully! HR will review your application.' }
   } catch (err: any) {
@@ -154,7 +197,7 @@ export async function submitFranchiseEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    await db.franchisePartnerEnquiry.create({
+    const enquiry = await db.franchisePartnerEnquiry.create({
       data: {
         fullName: validated.data.fullName,
         companyName: validated.data.companyName || null,
@@ -168,6 +211,22 @@ export async function submitFranchiseEnquiryAction(data: {
       },
     })
 
+    // Email notification to info@quickuppinstitute.com
+    sendEnquiryNotificationEmail({
+      type: 'franchise',
+      title: 'Franchise Partner Proposal',
+      name: validated.data.fullName,
+      email: validated.data.email,
+      phone: validated.data.phone,
+      details: {
+        'Company Name': validated.data.companyName || 'N/A',
+        'City / Location': validated.data.city || 'N/A',
+        'State': validated.data.state || 'N/A',
+        'Investment Capacity': validated.data.investmentCapacity || 'N/A',
+        'Proposal Message': validated.data.message || 'N/A',
+      },
+      submittedAt: enquiry.createdAt,
+    }).catch((err) => console.error('Failed to dispatch franchise enquiry notification:', err))
 
     return { success: true, message: 'Franchise partnership proposal received! Our expansion team will get in touch.' }
   } catch (err: any) {
@@ -193,7 +252,7 @@ export async function submitHireRequestAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    await db.companyPlacementEnquiry.create({
+    const enquiry = await db.companyPlacementEnquiry.create({
       data: {
         companyName: validated.data.companyName,
         contactPerson: validated.data.contactPerson,
@@ -208,6 +267,24 @@ export async function submitHireRequestAction(data: {
       },
     })
 
+    // Email notification to info@quickuppinstitute.com
+    sendEnquiryNotificationEmail({
+      type: 'hire',
+      title: 'Corporate Hire Request',
+      name: `${validated.data.contactPerson} (${validated.data.companyName})`,
+      email: validated.data.email,
+      phone: validated.data.phone,
+      details: {
+        'Company Name': validated.data.companyName,
+        'Contact Person': validated.data.contactPerson,
+        'Hiring Job Role': validated.data.jobRole,
+        'Vacancies': `${validated.data.vacancies || 1} Positions`,
+        'Job Location': validated.data.jobLocation || 'N/A',
+        'Required Skills': validated.data.requiredSkills || 'N/A',
+        'Requirement Note': validated.data.message || 'N/A',
+      },
+      submittedAt: enquiry.createdAt,
+    }).catch((err) => console.error('Failed to dispatch hire request notification:', err))
 
     return { success: true, message: 'Hiring request submitted! Our placement team will share top candidate profiles.' }
   } catch (err: any) {
