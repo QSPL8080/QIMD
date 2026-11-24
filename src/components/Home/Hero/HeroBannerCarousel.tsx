@@ -9,6 +9,28 @@ export interface Banner {
   displayOrder?: number
 }
 
+function getFallbackImageUrl(title?: string | null, currentUrl?: string): string {
+  const t = (title || '').toLowerCase()
+  const c = (currentUrl || '').toLowerCase()
+
+  if (t.includes('graphic') || c.includes('graphic')) {
+    return c.includes('graphic-design.jpeg')
+      ? '/images/Banner/web banner_graphic designer  2.jpg.jpeg'
+      : '/images/Banner/graphic-design.jpeg'
+  }
+  if (t.includes('digital') || c.includes('digital') || t.includes('market') || c.includes('market')) {
+    return c.includes('digital-marketing.jpeg')
+      ? '/images/Banner/web banner_digital marketing 2.jpg.jpeg'
+      : '/images/Banner/digital-marketing.jpeg'
+  }
+  if (t.includes('video') || c.includes('video')) {
+    return c.includes('video-editing.jpeg')
+      ? '/images/Banner/web banner_video editor  2.jpg.jpeg'
+      : '/images/Banner/video-editing.jpeg'
+  }
+  return '/images/Banner/graphic-design.jpeg'
+}
+
 export default function HeroBannerCarousel() {
   const [banners, setBanners] = useState<Banner[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -90,6 +112,13 @@ export default function HeroBannerCarousel() {
                     alt={banner.title || `Homepage Banner ${index + 1}`}
                     className="w-full h-full object-fill rounded-xl block select-none"
                     loading={index === 0 ? 'eager' : 'lazy'}
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.dataset.fallbackTried) {
+                        target.dataset.fallbackTried = 'true'
+                        target.src = getFallbackImageUrl(banner.title, target.src)
+                      }
+                    }}
                   />
                 </div>
               )
@@ -138,6 +167,13 @@ export default function HeroBannerCarousel() {
               src={activePreview} 
               alt="Banner Full Preview" 
               className="w-full h-auto max-h-[85vh] object-contain rounded-xl block"
+              onError={(e) => {
+                const target = e.currentTarget
+                if (!target.dataset.fallbackTried) {
+                  target.dataset.fallbackTried = 'true'
+                  target.src = getFallbackImageUrl(undefined, target.src)
+                }
+              }}
             />
           </div>
         </div>

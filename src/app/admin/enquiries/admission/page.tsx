@@ -286,12 +286,7 @@ export default function AdminAdmissionLeadsPage() {
         {/* Total Monthly Count - Refreshes automatically every month */}
         <div className="bg-white p-5 rounded-2xl border border-amber-200/80 bg-linear-to-br from-white to-amber-50/20 shadow-xs flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-amber-900 uppercase tracking-wider">This Month</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
-                Auto-Refreshes
-              </span>
-            </div>
+            <span className="text-xs font-semibold text-amber-900 uppercase tracking-wider block">This Month</span>
             <span className="text-2xl font-black text-amber-700 mt-1 block">{monthlyCount}</span>
             <span className="text-[11px] text-slate-500 font-medium">{currentMonthName} count</span>
           </div>
