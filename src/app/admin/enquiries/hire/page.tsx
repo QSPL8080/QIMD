@@ -9,6 +9,7 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 import { exportToCsv } from '@/lib/exportCsv'
+import { formatLeadDateTime } from '@/lib/dateUtils'
 
 export default function AdminCorporateHirePage() {
   const [requests, setRequests] = useState<any[]>([])
@@ -530,7 +531,7 @@ export default function AdminCorporateHirePage() {
           <div className="p-8 text-center text-slate-400 text-xs">No corporate hire requests found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm min-w-[650px]">
+            <table className="w-full text-left text-sm min-w-[780px]">
               <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200 text-xs">
                 <tr>
                   <th className="p-3.5 w-10">
@@ -545,6 +546,7 @@ export default function AdminCorporateHirePage() {
                   <th className="p-3.5">Company Name</th>
                   <th className="p-3.5">Contact Person</th>
                   <th className="p-3.5">Email</th>
+                  <th className="p-3.5">Date & Time</th>
                   <th className="p-3.5">Status</th>
                   <th className="p-3.5 text-right">Action</th>
                 </tr>
@@ -578,6 +580,14 @@ export default function AdminCorporateHirePage() {
                       >
                         {req.email}
                       </a>
+                    </td>
+                    <td className="p-3.5 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800 text-xs block">
+                        {formatLeadDateTime(req.createdAt).date}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium block">
+                        {formatLeadDateTime(req.createdAt).time}
+                      </span>
                     </td>
                     <td className="p-3.5">{getStatusBadge(req.status)}</td>
                     <td className="p-3.5 text-right">

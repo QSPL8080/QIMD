@@ -9,6 +9,7 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 import { exportToCsv } from '@/lib/exportCsv'
+import { formatLeadDateTime } from '@/lib/dateUtils'
 
 export default function AdminJobApplicationsPage() {
   const [applications, setApplications] = useState<any[]>([])
@@ -527,7 +528,7 @@ export default function AdminJobApplicationsPage() {
           <div className="p-8 text-center text-slate-400 text-xs">No job applications found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm min-w-[650px]">
+            <table className="w-full text-left text-sm min-w-[780px]">
               <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200 text-xs">
                 <tr>
                   <th className="p-3.5 w-10">
@@ -542,6 +543,7 @@ export default function AdminJobApplicationsPage() {
                   <th className="p-3.5">Applicant Name</th>
                   <th className="p-3.5">Email</th>
                   <th className="p-3.5">Applied Position</th>
+                  <th className="p-3.5">Date & Time</th>
                   <th className="p-3.5">Status</th>
                   <th className="p-3.5 text-right">Action</th>
                 </tr>
@@ -576,6 +578,14 @@ export default function AdminJobApplicationsPage() {
                       </a>
                     </td>
                     <td className="p-3.5 text-slate-800 font-semibold">{app.jobTitle}</td>
+                    <td className="p-3.5 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800 text-xs block">
+                        {formatLeadDateTime(app.createdAt).date}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium block">
+                        {formatLeadDateTime(app.createdAt).time}
+                      </span>
+                    </td>
                     <td className="p-3.5">{getStatusBadge(app.status)}</td>
                     <td className="p-3.5 text-right">
                       <button

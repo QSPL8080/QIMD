@@ -9,6 +9,7 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 import { exportToCsv } from '@/lib/exportCsv'
+import { formatLeadDateTime } from '@/lib/dateUtils'
 
 export default function AdminFranchiseProposalsPage() {
   const [proposals, setProposals] = useState<any[]>([])
@@ -528,7 +529,7 @@ export default function AdminFranchiseProposalsPage() {
           <div className="p-8 text-center text-slate-400 text-xs">No franchise proposals found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm min-w-[650px]">
+            <table className="w-full text-left text-sm min-w-[780px]">
               <thead className="bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200 text-xs">
                 <tr>
                   <th className="p-3.5 w-10">
@@ -543,6 +544,7 @@ export default function AdminFranchiseProposalsPage() {
                   <th className="p-3.5">Name</th>
                   <th className="p-3.5">Email</th>
                   <th className="p-3.5">Location</th>
+                  <th className="p-3.5">Date & Time</th>
                   <th className="p-3.5">Status</th>
                   <th className="p-3.5 text-right">Action</th>
                 </tr>
@@ -581,6 +583,14 @@ export default function AdminFranchiseProposalsPage() {
                     </td>
                     <td className="p-3.5 text-slate-800 font-medium">
                       {p.city ? `${p.city}${p.state ? `, ${p.state}` : ''}` : 'Location Not Specified'}
+                    </td>
+                    <td className="p-3.5 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800 text-xs block">
+                        {formatLeadDateTime(p.createdAt).date}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium block">
+                        {formatLeadDateTime(p.createdAt).time}
+                      </span>
                     </td>
                     <td className="p-3.5">{getStatusBadge(p.status)}</td>
                     <td className="p-3.5 text-right">

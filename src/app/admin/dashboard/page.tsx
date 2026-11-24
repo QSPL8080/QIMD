@@ -140,7 +140,7 @@ export default async function AdminDashboardPage() {
                   <th>Contact</th>
                   <th>Program</th>
                   <th>Status</th>
-                  <th>Date</th>
+                  <th>Date & Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,7 +158,10 @@ export default async function AdminDashboardPage() {
                       </td>
                       <td>{programOf(c)}</td>
                       <td><span className={`qad-status ${statusClass(c.status)}`}>{c.status}</span></td>
-                      <td className="qad-muted">{new Date(c.createdAt).toLocaleDateString()}</td>
+                      <td className="qad-muted">
+                        {new Date(c.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        <small>{new Date(c.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</small>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -187,7 +190,10 @@ export default async function AdminDashboardPage() {
                       <strong>{m.fullName}</strong>
                       <small>{m.subject || m.email}</small>
                     </span>
-                    <span className="qad-muted">{new Date(m.createdAt).toLocaleDateString()}</span>
+                    <span className="qad-muted">
+                      {new Date(m.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      <small className="block">{new Date(m.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</small>
+                    </span>
                   </li>
                 ))
               )}

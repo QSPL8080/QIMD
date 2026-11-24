@@ -9,6 +9,7 @@ import {
 } from '@/app/actions/crmActions'
 import { Icon } from '@iconify/react'
 import { exportToCsv } from '@/lib/exportCsv'
+import { formatLeadDateTime } from '@/lib/dateUtils'
 
 export default function AdminContactLeadsPage() {
   const [leads, setLeads] = useState<any[]>([])
@@ -521,7 +522,7 @@ export default function AdminContactLeadsPage() {
           <div className="p-8 text-center text-slate-500 text-sm font-medium">No contact leads found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm min-w-[650px]">
+            <table className="w-full text-left text-sm min-w-[780px]">
               <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-bold text-xs border-b border-slate-200">
                 <tr>
                   <th className="p-4 w-10">
@@ -536,6 +537,7 @@ export default function AdminContactLeadsPage() {
                   <th className="p-4">Name</th>
                   <th className="p-4">Email</th>
                   <th className="p-4">Subject</th>
+                  <th className="p-4">Date & Time</th>
                   <th className="p-4">Status</th>
                   <th className="p-4 text-right">Action</th>
                 </tr>
@@ -571,6 +573,14 @@ export default function AdminContactLeadsPage() {
                     </td>
                     <td className="p-4 text-slate-800 font-medium text-sm truncate max-w-xs">
                       {lead.subject || 'General Enquiry'}
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      <span className="font-semibold text-slate-800 text-xs block">
+                        {formatLeadDateTime(lead.createdAt).date}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium block">
+                        {formatLeadDateTime(lead.createdAt).time}
+                      </span>
                     </td>
                     <td className="p-4">{getStatusBadge(lead.status)}</td>
                     <td className="p-4 text-right">
