@@ -67,24 +67,17 @@ export async function getAdminSession(): Promise<SessionUser | null> {
 }
 
 // ─── Roles ──────────────────────────────────────────────────
-// SUPER_ADMIN – everything, including admin users
-// ADMIN       – leads and all website content
-// SEO         – blogs only
-// LEAD_MANAGER – leads only
-export const ROLE_SUPER_ADMIN = 'SUPER_ADMIN'
-export const ROLE_ADMIN = 'ADMIN'
-export const ROLE_SEO = 'SEO'
-export const ROLE_LEAD_MANAGER = 'LEAD_MANAGER'
-export const ASSIGNABLE_ROLES = [ROLE_SUPER_ADMIN, ROLE_ADMIN, ROLE_SEO, ROLE_LEAD_MANAGER] as const
+import {
+  isAdminRole,
+  isSuperAdminRole,
+  canManageLeads,
+  canAssignLeads,
+  canManageAdmissions,
+  canManageBlogs,
+} from './roles'
+export * from './roles'
 
-export const isSuperAdminRole = (role?: string | null) => role === ROLE_SUPER_ADMIN || role === 'Super Admin'
-export const isAdminRole = (role?: string | null) => isSuperAdminRole(role) || role === ROLE_ADMIN || role === 'Admin'
-export const isSeoRole = (role?: string | null) => role === ROLE_SEO
-export const isLeadManagerRole = (role?: string | null) => role === ROLE_LEAD_MANAGER
-export const canManageBlogs = (role?: string | null) => isAdminRole(role) || isSeoRole(role)
-export const canManageLeads = (role?: string | null) => isAdminRole(role) || isLeadManagerRole(role)
-
-/** Signed-in Super Admin or Admin (the SEO role is not allowed). */
+/** Signed-in Super Admin or Admin. */
 export async function requireAdminSession(): Promise<SessionUser> {
   const session = await getAdminSession()
   if (!session) {
@@ -105,7 +98,7 @@ export async function requireSuperAdminSession(): Promise<SessionUser> {
   return session
 }
 
-/** Signed-in user who may work on leads: Super Admin, Admin or Lead Manager. */
+/** Signed-in user who may work on leads (Super Admin, Admin, Sales Manager, Counsellor). */
 export async function requireLeadsSession(): Promise<SessionUser> {
   const session = await getAdminSession()
   if (!session) {
@@ -117,7 +110,31 @@ export async function requireLeadsSession(): Promise<SessionUser> {
   return session
 }
 
-/** Signed-in user who may write blogs: Super Admin, Admin or SEO. */
+/** Signed-in Sales Manager or Admin who can assign leads. */
+export async function requireSalesManagerSession(): Promise<SessionUser> {
+  const session = await getAdminSession()
+  if (!session) {
+    throw new Error('UNAUTHORIZED: Admin authentication required')
+  }
+  if (!canAssignLeads(session.roleName)) {
+    throw new Error('FORBIDDEN: Sales Manager privileges required')
+  }
+  return session
+}
+
+/** Signed-in Admission Head or Admin. */
+export async function requireAdmissionHeadSession(): Promise<SessionUser> {
+  const session = await getAdminSession()
+  if (!session) {
+    throw new Error('UNAUTHORIZED: Admin authentication required')
+  }
+  if (!canManageAdmissions(session.roleName)) {
+    throw new Error('FORBIDDEN: Admission Head privileges required')
+  }
+  return session
+}
+
+/** Signed-in user who may edit website content: Super Admin, Admin or SEO Manager. */
 export async function requireBlogEditorSession(): Promise<SessionUser> {
   const session = await getAdminSession()
   if (!session) {

@@ -29,6 +29,12 @@ model User {
   assignedFranchisePartnerEnquiries FranchisePartnerEnquiry[]
   galleryItems                      Gallery[]
   testimonials                      Testimonial[]
+  leadFollowUps                     LeadFollowUp[]
+  assignmentsReceived               LeadAssignmentHistory[]   @relation("AssignmentsReceived")
+  assignmentsCreated                LeadAssignmentHistory[]   @relation("AssignmentsCreated")
+  counsellorAdmissions              Admission[]               @relation("CounsellorAdmissions")
+  verifiedAdmissions                Admission[]               @relation("VerifiedAdmissions")
+  expenses                          Expense[]
 
   @@index([email])
   @@index([status, isDeleted])
@@ -216,10 +222,15 @@ model AdmissionEnquiry {
   isDeleted     Boolean       @default(false) @map("is_deleted")
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
-  assignedTo    User?         @relation(fields: [assignedToId], references: [id])
+  assignedTo    User?                   @relation(fields: [assignedToId], references: [id])
+  followUps     LeadFollowUp[]
+  assignmentHistory LeadAssignmentHistory[]
+  admissions    Admission[]
 
   @@index([status, isDeleted])
   @@index([assignedToId])
+  @@index([phone])
+  @@index([email])
   @@map("admission_enquiries")
 }
 
@@ -392,7 +403,19 @@ enum EnquiryStatus {
   NEW
   PENDING
   CONTACTED
+  INTERESTED
+  FOLLOW_UP_REQUIRED
+  COUNSELLING_SCHEDULED
+  NOT_INTERESTED
+  ADMISSION_CLOSED
+  INVALID_DUPLICATE
   CLOSED
+}
+
+enum AdmissionStatus {
+  VERIFICATION_PENDING
+  VERIFIED_ACTIVE
+  CANCELLED
 }
 
 enum CareerStatus {
@@ -402,4 +425,101 @@ enum CareerStatus {
   REJECTED
   HIRED
   CLOSED
+}
+
+model LeadFollowUp {
+  id               String            @id @default(uuid()) @db.Uuid
+  enquiryType      String            @default("admission") @map("enquiry_type") @db.VarChar(50)
+  enquiryId        String            @map("enquiry_id") @db.Uuid
+  remarks          String
+  status           String?           @db.VarChar(50)
+  followUpDate     DateTime?         @map("follow_up_date")
+  nextFollowUpDate DateTime?         @map("next_follow_up_date")
+  createdById      String?           @map("created_by_id") @db.Uuid
+  createdByName    String?           @map("created_by_name") @db.VarChar(150)
+  createdByRole    String?           @map("created_by_role") @db.VarChar(50)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  admissionEnquiry AdmissionEnquiry? @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  createdBy        User?             @relation(fields: [createdById], references: [id])
+
+  @@index([enquiryType, enquiryId])
+  @@index([createdById])
+  @@index([nextFollowUpDate])
+  @@map("lead_follow_ups")
+}
+
+model LeadAssignmentHistory {
+  id               String            @id @default(uuid()) @db.Uuid
+  enquiryType      String            @default("admission") @map("enquiry_type") @db.VarChar(50)
+  enquiryId        String            @map("enquiry_id") @db.Uuid
+  fromUserId       String?           @map("from_user_id") @db.Uuid
+  fromUserName     String?           @map("from_user_name") @db.VarChar(150)
+  toUserId         String            @map("to_user_id") @db.Uuid
+  toUserName       String?           @map("to_user_name") @db.VarChar(150)
+  assignedById     String?           @map("assigned_by_id") @db.Uuid
+  assignedByName   String?           @map("assigned_by_name") @db.VarChar(150)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  admissionEnquiry AdmissionEnquiry? @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  assignedTo       User              @relation("AssignmentsReceived", fields: [toUserId], references: [id])
+  assignedBy       User?             @relation("AssignmentsCreated", fields: [assignedById], references: [id])
+
+  @@index([enquiryType, enquiryId])
+  @@index([toUserId])
+  @@map("lead_assignment_histories")
+}
+
+model Admission {
+  id              String          @id @default(uuid()) @db.Uuid
+  admissionNumber String          @unique @map("admission_number") @db.VarChar(50)
+  studentName     String          @map("student_name") @db.VarChar(200)
+  email           String          @db.VarChar(255)
+  phone           String          @db.VarChar(20)
+  courseName      String          @map("course_name") @db.VarChar(200)
+  batchTiming     String?         @map("batch_timing") @db.VarChar(100)
+  city            String?         @db.VarChar(150)
+  qualification   String?         @db.VarChar(150)
+  admissionDate   DateTime        @default(now()) @map("admission_date")
+  status          AdmissionStatus @default(VERIFICATION_PENDING)
+  leadId          String?         @map("lead_id") @db.Uuid
+  counsellorId    String?         @map("counsellor_id") @db.Uuid
+  verifiedById    String?         @map("verified_by_id") @db.Uuid
+  verifiedAt      DateTime?       @map("verified_at")
+  remarks         String?
+  documents       Json?
+  isDeleted       Boolean         @default(false) @map("is_deleted")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  lead            AdmissionEnquiry? @relation(fields: [leadId], references: [id])
+  counsellor      User?             @relation("CounsellorAdmissions", fields: [counsellorId], references: [id])
+  verifiedBy      User?             @relation("VerifiedAdmissions", fields: [verifiedById], references: [id])
+
+  @@index([status, isDeleted])
+  @@index([counsellorId])
+  @@index([admissionDate])
+  @@map("admissions")
+}
+
+model Expense {
+  id            String    @id @default(uuid()) @db.Uuid
+  expenseNumber String    @unique @map("expense_number") @db.VarChar(50)
+  title         String    @db.VarChar(255)
+  description   String?
+  category      String    @db.VarChar(100)
+  amount        Decimal   @db.Decimal(12, 2)
+  paymentMode   String    @default("CASH") @map("payment_mode") @db.VarChar(50)
+  expenseDate   DateTime  @default(now()) @map("expense_date")
+  receiptUrl    String?   @map("receipt_url")
+  createdById   String?   @map("created_by_id") @db.Uuid
+  createdByName String?   @map("created_by_name") @db.VarChar(150)
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  createdBy     User?     @relation(fields: [createdById], references: [id])
+
+  @@index([category, isDeleted])
+  @@index([expenseDate])
+  @@index([isDeleted])
+  @@map("expenses")
 }

@@ -24,6 +24,70 @@ interface UserItem {
   createdAt: string
 }
 
+function getRoleBadge(role?: string | null) {
+  const r = role || 'ADMIN'
+  switch (r) {
+    case 'SUPER_ADMIN':
+    case 'Super Admin':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
+          Super Admin
+        </span>
+      )
+    case 'ADMIN':
+    case 'Admin':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+          Admin
+        </span>
+      )
+    case 'SALES_MANAGER':
+    case 'LEAD_MANAGER':
+    case 'Sales Manager':
+    case 'Lead Manager':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+          Sales Manager
+        </span>
+      )
+    case 'COUNSELLOR':
+    case 'Counsellor':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          Counsellor
+        </span>
+      )
+    case 'ADMISSION_HEAD':
+    case 'Admission Head':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+          Admission Head
+        </span>
+      )
+    case 'SEO_MANAGER':
+    case 'SEO':
+    case 'SEO Manager':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-200">
+          SEO Manager
+        </span>
+      )
+    case 'VIEWER':
+    case 'Viewer':
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+          Viewer
+        </span>
+      )
+    default:
+      return (
+        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200">
+          {r}
+        </span>
+      )
+  }
+}
+
 export default function UserManagementClient({
   initialUsers,
   currentUserId,
@@ -57,7 +121,14 @@ export default function UserManagementClient({
 
     let matchesRole = true
     if (roleFilter !== 'ALL') {
-      matchesRole = (u.role || 'ADMIN') === roleFilter
+      const r = u.role || 'ADMIN'
+      if (roleFilter === 'SALES_MANAGER') {
+        matchesRole = r === 'SALES_MANAGER' || r === 'LEAD_MANAGER' || r === 'Sales Manager'
+      } else if (roleFilter === 'SEO_MANAGER') {
+        matchesRole = r === 'SEO_MANAGER' || r === 'SEO' || r === 'SEO Manager'
+      } else {
+        matchesRole = r === roleFilter
+      }
     }
 
     let matchesStatus = true
@@ -223,8 +294,11 @@ export default function UserManagementClient({
             <option value="ALL">All Roles</option>
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="ADMIN">Admin</option>
-            <option value="SEO">SEO (Blogs only)</option>
-            <option value="LEAD_MANAGER">Lead Manager (Leads only)</option>
+            <option value="SALES_MANAGER">Sales Manager</option>
+            <option value="COUNSELLOR">Counsellor</option>
+            <option value="ADMISSION_HEAD">Admission Head</option>
+            <option value="SEO_MANAGER">SEO Manager</option>
+            <option value="VIEWER">Viewer</option>
           </select>
 
           <select
@@ -275,9 +349,7 @@ export default function UserManagementClient({
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        {u.role || 'ADMIN'}
-                      </span>
+                      {getRoleBadge(u.role)}
                     </td>
                     <td className="p-4 text-slate-700 font-medium text-sm">{u.phone || 'N/A'}</td>
                     <td className="p-4">
@@ -410,12 +482,15 @@ export default function UserManagementClient({
                   name="role"
                   required
                   defaultValue={editingUser?.role || 'ADMIN'}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-medium"
                 >
-                  <option value="SUPER_ADMIN">SUPER_ADMIN - Full System Access</option>
-                  <option value="ADMIN">ADMIN - Administrator Access</option>
-                  <option value="SEO">SEO - Blogs Only</option>
-                  <option value="LEAD_MANAGER">LEAD_MANAGER - Leads Only</option>
+                  <option value="SUPER_ADMIN">SUPER_ADMIN – Full System Access & Audit</option>
+                  <option value="ADMIN">ADMIN – Full Operations & Content</option>
+                  <option value="SALES_MANAGER">SALES_MANAGER – Lead Allocation & Counselling Management</option>
+                  <option value="COUNSELLOR">COUNSELLOR – Assigned Leads & Follow-ups</option>
+                  <option value="ADMISSION_HEAD">ADMISSION_HEAD – Admissions & Expense Management</option>
+                  <option value="SEO_MANAGER">SEO_MANAGER – Website Content Management</option>
+                  <option value="VIEWER">VIEWER – Read-Only Access</option>
                 </select>
               </div>
 

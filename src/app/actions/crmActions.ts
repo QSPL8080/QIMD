@@ -11,7 +11,12 @@ import {
   franchiseEnquirySchema,
   hireRequestSchema,
 } from '@/lib/validations'
-import { requireLeadsSession, requireSuperAdminSession } from '@/lib/auth'
+import {
+  requireLeadsSession,
+  requireSuperAdminSession,
+  requireSalesManagerSession,
+  canAssignLeads,
+} from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { sendEnquiryNotificationEmail } from '@/lib/mail'
 
@@ -518,5 +523,256 @@ export async function bulkUpdateEnquiryStatusAction(
     return { success: false, error: err.message || 'Failed to update leads status' }
   }
 }
+
+/**
+ * Fetch active counsellors and team members eligible to receive lead assignments.
+ */
+export async function getCounsellorListAction() {
+  await requireLeadsSession()
+  try {
+    const counsellors = await db.user.findMany({
+      where: {
+        status: true,
+        isDeleted: false,
+        role: { in: ['COUNSELLOR', 'SALES_MANAGER', 'LEAD_MANAGER', 'ADMIN', 'SUPER_ADMIN'] },
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        role: true,
+      },
+      orderBy: { fullName: 'asc' },
+    })
+    return { success: true, counsellors }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to fetch counsellors', counsellors: [] }
+  }
+}
+
+/**
+ * Assign a single lead to a counsellor.
+ */
+export async function assignLeadAction(
+  enquiryType: 'admission' | 'contact' | 'franchise' | 'hire',
+  enquiryId: string,
+  toUserId: string
+) {
+  const session = await requireSalesManagerSession()
+
+  try {
+    const targetUser = await db.user.findUnique({
+      where: { id: toUserId },
+      select: { id: true, fullName: true },
+    })
+    if (!targetUser) {
+      return { success: false, error: 'Target counsellor not found' }
+    }
+
+    let fromUserId: string | null = null
+    let fromUserName: string | null = null
+
+    if (enquiryType === 'admission') {
+      const current = await db.admissionEnquiry.findUnique({
+        where: { id: enquiryId },
+        include: { assignedTo: { select: { id: true, fullName: true } } },
+      })
+      fromUserId = current?.assignedTo?.id || null
+      fromUserName = current?.assignedTo?.fullName || null
+
+      await db.admissionEnquiry.update({
+        where: { id: enquiryId },
+        data: { assignedToId: toUserId },
+      })
+
+      await db.leadAssignmentHistory.create({
+        data: {
+          enquiryType: 'admission',
+          enquiryId,
+          fromUserId,
+          fromUserName,
+          toUserId: targetUser.id,
+          toUserName: targetUser.fullName,
+          assignedById: session.id,
+          assignedByName: session.fullName || session.email,
+        },
+      })
+    } else if (enquiryType === 'contact') {
+      await db.contactEnquiry.update({
+        where: { id: enquiryId },
+        data: { assignedToId: toUserId },
+      })
+    } else if (enquiryType === 'franchise') {
+      await db.franchisePartnerEnquiry.update({
+        where: { id: enquiryId },
+        data: { assignedToId: toUserId },
+      })
+    } else if (enquiryType === 'hire') {
+      await db.companyPlacementEnquiry.update({
+        where: { id: enquiryId },
+        data: { assignedToId: toUserId },
+      })
+    }
+
+    revalidatePath(`/admin/enquiries/${enquiryType}`)
+    return { success: true, message: `Lead assigned to ${targetUser.fullName}` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to assign lead' }
+  }
+}
+
+/**
+ * Bulk assign multiple leads to a counsellor.
+ */
+export async function bulkAssignLeadsAction(
+  enquiryType: 'admission' | 'contact' | 'franchise' | 'hire',
+  enquiryIds: string[],
+  toUserId: string
+) {
+  const session = await requireSalesManagerSession()
+  if (!enquiryIds || enquiryIds.length === 0) {
+    return { success: false, error: 'No leads selected' }
+  }
+
+  try {
+    const targetUser = await db.user.findUnique({
+      where: { id: toUserId },
+      select: { id: true, fullName: true },
+    })
+    if (!targetUser) {
+      return { success: false, error: 'Target counsellor not found' }
+    }
+
+    if (enquiryType === 'admission') {
+      await db.admissionEnquiry.updateMany({
+        where: { id: { in: enquiryIds } },
+        data: { assignedToId: toUserId },
+      })
+
+      // Record assignment history entries
+      for (const id of enquiryIds) {
+        await db.leadAssignmentHistory.create({
+          data: {
+            enquiryType: 'admission',
+            enquiryId: id,
+            toUserId: targetUser.id,
+            toUserName: targetUser.fullName,
+            assignedById: session.id,
+            assignedByName: session.fullName || session.email,
+          },
+        })
+      }
+    } else if (enquiryType === 'contact') {
+      await db.contactEnquiry.updateMany({
+        where: { id: { in: enquiryIds } },
+        data: { assignedToId: toUserId },
+      })
+    } else if (enquiryType === 'franchise') {
+      await db.franchisePartnerEnquiry.updateMany({
+        where: { id: { in: enquiryIds } },
+        data: { assignedToId: toUserId },
+      })
+    } else if (enquiryType === 'hire') {
+      await db.companyPlacementEnquiry.updateMany({
+        where: { id: { in: enquiryIds } },
+        data: { assignedToId: toUserId },
+      })
+    }
+
+    revalidatePath(`/admin/enquiries/${enquiryType}`)
+    return { success: true, message: `${enquiryIds.length} lead(s) assigned to ${targetUser.fullName}` }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to bulk assign leads' }
+  }
+}
+
+/**
+ * Add a follow-up interaction note/timeline item to a lead.
+ */
+export async function addLeadFollowUpAction(data: {
+  enquiryType?: string
+  enquiryId: string
+  remarks: string
+  status?: string
+  followUpDate?: string
+  nextFollowUpDate?: string
+}) {
+  const session = await requireLeadsSession()
+  if (!data.remarks || !data.remarks.trim()) {
+    return { success: false, error: 'Follow-up remarks are required' }
+  }
+
+  try {
+    const enquiryType = data.enquiryType || 'admission'
+    const followUpDate = data.followUpDate ? new Date(data.followUpDate) : new Date()
+    const nextFollowUpDate = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
+
+    const record = await db.leadFollowUp.create({
+      data: {
+        enquiryType,
+        enquiryId: data.enquiryId,
+        remarks: data.remarks.trim(),
+        status: data.status || null,
+        followUpDate,
+        nextFollowUpDate,
+        createdById: session.id,
+        createdByName: session.fullName || session.email,
+        createdByRole: session.roleName,
+      },
+    })
+
+    // If status changed or remark added, also update the lead record
+    if (enquiryType === 'admission') {
+      const updateData: any = {
+        remarks: data.remarks.trim(),
+      }
+      if (data.status) {
+        updateData.status = data.status
+      }
+      await db.admissionEnquiry.update({
+        where: { id: data.enquiryId },
+        data: updateData,
+      })
+    }
+
+    revalidatePath(`/admin/enquiries/${enquiryType}`)
+    return { success: true, message: 'Follow-up recorded successfully', record }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to record follow-up' }
+  }
+}
+
+/**
+ * Get all follow-ups for a lead.
+ */
+export async function getLeadFollowUpsAction(enquiryId: string) {
+  await requireLeadsSession()
+  try {
+    const followUps = await db.leadFollowUp.findMany({
+      where: { enquiryId },
+      orderBy: { createdAt: 'desc' },
+    })
+    return { success: true, followUps }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to fetch follow-ups', followUps: [] }
+  }
+}
+
+/**
+ * Get assignment history for a lead.
+ */
+export async function getLeadAssignmentHistoryAction(enquiryId: string) {
+  await requireLeadsSession()
+  try {
+    const history = await db.leadAssignmentHistory.findMany({
+      where: { enquiryId },
+      orderBy: { createdAt: 'desc' },
+    })
+    return { success: true, history }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to fetch assignment history', history: [] }
+  }
+}
+
 
 

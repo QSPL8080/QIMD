@@ -25,9 +25,14 @@ interface AdminShellProps {
 type NavItem = { href: string; label: string; icon: string }
 type NavGroup = { title: string; items: NavItem[]; show?: boolean }
 
-const isSuperAdminRole = (role: string) => role === 'SUPER_ADMIN' || role === 'Super Admin'
-const isSeoRole = (role: string) => role === 'SEO'
-const isLeadManagerRole = (role: string) => role === 'LEAD_MANAGER'
+import {
+  isSuperAdminRole,
+  isSalesManagerRole,
+  isCounsellorRole,
+  isAdmissionHeadRole,
+  isSeoRole,
+  isViewerRole,
+} from '@/lib/roles'
 
 export default function AdminShell({ session, binCount = null, notifications = null, children }: AdminShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -43,15 +48,20 @@ export default function AdminShell({ session, binCount = null, notifications = n
     return <>{children}</>
   }
 
-  const seoGroups: NavGroup[] = [
-    {
-      title: 'Website Content',
-      items: [{ href: '/admin/blogs', label: 'Blogs & Articles', icon: 'ion:document-text-outline' }],
-    },
-  ]
+  const overviewGroup: NavGroup = {
+    title: 'Overview',
+    items: [{ href: '/admin/dashboard', label: 'Dashboard', icon: 'ion:grid-outline' }],
+  }
+
+  const counsellorLeadsGroup: NavGroup = {
+    title: 'Counselling',
+    items: [
+      { href: '/admin/enquiries/admission', label: 'My Assigned Leads', icon: 'ion:school-outline' },
+    ],
+  }
 
   const leadsGroup: NavGroup = {
-    title: 'Leads',
+    title: 'Leads & Enquiries',
     items: [
       { href: '/admin/enquiries/admission', label: 'Admission Enquiries', icon: 'ion:school-outline' },
       { href: '/admin/enquiries/contact', label: 'Contact Enquiries', icon: 'ion:mail-outline' },
@@ -61,33 +71,49 @@ export default function AdminShell({ session, binCount = null, notifications = n
     ],
   }
 
-  const adminGroups: NavGroup[] = [
-    {
-      title: 'Overview',
-      items: [{ href: '/admin/dashboard', label: 'Dashboard', icon: 'ion:grid-outline' }],
-    },
-    leadsGroup,
-    {
-      title: 'Website Content',
-      items: [
-        { href: '/admin/banners', label: 'Homepage Banners', icon: 'ion:images-outline' },
-        { href: '/admin/blogs', label: 'Blogs & Articles', icon: 'ion:document-text-outline' },
-        { href: '/admin/careers', label: 'Job Openings', icon: 'ion:clipboard-outline' },
-        { href: '/admin/placements', label: 'Placed Students', icon: 'ion:ribbon-outline' },
-        { href: '/admin/testimonials', label: 'Testimonials', icon: 'ion:videocam-outline' },
-        { href: '/admin/reviews', label: 'Student Reviews', icon: 'ion:star-outline' },
-        { href: '/admin/faqs', label: 'FAQs', icon: 'ion:help-circle-outline' },
-        { href: '/admin/gallery', label: 'Gallery', icon: 'ion:camera-outline' },
-      ],
-    },
-    {
-      title: 'Access',
-      show: isSuperAdminRole(session.roleName),
-      items: [{ href: '/admin/users', label: 'Admin Users', icon: 'ion:people-outline' }],
-    },
-  ]
+  const contentGroup: NavGroup = {
+    title: 'Website Content',
+    items: [
+      { href: '/admin/banners', label: 'Homepage Banners', icon: 'ion:images-outline' },
+      { href: '/admin/blogs', label: 'Blogs & Articles', icon: 'ion:document-text-outline' },
+      { href: '/admin/careers', label: 'Job Openings', icon: 'ion:clipboard-outline' },
+      { href: '/admin/placements', label: 'Placed Students', icon: 'ion:ribbon-outline' },
+      { href: '/admin/testimonials', label: 'Testimonials', icon: 'ion:videocam-outline' },
+      { href: '/admin/reviews', label: 'Student Reviews', icon: 'ion:star-outline' },
+      { href: '/admin/faqs', label: 'FAQs', icon: 'ion:help-circle-outline' },
+      { href: '/admin/gallery', label: 'Gallery', icon: 'ion:camera-outline' },
+    ],
+  }
 
-  const groups = isSeoRole(session.roleName) ? seoGroups : isLeadManagerRole(session.roleName) ? [leadsGroup] : adminGroups
+  const operationsGroup: NavGroup = {
+    title: 'Admissions & Operations',
+    items: [
+      { href: '/admin/admissions', label: 'Student Admissions', icon: 'ion:id-card-outline' },
+      { href: '/admin/expenses', label: 'Expenses', icon: 'ion:receipt-outline' },
+    ],
+  }
+
+  const accessGroup: NavGroup = {
+    title: 'Access & System',
+    show: isSuperAdminRole(session.roleName),
+    items: [{ href: '/admin/users', label: 'Admin Users', icon: 'ion:people-outline' }],
+  }
+
+  let groups: NavGroup[] = []
+  if (isCounsellorRole(session.roleName)) {
+    groups = [overviewGroup, counsellorLeadsGroup]
+  } else if (isSalesManagerRole(session.roleName)) {
+    groups = [overviewGroup, leadsGroup]
+  } else if (isAdmissionHeadRole(session.roleName)) {
+    groups = [overviewGroup, operationsGroup, leadsGroup]
+  } else if (isSeoRole(session.roleName)) {
+    groups = [overviewGroup, contentGroup]
+  } else if (isViewerRole(session.roleName)) {
+    groups = [overviewGroup, operationsGroup, leadsGroup, contentGroup]
+  } else {
+    // Super Admin & Admin
+    groups = [overviewGroup, operationsGroup, leadsGroup, contentGroup, accessGroup]
+  }
 
   const isActive = (href: string) => pathname === href || (href !== '/admin/dashboard' && pathname?.startsWith(href + '/'))
 
@@ -98,7 +124,7 @@ export default function AdminShell({ session, binCount = null, notifications = n
       {/* Sidebar */}
       <aside className={`qad-side${mobileMenuOpen ? ' is-open' : ''}`}>
         <div className="qad-brand">
-          <Link href={isSeoRole(session.roleName) ? '/admin/blogs' : isLeadManagerRole(session.roleName) ? '/admin/enquiries/admission' : '/admin/dashboard'} className="qad-brand-link" aria-label="QIMD Admin">
+          <Link href={isSeoRole(session.roleName) ? '/admin/blogs' : isSalesManagerRole(session.roleName) ? '/admin/enquiries/admission' : '/admin/dashboard'} className="qad-brand-link" aria-label="QIMD Admin">
             <Image src="/images/logo/footer-qimd.png" alt="QIMD" width={180} height={70} priority />
           </Link>
           <button onClick={() => setMobileMenuOpen(false)} className="qad-icon-btn qad-only-mobile" title="Close menu">
