@@ -13,6 +13,7 @@ import {
 } from '@/app/actions/cmsActions'
 import { deleteUnusedImageAction } from '@/app/actions/mediaActions'
 import { Icon } from '@iconify/react'
+import { uploadMedia } from '@/lib/uploadMedia'
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([])
@@ -95,26 +96,19 @@ export default function AdminBlogsPage() {
     if (!file) return
 
     setUploading(true)
-    const formData = new FormData()
-    formData.append('file', file)
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
+      const data: { success: boolean; url?: string; error?: string } = { success: true, url: await uploadMedia(file, 'blogs') }
       if (data.success && data.url) {
         if (targetField === 'featured') {
           setFeaturedImageUrl(data.url)
         } else if (targetField === 'content') {
-          setContentImagesList((prev) => [...prev, data.url])
+          setContentImagesList((prev) => [...prev, data.url!])
         }
       } else {
         alert(data.error || 'Upload failed')
       }
     } catch (err) {
-      alert('File upload error')
+      alert((err as Error)?.message || 'File upload error')
     } finally {
       setUploading(false)
     }
@@ -278,9 +272,9 @@ export default function AdminBlogsPage() {
         </div>
         <div className="flex items-center gap-3">
 
-          <button
+          <button data-action="edit"
             onClick={() => openForm()}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
+            className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
             Create Blog Post
@@ -309,7 +303,7 @@ export default function AdminBlogsPage() {
               placeholder="Search blog title or slug..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-zinc-900 focus:bg-white transition-all"
             />
             <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
           </div>
@@ -319,7 +313,7 @@ export default function AdminBlogsPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-600 w-full sm:w-auto"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-zinc-900 w-full sm:w-auto"
             >
               <option value="ALL">All Categories</option>
               <option value="Digital Marketing">Digital Marketing</option>
@@ -351,14 +345,14 @@ export default function AdminBlogsPage() {
               <div className="flex items-center gap-2">
                 {showTrash ? (
                   <>
-                    <button
+                    <button data-action="delete"
                       onClick={handleBulkRestore}
                       className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                     >
                       <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                       Restore Selected ({selectedIds.length})
                     </button>
-                    <button
+                    <button data-action="delete"
                       onClick={() => setBulkConfirmModal(true)}
                       className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                     >
@@ -367,7 +361,7 @@ export default function AdminBlogsPage() {
                     </button>
                   </>
                 ) : (
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkTrash}
                     className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
@@ -408,7 +402,7 @@ export default function AdminBlogsPage() {
                   <tr
                     key={b.id}
                     className={`hover:bg-slate-50 transition-colors ${
-                      selectedIds.includes(b.id) ? 'bg-blue-50/50' : ''
+                      selectedIds.includes(b.id) ? 'bg-zinc-100/50' : ''
                     }`}
                   >
                     <td className="p-4" onClick={(e) => e.stopPropagation()}>
@@ -446,14 +440,14 @@ export default function AdminBlogsPage() {
                     <td className="p-4 text-right space-x-2">
                       {!b.isDeleted ? (
                         <>
-                          <button
+                          <button data-action="edit"
                             onClick={() => openForm(b)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
                             title="Edit Blog"
                           >
                             <Icon icon="ion:create-outline" className="w-5 h-5" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleTrash(b.id)}
                             className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                             title="Move to the Bin"
@@ -463,14 +457,14 @@ export default function AdminBlogsPage() {
                         </>
                       ) : (
                         <>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleRestore(b.id)}
                             className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Restore"
                           >
                             <Icon icon="ion:refresh-outline" className="w-5 h-5" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleDeletePermanently(b.id)}
                             className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Delete Permanently"
@@ -537,7 +531,7 @@ export default function AdminBlogsPage() {
                     placeholder="Upload image from computer or enter URL..."
                     className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                   />
-                  <label className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 shrink-0">
+                  <label className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 shrink-0">
                     <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
                     {uploading ? 'Uploading...' : 'Upload Cover'}
                     <input
@@ -599,7 +593,7 @@ export default function AdminBlogsPage() {
                           placeholder="Type new category tab name..."
                           value={customCatText}
                           onChange={(e) => setCustomCatText(e.target.value)}
-                          className="w-full bg-white border border-blue-400 rounded-xl p-2.5 text-slate-900 font-semibold"
+                          className="w-full bg-white border border-zinc-300 rounded-xl p-2.5 text-slate-900 font-semibold"
                         />
                         <button
                           type="button"
@@ -636,11 +630,11 @@ export default function AdminBlogsPage() {
               </div>
 
               {/* Upload Content/Multiple Images Tool */}
-              <div className="bg-blue-50/50 p-4 border border-blue-100 rounded-xl space-y-4">
+              <div className="bg-zinc-100/50 p-4 border border-zinc-300 rounded-xl space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-bold text-blue-900 flex items-center gap-1.5 text-xs">
-                      <Icon icon="ion:images-outline" className="w-4 h-4 text-blue-600" />
+                    <span className="font-bold text-zinc-900 flex items-center gap-1.5 text-xs">
+                      <Icon icon="ion:images-outline" className="w-4 h-4 text-zinc-900" />
                       Multiple Content Images Management
                     </span>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -648,7 +642,7 @@ export default function AdminBlogsPage() {
                     </p>
                   </div>
 
-                  <label className="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 shrink-0">
+                  <label className="px-3.5 py-2 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 shrink-0">
                     <Icon icon="ion:cloud-upload" className="w-4 h-4" />
                     + Upload Content Image
                     <input
@@ -782,7 +776,7 @@ export default function AdminBlogsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                  className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-semibold rounded-xl shadow-xs"
                 >
                   Save Blog Article
                 </button>
@@ -814,7 +808,7 @@ export default function AdminBlogsPage() {
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

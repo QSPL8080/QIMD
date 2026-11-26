@@ -26,6 +26,9 @@ export const BIN_TYPE_LABELS: Record<TrashType, string> = {
   gallery: 'Gallery Item',
   banner: 'Homepage Banner',
   user: 'Admin User',
+  lead: 'Lead',
+  admission_record: 'Admission Record',
+  expense: 'Expense',
 }
 
 const deleted = { isDeleted: true }
@@ -47,6 +50,9 @@ export async function countBinItems(): Promise<number> {
     db.gallery.count({ where: deleted }),
     db.banner.count({ where: deleted }),
     db.user.count({ where: deleted }),
+    (db as any).lead.count({ where: deleted }),
+    (db as any).admission.count({ where: deleted }),
+    (db as any).expense.count({ where: deleted }),
   ])
   return counts.reduce((a, b) => a + b, 0)
 }
@@ -56,6 +62,7 @@ export async function getBinItems(): Promise<BinItem[]> {
   const [
     admissions, contacts, careers, hires, franchises, blogs, jobs,
     placements, testimonials, reviews, faqs, gallery, banners, users, entries,
+    leads, admissionRecords, expenses,
   ] = await Promise.all([
     db.admissionEnquiry.findMany({ where: deleted, select: { id: true, studentName: true, email: true, updatedAt: true } }),
     db.contactEnquiry.findMany({ where: deleted, select: { id: true, fullName: true, email: true, updatedAt: true } }),
@@ -72,6 +79,9 @@ export async function getBinItems(): Promise<BinItem[]> {
     db.banner.findMany({ where: deleted, select: { id: true, title: true, titleAccent: true, updatedAt: true } }),
     db.user.findMany({ where: deleted, select: { id: true, fullName: true, email: true, updatedAt: true } }),
     db.trashEntry.findMany(),
+    (db as any).lead.findMany({ where: deleted, select: { id: true, leadCode: true, fullName: true, updatedAt: true } }),
+    (db as any).admission.findMany({ where: deleted, select: { id: true, admissionCode: true, studentName: true, updatedAt: true } }),
+    (db as any).expense.findMany({ where: deleted, select: { id: true, expenseCode: true, description: true, updatedAt: true } }),
   ])
 
   const log = new Map(entries.map((e: any) => [`${e.entityType}:${e.entityId}`, e]))
@@ -103,6 +113,9 @@ export async function getBinItems(): Promise<BinItem[]> {
   gallery.forEach((r: any) => push('gallery', r.id, r.caption || r.altText || 'Gallery image', r.fileUrl, r.updatedAt))
   banners.forEach((r: any) => push('banner', r.id, [r.title, r.titleAccent].filter(Boolean).join(' '), '', r.updatedAt))
   users.forEach((r: any) => push('user', r.id, r.fullName, r.email, r.updatedAt))
+  leads.forEach((r: any) => push('lead', r.id, r.fullName, r.leadCode, r.updatedAt))
+  admissionRecords.forEach((r: any) => push('admission_record', r.id, r.studentName, r.admissionCode, r.updatedAt))
+  expenses.forEach((r: any) => push('expense', r.id, r.description, r.expenseCode, r.updatedAt))
 
   return items.sort((a, b) => (a.deletedAt < b.deletedAt ? 1 : -1))
 }

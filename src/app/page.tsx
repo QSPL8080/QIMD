@@ -8,6 +8,7 @@ import WhyQimdSection from "@/components/Home/WhyQimd";
 import TestimonialsSection from "@/components/Home/Testimonial";
 import PlacementsSection from "@/components/Home/Placements";
 import GalleryPreviewSection from "@/components/Home/Gallery";
+import { getSetting, orderGalleryCategories } from "@/lib/settings";
 import EmiSection from "@/components/Home/Emi";
 import CareerCounsellingCTA from "@/components/Home/CareerCounselling";
 import FaqsSection from "@/components/Home/Faqs";
@@ -38,6 +39,7 @@ export default async function HomePage() {
   const placements = await getDynamicPlacements();
   const testimonials = await getDynamicTestimonials();
   const galleryItems = await getDynamicGallery();
+  const galleryCats = orderGalleryCategories(await getSetting('galleryCategories'), galleryItems.map((g: any) => g.category));
   const faqs = await getDynamicFaqs();
   const studentReviews = await getDynamicStudentReviews();
 
@@ -53,7 +55,7 @@ export default async function HomePage() {
         studentReviews={studentReviews}
       />
       <EmiSection emiPartners={emiPartnersData} />
-      <GalleryPreviewSection items={galleryItems} />
+      <GalleryPreviewSection items={galleryItems} categories={galleryCats} />
       <CareerCounsellingCTA />
       <FaqsSection limit={10} items={faqs} />
     </>

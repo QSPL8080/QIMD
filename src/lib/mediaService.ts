@@ -1,128 +1,99 @@
 import { db } from '@/lib/db'
 import fs from 'fs'
 import path from 'path'
+import { BUCKET, objectPathFromUrl, storage } from '@/lib/storage'
 
 /**
- * Checks if a given file URL is referenced anywhere in the database across all models.
- * Option to exclude a specific entity being edited or deleted.
+ * Website media clean-up. A file is removed from storage only when no record
+ * (blog, banner, gallery, placement, testimonial, student review, user) still uses it.
  */
-export async function isFileReferencedInDb(
-  fileUrl: string,
-  excludeRecord?: { table: string; id: string }
-): Promise<boolean> {
-  if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.trim()) {
-    return false
-  }
-  const cleanUrl = fileUrl.trim()
 
-  // 1. Check Blogs (featuredImage, images JSON, content)
-  const blogs = await db.blog.findMany({
-    where: excludeRecord?.table === 'blog' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, featuredImage: true, images: true, content: true },
-  })
-  for (const b of blogs) {
-    if (b.featuredImage === cleanUrl) return true
-    if (Array.isArray(b.images) && (b.images as string[]).includes(cleanUrl)) return true
-    if (b.content && b.content.includes(cleanUrl)) return true
-  }
+import { MEDIA_FIELDS } from './mediaService.fields'
+export { MEDIA_FIELDS }
 
-  // 4. Check Placements (studentPhoto, companyLogo, videoThumbnail)
-  const placements = await db.placement.findMany({
-    where: excludeRecord?.table === 'placement' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, studentPhoto: true, companyLogo: true, videoThumbnail: true },
-  })
-  for (const p of placements) {
-    if (p.studentPhoto === cleanUrl || p.companyLogo === cleanUrl || p.videoThumbnail === cleanUrl) return true
-  }
-
-  // 5. Check Testimonials (photo, videoThumbnail)
-  const testimonials = await db.testimonial.findMany({
-    where: excludeRecord?.table === 'testimonial' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, photo: true, videoThumbnail: true },
-  })
-  for (const t of testimonials) {
-    if (t.photo === cleanUrl || t.videoThumbnail === cleanUrl) return true
-  }
-
-  // 6. Check Gallery (fileUrl, thumbnail)
-  const galleryItems = await db.gallery.findMany({
-    where: excludeRecord?.table === 'gallery' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, fileUrl: true, thumbnail: true },
-  })
-  for (const g of galleryItems) {
-    if (g.fileUrl === cleanUrl || g.thumbnail === cleanUrl) return true
-  }
-
-  // 11. Check Users (profileImage)
-  const users = await db.user.findMany({
-    select: { profileImage: true },
-  })
-  for (const u of users) {
-    if (u.profileImage === cleanUrl) return true
-  }
-
-  // 12. Check Banners (imageUrl)
-  const banners = await db.banner.findMany({
-    where: excludeRecord?.table === 'banner' ? { id: { not: excludeRecord.id } } : {},
-    select: { id: true, imageUrl: true },
-  })
-  for (const b of banners) {
-    if (b.imageUrl === cleanUrl) return true
-  }
-
-  return false
+/** Only files we host can be deleted (our bucket, /media/… or /uploads/…). */
+export function isOwnMediaUrl(url: string) {
+  return Boolean(url && (objectPathFromUrl(url) || url.startsWith('/media/') || url.startsWith('/uploads/')))
 }
 
-/**
- * Safely deletes an unused file from MediaLibrary DB and physical storage if no longer referenced.
- */
-export async function safeDeleteUnusedFile(
-  fileUrl: string,
-  excludeRecord?: { table: string; id: string }
-): Promise<boolean> {
-  if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.trim()) {
-    return false
+/** All own-media URLs in a record. */
+export function mediaUrlsOf(table: string, row: any): string[] {
+  if (!row) return []
+  const out = new Set<string>()
+  for (const f of MEDIA_FIELDS[table] || []) {
+    const v = row[f]
+    const list = Array.isArray(v) ? v : [v]
+    for (const u of list) if (typeof u === 'string' && isOwnMediaUrl(u.trim())) out.add(u.trim())
   }
+  return [...out]
+}
 
-  const cleanUrl = fileUrl.trim()
-  const isReferenced = await isFileReferencedInDb(cleanUrl, excludeRecord)
-  if (isReferenced) {
-    // Shared file, do NOT delete physical file or media library record
-    return false
+export async function isFileReferencedInDb(fileUrl: string, excludeRecord?: { table: string; id: string }): Promise<boolean> {
+  if (!fileUrl || typeof fileUrl !== 'string' || !fileUrl.trim()) return false
+  const url = fileUrl.trim()
+  const not = (table: string) => (excludeRecord?.table === table ? { id: { not: excludeRecord.id } } : {})
+  const anyOf = (fields: string[]) => ({ OR: fields.map((f) => ({ [f]: url })) })
+
+  const checks = await Promise.all([
+    db.blog.count({ where: { ...not('blog'), OR: [{ featuredImage: url }, { images: { array_contains: [url] } as any }, { content: { contains: url } }] } }),
+    db.banner.count({ where: { ...not('banner'), imageUrl: url } }),
+    db.gallery.count({ where: { ...not('gallery'), ...anyOf(['fileUrl', 'thumbnail']) } }),
+    db.placement.count({ where: { ...not('placement'), ...anyOf(['studentPhoto', 'companyLogo', 'videoUrl', 'videoThumbnail']) } }),
+    db.testimonial.count({ where: { ...not('testimonial'), ...anyOf(['photo', 'videoUrl', 'videoThumbnail']) } }),
+    db.studentReview.count({ where: { ...not('studentReview'), photo: url } }),
+    db.user.count({ where: { profileImage: url } }),
+  ])
+  return checks.some((n) => n > 0)
+}
+
+/** Delete the stored file behind a URL (bucket object, DB-stored media or legacy /uploads file). */
+export async function removeStoredMedia(url: string) {
+  const objectPath = objectPathFromUrl(url)
+  if (objectPath) {
+    const s = storage()
+    if (s) {
+      const { error } = await s.from(BUCKET).remove([objectPath])
+      if (error) console.error('[media] bucket remove failed', objectPath, error.message)
+    }
+    return
   }
-
-
-
-  if (cleanUrl.startsWith('/uploads/')) {
-    const localPath = path.join(process.cwd(), 'public', cleanUrl.replace(/^\//, ''))
-    if (fs.existsSync(localPath)) {
+  const m = url.match(/^\/media\/([0-9a-f-]{36})/i)
+  if (m) {
+    await (db as any).storedFile.deleteMany({ where: { id: m[1], ownerType: 'media' } })
+    return
+  }
+  if (url.startsWith('/uploads/')) {
+    const local = path.join(process.cwd(), 'public', url.replace(/^\//, '').split('?')[0])
+    const root = path.join(process.cwd(), 'public', 'uploads')
+    if (local.startsWith(root) && fs.existsSync(local)) {
       try {
-        fs.unlinkSync(localPath)
-        return true
-      } catch (e) {
-        console.error('Error unlinking physical file:', e)
-      }
-    }
-  } else if (cleanUrl.includes('/qimd-media/')) {
-    try {
-      const { supabaseAdmin } = await import('@/lib/supabase')
-      const pathPart = cleanUrl.split('/qimd-media/')[1]
-      if (pathPart && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-        await supabaseAdmin.storage.from('qimd-media').remove([pathPart])
-      }
-      if (pathPart) {
-        const localBackup = path.join(process.cwd(), 'public', 'uploads', pathPart)
-        if (fs.existsSync(localBackup)) {
-          try {
-            fs.unlinkSync(localBackup)
-          } catch (_) {}
-        }
-      }
-    } catch (e) {
-      console.error('Error removing file from Supabase storage:', e)
+        fs.unlinkSync(local)
+      } catch {}
     }
   }
-
-  return true
 }
 
+/** Removes a file from storage if nothing else uses it. Returns true when removed. */
+export async function safeDeleteUnusedFile(fileUrl: string, excludeRecord?: { table: string; id: string }): Promise<boolean> {
+  if (!fileUrl || typeof fileUrl !== 'string' || !isOwnMediaUrl(fileUrl.trim())) return false
+  const url = fileUrl.trim()
+  try {
+    if (await isFileReferencedInDb(url, excludeRecord)) return false
+    await removeStoredMedia(url)
+    return true
+  } catch (e) {
+    console.error('[media] clean-up failed for', url, e)
+    return false
+  }
+}
+
+/** After a record changed: delete files it no longer uses. */
+export async function cleanupReplacedMedia(table: string, before: any, after: any) {
+  const keep = new Set(mediaUrlsOf(table, after))
+  for (const u of mediaUrlsOf(table, before)) if (!keep.has(u)) await safeDeleteUnusedFile(u)
+}
+
+/** After records were permanently deleted: delete their files. */
+export async function purgeRecordsMedia(table: string, rows: any[]) {
+  for (const row of rows) for (const u of mediaUrlsOf(table, row)) await safeDeleteUnusedFile(u)
+}

@@ -8,12 +8,15 @@ import { galleryData, galleryCategories } from "@/data";
 
 interface GalleryPreviewSectionProps {
   items?: any[];
+  /** Categories that have photos, in the order set on Admin → Gallery */
+  categories?: string[];
 }
 
-const GalleryPreviewSection: React.FC<GalleryPreviewSectionProps> = ({ items }) => {
+const GalleryPreviewSection: React.FC<GalleryPreviewSectionProps> = ({ items, categories }) => {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
   const allGalleryItems = items && items.length > 0 ? items : galleryData;
+  const tabs = ["All", ...(items && items.length > 0 && categories?.length ? categories : galleryCategories.filter((c) => c !== "All"))];
 
   // Filter items according to activeCategory
   const filtered =
@@ -43,7 +46,7 @@ const GalleryPreviewSection: React.FC<GalleryPreviewSectionProps> = ({ items }) 
           </div>
 
           <div className="qo-gallery-filters" role="tablist" aria-label="Gallery categories">
-            {galleryCategories.map((cat) => {
+            {tabs.map((cat) => {
               const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
               return (
                 <button

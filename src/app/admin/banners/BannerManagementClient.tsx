@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { confirmDialog } from '@/components/Admin/confirmDialog'
 import { saveBannerAction, trashBannerAction } from '@/app/actions/bannerActions'
 import { Icon } from '@iconify/react'
+import { uploadMedia } from '@/lib/uploadMedia'
 
 export interface BannerItem {
   id: string
@@ -45,22 +46,15 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
     if (!file) return
 
     setUploadingImage(true)
-    const formData = new FormData()
-    formData.append('file', file)
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
+      const data: { success: boolean; url?: string; error?: string } = { success: true, url: await uploadMedia(file, 'banners') }
       if (data.success && data.url) {
         setImageUrl(data.url)
       } else {
         alert(data.error || 'Failed to upload banner image')
       }
     } catch (err) {
-      alert('Error uploading image file')
+      alert((err as Error)?.message || 'Error uploading image file')
     } finally {
       setUploadingImage(false)
     }
@@ -122,7 +116,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
           </p>
         </div>
 
-        <button
+        <button data-action="edit"
           onClick={handleOpenAdd}
           className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
         >
@@ -201,7 +195,7 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
               </div>
 
               <div className="pt-3 border-t border-slate-100 grid grid-cols-3 gap-2 text-xs">
-                <button
+                <button data-action="edit"
                   onClick={() => handleToggleActive(item)}
                   className={`py-1.5 font-bold rounded-lg transition-colors text-center text-[11px] ${
                     item.isActive
@@ -211,13 +205,13 @@ export default function BannerManagementClient({ initialBanners }: { initialBann
                 >
                   {item.isActive ? 'Deactivate' : 'Activate'}
                 </button>
-                <button
+                <button data-action="edit"
                   onClick={() => handleOpenEdit(item)}
                   className="py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors text-center text-[11px]"
                 >
                   Edit / Replace
                 </button>
-                <button
+                <button data-action="delete"
                   onClick={() => handleDelete(item.id)}
                   className="py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-lg transition-colors text-center text-[11px]"
                 >

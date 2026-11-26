@@ -67,17 +67,20 @@ export default function AdminLoginForm() {
 
       <div>
         <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-700 mb-1.5">
-          Email Address
+          Email or Username
         </label>
         <div className="relative">
           <input
-            type="email"
+            type="text"
             name="email"
             required
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 pl-10 text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
-            placeholder="admin@qimd.in"
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 pl-10 text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-300 transition-all"
+            placeholder="you@quickuppinstitute.com"
           />
           <Icon icon="ion:mail-outline" className="w-5 h-5 absolute left-3 top-3 text-slate-400" />
         </div>
@@ -88,15 +91,19 @@ export default function AdminLoginForm() {
           <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-700">
             Password
           </label>
+          <a href="/admin/forgot-password" className="text-[11px] font-semibold text-zinc-900 hover:underline">
+            Forgot password?
+          </a>
         </div>
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
             name="password"
             required
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 pl-10 pr-10 text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 pl-10 pr-10 text-slate-900 placeholder-slate-400 text-sm font-medium focus:outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-300 transition-all"
             placeholder="••••••••"
           />
           <Icon icon="ion:lock-closed-outline" className="w-5 h-5 absolute left-3 top-3 text-slate-400" />
@@ -123,7 +130,7 @@ export default function AdminLoginForm() {
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 accent-blue-600 cursor-pointer"
+            className="w-4 h-4 text-zinc-900 rounded border-slate-300 focus:ring-zinc-300 accent-zinc-900 cursor-pointer"
           />
           <span>Remember me</span>
         </label>
@@ -132,7 +139,7 @@ export default function AdminLoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 disabled:opacity-60 text-sm active:scale-[0.99]"
+        className="w-full bg-zinc-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md shadow-zinc-900/20 flex items-center justify-center gap-2 disabled:opacity-60 text-sm active:scale-[0.99]"
       >
         {loading ? (
           <>

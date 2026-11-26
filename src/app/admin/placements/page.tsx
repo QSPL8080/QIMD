@@ -12,6 +12,8 @@ import {
   bulkDeletePlacementsPermanentlyAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
+import { uploadMedia, isVideoFileUrl } from '@/lib/uploadMedia'
+import MediaUploadButton from '@/components/Admin/MediaUploadButton'
 
 export default function AdminPlacementsPage() {
   const [placements, setPlacements] = useState<any[]>([])
@@ -63,22 +65,15 @@ export default function AdminPlacementsPage() {
     if (!file) return
 
     setUploadingPhoto(true)
-    const formData = new FormData()
-    formData.append('file', file)
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
+      const data: { success: boolean; url?: string; error?: string } = { success: true, url: await uploadMedia(file, 'placements') }
       if (data.success && data.url) {
         setStudentPhotoUrl(data.url)
       } else {
         alert(data.error || 'Failed to upload student photo')
       }
     } catch (err) {
-      alert('Error uploading file')
+      alert((err as Error)?.message || 'Error uploading file')
     } finally {
       setUploadingPhoto(false)
     }
@@ -229,9 +224,9 @@ export default function AdminPlacementsPage() {
         </div>
         <div className="flex items-center gap-3">
 
-          <button
+          <button data-action="edit"
             onClick={() => openForm()}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
+            className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
             Add Placement Record
@@ -260,7 +255,7 @@ export default function AdminPlacementsPage() {
               placeholder="Search student, company, designation, or location..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-zinc-900 focus:bg-white transition-all"
             />
             <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
           </div>
@@ -287,14 +282,14 @@ export default function AdminPlacementsPage() {
               <div className="flex items-center gap-2">
                 {showTrash ? (
                   <>
-                    <button
+                    <button data-action="delete"
                       onClick={handleBulkRestore}
                       className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                     >
                       <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                       Restore Selected ({selectedIds.length})
                     </button>
-                    <button
+                    <button data-action="delete"
                       onClick={() => setBulkConfirmModal(true)}
                       className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                     >
@@ -303,7 +298,7 @@ export default function AdminPlacementsPage() {
                     </button>
                   </>
                 ) : (
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkTrash}
                     className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
@@ -347,7 +342,7 @@ export default function AdminPlacementsPage() {
                   <tr
                     key={p.id}
                     className={`hover:bg-slate-50 transition-colors ${
-                      selectedIds.includes(p.id) ? 'bg-blue-50/50' : ''
+                      selectedIds.includes(p.id) ? 'bg-zinc-100/50' : ''
                     }`}
                   >
                     <td className="p-4" onClick={(e) => e.stopPropagation()}>
@@ -362,7 +357,7 @@ export default function AdminPlacementsPage() {
                       {p.studentPhoto ? (
                         <img src={p.studentPhoto} alt={p.studentName} className="w-10 h-10 rounded-full object-cover border border-slate-200 bg-slate-100 flex-shrink-0" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-zinc-100 text-zinc-900 flex items-center justify-center font-bold text-sm flex-shrink-0">
                           {p.studentName.charAt(0)}
                         </div>
                       )}
@@ -400,14 +395,14 @@ export default function AdminPlacementsPage() {
                     <td className="p-4 text-right space-x-2">
                       {!p.isDeleted ? (
                         <>
-                          <button
+                          <button data-action="edit"
                             onClick={() => openForm(p)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
                             title="Edit Record"
                           >
                             <Icon icon="ion:create-outline" className="w-5 h-5" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleTrash(p.id)}
                             className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                             title="Move to the Bin"
@@ -417,14 +412,14 @@ export default function AdminPlacementsPage() {
                         </>
                       ) : (
                         <>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleRestore(p.id)}
                             className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Restore"
                           >
                             <Icon icon="ion:refresh-outline" className="w-5 h-5" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleDeletePermanently(p.id)}
                             className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Delete Permanently"
@@ -494,7 +489,7 @@ export default function AdminPlacementsPage() {
                     placeholder="Upload student photo or enter URL..."
                     className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                   />
-                  <label className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                  <label className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap">
                     <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
                     {uploadingPhoto ? 'Uploading...' : 'Upload Photo'}
                     <input
@@ -529,7 +524,7 @@ export default function AdminPlacementsPage() {
                 <div className="flex items-center justify-between">
                   <label className="block text-purple-900 font-bold flex items-center gap-1.5">
                     <Icon icon="ion:logo-youtube" className="text-red-600 text-base" />
-                    YouTube Video Link (Optional)
+                    Video (optional) — YouTube link or upload a video file
                   </label>
                   {youtubeLinkInput && (
                     <button
@@ -542,13 +537,19 @@ export default function AdminPlacementsPage() {
                   )}
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   name="youtubeLink"
                   value={youtubeLinkInput}
                   onChange={(e) => setYoutubeLinkInput(e.target.value)}
                   placeholder="e.g. https://www.youtube.com/watch?v=XXXXXXXX or https://youtu.be/XXXXXXXX"
                   className="w-full bg-white border border-purple-200 rounded-xl p-2.5 text-slate-900"
                 />
+                <div className="flex flex-wrap items-center gap-3">
+                  <MediaUploadButton accept="video/mp4,video/webm,video/quicktime" folder="placements/videos" label="Upload video file (MP4, up to 200 MB)" onUploaded={(url) => setYoutubeLinkInput(url)} />
+                  {isVideoFileUrl(youtubeLinkInput) && (
+                    <video src={youtubeLinkInput} controls preload="metadata" className="h-24 rounded-lg bg-black" />
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -643,7 +644,7 @@ export default function AdminPlacementsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                  className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-semibold rounded-xl shadow-xs"
                 >
                   Save Record
                 </button>
@@ -675,7 +676,7 @@ export default function AdminPlacementsPage() {
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

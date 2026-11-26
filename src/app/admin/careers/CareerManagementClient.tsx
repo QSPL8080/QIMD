@@ -202,7 +202,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/70">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <Icon icon="ion:briefcase-outline" className="w-6 h-6 text-[#764DFF]" />
+            <Icon icon="ion:briefcase-outline" className="w-6 h-6 text-zinc-900" />
             Job Openings
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -213,9 +213,9 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
         <div className="flex items-center gap-3">
 
           {!showTrash && (
-            <button
+            <button data-action="edit"
               onClick={handleOpenAdd}
-              className="px-4 py-2 bg-[#764DFF] hover:bg-[#5c38d6] text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+              className="px-4 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
             >
               <Icon icon="ion:add-circle" className="w-4.5 h-4.5" />
               + Add Job Opening
@@ -244,7 +244,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
             placeholder="Search job title or department..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200/90 rounded-xl text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-[#764DFF] focus:ring-1 focus:ring-[#764DFF] transition-all shadow-2xs"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200/90 rounded-xl text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 transition-all shadow-2xs"
           />
           <Icon icon="ion:search-outline" className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
         </div>
@@ -271,14 +271,14 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
             <div className="flex items-center gap-2">
               {showTrash ? (
                 <>
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkRestore}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                     Restore Selected ({selectedIds.length})
                   </button>
-                  <button
+                  <button data-action="delete"
                     onClick={() => setBulkConfirmModal(true)}
                     className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                   >
@@ -287,7 +287,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                   </button>
                 </>
               ) : (
-                <button
+                <button data-action="delete"
                   onClick={handleBulkTrash}
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
@@ -331,7 +331,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                 </tr>
               ) : (
                 filteredJobs.map((j) => (
-                  <tr key={j.id} className={`hover:bg-slate-50/80 transition-colors ${selectedIds.includes(j.id) ? 'bg-indigo-50/20' : ''}`}>
+                  <tr key={j.id} className={`hover:bg-slate-50/80 transition-colors ${selectedIds.includes(j.id) ? 'bg-zinc-100/20' : ''}`}>
                     <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
@@ -350,7 +350,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-slate-700">{j.jobType || 'Full-Time'}</td>
                     <td className="py-3.5 px-4">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#764DFF]/10 text-[#5c38d6]">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-zinc-100 text-zinc-800">
                         {j.applications?.length || 0} Received
                       </span>
                     </td>
@@ -368,14 +368,14 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                     <td className="py-3.5 px-4 text-right space-x-1">
                       {!j.isDeleted ? (
                         <>
-                          <button
+                          <button data-action="edit"
                             onClick={() => handleOpenEdit(j)}
-                            className="p-1.5 text-slate-500 hover:text-[#764DFF] hover:bg-slate-100 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-500 hover:text-zinc-900 hover:bg-slate-100 rounded-lg transition-colors"
                             title="Edit Job"
                           >
                             <Icon icon="ion:create-outline" className="w-4 h-4" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleTrash(j.id)}
                             className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-colors"
                             title="Move to the Bin"
@@ -385,14 +385,14 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                         </>
                       ) : (
                         <>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleRestore(j.id)}
                             className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Restore Job"
                           >
                             <Icon icon="ion:refresh-outline" className="w-4 h-4" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleDeletePermanently(j.id)}
                             className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Delete Permanently"
@@ -541,7 +541,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                  className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-semibold rounded-xl shadow-xs"
                 >
                   {loading ? 'Saving...' : 'Save Job Opening'}
                 </button>
@@ -573,7 +573,7 @@ export default function CareerManagementClient({ initialJobs }: { initialJobs: J
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

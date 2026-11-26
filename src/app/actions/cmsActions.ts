@@ -9,14 +9,14 @@ import {
   testimonialSchema,
   faqSchema,
 } from '@/lib/validations'
-import { requireAdminSession, requireBlogEditorSession, requireSuperAdminSession } from '@/lib/auth'
+import { requirePermission, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // --- BLOGS CMS ---
 export async function saveBlogAction(data: any, id?: string) {
-  const session = await requireBlogEditorSession()
+  const session = await requirePermission('content', 'edit')
   try {
     const validated = blogSchema.safeParse(data)
     if (!validated.success) {
@@ -87,7 +87,7 @@ export async function saveBlogAction(data: any, id?: string) {
 }
 
 export async function trashBlogAction(id: string) {
-  const session = await requireBlogEditorSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.blog.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/blog')
@@ -140,7 +140,7 @@ export async function deleteBlogAction(id: string) {
 
 // --- PLACEMENTS CMS ---
 export async function savePlacementAction(data: any, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
 
@@ -211,7 +211,7 @@ export async function savePlacementAction(data: any, id?: string) {
 }
 
 export async function trashPlacementAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.placement.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/placements')
@@ -274,7 +274,7 @@ export async function saveGalleryItemAction(data: {
   featured?: boolean
   displayOrder?: number
 }, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     if (!data.fileUrl || typeof data.fileUrl !== 'string' || !data.fileUrl.trim()) {
       return { success: false, error: 'File URL is required' }
@@ -331,7 +331,7 @@ export async function saveGalleryItemAction(data: {
 }
 
 export async function trashGalleryItemAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.gallery.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/')
@@ -380,7 +380,7 @@ export async function deleteGalleryItemAction(id: string) {
 
 // --- TESTIMONIALS CMS ---
 export async function saveTestimonialAction(data: any, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     const { safeDeleteUnusedFile } = await import('@/lib/mediaService')
 
@@ -450,7 +450,7 @@ export async function saveTestimonialAction(data: any, id?: string) {
 }
 
 export async function trashTestimonialAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.testimonial.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/')
@@ -499,7 +499,7 @@ export async function deleteTestimonialAction(id: string) {
 
 // --- FAQS CMS ---
 export async function saveFaqAction(data: any, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     const validated = faqSchema.safeParse(data)
     if (!validated.success) {
@@ -541,7 +541,7 @@ export async function saveFaqAction(data: any, id?: string) {
  * Reorder FAQs sequence in database.
  */
 export async function reorderFaqsAction(orderedIds: string[]) {
-  await requireAdminSession()
+  await requirePermission('content', 'edit')
   if (!orderedIds || orderedIds.length === 0) {
     return { success: false, error: 'No FAQ IDs provided' }
   }
@@ -566,7 +566,7 @@ export async function reorderFaqsAction(orderedIds: string[]) {
 }
 
 export async function trashFaqAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.faq.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/')
@@ -618,7 +618,7 @@ export async function saveStudentReviewAction(data: {
   displayOrder?: number
   isActive?: boolean
 }, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     if (!data.studentName || !data.review) {
       return { success: false, error: 'Student name and review text are required' }
@@ -675,7 +675,7 @@ export async function saveStudentReviewAction(data: {
 }
 
 export async function trashStudentReviewAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.studentReview.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/')
@@ -733,7 +733,7 @@ export async function deleteStudentReviewAction(id: string) {
 
 // 3. Blogs Bulk Actions
 export async function bulkTrashBlogsAction(ids: string[]) {
-  const session = await requireBlogEditorSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.blog.updateMany({
@@ -791,7 +791,7 @@ export async function bulkDeleteBlogsPermanentlyAction(ids: string[]) {
 
 // 4. Testimonials Bulk Actions
 export async function bulkTrashTestimonialsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.testimonial.updateMany({
@@ -847,7 +847,7 @@ export async function bulkDeleteTestimonialsPermanentlyAction(ids: string[]) {
 
 // 5. Student Reviews Bulk Actions
 export async function bulkTrashReviewsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.studentReview.updateMany({
@@ -912,7 +912,7 @@ export async function bulkDeleteReviewsPermanentlyAction(ids: string[]) {
 
 // 6. Placements Bulk Actions
 export async function bulkTrashPlacementsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.placement.updateMany({
@@ -969,7 +969,7 @@ export async function bulkDeletePlacementsPermanentlyAction(ids: string[]) {
 
 // 7. FAQs Bulk Actions
 export async function bulkTrashFaqsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.faq.updateMany({
@@ -1023,7 +1023,7 @@ export async function bulkDeleteFaqsPermanentlyAction(ids: string[]) {
 
 // 9. Gallery Bulk Actions
 export async function bulkTrashGalleryItemsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!ids || ids.length === 0) return { success: false, error: 'No items selected' }
     await db.gallery.updateMany({

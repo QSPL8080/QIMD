@@ -4,8 +4,9 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Protect /admin routes (except /admin/login)
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  // Protect /admin routes (except the sign-in and password-reset pages)
+  const open = ['/admin/login', '/admin/forgot-password', '/admin/reset-password']
+  if (pathname.startsWith('/admin') && !open.includes(pathname.replace(/\/+$/, ''))) {
     const token = request.cookies.get('qimd_admin_token')?.value
 
     if (!token) {

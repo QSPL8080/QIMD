@@ -1,590 +1,404 @@
 'use client'
 
-import React, { useState } from 'react'
-import { confirmDialog } from '@/components/Admin/confirmDialog'
-import {
-  saveUserAction,
-  trashUserAction,
-  restoreUserAction,
-  deleteUserPermanentlyAction,
-  resetUserPasswordAction,
-} from '@/app/actions/userActions'
+import React, { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Icon } from '@iconify/react'
+import { confirmDialog } from '@/components/Admin/confirmDialog'
 import PasswordField from '@/components/Admin/PasswordField'
+import Modal, { Msg } from '@/components/Admin/Modal'
+import { Card, Badge, Field, INPUT, BTN_PRIMARY, BTN_SECONDARY, BTN_GHOST_DANGER } from '@/components/Admin/ui'
+import { ROLE_LIST, VIEWER_MODULES, normalizeRole, roleLabel, parseModuleAccess } from '@/lib/permissions'
+import { saveUserAction, trashUserAction, restoreUserAction, deleteUserPermanentlyAction, resetUserPasswordAction, sendResetLinkAction, unlockUserAction } from '@/app/actions/userActions'
 
-interface UserItem {
+type UserItem = {
   id: string
   fullName: string
   email: string
-  phone?: string
+  username: string | null
+  phone: string | null
   role: string
   status: boolean
   isDeleted: boolean
-  lastLogin?: string
+  lastLogin: string | null
   createdAt: string
+  moduleAccess: string | null
+  lockedUntil: string | null
 }
+type M = { ok: boolean; text: string } | null
 
-function getRoleBadge(role?: string | null) {
-  const r = role || 'ADMIN'
-  switch (r) {
-    case 'SUPER_ADMIN':
-    case 'Super Admin':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
-          Super Admin
-        </span>
-      )
-    case 'ADMIN':
-    case 'Admin':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-          Admin
-        </span>
-      )
-    case 'SALES_MANAGER':
-    case 'LEAD_MANAGER':
-    case 'Sales Manager':
-    case 'Lead Manager':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-          Sales Manager
-        </span>
-      )
-    case 'COUNSELLOR':
-    case 'Counsellor':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          Counsellor
-        </span>
-      )
-    case 'ADMISSION_HEAD':
-    case 'Admission Head':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-          Admission Head
-        </span>
-      )
-    case 'SEO_MANAGER':
-    case 'SEO':
-    case 'SEO Manager':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-200">
-          SEO Manager
-        </span>
-      )
-    case 'VIEWER':
-    case 'Viewer':
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-          Viewer
-        </span>
-      )
-    default:
-      return (
-        <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200">
-          {r}
-        </span>
-      )
-  }
-}
+const fmt = (d: string | null) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' }) : 'Never')
 
-export default function UserManagementClient({
-  initialUsers,
-  currentUserId,
-}: {
-  initialUsers: UserItem[]
-  currentUserId: string
-}) {
-  const [users, setUsers] = useState<UserItem[]>(initialUsers)
+export default function UserManagementClient(props: { initialUsers: UserItem[]; currentUserId: string; superAdmin: boolean; canAdd: boolean; canEdit: boolean; canDelete: boolean; mailReady: boolean }) {
+  const { initialUsers: users, currentUserId, superAdmin } = props
+  const router = useRouter()
   const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState('ALL')
-  const [statusFilter, setStatusFilter] = useState('ALL')
-  const [showTrash, setShowTrash] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<UserItem | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [formPassword, setFormPassword] = useState('')
-  // Reset password
-  const [resetUser, setResetUser] = useState<UserItem | null>(null)
-  const [resetPassword, setResetPassword] = useState('')
-  const [resetError, setResetError] = useState('')
-  // Login details shown after a password is set
-  const [credentials, setCredentials] = useState<{ name: string; email: string; password: string } | null>(null)
-  const [credCopied, setCredCopied] = useState(false)
+  const [roleFilter, setRoleFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [bin, setBin] = useState(false)
+  const [editing, setEditing] = useState<UserItem | 'new' | null>(null)
+  const [pwdFor, setPwdFor] = useState<UserItem | null>(null)
+  const [credentials, setCredentials] = useState<{ name: string; login: string; password: string } | null>(null)
+  const [msg, setMsg] = useState<M>(null)
 
-  const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      u.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
-    const matchesTrash = showTrash ? u.isDeleted : !u.isDeleted
+  const now = Date.now()
+  const locked = (u: UserItem) => Boolean(u.lockedUntil && new Date(u.lockedUntil).getTime() > now)
+  const manageable = (u: UserItem) => superAdmin || normalizeRole(u.role) !== 'SUPER_ADMIN'
 
-    let matchesRole = true
-    if (roleFilter !== 'ALL') {
-      const r = u.role || 'ADMIN'
-      if (roleFilter === 'SALES_MANAGER') {
-        matchesRole = r === 'SALES_MANAGER' || r === 'LEAD_MANAGER' || r === 'Sales Manager'
-      } else if (roleFilter === 'SEO_MANAGER') {
-        matchesRole = r === 'SEO_MANAGER' || r === 'SEO' || r === 'SEO Manager'
-      } else {
-        matchesRole = r === roleFilter
-      }
-    }
+  const list = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return users.filter((u) => {
+      if (bin ? !u.isDeleted : u.isDeleted) return false
+      if (q && ![u.fullName, u.email, u.username || '', u.phone || ''].some((x) => x.toLowerCase().includes(q))) return false
+      if (roleFilter && normalizeRole(u.role) !== roleFilter) return false
+      if (statusFilter === 'ACTIVE' && !u.status) return false
+      if (statusFilter === 'INACTIVE' && u.status) return false
+      if (statusFilter === 'LOCKED' && !locked(u)) return false
+      return true
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, search, roleFilter, statusFilter, bin])
 
-    let matchesStatus = true
-    if (statusFilter === 'ACTIVE') matchesStatus = u.status === true
-    else if (statusFilter === 'INACTIVE') matchesStatus = u.status === false
-
-    return matchesSearch && matchesTrash && matchesRole && matchesStatus
-  })
-
-  const handleOpenAdd = () => {
-    setFormPassword('')
-    setEditingUser(null)
-    setModalOpen(true)
-    setMsg(null)
-  }
-
-  const handleOpenEdit = (u: UserItem) => {
-    setFormPassword('')
-    setEditingUser(u)
-    setModalOpen(true)
-    setMsg(null)
-  }
-
-  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setMsg(null)
-
-    const formData = new FormData(e.currentTarget)
-    const rawData = {
-      fullName: formData.get('fullName'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      role: formData.get('role'),
-      password: formData.get('password'),
-      status: formData.get('status') === 'true',
-    }
-
-    const res = await saveUserAction(rawData, editingUser?.id)
-    setLoading(false)
-
-    if (res.success) {
-      setMsg({ type: 'success', text: res.message || 'Saved successfully' })
-      setModalOpen(false)
-      if (rawData.password) {
-        setCredentials({ name: String(rawData.fullName || ''), email: String(rawData.email || ''), password: String(rawData.password) })
-      } else {
-        window.location.reload()
-      }
-    } else {
-      setMsg({ type: 'error', text: res.error || 'Failed to save' })
-    }
-  }
-
-  const handleOpenReset = (u: UserItem) => {
-    setResetUser(u)
-    setResetPassword('')
-    setResetError('')
-  }
-
-  const handleResetSave = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!resetUser) return
-    setLoading(true)
-    setResetError('')
-    const res = await resetUserPasswordAction(resetUser.id, resetPassword)
-    setLoading(false)
-    if (res.success) {
-      setCredentials({ name: resetUser.fullName, email: resetUser.email, password: resetPassword })
-      setResetUser(null)
-    } else {
-      setResetError(res.error || 'Failed to update password')
-    }
-  }
-
-  const copyCredentials = async () => {
-    if (!credentials) return
-    const text = `Login: ${typeof window !== 'undefined' ? window.location.origin : ''}/admin/login\nEmail: ${credentials.email}\nPassword: ${credentials.password}`
-    try {
-      await navigator.clipboard.writeText(text)
-      setCredCopied(true)
-      setTimeout(() => setCredCopied(false), 1500)
-    } catch {}
-  }
-
-  const handleTrash = async (id: string) => {
-    if (!await confirmDialog('Are you sure you want to move this user to the Bin?')) return
-    const res = await trashUserAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
-  }
-
-  const handleRestore = async (id: string) => {
-    const res = await restoreUserAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
-  }
-
-  const handleDeletePermanently = async (id: string) => {
-    if (!await confirmDialog('WARNING: Permanently delete this user? This cannot be undone.')) return
-    const res = await deleteUserPermanentlyAction(id)
-    if (res.success) window.location.reload()
-    else alert(res.error)
+  const run = async (fn: () => Promise<{ success: boolean; message?: string; error?: string }>) => {
+    const r = await fn()
+    setMsg({ ok: r.success, text: r.success ? r.message || 'Done.' : r.error || 'Failed.' })
+    if (r.success) router.refresh()
+    return r.success
   }
 
   return (
-    <div className="space-y-6 font-sans">
-      {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Icon icon="ion:people-circle-outline" className="w-6 h-6 text-blue-600" />
-            User Management
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Manage administrative personnel, assign roles, and audit account statuses
-          </p>
+    <div className="space-y-4">
+      <Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+          <label className="sm:col-span-2">
+            <span className="block text-xs font-semibold text-slate-600 mb-1">Search</span>
+            <input className={INPUT} value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Name, email, username or phone" />
+          </label>
+          <label>
+            <span className="block text-xs font-semibold text-slate-600 mb-1">Role</span>
+            <select className={INPUT} value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+              <option value="">All roles</option>
+              {ROLE_LIST.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span className="block text-xs font-semibold text-slate-600 mb-1">Status</span>
+            <select className={INPUT} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="">All</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="LOCKED">Locked</option>
+            </select>
+          </label>
+          <div className="flex gap-2 justify-end">
+            {superAdmin && (
+              <button type="button" className={BTN_SECONDARY} onClick={() => setBin(!bin)}>
+                {bin ? 'Active users' : `Bin (${users.filter((u) => u.isDeleted).length})`}
+              </button>
+            )}
+            {props.canAdd && !bin && (
+              <button type="button" className={BTN_PRIMARY} onClick={() => setEditing('new')}>
+                <Icon icon="ion:person-add-outline" className="w-4 h-4" /> Add user
+              </button>
+            )}
+          </div>
         </div>
+      </Card>
 
-        <div className="flex items-center gap-3">
+      <Msg msg={msg} />
 
-          <button
-            onClick={handleOpenAdd}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-blue-500/20 flex items-center gap-2"
-          >
-            <Icon icon="ion:person-add-outline" className="w-4.5 h-4.5" />
-            Create Administrator
-          </button>
-        </div>
-      </div>
-
-      {msg && (
-        <div
-          className={`p-4 rounded-xl text-sm font-medium border ${
-            msg.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-rose-50 border-rose-200 text-rose-800'
-          }`}
-        >
-          {msg.text}
+      {credentials && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <span>
+            Login details for <strong>{credentials.name}</strong>: <span className="font-mono">{credentials.login}</span> / <span className="font-mono">{credentials.password}</span>. Share them privately — the password is not shown again.
+          </span>
+          <span className="flex gap-2">
+            <button
+              type="button"
+              className={BTN_SECONDARY}
+              onClick={() => navigator.clipboard?.writeText(`Login: ${window.location.origin}/admin/login\nUser: ${credentials.login}\nPassword: ${credentials.password}`).catch(() => {})}
+            >
+              Copy
+            </button>
+            <button type="button" className={BTN_SECONDARY} onClick={() => setCredentials(null)}>
+              Done
+            </button>
+          </span>
         </div>
       )}
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="relative flex-1 w-full">
-          <input
-            type="text"
-            placeholder="Search users by name or email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
-          />
-          <Icon icon="ion:search-outline" className="w-5 h-5 absolute left-3.5 top-3 text-slate-400" />
-        </div>
-
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-600"
-          >
-            <option value="ALL">All Roles</option>
-            <option value="SUPER_ADMIN">Super Admin</option>
-            <option value="ADMIN">Admin</option>
-            <option value="SALES_MANAGER">Sales Manager</option>
-            <option value="COUNSELLOR">Counsellor</option>
-            <option value="ADMISSION_HEAD">Admission Head</option>
-            <option value="SEO_MANAGER">SEO Manager</option>
-            <option value="VIEWER">Viewer</option>
-          </select>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-600"
-          >
-            <option value="ALL">All Statuses</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Users Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+      <Card pad={false}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-semibold text-xs border-b border-slate-200">
+            <thead className="bg-slate-50 text-slate-600 uppercase tracking-wider font-semibold text-[11px] border-b border-slate-200">
               <tr>
-                <th className="p-4">User</th>
-                <th className="p-4">Assigned Role</th>
-                <th className="p-4">Phone</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Last Login</th>
-                <th className="p-4 text-right">Actions</th>
+                <th className="p-3">User</th>
+                <th className="p-3">Role</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Last sign-in</th>
+                <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
-              {filteredUsers.length === 0 ? (
+              {list.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500 font-medium text-sm">
-                    No users found matching criteria.
+                  <td colSpan={5} className="p-8 text-center text-slate-500">
+                    No users found.
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="p-4">
-                      <div className="flex items-center gap-3.5">
-                        <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm flex-shrink-0">
-                          {u.fullName.charAt(0)}
+                list.map((u) => {
+                  const self = u.id === currentUserId
+                  const can = manageable(u)
+                  const mods = normalizeRole(u.role) === 'VIEWER' ? parseModuleAccess(u.moduleAccess) : []
+                  return (
+                    <tr key={u.id} className="hover:bg-slate-50 align-top">
+                      <td className="p-3">
+                        <div className="font-semibold text-slate-900">
+                          {u.fullName} {self && <Badge tone="blue">You</Badge>}
                         </div>
-                        <div>
-                          <p className="font-semibold text-slate-900 text-base leading-snug">{u.fullName}</p>
-                          <p className="text-xs text-slate-500 font-medium">{u.email}</p>
+                        <div className="text-[11px] text-slate-500 break-all">
+                          {u.email}
+                          {u.username ? ` · @${u.username}` : ''}
+                          {u.phone ? ` · ${u.phone}` : ''}
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      {getRoleBadge(u.role)}
-                    </td>
-                    <td className="p-4 text-slate-700 font-medium text-sm">{u.phone || 'N/A'}</td>
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold inline-block ${
-                          u.status
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-slate-100 text-slate-500 border border-slate-200'
-                        }`}
-                      >
-                        {u.status ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-slate-600 font-medium text-sm">
-                      {u.lastLogin ? new Date(u.lastLogin).toLocaleString() : 'Never'}
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      {!u.isDeleted ? (
-                        <>
-                          <button
-                            onClick={() => handleOpenEdit(u)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Edit User"
-                          >
-                            <Icon icon="ion:create-outline" className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => handleOpenReset(u)}
-                            className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                            title="Set New Password"
-                          >
-                            <Icon icon="ion:key-outline" className="w-5 h-5" />
-                          </button>
-                          {u.id !== currentUserId && (
-                            <button
-                              onClick={() => handleTrash(u.id)}
-                              className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                              title="Move to the Bin"
-                            >
-                              <Icon icon="ion:trash-outline" className="w-4 h-4" />
-                            </button>
+                      </td>
+                      <td className="p-3 text-xs">
+                        <div className="font-semibold text-slate-800">{roleLabel(u.role)}</div>
+                        {mods.length > 0 && <div className="text-slate-500">{mods.map((m) => VIEWER_MODULES.find((x) => x.value === m)?.label).join(', ')}</div>}
+                      </td>
+                      <td className="p-3">
+                        {u.isDeleted ? <Badge tone="red">In Bin</Badge> : locked(u) ? <Badge tone="red">Locked</Badge> : u.status ? <Badge tone="green">Active</Badge> : <Badge>Inactive</Badge>}
+                      </td>
+                      <td className="p-3 text-xs whitespace-nowrap">{fmt(u.lastLogin)}</td>
+                      <td className="p-3">
+                        <div className="flex flex-wrap justify-end gap-1.5">
+                          {!can ? (
+                            <span className="text-[11px] text-slate-400">Super Admin only</span>
+                          ) : u.isDeleted ? (
+                            superAdmin && (
+                              <>
+                                <button type="button" className={BTN_SECONDARY} onClick={() => run(() => restoreUserAction(u.id))}>
+                                  Restore
+                                </button>
+                                <button
+                                  type="button"
+                                  className={BTN_GHOST_DANGER}
+                                  onClick={async () => {
+                                    if (await confirmDialog(`Permanently delete ${u.fullName}? This cannot be undone. Their name stays on history records.`, { confirmText: 'Delete forever' })) run(() => deleteUserPermanentlyAction(u.id))
+                                  }}
+                                >
+                                  Delete forever
+                                </button>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              {props.canEdit && (
+                                <button type="button" className={BTN_SECONDARY} onClick={() => setEditing(u)}>
+                                  Edit
+                                </button>
+                              )}
+                              {props.canEdit && (
+                                <button type="button" className={BTN_SECONDARY} onClick={() => setPwdFor(u)}>
+                                  Set password
+                                </button>
+                              )}
+                              {props.canEdit && (
+                                <button
+                                  type="button"
+                                  className={BTN_SECONDARY}
+                                  disabled={!props.mailReady}
+                                  title={props.mailReady ? 'Email a single-use reset link' : 'Email is not set up'}
+                                  onClick={async () => {
+                                    if (await confirmDialog(`Email a password reset link to ${u.email}? The link works once, for 30 minutes.`, { confirmText: 'Send link', danger: false })) run(() => sendResetLinkAction(u.id))
+                                  }}
+                                >
+                                  Reset link
+                                </button>
+                              )}
+                              {props.canEdit && locked(u) && (
+                                <button type="button" className={BTN_SECONDARY} onClick={() => run(() => unlockUserAction(u.id))}>
+                                  Unlock
+                                </button>
+                              )}
+                              {props.canDelete && !self && (
+                                <button
+                                  type="button"
+                                  className={BTN_GHOST_DANGER}
+                                  onClick={async () => {
+                                    if (await confirmDialog(`Deactivate ${u.fullName} and move the account to the Bin? They can no longer sign in.`, { confirmText: 'Move to Bin' })) run(() => trashUserAction(u.id))
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </>
                           )}
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() => handleRestore(u.id)}
-                            className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                            title="Restore User"
-                          >
-                            <Icon icon="ion:refresh-outline" className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePermanently(u.id)}
-                            className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                            title="Delete Permanently"
-                          >
-                            <Icon icon="ion:trash-bin-outline" className="w-4 h-4" />
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
               )}
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
 
-      {/* Modal for Create / Edit User */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
-                {editingUser ? 'Edit User Profile & Role' : 'Create Administrator Account'}
-              </h3>
-              <button
-                onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <Icon icon="ion:close" className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSave} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  name="fullName"
-                  required
-                  defaultValue={editingUser?.fullName || ''}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  defaultValue={editingUser?.email || ''}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Password {editingUser ? '(Leave blank to keep unchanged)' : '(Required)'}
-                </label>
-                <PasswordField value={formPassword} onChange={setFormPassword} required={!editingUser} />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Phone Number</label>
-                <input
-                  type="text"
-                  name="phone"
-                  defaultValue={editingUser?.phone || ''}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Assign Role</label>
-                <select
-                  name="role"
-                  required
-                  defaultValue={editingUser?.role || 'ADMIN'}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 font-medium"
-                >
-                  <option value="SUPER_ADMIN">SUPER_ADMIN – Full System Access & Audit</option>
-                  <option value="ADMIN">ADMIN – Full Operations & Content</option>
-                  <option value="SALES_MANAGER">SALES_MANAGER – Lead Allocation & Counselling Management</option>
-                  <option value="COUNSELLOR">COUNSELLOR – Assigned Leads & Follow-ups</option>
-                  <option value="ADMISSION_HEAD">ADMISSION_HEAD – Admissions & Expense Management</option>
-                  <option value="SEO_MANAGER">SEO_MANAGER – Website Content Management</option>
-                  <option value="VIEWER">VIEWER – Read-Only Access</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Account Status</label>
-                <select
-                  name="status"
-                  defaultValue={editingUser ? String(editingUser.status) : 'true'}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600"
-                >
-                  <option value="true">Active (Allowed to log in)</option>
-                  <option value="false">Inactive (Login blocked)</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-sm"
-                >
-                  {loading ? 'Saving...' : 'Save User Account'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {editing && (
+        <UserModal
+          user={editing === 'new' ? null : editing}
+          superAdmin={superAdmin}
+          self={editing !== 'new' && editing.id === currentUserId}
+          onClose={() => setEditing(null)}
+          onSaved={(m, creds) => {
+            setEditing(null)
+            setMsg({ ok: true, text: m })
+            if (creds) setCredentials(creds)
+            router.refresh()
+          }}
+        />
       )}
-      {/* Set New Password */}
-      {resetUser && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <h3 className="text-base font-bold text-slate-900">Set New Password</h3>
-              <button onClick={() => setResetUser(null)} className="text-slate-400 hover:text-slate-600" title="Close">
-                <Icon icon="ion:close" className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleResetSave} className="space-y-4 text-xs">
-              <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                <p className="font-semibold text-slate-900 text-sm">{resetUser.fullName}</p>
-                <p className="text-slate-500">{resetUser.email}</p>
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">New Password</label>
-                <PasswordField value={resetPassword} onChange={setResetPassword} required />
-                <p className="mt-2 text-slate-500">Current passwords are stored securely and can&apos;t be shown. Set a new one and share it with the user.</p>
-              </div>
-              {resetError && <p className="text-rose-600 font-semibold">{resetError}</p>}
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button type="button" onClick={() => setResetUser(null)} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200">
-                  Cancel
-                </button>
-                <button type="submit" disabled={loading} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60">
-                  {loading ? 'Saving...' : 'Save Password'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Login details after a password is set */}
-      {credentials && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-              <Icon icon="ion:checkmark-circle-outline" className="w-5 h-5 text-emerald-600" />
-              <h3 className="text-base font-bold text-slate-900">Password Saved</h3>
-            </div>
-            <p className="text-xs text-slate-600">Share these login details with {credentials.name || 'the user'}. The password won&apos;t be shown again after you close this.</p>
-            <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2 text-sm">
-              <div className="flex justify-between gap-3"><span className="text-slate-500">Email</span><span className="font-semibold text-slate-900 break-all text-right">{credentials.email}</span></div>
-              <div className="flex justify-between gap-3"><span className="text-slate-500">Password</span><span className="font-mono font-semibold text-slate-900 break-all text-right">{credentials.password}</span></div>
-            </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 text-xs">
-              <button type="button" onClick={copyCredentials} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 text-slate-800 font-semibold hover:bg-slate-200">
-                <Icon icon={credCopied ? 'ion:checkmark-outline' : 'ion:copy-outline'} className="w-4 h-4" />
-                {credCopied ? 'Copied' : 'Copy Login Details'}
-              </button>
-              <button type="button" onClick={() => { setCredentials(null); window.location.reload() }} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">
-                Done
-              </button>
-            </div>
-          </div>
-        </div>
+      {pwdFor && (
+        <PasswordModal
+          user={pwdFor}
+          onClose={() => setPwdFor(null)}
+          onSaved={(password) => {
+            setCredentials({ name: pwdFor.fullName, login: pwdFor.username || pwdFor.email, password })
+            setMsg({ ok: true, text: 'Password updated.' })
+            setPwdFor(null)
+            router.refresh()
+          }}
+        />
       )}
     </div>
+  )
+}
+
+function UserModal({ user, superAdmin, self, onClose, onSaved }: { user: UserItem | null; superAdmin: boolean; self: boolean; onClose: () => void; onSaved: (m: string, creds?: { name: string; login: string; password: string }) => void }) {
+  const [v, setV] = useState({
+    fullName: user?.fullName || '',
+    email: user?.email || '',
+    username: user?.username || '',
+    phone: user?.phone || '',
+    role: user ? normalizeRole(user.role) : 'COUNSELLOR',
+    status: user ? user.status : true,
+    moduleAccess: user ? parseModuleAccess(user.moduleAccess) : ([] as string[]),
+    password: '',
+  })
+  const [msg, setMsg] = useState<M>(null)
+  const [busy, setBusy] = useState(false)
+  const roles = ROLE_LIST.filter((r) => superAdmin || r.value !== 'SUPER_ADMIN')
+
+  return (
+    <Modal title={user ? `Edit ${user.fullName}` : 'Add user'} onClose={onClose} wide>
+      <form
+        className="space-y-3 text-left"
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setBusy(true)
+          const r = await saveUserAction(v, user?.id)
+          setBusy(false)
+          if (r.success) onSaved(r.message || 'Saved.', v.password ? { name: v.fullName, login: v.username || v.email, password: v.password } : undefined)
+          else setMsg({ ok: false, text: r.error || 'Failed.' })
+        }}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="Full name *">
+            <input className={INPUT} value={v.fullName} onChange={(e) => setV({ ...v, fullName: e.target.value })} required />
+          </Field>
+          <Field label="Email *">
+            <input type="email" className={INPUT} value={v.email} onChange={(e) => setV({ ...v, email: e.target.value })} required />
+          </Field>
+          <Field label="Username" hint="Optional. At least 3 letters or numbers (dot, dash, underscore allowed). Can be used to sign in instead of the email.">
+            <input className={INPUT} value={v.username} onChange={(e) => setV({ ...v, username: e.target.value.replace(/\s/g, '').toLowerCase() })} autoComplete="off" />
+          </Field>
+          <Field label="Phone">
+            <input className={INPUT} value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
+          </Field>
+          <Field label="Role *" hint={ROLE_LIST.find((r) => r.value === v.role)?.hint}>
+            <select className={INPUT} value={v.role} disabled={self} onChange={(e) => setV({ ...v, role: e.target.value as any })}>
+              {roles.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Status">
+            <select className={INPUT} value={v.status ? 'true' : 'false'} disabled={self} onChange={(e) => setV({ ...v, status: e.target.value === 'true' })}>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </Field>
+        </div>
+        {v.role === 'VIEWER' && (
+          <fieldset className="rounded-xl border border-slate-200 p-3">
+            <legend className="px-1 text-xs font-semibold text-slate-600">Viewer can see (read only) *</legend>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {VIEWER_MODULES.map((m) => (
+                <label key={m.value} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={v.moduleAccess.includes(m.value)}
+                    onChange={(e) => setV({ ...v, moduleAccess: e.target.checked ? [...v.moduleAccess, m.value] : v.moduleAccess.filter((x) => x !== m.value) })}
+                  />
+                  {m.label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+        <Field label={user ? 'New password (leave blank to keep the current one)' : 'Password * (at least 8 characters)'}>
+          <PasswordField value={v.password} onChange={(p) => setV({ ...v, password: p })} required={!user} />
+        </Field>
+        <Msg msg={msg} />
+        <div className="flex justify-end gap-2">
+          <button type="button" className={BTN_SECONDARY} onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className={BTN_PRIMARY} disabled={busy}>
+            {busy ? 'Saving…' : 'Save user'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
+function PasswordModal({ user, onClose, onSaved }: { user: UserItem; onClose: () => void; onSaved: (password: string) => void }) {
+  const [password, setPassword] = useState('')
+  const [msg, setMsg] = useState<M>(null)
+  const [busy, setBusy] = useState(false)
+  return (
+    <Modal title={`Set password for ${user.fullName}`} onClose={onClose}>
+      <form
+        className="space-y-3 text-left"
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setBusy(true)
+          const r = await resetUserPasswordAction(user.id, password)
+          setBusy(false)
+          if (r.success) onSaved(password)
+          else setMsg({ ok: false, text: r.error || 'Failed.' })
+        }}
+      >
+        <p className="text-xs text-slate-600">Passwords are stored encrypted and cannot be viewed. Set a new one and share it privately; the Super Admin is notified.</p>
+        <PasswordField value={password} onChange={setPassword} required />
+        <Msg msg={msg} />
+        <div className="flex justify-end gap-2">
+          <button type="button" className={BTN_SECONDARY} onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className={BTN_PRIMARY} disabled={busy || password.length < 8}>
+            Save password
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }

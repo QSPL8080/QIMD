@@ -312,10 +312,10 @@ export default function AdminCorporateHirePage() {
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Contacted</span>
-            <span className="text-2xl font-black text-blue-600 mt-1 block">{contactedCount}</span>
+            <span className="text-2xl font-black text-zinc-900 mt-1 block">{contactedCount}</span>
             <span className="text-[11px] text-slate-400 font-medium">Followed up</span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-zinc-100 text-zinc-900 flex items-center justify-center">
             <Icon icon="ion:checkmark-circle-outline" className="w-6 h-6" />
           </div>
         </div>
@@ -576,7 +576,7 @@ export default function AdminCorporateHirePage() {
                       <a
                         href={`mailto:${req.email}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-blue-600 hover:underline hover:text-blue-800 transition-colors"
+                        className="text-zinc-900 hover:underline hover:text-black transition-colors"
                       >
                         {req.email}
                       </a>
@@ -638,7 +638,7 @@ export default function AdminCorporateHirePage() {
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Email</span>
                   <a
                     href={`mailto:${selectedReq.email}`}
-                    className="text-blue-600 hover:underline font-bold block truncate break-all"
+                    className="text-zinc-900 hover:underline font-bold block truncate break-all"
                     title={selectedReq.email}
                   >
                     {selectedReq.email}
@@ -646,7 +646,7 @@ export default function AdminCorporateHirePage() {
                 </div>
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Phone</span>
-                  <a href={`tel:${selectedReq.phone}`} className="text-slate-900 font-bold block truncate hover:text-blue-600">
+                  <a href={`tel:${selectedReq.phone}`} className="text-slate-900 font-bold block truncate hover:text-black">
                     {selectedReq.phone || 'N/A'}
                   </a>
                 </div>

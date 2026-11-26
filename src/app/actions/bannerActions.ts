@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
+import { requirePermission, requireSuperAdminSession } from '@/lib/auth'
 import { recordTrash, clearTrash } from '@/lib/trash'
 import { revalidatePath } from 'next/cache'
 import { safeDeleteUnusedFile } from '@/lib/mediaService'
@@ -21,7 +21,7 @@ export async function saveBannerAction(
   },
   id?: string
 ) {
-  await requireAdminSession()
+  await requirePermission('content', 'edit')
 
   try {
     if (id) {
@@ -82,7 +82,7 @@ export async function saveBannerAction(
 
 /** Move a banner to the Bin (any admin). */
 export async function trashBannerAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     await db.banner.update({ where: { id }, data: { isDeleted: true } })
     revalidatePath('/admin/banners')

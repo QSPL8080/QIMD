@@ -15,6 +15,9 @@ import {
 import { restoreJobOpeningAction, deleteJobOpeningPermanentlyAction } from './careerActions'
 import { restoreBannerAction, deleteBannerPermanentlyAction } from './bannerActions'
 import { restoreUserAction, deleteUserPermanentlyAction } from './userActions'
+import { restoreLeadAction, deleteLeadForeverAction } from './leadActions'
+import { restoreAdmissionAction, deleteAdmissionForeverAction } from './admissionActions'
+import { restoreExpenseAction, deleteExpenseForeverAction } from './expenseActions'
 
 type Item = { type: TrashType; id: string }
 type Result = { success: boolean; message?: string; error?: string }
@@ -33,6 +36,9 @@ async function restoreOne({ type, id }: Item): Promise<Result> {
     case 'gallery': return restoreGalleryItemAction(id)
     case 'banner': return restoreBannerAction(id)
     case 'user': return restoreUserAction(id)
+    case 'lead': return restoreLeadAction(id)
+    case 'admission_record': return restoreAdmissionAction(id)
+    case 'expense': return restoreExpenseAction(id)
   }
   return { success: false, error: 'Unknown item type' }
 }
@@ -49,6 +55,9 @@ async function deleteOne({ type, id }: Item): Promise<Result> {
     case 'gallery': return deleteGalleryItemAction(id)
     case 'banner': return deleteBannerPermanentlyAction(id)
     case 'user': return deleteUserPermanentlyAction(id)
+    case 'lead': return deleteLeadForeverAction(id)
+    case 'admission_record': return deleteAdmissionForeverAction(id)
+    case 'expense': return deleteExpenseForeverAction(id)
   }
   return { success: false, error: 'Unknown item type' }
 }

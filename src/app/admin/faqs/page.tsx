@@ -246,12 +246,12 @@ export default function AdminFaqsPage() {
 
         <div className="flex items-center gap-3">
 
-          <button
+          <button data-action="edit"
             onClick={() => {
               setEditingItem(null)
               setIsFormOpen(true)
             }}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
+            className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
             Add FAQ
@@ -292,14 +292,14 @@ export default function AdminFaqsPage() {
             <div className="flex items-center gap-2">
               {showTrash ? (
                 <>
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkRestore}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                     Restore Selected ({selectedIds.length})
                   </button>
-                  <button
+                  <button data-action="delete"
                     onClick={() => setBulkConfirmModal(true)}
                     className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                   >
@@ -308,7 +308,7 @@ export default function AdminFaqsPage() {
                   </button>
                 </>
               ) : (
-                <button
+                <button data-action="delete"
                   onClick={handleBulkTrash}
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
@@ -347,7 +347,7 @@ export default function AdminFaqsPage() {
                 <tr
                   key={f.id}
                   className={`hover:bg-slate-50 transition-colors ${
-                    selectedIds.includes(f.id) ? 'bg-blue-50/50' : ''
+                    selectedIds.includes(f.id) ? 'bg-zinc-100/50' : ''
                   }`}
                 >
                   <td className="p-4" onClick={(e) => e.stopPropagation()}>
@@ -404,17 +404,17 @@ export default function AdminFaqsPage() {
                   <td className="p-4 text-right space-x-2">
                     {!f.isDeleted ? (
                       <>
-                        <button
+                        <button data-action="edit"
                           onClick={() => {
                             setEditingItem(f)
                             setIsFormOpen(true)
                           }}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Icon icon="ion:create-outline" className="w-5 h-5" />
                         </button>
-                        <button
+                        <button data-action="delete"
                           onClick={() => handleTrash(f.id)}
                           className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                           title="Move to the Bin"
@@ -424,14 +424,14 @@ export default function AdminFaqsPage() {
                       </>
                     ) : (
                       <>
-                        <button
+                        <button data-action="delete"
                           onClick={() => handleRestore(f.id)}
                           className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                           title="Restore"
                         >
                           <Icon icon="ion:refresh-outline" className="w-5 h-5" />
                         </button>
-                        <button
+                        <button data-action="delete"
                           onClick={() => handleDeletePermanently(f.id)}
                           className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                           title="Delete Permanently"
@@ -520,7 +520,7 @@ export default function AdminFaqsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                  className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-semibold rounded-xl shadow-xs"
                 >
                   Save FAQ
                 </button>
@@ -552,7 +552,7 @@ export default function AdminFaqsPage() {
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

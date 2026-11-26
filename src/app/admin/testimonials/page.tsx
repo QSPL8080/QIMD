@@ -13,6 +13,8 @@ import {
   bulkDeleteTestimonialsPermanentlyAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
+import { uploadMedia, isVideoFileUrl } from '@/lib/uploadMedia'
+import MediaUploadButton from '@/components/Admin/MediaUploadButton'
 
 export default function AdminTestimonialsPage() {
   const [testimonials, setTestimonials] = useState<any[]>([])
@@ -67,22 +69,15 @@ export default function AdminTestimonialsPage() {
     if (!file) return
 
     setUploadingPhoto(true)
-    const formData = new FormData()
-    formData.append('file', file)
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
+      const data: { success: boolean; url?: string; error?: string } = { success: true, url: await uploadMedia(file, 'testimonials') }
       if (data.success && data.url) {
         setPhotoUrl(data.url)
       } else {
         alert(data.error || 'Failed to upload photo')
       }
     } catch (err) {
-      alert('Error uploading file')
+      alert((err as Error)?.message || 'Error uploading file')
     } finally {
       setUploadingPhoto(false)
     }
@@ -228,9 +223,9 @@ export default function AdminTestimonialsPage() {
 
         <div className="flex items-center gap-3">
 
-          <button
+          <button data-action="edit"
             onClick={() => openForm()}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
+            className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-2"
           >
             <Icon icon="ion:add-circle-outline" className="w-4.5 h-4.5" />
             Add Testimonial
@@ -271,14 +266,14 @@ export default function AdminTestimonialsPage() {
             <div className="flex items-center gap-2">
               {showTrash ? (
                 <>
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkRestore}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                     Restore Selected ({selectedIds.length})
                   </button>
-                  <button
+                  <button data-action="delete"
                     onClick={() => setBulkConfirmModal(true)}
                     className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                   >
@@ -287,7 +282,7 @@ export default function AdminTestimonialsPage() {
                   </button>
                 </>
               ) : (
-                <button
+                <button data-action="delete"
                   onClick={handleBulkTrash}
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
@@ -329,7 +324,7 @@ export default function AdminTestimonialsPage() {
                   <tr
                     key={item.id}
                     className={`hover:bg-slate-50 transition-colors ${
-                      selectedIds.includes(item.id) ? 'bg-blue-50/50' : ''
+                      selectedIds.includes(item.id) ? 'bg-zinc-100/50' : ''
                     }`}
                   >
                     <td className="p-4" onClick={(e) => e.stopPropagation()}>
@@ -349,7 +344,7 @@ export default function AdminTestimonialsPage() {
                       <div>
                         <p className="font-semibold text-slate-900 text-base leading-snug">{item.studentName}</p>
                         {item.company && (
-                          <p className="text-blue-600 font-semibold text-xs mt-0.5">
+                          <p className="text-zinc-900 font-semibold text-xs mt-0.5">
                             @ {item.company}
                           </p>
                         )}
@@ -385,14 +380,14 @@ export default function AdminTestimonialsPage() {
                     <td className="p-4 text-right space-x-2">
                       {!item.isDeleted ? (
                         <>
-                          <button
+                          <button data-action="edit"
                             onClick={() => openForm(item)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Icon icon="ion:create-outline" className="w-5 h-5" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleTrash(item.id)}
                             className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                             title="Move to the Bin"
@@ -402,14 +397,14 @@ export default function AdminTestimonialsPage() {
                         </>
                       ) : (
                         <>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleRestore(item.id)}
                             className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Restore"
                           >
                             <Icon icon="ion:refresh-outline" className="w-4 h-4" />
                           </button>
-                          <button
+                          <button data-action="delete"
                             onClick={() => handleDeletePermanently(item.id)}
                             className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                             title="Delete Permanently"
@@ -478,7 +473,7 @@ export default function AdminTestimonialsPage() {
                     placeholder="Upload photo or enter URL..."
                     className="flex-1 bg-white border border-slate-200 rounded-xl p-2.5 text-slate-900 font-mono"
                   />
-                  <label className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                  <label className="px-4 py-2.5 bg-zinc-900 hover:bg-black text-white rounded-xl cursor-pointer font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap">
                     <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
                     {uploadingPhoto ? 'Uploading...' : 'Upload Photo'}
                     <input
@@ -583,20 +578,26 @@ export default function AdminTestimonialsPage() {
                 <div className="flex items-center justify-between">
                   <label className="block text-purple-900 font-bold flex items-center gap-1.5">
                     <Icon icon="ion:logo-youtube" className="text-red-600 text-base" />
-                    YouTube Video Link (Optional)
+                    Video (optional) — YouTube link or upload a video file
                   </label>
                   <span className="text-[10px] font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">
                     {youtubeLinkInput.trim() !== '' ? 'VIDEO TESTIMONIAL' : 'TEXT TESTIMONIAL'}
                   </span>
                 </div>
                 <input
-                  type="url"
+                  type="text"
                   name="youtubeLink"
                   value={youtubeLinkInput}
                   onChange={(e) => setYoutubeLinkInput(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
                   className="w-full bg-white border border-purple-200 rounded-xl p-2.5 text-slate-900"
                 />
+                <div className="flex flex-wrap items-center gap-3">
+                  <MediaUploadButton accept="video/mp4,video/webm,video/quicktime" folder="testimonials/videos" label="Upload video file (MP4, up to 200 MB)" onUploaded={(url) => setYoutubeLinkInput(url)} />
+                  {isVideoFileUrl(youtubeLinkInput) && (
+                    <video src={youtubeLinkInput} controls preload="metadata" className="h-24 rounded-lg bg-black" />
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -635,7 +636,7 @@ export default function AdminTestimonialsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs"
+                  className="px-5 py-2 bg-zinc-900 hover:bg-black text-white font-semibold rounded-xl shadow-xs"
                 >
                   Save Testimonial
                 </button>
@@ -667,7 +668,7 @@ export default function AdminTestimonialsPage() {
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

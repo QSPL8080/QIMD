@@ -8,7 +8,8 @@ const GTM_ID = 'GTM-T9GRD4B8'
 /** Google Tag Manager on the public website (not on the admin panel). */
 export default function GoogleTagManager() {
   const pathname = usePathname() || ''
-  if (pathname.startsWith('/admin')) return null
+  // No tracking on the admin panel or on private fee receipts
+  if (pathname.startsWith('/admin') || pathname.startsWith('/receipt/')) return null
 
   return (
     <>

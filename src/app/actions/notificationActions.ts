@@ -1,14 +1,19 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { requireSuperAdminSession } from '@/lib/auth'
+import { getAdminSession } from '@/lib/auth'
+import { notificationScope } from '@/lib/notifications'
 import { revalidatePath } from 'next/cache'
 
-/** Super Admin: mark every notification as read. */
+/** Mark every notification of the signed-in user as read. */
 export async function markNotificationsReadAction() {
-  await requireSuperAdminSession()
+  const session = await getAdminSession()
+  if (!session) return { success: false, error: 'Please sign in again.' }
   try {
-    await (db as any).adminNotification.updateMany({ where: { isRead: false }, data: { isRead: true } })
+    await (db as any).adminNotification.updateMany({
+      where: { ...notificationScope(session), isRead: false },
+      data: { isRead: true },
+    })
     revalidatePath('/admin', 'layout')
     return { success: true }
   } catch (err: any) {

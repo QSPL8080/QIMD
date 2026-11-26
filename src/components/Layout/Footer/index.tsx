@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear()
   const { footer, socialLinks, phone } = siteSettings
 
-  if (pathname?.startsWith('/admin')) return null
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/receipt/')) return null
 
   const whatsappNum = (footer?.whatsapp?.number || socialLinks?.whatsapp || siteConfig.whatsapp || '').replace(/[^\d+]/g, '')
   const whatsappUrl = whatsappNum.startsWith('+')

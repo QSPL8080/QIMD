@@ -4,13 +4,13 @@ import { recordTrash, clearTrash } from '@/lib/trash'
 
 import { db } from '@/lib/db'
 import { jobOpeningSchema } from '@/lib/validations'
-import { requireAdminSession, requireSuperAdminSession } from '@/lib/auth'
+import { requirePermission, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function saveJobOpeningAction(data: any, id?: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'edit')
   try {
     const validated = jobOpeningSchema.safeParse(data)
     if (!validated.success) {
@@ -38,7 +38,7 @@ export async function saveJobOpeningAction(data: any, id?: string) {
 }
 
 export async function trashJobOpeningAction(id: string) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     if (!id || !UUID_REGEX.test(id)) {
       return { success: false, error: 'Invalid job opening ID' }
@@ -92,7 +92,7 @@ export async function deleteJobOpeningPermanentlyAction(id: string) {
 }
 
 export async function bulkTrashJobOpeningsAction(ids: string[]) {
-  const session = await requireAdminSession()
+  const session = await requirePermission('content', 'delete')
   try {
     const validIds = (ids || []).filter((id) => UUID_REGEX.test(id))
     if (validIds.length === 0) return { success: false, error: 'No valid job openings selected.' }

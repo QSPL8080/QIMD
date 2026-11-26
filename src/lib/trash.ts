@@ -17,6 +17,9 @@ export const TRASH_TYPES = [
   'gallery',
   'banner',
   'user',
+  'lead',
+  'admission_record',
+  'expense',
 ] as const
 export type TrashType = (typeof TRASH_TYPES)[number]
 

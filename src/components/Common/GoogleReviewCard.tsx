@@ -31,7 +31,14 @@ export default function GoogleReviewCard({ name, program, rating = 5, review, ph
     <figure className="qg-card">
       <figcaption className="qg-head">
         <span className="qg-avatar" aria-hidden="true">
-          {name ? name.trim().charAt(0).toUpperCase() : 'S'}
+          {photo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photo} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }} />
+          ) : name ? (
+            name.trim().charAt(0).toUpperCase()
+          ) : (
+            'S'
+          )}
         </span>
         <span className="qg-who">
           <strong>{name}</strong>

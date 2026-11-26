@@ -48,7 +48,7 @@ const Header: React.FC = () => {
     setNavbarOpen(false)
   }, [pathUrl])
 
-  if (pathUrl?.startsWith('/admin')) return null
+  if (pathUrl?.startsWith('/admin') || pathUrl?.startsWith('/receipt/')) return null
 
   const activeNavItems = headerData
 

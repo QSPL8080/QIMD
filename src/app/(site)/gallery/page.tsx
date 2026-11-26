@@ -25,6 +25,7 @@ function GalleryContent() {
 
   const [activeCategory, setActiveCategory] = useState<string>('All')
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
+  const [dbCategories, setDbCategories] = useState<string[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
@@ -51,6 +52,7 @@ function GalleryContent() {
       const data = await res.json()
       if (data.success && Array.isArray(data.items) && data.items.length > 0) {
         setGalleryItems(data.items)
+        if (Array.isArray(data.categories)) setDbCategories(data.categories)
       } else {
         // Fallback to static gallery data
         const fallback: GalleryItem[] = galleryData.map((item, idx) => ({
@@ -92,12 +94,12 @@ function GalleryContent() {
 
   // Build list of all available categories
   const categoriesList = useMemo(() => {
-    const set = new Set<string>(galleryCategories)
+    const set = new Set<string>(dbCategories ? ['All', ...dbCategories] : galleryCategories)
     galleryItems.forEach((item) => {
       if (item.category) set.add(item.category)
     })
     return Array.from(set)
-  }, [galleryItems])
+  }, [galleryItems, dbCategories])
 
   // Count items per category
   const categoryCounts = useMemo(() => {

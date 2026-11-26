@@ -14,6 +14,7 @@ export type TopNotification = {
   title: string
   actorEmail: string | null
   actorRole: string | null
+  link?: string | null
   isRead: boolean
   createdAt: string
 }
@@ -24,6 +25,14 @@ function timeAgo(iso: string) {
   if (s < 3600) return `${Math.floor(s / 60)} min ago`
   if (s < 86400) return `${Math.floor(s / 3600)} hr ago`
   return new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })
+}
+
+function noteIcon(type: string) {
+  if (type.startsWith('PASSWORD')) return 'ion:key-outline'
+  if (type === 'LEAD_NEW') return 'ion:person-add-outline'
+  if (type === 'LEAD_ASSIGNED') return 'ion:people-outline'
+  if (type === 'FOLLOW_UP_DUE') return 'ion:alarm-outline'
+  return 'ion:notifications-outline'
 }
 
 function useOutside(ref: React.RefObject<HTMLElement | null>, onOut: () => void) {
@@ -73,19 +82,30 @@ export function NotificationBell({ items, unread }: { items: TopNotification[]; 
             <p className="qad-notes-empty">No notifications yet.</p>
           ) : (
             <ul>
-              {items.map((n) => (
-                <li key={n.id} className={n.isRead ? '' : 'is-unread'}>
-                  <span className="qad-notes-ic">
-                    <Icon icon="ion:key-outline" />
-                  </span>
-                  <span className="qad-notes-body">
-                    <strong>{n.title}</strong>
-                    <small>
-                      {[n.actorEmail, timeAgo(n.createdAt)].filter(Boolean).join(' · ')}
-                    </small>
-                  </span>
-                </li>
-              ))}
+              {items.map((n) => {
+                const body = (
+                  <>
+                    <span className="qad-notes-ic">
+                      <Icon icon={noteIcon(n.type)} />
+                    </span>
+                    <span className="qad-notes-body">
+                      <strong>{n.title}</strong>
+                      <small>{[n.actorEmail, timeAgo(n.createdAt)].filter(Boolean).join(' · ')}</small>
+                    </span>
+                  </>
+                )
+                return (
+                  <li key={n.id} className={n.isRead ? '' : 'is-unread'}>
+                    {n.link ? (
+                      <a href={n.link} className="qad-notes-row" onClick={() => setOpen(false)}>
+                        {body}
+                      </a>
+                    ) : (
+                      <span className="qad-notes-row">{body}</span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           )}
         </div>
@@ -133,7 +153,7 @@ export function AccountMenu({ email }: { email: string }) {
   }
 
   const inputCls =
-    'w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pr-10 text-slate-900 focus:outline-none focus:border-blue-600'
+    'w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pr-10 text-slate-900 focus:outline-none focus:border-zinc-900'
 
   return (
     <div className="qad-pop" ref={ref}>
@@ -175,7 +195,7 @@ export function AccountMenu({ email }: { email: string }) {
                 </p>
                 <p className="text-slate-600 text-xs">Use the new password the next time you sign in.</p>
                 <div className="flex justify-end">
-                  <button type="button" onClick={() => setModal(false)} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 text-xs">
+                  <button type="button" onClick={() => setModal(false)} className="px-4 py-2 rounded-xl bg-zinc-900 text-white font-semibold hover:bg-black text-xs">
                     Done
                   </button>
                 </div>
@@ -223,7 +243,7 @@ export function AccountMenu({ email }: { email: string }) {
                   <button type="button" onClick={() => setModal(false)} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200">
                     Cancel
                   </button>
-                  <button type="submit" disabled={saving} className="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-60">
+                  <button type="submit" disabled={saving} className="px-4 py-2 rounded-xl bg-zinc-900 text-white font-semibold hover:bg-black disabled:opacity-60">
                     {saving ? 'Saving...' : 'Change Password'}
                   </button>
                 </div>

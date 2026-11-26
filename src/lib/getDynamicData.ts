@@ -203,6 +203,7 @@ export async function getDynamicStudentReviews() {
         rating: r.rating || 5,
         review: r.review,
         company: r.company || '',
+        photo: r.photo || null,
       }))
     }
   } catch (err) {

@@ -1,93 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
-import { supabaseAdmin } from '@/lib/supabase'
-import path from 'path'
-import fs from 'fs'
+import { can } from '@/lib/permissions'
+import { db } from '@/lib/db'
+import { BUCKET, ensurePublicBucket, MEDIA_TYPES, mediaKind, newObjectPath, publicUrl, storage } from '@/lib/storage'
 
-const BUCKET_NAME = 'qimd-media'
-
-// True only when real (non-placeholder) Supabase credentials are configured
-const isSupabaseConfigured =
-  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  !!process.env.SUPABASE_SERVICE_ROLE_KEY &&
-  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') &&
-  !process.env.SUPABASE_SERVICE_ROLE_KEY.includes('placeholder') &&
-  process.env.SUPABASE_SERVICE_ROLE_KEY.length > 20
+export const dynamic = 'force-dynamic'
 
 /**
- * Save a file buffer to the local /public/uploads/ directory.
- * Returns the public URL path e.g. /uploads/filename.ext
+ * Website media upload through the server (images, small videos, PDFs).
+ * Large videos go straight from the browser to the bucket via /api/upload/sign.
+ * Stored in the Supabase bucket; if storage is not configured, kept in the database
+ * and served from /media/<id>/<name> (never written to /public, which is wiped on redeploy).
  */
-function saveToLocalStorage(buffer: Buffer, uniqueName: string): string {
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true })
-  }
-  const filePath = path.join(uploadsDir, uniqueName)
-  fs.writeFileSync(filePath, buffer)
-  return `/uploads/${uniqueName}`
-}
-
 export async function POST(req: NextRequest) {
+  const session = await getAdminSession()
+  if (!session || !can(session.roleName, 'content', 'edit', session.moduleAccess)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   try {
-    const session = await getAdminSession()
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const form = await req.formData()
+    const file = form.get('file') as File | null
+    const folder = String(form.get('folder') || 'media')
+    if (!file || !file.size) return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+    const kind = mediaKind(file.type)
+    if (!kind) return NextResponse.json({ error: 'Unsupported file type. Use JPG, PNG, WebP, GIF, SVG, MP4, WebM, MOV or PDF.' }, { status: 400 })
+    if (file.size > MEDIA_TYPES[kind].max) return NextResponse.json({ error: `File too large. ${MEDIA_TYPES[kind].label}.` }, { status: 400 })
+
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const s = storage()
+    if (s) {
+      await ensurePublicBucket()
+      const path = newObjectPath(folder, file.name)
+      const { error } = await s.from(BUCKET).upload(path, buffer, { contentType: file.type, cacheControl: '31536000', upsert: false })
+      if (!error) return NextResponse.json({ success: true, url: publicUrl(path), storage: 'bucket' })
+      console.error('[upload] bucket upload failed:', error.message)
+      return NextResponse.json({ error: `Storage upload failed: ${error.message}` }, { status: 502 })
     }
 
-    const formData = await req.formData()
-    const file = formData.get('file') as File | null
-
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
-    }
-
-    // Validate size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File size exceeds 10MB limit' }, { status: 400 })
-    }
-
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    const ext = path.extname(file.name) || '.bin'
-    const uniqueName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}${ext}`
-
-    let fileUrl = ''
-
-    // Attempt Supabase Storage upload when properly configured
-    if (isSupabaseConfigured) {
-      const { data, error } = await supabaseAdmin.storage
-        .from(BUCKET_NAME)
-        .upload(uniqueName, buffer, {
-          contentType: file.type || 'application/octet-stream',
-          upsert: true,
-        })
-
-      if (error) {
-        // Supabase upload failed — fall back to local storage so the upload
-        // never returns an empty URL to the client (which would clear the DB field).
-        console.error('Supabase Storage upload failed, falling back to local storage:', error.message)
-        fileUrl = saveToLocalStorage(buffer, uniqueName)
-      } else {
-        const { data: publicUrlData } = supabaseAdmin.storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(uniqueName)
-        fileUrl = publicUrlData.publicUrl
-        // Keep a dual local backup copy for offline safety
-        try {
-          saveToLocalStorage(buffer, uniqueName)
-        } catch (_) {}
-      }
-    } else {
-      // No Supabase config — use local /public/uploads/ (development)
-      fileUrl = saveToLocalStorage(buffer, uniqueName)
-    }
-
-    return NextResponse.json({
-      success: true,
-      url: fileUrl,
+    // No bucket configured: keep the file in the database (survives redeploys)
+    if (file.size > 25 * 1024 * 1024) return NextResponse.json({ error: 'Storage bucket is not configured; files over 25 MB need it.' }, { status: 400 })
+    const name = file.name.replace(/[^\w.-]+/g, '-').slice(-80) || 'file'
+    const row = await (db as any).storedFile.create({
+      data: { ownerType: 'media', label: folder.slice(0, 120), originalName: name, mimeType: file.type, size: file.size, data: buffer, uploadedById: session.id, uploadedByName: session.fullName },
+      select: { id: true },
     })
+    return NextResponse.json({ success: true, url: `/media/${row.id}/${encodeURIComponent(name)}`, storage: 'database' })
   } catch (err: any) {
     console.error('File upload error:', err)
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })

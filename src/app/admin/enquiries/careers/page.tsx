@@ -572,7 +572,7 @@ export default function AdminJobApplicationsPage() {
                       <a
                         href={`mailto:${app.email}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-blue-600 hover:underline"
+                        className="text-zinc-900 hover:underline"
                       >
                         {app.email}
                       </a>
@@ -631,7 +631,7 @@ export default function AdminJobApplicationsPage() {
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Email</span>
                   <a
                     href={`mailto:${selectedApp.email}`}
-                    className="text-blue-600 hover:underline font-bold block truncate break-all"
+                    className="text-zinc-900 hover:underline font-bold block truncate break-all"
                     title={selectedApp.email}
                   >
                     {selectedApp.email}
@@ -639,7 +639,7 @@ export default function AdminJobApplicationsPage() {
                 </div>
                 <div className="min-w-0">
                   <span className="text-slate-400 font-semibold block text-[10px] uppercase">Phone</span>
-                  <a href={`tel:${selectedApp.phone}`} className="text-slate-900 font-bold block truncate hover:text-blue-600">
+                  <a href={`tel:${selectedApp.phone}`} className="text-slate-900 font-bold block truncate hover:text-black">
                     {selectedApp.phone || 'N/A'}
                   </a>
                 </div>

@@ -12,6 +12,9 @@ import {
   bulkDeleteGalleryItemsAction,
 } from '@/app/actions/cmsActions'
 import { Icon } from '@iconify/react'
+import { uploadMedia } from '@/lib/uploadMedia'
+import { saveSettingAction } from '@/app/actions/settingsActions'
+import { installGallerySetAction } from '@/app/actions/gallerySetActions'
 
 interface GalleryItem {
   id: string
@@ -26,10 +29,15 @@ interface GalleryItem {
   createdAt: string
 }
 
-const categories = ['Classroom', 'Training', 'Workshop', 'Activities', 'Facilities', 'Placements']
+const DEFAULT_CATEGORIES = ['Classroom', 'Training', 'Workshop', 'Activities', 'Facilities', 'Placements']
 
 export default function AdminGalleryPage() {
   const [gallery, setGallery] = useState<GalleryItem[]>([])
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES)
+  const [catEditor, setCatEditor] = useState<string[] | null>(null)
+  const [photoSet, setPhotoSet] = useState<{ count: number; categories: string[]; installed: any } | null>(null)
+  const [installing, setInstalling] = useState(false)
+  const [newCat, setNewCat] = useState('')
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -51,6 +59,8 @@ export default function AdminGalleryPage() {
       const res = await fetch('/api/admin/gallery')
       const data = await res.json()
       setGallery(data.gallery || [])
+      if (Array.isArray(data.categories) && data.categories.length) setCategories(data.categories)
+      setPhotoSet(data.photoSet || null)
     } catch (err) {
       console.error('Failed to fetch gallery:', err)
     } finally {
@@ -94,13 +104,12 @@ export default function AdminGalleryPage() {
       let mediaType: 'IMAGE' | 'VIDEO' = editItem ? editItem.mediaType : 'IMAGE'
 
       if (file && file.size > 0) {
-        const uploadForm = new FormData()
-        uploadForm.append('file', file)
-        const uploadRes = await fetch('/api/upload', {
-          method: 'POST',
-          body: uploadForm,
-        })
-        const uploadData = await uploadRes.json()
+        let uploadData: { success: boolean; url?: string; error?: string }
+        try {
+          uploadData = { success: true, url: await uploadMedia(file, `gallery/${selectedCategory}`) }
+        } catch (err) {
+          uploadData = { success: false, error: (err as Error).message }
+        }
         if (uploadData.success && uploadData.url) {
           fileUrl = uploadData.url
           mediaType = file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE'
@@ -244,7 +253,7 @@ export default function AdminGalleryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
           <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Icon icon="ion:images-outline" className="w-6 h-6 text-blue-600" />
+            <Icon icon="ion:images-outline" className="w-6 h-6 text-zinc-900" />
             Training Gallery & Campus Media CMS
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -253,11 +262,16 @@ export default function AdminGalleryPage() {
         </div>
 
         <div className="flex items-center gap-2">
-
           {!showTrash && (
-            <button
+            <button data-action="edit" type="button" onClick={() => setCatEditor([...categories])} className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-xs rounded-xl flex items-center gap-1.5">
+              <Icon icon="ion:pricetags-outline" className="w-4 h-4" />
+              Categories
+            </button>
+          )}
+          {!showTrash && (
+            <button data-action="edit"
               onClick={() => handleOpenUpload()}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 bg-zinc-900 hover:bg-black text-white font-semibold text-xs rounded-xl transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
               <Icon icon="ion:cloud-upload-outline" className="w-4 h-4" />
               Upload New Media
@@ -265,6 +279,67 @@ export default function AdminGalleryPage() {
           )}
         </div>
       </div>
+
+      {photoSet && !photoSet.installed && !showTrash && (
+        <div className="rounded-2xl border border-slate-300 bg-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="text-xs text-slate-700">
+            <strong className="block text-sm text-slate-900">New gallery photo set ready ({photoSet.count} photos)</strong>
+            {photoSet.categories.join(', ')}. Installing uploads them to storage and permanently removes all current gallery items and their files.
+          </div>
+          <button
+            type="button"
+            disabled={installing}
+            onClick={async () => {
+              if (!(await confirmDialog(`Replace the website gallery with the ${photoSet.count} new photos? All current gallery items (including the Bin) and their files will be permanently deleted.`, { confirmText: 'Replace gallery' }))) return
+              setInstalling(true)
+              const r = await installGallerySetAction()
+              setInstalling(false)
+              setStatusMsg({ type: r.success ? 'success' : 'error', text: (r.success ? r.message : r.error) || '' })
+              fetchGallery()
+            }}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-black disabled:opacity-60 whitespace-nowrap"
+          >
+            {installing ? 'Installing…' : 'Install new photo set'}
+          </button>
+        </div>
+      )}
+
+      {catEditor && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setCatEditor(null)}>
+          <div className="bg-white rounded-2xl w-full max-w-md p-5 space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-sm font-bold text-slate-900">Gallery categories</h2>
+            <p className="text-xs text-slate-500">Shown as filter tabs on the website in this order. Categories without photos are hidden on the website.</p>
+            <ul className="space-y-1.5">
+              {catEditor.map((c, i) => (
+                <li key={c} className="flex items-center gap-2 text-sm">
+                  <span className="flex-1 font-semibold text-slate-800">{c} <span className="text-[11px] font-normal text-slate-400">({gallery.filter((g) => !g.isDeleted && g.category === c).length})</span></span>
+                  <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => setCatEditor(catEditor.map((x, j) => (j === i - 1 ? c : j === i ? catEditor[i - 1] : x)))} className="p-1 text-slate-500 disabled:opacity-30"><Icon icon="ion:arrow-up" className="w-4 h-4" /></button>
+                  <button type="button" aria-label="Move down" disabled={i === catEditor.length - 1} onClick={() => setCatEditor(catEditor.map((x, j) => (j === i + 1 ? c : j === i ? catEditor[i + 1] : x)))} className="p-1 text-slate-500 disabled:opacity-30"><Icon icon="ion:arrow-down" className="w-4 h-4" /></button>
+                  <button type="button" aria-label={`Remove ${c}`} disabled={gallery.some((g) => !g.isDeleted && g.category === c)} title="Only empty categories can be removed" onClick={() => setCatEditor(catEditor.filter((x) => x !== c))} className="p-1 text-rose-600 disabled:opacity-30"><Icon icon="ion:close" className="w-4 h-4" /></button>
+                </li>
+              ))}
+            </ul>
+            <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const v = newCat.trim(); if (v && !catEditor.some((x) => x.toLowerCase() === v.toLowerCase())) setCatEditor([...catEditor, v]); setNewCat('') }}>
+              <input value={newCat} onChange={(e) => setNewCat(e.target.value)} placeholder="New category" maxLength={60} className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm" />
+              <button className="px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200">Add</button>
+            </form>
+            <div className="flex justify-end gap-2 pt-1">
+              <button type="button" onClick={() => setCatEditor(null)} className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100">Cancel</button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const r = await saveSettingAction('galleryCategories', catEditor)
+                  if (r.success) { setCategories(catEditor); setCatEditor(null); setStatusMsg({ type: 'success', text: 'Gallery categories saved.' }) }
+                  else setStatusMsg({ type: 'error', text: r.error || 'Could not save categories.' })
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {statusMsg && (
         <div
@@ -302,14 +377,14 @@ export default function AdminGalleryPage() {
             <div className="flex items-center gap-2">
               {showTrash ? (
                 <>
-                  <button
+                  <button data-action="delete"
                     onClick={handleBulkRestore}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <Icon icon="ion:refresh-outline" className="w-3.5 h-3.5" />
                     Restore Selected ({selectedIds.length})
                   </button>
-                  <button
+                  <button data-action="delete"
                     onClick={() => setBulkConfirmModal(true)}
                     className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs"
                   >
@@ -318,7 +393,7 @@ export default function AdminGalleryPage() {
                   </button>
                 </>
               ) : (
-                <button
+                <button data-action="delete"
                   onClick={handleBulkTrash}
                   className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
                 >
@@ -335,7 +410,7 @@ export default function AdminGalleryPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {loading ? (
           <div className="col-span-full bg-white p-12 rounded-2xl border border-slate-200 text-center text-slate-400 text-xs">
-            <Icon icon="ion:sync" className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
+            <Icon icon="ion:sync" className="w-6 h-6 animate-spin mx-auto mb-2 text-zinc-900" />
             Loading gallery media from database...
           </div>
         ) : filteredGallery.length === 0 ? (
@@ -350,9 +425,9 @@ export default function AdminGalleryPage() {
                 : 'No gallery images or videos exist in database. Upload photos/videos above to publish them live on the website.'}
             </p>
             {!showTrash && (
-              <button
+              <button data-action="edit"
                 onClick={() => handleOpenUpload()}
-                className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer"
+                className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-bold rounded-xl cursor-pointer"
               >
                 <Icon icon="ion:add-circle-outline" className="w-4 h-4" />
                 Upload First Media Item
@@ -367,7 +442,7 @@ export default function AdminGalleryPage() {
               <div
                 key={item.id}
                 className={`group relative bg-white border rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${
-                  selectedIds.includes(item.id) ? 'border-blue-500 ring-2 ring-blue-400/50' : 'border-slate-200'
+                  selectedIds.includes(item.id) ? 'border-zinc-900 ring-2 ring-zinc-300' : 'border-slate-200'
                 }`}
               >
                 <div className="absolute top-2 left-2 z-10">
@@ -375,7 +450,7 @@ export default function AdminGalleryPage() {
                     type="checkbox"
                     checked={selectedIds.includes(item.id)}
                     onChange={() => toggleSelectId(item.id)}
-                    className="w-4 h-4 rounded cursor-pointer accent-blue-600 shadow-sm"
+                    className="w-4 h-4 rounded cursor-pointer accent-zinc-900 shadow-sm"
                   />
                 </div>
                 <div className="h-36 bg-slate-900 relative overflow-hidden flex items-center justify-center">
@@ -413,9 +488,9 @@ export default function AdminGalleryPage() {
                   </p>
 
                   <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
-                    <button
+                    <button data-action="edit"
                       onClick={() => handleOpenUpload(item)}
-                      className="text-blue-600 hover:text-blue-800 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                      className="text-zinc-900 hover:text-black text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                       title="Edit / Replace File"
                     >
                       <Icon icon="ion:create-outline" className="w-3.5 h-3.5" />
@@ -423,7 +498,7 @@ export default function AdminGalleryPage() {
                     </button>
 
                     {!item.isDeleted ? (
-                      <button
+                      <button data-action="delete"
                         onClick={() => handleTrash(item.id)}
                         className="text-amber-600 hover:text-amber-800 p-1 cursor-pointer"
                         title="Move to the Bin"
@@ -432,14 +507,14 @@ export default function AdminGalleryPage() {
                       </button>
                     ) : (
                       <div className="flex items-center gap-1">
-                        <button
+                        <button data-action="delete"
                           onClick={() => handleRestore(item.id)}
                           className="text-emerald-600 hover:text-emerald-800 p-1 cursor-pointer"
                           title="Restore"
                         >
                           <Icon icon="ion:refresh-outline" className="w-4 h-4" />
                         </button>
-                        <button
+                        <button data-action="delete"
                           onClick={() => handleDeletePermanently(item.id)}
                           className="text-rose-600 hover:text-rose-800 p-1 cursor-pointer"
                           title="Delete Permanently"
@@ -462,7 +537,7 @@ export default function AdminGalleryPage() {
           <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Icon icon="ion:images-outline" className="w-5 h-5 text-blue-600" />
+                <Icon icon="ion:images-outline" className="w-5 h-5 text-zinc-900" />
                 {editItem ? 'Edit / Replace Gallery Media' : 'Upload New Gallery Media'}
               </h3>
               <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
@@ -532,7 +607,7 @@ export default function AdminGalleryPage() {
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 bg-zinc-900 hover:bg-black text-white rounded-xl font-bold flex items-center gap-1.5 cursor-pointer"
                 >
                   {uploading ? 'Processing...' : editItem ? 'Save Changes' : 'Upload & Publish'}
                 </button>
@@ -564,7 +639,7 @@ export default function AdminGalleryPage() {
               >
                 Cancel
               </button>
-              <button
+              <button data-action="delete"
                 onClick={handleBulkDeletePermanently}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs"
               >

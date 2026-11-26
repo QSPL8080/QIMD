@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { galleryData } from '@/data'
+import { getSetting, orderGalleryCategories } from '@/lib/settings'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,7 +13,8 @@ export async function GET() {
     })
 
     if (dbItems && dbItems.length > 0) {
-      return NextResponse.json({ success: true, items: dbItems })
+      const categories = orderGalleryCategories(await getSetting('galleryCategories'), dbItems.map((i) => i.category))
+      return NextResponse.json({ success: true, items: dbItems, categories }, { headers: { 'Cache-Control': 'no-store' } })
     }
   } catch (err: any) {
     console.error('Error fetching gallery items from database:', err)

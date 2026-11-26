@@ -1,13 +1,17 @@
 import React from 'react'
 import { db } from '@/lib/db'
-import { requireAdminSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { getAdminSession } from '@/lib/auth'
+import { can } from '@/lib/permissions'
 import BannerManagementClient from './BannerManagementClient'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function AdminBannersPage() {
-  await requireAdminSession()
+  const session = await getAdminSession()
+  if (!session) redirect('/admin/login')
+  if (!can(session.roleName, 'content', 'view', session.moduleAccess)) redirect('/admin/dashboard')
 
   const banners = await db.banner.findMany({
     where: { isDeleted: false },

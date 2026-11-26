@@ -11,14 +11,10 @@ import {
   franchiseEnquirySchema,
   hireRequestSchema,
 } from '@/lib/validations'
-import {
-  requireLeadsSession,
-  requireSuperAdminSession,
-  requireSalesManagerSession,
-  canAssignLeads,
-} from '@/lib/auth'
+import { requirePermission, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
-import { sendEnquiryNotificationEmail } from '@/lib/mail'
+import { sendLeadEmail } from '@/lib/leadMail'
+import { createLead } from '@/lib/leads'
 
 // --- PUBLIC FORM SUBMISSIONS ---
 
@@ -35,30 +31,15 @@ export async function submitContactEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const enquiry = await db.contactEnquiry.create({
-      data: {
-        fullName: validated.data.fullName,
-        email: validated.data.email,
-        phone: validated.data.phone,
-        subject: validated.data.subject || 'General Enquiry',
-        message: validated.data.message,
-        status: 'NEW',
-      },
-    })
-
-    // Email notification to info@quickuppinstitute.com
-    sendEnquiryNotificationEmail({
-      type: 'contact',
-      title: 'Contact Enquiry',
-      name: validated.data.fullName,
+    await createLead({
+      source: 'WEBSITE',
+      enquiryType: 'CONTACT',
+      fullName: validated.data.fullName,
       email: validated.data.email,
       phone: validated.data.phone,
-      details: {
-        'Subject': validated.data.subject || 'General Enquiry',
-        'Message': validated.data.message,
-      },
-      submittedAt: enquiry.createdAt,
-    }).catch((err) => console.error('Failed to dispatch contact enquiry notification:', err))
+      subject: validated.data.subject || 'General Enquiry',
+      message: validated.data.message,
+    })
 
     return { success: true, message: 'Your enquiry has been submitted successfully! Our team will contact you shortly.' }
   } catch (err: any) {
@@ -90,45 +71,22 @@ export async function submitAdmissionEnquiryAction(data: {
       programTitle = program?.title || rawInput
     }
 
-    const programNote = programTitle ? `Program: ${programTitle}` : null
-    const message = [programNote, validated.data.message].filter(Boolean).join('\n') || null
-
-    const enquiry = await db.admissionEnquiry.create({
-      data: {
-        studentName: validated.data.studentName,
-        email: validated.data.email,
-        phone: validated.data.phone,
-        city: validated.data.city || null,
-        qualification: validated.data.qualification || null,
-        message,
-        status: 'NEW',
-      },
-    })
-
-    // Email notification to info@quickuppinstitute.com
-    sendEnquiryNotificationEmail({
-      type: 'admission',
-      title: 'Admission Enquiry',
-      name: validated.data.studentName,
+    const lead = await createLead({
+      source: 'WEBSITE',
+      enquiryType: 'ADMISSION',
+      fullName: validated.data.studentName,
       email: validated.data.email,
       phone: validated.data.phone,
-      details: {
-        'Interested Program': programTitle || 'Not specified',
-        'City': validated.data.city || 'N/A',
-        'Qualification': validated.data.qualification || 'N/A',
-        'Enquiry Message': validated.data.message || 'N/A',
-      },
-      submittedAt: enquiry.createdAt,
-    }).catch((err) => console.error('Failed to dispatch admission enquiry notification:', err))
-
-    try {
-      revalidatePath('/admin/enquiries/admission')
-    } catch {}
+      course: programTitle,
+      city: validated.data.city || null,
+      qualification: validated.data.qualification || null,
+      message: validated.data.message || null,
+    })
 
     return {
       success: true,
       message: 'Thank you! Admission enquiry received.',
-      enquiryId: enquiry.id,
+      enquiryId: lead?.id,
     }
   } catch (err: any) {
     console.error('Admission enquiry error:', err)
@@ -151,7 +109,7 @@ export async function submitCareerApplicationAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const enquiry = await db.careerEnquiry.create({
+    await db.careerEnquiry.create({
       data: {
         fullName: validated.data.fullName,
         email: validated.data.email,
@@ -164,20 +122,18 @@ export async function submitCareerApplicationAction(data: {
       },
     })
 
-    // Email notification to info@quickuppinstitute.com
-    sendEnquiryNotificationEmail({
-      type: 'career',
-      title: 'Career Job Application',
-      name: validated.data.fullName,
-      email: validated.data.email,
-      phone: validated.data.phone,
-      details: {
-        'Position Applied For': validated.data.jobTitle,
-        'Resume Link': validated.data.resume,
-        'Cover Letter / Message': validated.data.coverLetter || 'N/A',
-      },
-      submittedAt: enquiry.createdAt,
-    }).catch((err) => console.error('Failed to dispatch career application notification:', err))
+    await sendLeadEmail(
+      'career',
+      [
+        { label: 'Name', value: validated.data.fullName },
+        { label: 'Email', value: validated.data.email },
+        { label: 'Phone', value: validated.data.phone },
+        { label: 'Applied For', value: validated.data.jobTitle },
+        { label: 'Resume', value: validated.data.resume, link: true },
+        { label: 'Cover Letter', value: validated.data.coverLetter },
+      ],
+      validated.data.email,
+    )
 
     return { success: true, message: 'Application submitted successfully! HR will review your application.' }
   } catch (err: any) {
@@ -202,7 +158,7 @@ export async function submitFranchiseEnquiryAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const enquiry = await db.franchisePartnerEnquiry.create({
+    await db.franchisePartnerEnquiry.create({
       data: {
         fullName: validated.data.fullName,
         companyName: validated.data.companyName || null,
@@ -216,22 +172,20 @@ export async function submitFranchiseEnquiryAction(data: {
       },
     })
 
-    // Email notification to info@quickuppinstitute.com
-    sendEnquiryNotificationEmail({
-      type: 'franchise',
-      title: 'Franchise Partner Proposal',
-      name: validated.data.fullName,
-      email: validated.data.email,
-      phone: validated.data.phone,
-      details: {
-        'Company Name': validated.data.companyName || 'N/A',
-        'City / Location': validated.data.city || 'N/A',
-        'State': validated.data.state || 'N/A',
-        'Investment Capacity': validated.data.investmentCapacity || 'N/A',
-        'Proposal Message': validated.data.message || 'N/A',
-      },
-      submittedAt: enquiry.createdAt,
-    }).catch((err) => console.error('Failed to dispatch franchise enquiry notification:', err))
+    await sendLeadEmail(
+      'franchise',
+      [
+        { label: 'Name', value: validated.data.fullName },
+        { label: 'Company', value: validated.data.companyName },
+        { label: 'Email', value: validated.data.email },
+        { label: 'Phone', value: validated.data.phone },
+        { label: 'City', value: validated.data.city },
+        { label: 'State', value: validated.data.state },
+        { label: 'Investment Capacity', value: validated.data.investmentCapacity },
+        { label: 'Message', value: validated.data.message },
+      ],
+      validated.data.email,
+    )
 
     return { success: true, message: 'Franchise partnership proposal received! Our expansion team will get in touch.' }
   } catch (err: any) {
@@ -257,7 +211,7 @@ export async function submitHireRequestAction(data: {
       return { success: false, error: validated.error.issues[0].message }
     }
 
-    const enquiry = await db.companyPlacementEnquiry.create({
+    await db.companyPlacementEnquiry.create({
       data: {
         companyName: validated.data.companyName,
         contactPerson: validated.data.contactPerson,
@@ -272,24 +226,21 @@ export async function submitHireRequestAction(data: {
       },
     })
 
-    // Email notification to info@quickuppinstitute.com
-    sendEnquiryNotificationEmail({
-      type: 'hire',
-      title: 'Corporate Hire Request',
-      name: `${validated.data.contactPerson} (${validated.data.companyName})`,
-      email: validated.data.email,
-      phone: validated.data.phone,
-      details: {
-        'Company Name': validated.data.companyName,
-        'Contact Person': validated.data.contactPerson,
-        'Hiring Job Role': validated.data.jobRole,
-        'Vacancies': `${validated.data.vacancies || 1} Positions`,
-        'Job Location': validated.data.jobLocation || 'N/A',
-        'Required Skills': validated.data.requiredSkills || 'N/A',
-        'Requirement Note': validated.data.message || 'N/A',
-      },
-      submittedAt: enquiry.createdAt,
-    }).catch((err) => console.error('Failed to dispatch hire request notification:', err))
+    await sendLeadEmail(
+      'hire',
+      [
+        { label: 'Company', value: validated.data.companyName },
+        { label: 'Contact Person', value: validated.data.contactPerson },
+        { label: 'Email', value: validated.data.email },
+        { label: 'Phone', value: validated.data.phone },
+        { label: 'Job Role', value: validated.data.jobRole },
+        { label: 'Required Skills', value: validated.data.requiredSkills },
+        { label: 'Vacancies', value: validated.data.vacancies || 1 },
+        { label: 'Job Location', value: validated.data.jobLocation },
+        { label: 'Message', value: validated.data.message },
+      ],
+      validated.data.email,
+    )
 
     return { success: true, message: 'Hiring request submitted! Our placement team will share top candidate profiles.' }
   } catch (err: any) {
@@ -300,6 +251,9 @@ export async function submitHireRequestAction(data: {
 
 // --- ADMIN CRM MANAGEMENT ACTIONS ---
 
+/** Old admission/contact enquiries belong to Leads; the rest to Other Enquiries. */
+const enquiryModule = (type: string) => (type === 'admission' || type === 'contact' ? 'leads' : 'enquiries')
+
 export async function updateEnquiryStatusAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   id: string,
@@ -307,7 +261,7 @@ export async function updateEnquiryStatusAction(
   remarks?: string,
   assignedToId?: string
 ) {
-  const session = await requireLeadsSession()
+  const session = await requirePermission(enquiryModule(type), 'edit')
 
   try {
     if (type === 'contact') {
@@ -349,7 +303,7 @@ export async function trashEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   id: string
 ) {
-  const session = await requireLeadsSession()
+  const session = await requirePermission(enquiryModule(type), 'delete')
 
   try {
     if (type === 'contact') await db.contactEnquiry.update({ where: { id }, data: { isDeleted: true } })
@@ -372,7 +326,7 @@ export async function bulkTrashEnquiryAction(
   type: 'contact' | 'admission' | 'career' | 'franchise' | 'hire',
   ids: string[]
 ) {
-  const session = await requireLeadsSession()
+  const session = await requirePermission(enquiryModule(type), 'delete')
   if (!ids || ids.length === 0) {
     return { success: false, error: 'No IDs provided' }
   }
@@ -482,7 +436,7 @@ export async function bulkUpdateEnquiryStatusAction(
   ids: string[],
   status: any
 ) {
-  const session = await requireLeadsSession()
+  const session = await requirePermission(enquiryModule(type), 'edit')
 
   if (!ids || ids.length === 0) {
     return { success: false, error: 'No items selected' }
@@ -523,256 +477,5 @@ export async function bulkUpdateEnquiryStatusAction(
     return { success: false, error: err.message || 'Failed to update leads status' }
   }
 }
-
-/**
- * Fetch active counsellors and team members eligible to receive lead assignments.
- */
-export async function getCounsellorListAction() {
-  await requireLeadsSession()
-  try {
-    const counsellors = await db.user.findMany({
-      where: {
-        status: true,
-        isDeleted: false,
-        role: { in: ['COUNSELLOR', 'SALES_MANAGER', 'LEAD_MANAGER', 'ADMIN', 'SUPER_ADMIN'] },
-      },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-        role: true,
-      },
-      orderBy: { fullName: 'asc' },
-    })
-    return { success: true, counsellors }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to fetch counsellors', counsellors: [] }
-  }
-}
-
-/**
- * Assign a single lead to a counsellor.
- */
-export async function assignLeadAction(
-  enquiryType: 'admission' | 'contact' | 'franchise' | 'hire',
-  enquiryId: string,
-  toUserId: string
-) {
-  const session = await requireSalesManagerSession()
-
-  try {
-    const targetUser = await db.user.findUnique({
-      where: { id: toUserId },
-      select: { id: true, fullName: true },
-    })
-    if (!targetUser) {
-      return { success: false, error: 'Target counsellor not found' }
-    }
-
-    let fromUserId: string | null = null
-    let fromUserName: string | null = null
-
-    if (enquiryType === 'admission') {
-      const current = await db.admissionEnquiry.findUnique({
-        where: { id: enquiryId },
-        include: { assignedTo: { select: { id: true, fullName: true } } },
-      })
-      fromUserId = current?.assignedTo?.id || null
-      fromUserName = current?.assignedTo?.fullName || null
-
-      await db.admissionEnquiry.update({
-        where: { id: enquiryId },
-        data: { assignedToId: toUserId },
-      })
-
-      await db.leadAssignmentHistory.create({
-        data: {
-          enquiryType: 'admission',
-          enquiryId,
-          fromUserId,
-          fromUserName,
-          toUserId: targetUser.id,
-          toUserName: targetUser.fullName,
-          assignedById: session.id,
-          assignedByName: session.fullName || session.email,
-        },
-      })
-    } else if (enquiryType === 'contact') {
-      await db.contactEnquiry.update({
-        where: { id: enquiryId },
-        data: { assignedToId: toUserId },
-      })
-    } else if (enquiryType === 'franchise') {
-      await db.franchisePartnerEnquiry.update({
-        where: { id: enquiryId },
-        data: { assignedToId: toUserId },
-      })
-    } else if (enquiryType === 'hire') {
-      await db.companyPlacementEnquiry.update({
-        where: { id: enquiryId },
-        data: { assignedToId: toUserId },
-      })
-    }
-
-    revalidatePath(`/admin/enquiries/${enquiryType}`)
-    return { success: true, message: `Lead assigned to ${targetUser.fullName}` }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to assign lead' }
-  }
-}
-
-/**
- * Bulk assign multiple leads to a counsellor.
- */
-export async function bulkAssignLeadsAction(
-  enquiryType: 'admission' | 'contact' | 'franchise' | 'hire',
-  enquiryIds: string[],
-  toUserId: string
-) {
-  const session = await requireSalesManagerSession()
-  if (!enquiryIds || enquiryIds.length === 0) {
-    return { success: false, error: 'No leads selected' }
-  }
-
-  try {
-    const targetUser = await db.user.findUnique({
-      where: { id: toUserId },
-      select: { id: true, fullName: true },
-    })
-    if (!targetUser) {
-      return { success: false, error: 'Target counsellor not found' }
-    }
-
-    if (enquiryType === 'admission') {
-      await db.admissionEnquiry.updateMany({
-        where: { id: { in: enquiryIds } },
-        data: { assignedToId: toUserId },
-      })
-
-      // Record assignment history entries
-      for (const id of enquiryIds) {
-        await db.leadAssignmentHistory.create({
-          data: {
-            enquiryType: 'admission',
-            enquiryId: id,
-            toUserId: targetUser.id,
-            toUserName: targetUser.fullName,
-            assignedById: session.id,
-            assignedByName: session.fullName || session.email,
-          },
-        })
-      }
-    } else if (enquiryType === 'contact') {
-      await db.contactEnquiry.updateMany({
-        where: { id: { in: enquiryIds } },
-        data: { assignedToId: toUserId },
-      })
-    } else if (enquiryType === 'franchise') {
-      await db.franchisePartnerEnquiry.updateMany({
-        where: { id: { in: enquiryIds } },
-        data: { assignedToId: toUserId },
-      })
-    } else if (enquiryType === 'hire') {
-      await db.companyPlacementEnquiry.updateMany({
-        where: { id: { in: enquiryIds } },
-        data: { assignedToId: toUserId },
-      })
-    }
-
-    revalidatePath(`/admin/enquiries/${enquiryType}`)
-    return { success: true, message: `${enquiryIds.length} lead(s) assigned to ${targetUser.fullName}` }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to bulk assign leads' }
-  }
-}
-
-/**
- * Add a follow-up interaction note/timeline item to a lead.
- */
-export async function addLeadFollowUpAction(data: {
-  enquiryType?: string
-  enquiryId: string
-  remarks: string
-  status?: string
-  followUpDate?: string
-  nextFollowUpDate?: string
-}) {
-  const session = await requireLeadsSession()
-  if (!data.remarks || !data.remarks.trim()) {
-    return { success: false, error: 'Follow-up remarks are required' }
-  }
-
-  try {
-    const enquiryType = data.enquiryType || 'admission'
-    const followUpDate = data.followUpDate ? new Date(data.followUpDate) : new Date()
-    const nextFollowUpDate = data.nextFollowUpDate ? new Date(data.nextFollowUpDate) : null
-
-    const record = await db.leadFollowUp.create({
-      data: {
-        enquiryType,
-        enquiryId: data.enquiryId,
-        remarks: data.remarks.trim(),
-        status: data.status || null,
-        followUpDate,
-        nextFollowUpDate,
-        createdById: session.id,
-        createdByName: session.fullName || session.email,
-        createdByRole: session.roleName,
-      },
-    })
-
-    // If status changed or remark added, also update the lead record
-    if (enquiryType === 'admission') {
-      const updateData: any = {
-        remarks: data.remarks.trim(),
-      }
-      if (data.status) {
-        updateData.status = data.status
-      }
-      await db.admissionEnquiry.update({
-        where: { id: data.enquiryId },
-        data: updateData,
-      })
-    }
-
-    revalidatePath(`/admin/enquiries/${enquiryType}`)
-    return { success: true, message: 'Follow-up recorded successfully', record }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to record follow-up' }
-  }
-}
-
-/**
- * Get all follow-ups for a lead.
- */
-export async function getLeadFollowUpsAction(enquiryId: string) {
-  await requireLeadsSession()
-  try {
-    const followUps = await db.leadFollowUp.findMany({
-      where: { enquiryId },
-      orderBy: { createdAt: 'desc' },
-    })
-    return { success: true, followUps }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to fetch follow-ups', followUps: [] }
-  }
-}
-
-/**
- * Get assignment history for a lead.
- */
-export async function getLeadAssignmentHistoryAction(enquiryId: string) {
-  await requireLeadsSession()
-  try {
-    const history = await db.leadAssignmentHistory.findMany({
-      where: { enquiryId },
-      orderBy: { createdAt: 'desc' },
-    })
-    return { success: true, history }
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Failed to fetch assignment history', history: [] }
-  }
-}
-
 
 

@@ -46,10 +46,10 @@ export default function PasswordField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required={required}
-          minLength={value ? 6 : undefined}
+          minLength={value ? 8 : undefined}
           autoComplete="new-password"
           placeholder={placeholder}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pr-20 text-slate-900 font-mono focus:outline-none focus:border-blue-600"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pr-20 text-slate-900 font-mono focus:outline-none focus:border-zinc-900"
         />
         <div className="absolute inset-y-0 right-1.5 flex items-center gap-0.5">
           <button type="button" onClick={() => setShow((s) => !s)} title={show ? 'Hide password' : 'Show password'} className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-200/70 hover:text-slate-900">
@@ -66,7 +66,7 @@ export default function PasswordField({
           onChange(generatePassword())
           setShow(true)
         }}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-900"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-900 hover:text-black"
       >
         <Icon icon="ion:key-outline" className="w-3.5 h-3.5" />
         Generate strong password

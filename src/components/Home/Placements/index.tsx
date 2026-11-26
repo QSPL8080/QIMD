@@ -102,6 +102,7 @@ const PlacementsSection: React.FC<{
                 program={item.program || item.course}
                 rating={item.rating}
                 review={item.review}
+                photo={item.photo || null}
               />
             ))}
           </div>
