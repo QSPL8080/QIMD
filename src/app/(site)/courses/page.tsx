@@ -56,7 +56,7 @@ export default function CoursesPage() {
       <section className="qp-list">
         <div className="qp-wrap">
           {courses.map((course, index) => {
-            const courseImage = course.image || (course as any).bannerImage
+            const courseImage = (course as any).bannerImage || course.image
             const highlightsList = course.highlights || course.learningOutcomes || ['100% Practical Training', 'AI Tools Integration', 'Live Client Projects', '100% Placement Support']
             return (
               <article
@@ -79,12 +79,11 @@ export default function CoursesPage() {
                       <Icon icon={course.icon || 'mdi:book-open-page-variant'} />
                     </span>
                   )}
-                  <span className="qp-media-num">{String(index + 1).padStart(2, "0")}</span>
-                  {course.featured && <span className="qp-badge">Popular</span>}
                 </Link>
 
                 <div className="qp-body">
                   <div className="qp-chips">
+                    {course.featured && <span className="qp-chip is-popular">Popular</span>}
                     <span className="qp-chip">
                       <Icon icon="mdi:clock-outline" />
                       {course.duration}

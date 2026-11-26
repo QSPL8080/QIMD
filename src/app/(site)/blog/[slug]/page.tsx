@@ -242,7 +242,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     .filter((p) => p.slug !== post.slug)
     .slice(0, 3);
 
-  const heroImage = post.coverImage || "/images/courses/digital-marketing.jpg";
+  const heroImage = post.coverImage || "/images/programs/digital-marketing-poster.jpg";
   const rawImages = (post.images || []).filter((img: string) => img && img !== heroImage);
   const subImages = rawImages.length > 0 ? rawImages : [];
   const { toc, blocks } = parseBlogContent(post.content || "");
@@ -448,7 +448,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   </h4>
                   <div className="qd-related-list">
                     {relatedPosts.map((related) => {
-                      const relatedImg = (related as any).featuredImage || (related as any).coverImage || "/images/courses/digital-marketing.jpg";
+                      const relatedImg = (related as any).featuredImage || (related as any).coverImage || "/images/programs/digital-marketing-poster.jpg";
                       return (
                         <Link key={related.id || related.slug} href={`/blog/${related.slug}`} className="qd-related-item">
                           <span className="qd-related-img">

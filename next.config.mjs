@@ -29,6 +29,8 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // Old program illustrations were replaced by the program posters (same artwork as the hero banners)
+      { source: '/images/courses/:slug(video-editing|digital-marketing|graphic-design).jpg', destination: '/images/programs/:slug-poster.jpg', permanent: true },
       {
         source: '/reviews',
         destination: '/reviews-testimonials',

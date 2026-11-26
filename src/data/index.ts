@@ -210,7 +210,7 @@ export const coursesData: Course[] = [
       "Professional video editing training using Adobe Premiere Pro, After Effects, DaVinci Resolve, and cutting-edge AI video tools. Learn storytelling, motion graphics, color grading, and content creation.",
     duration: "6 Months",
     mode: "Offline Program",
-    image: "/images/courses/video-editing.jpg",
+    image: "/images/programs/video-editing-poster.jpg",
     bannerImage: "/images/programs/video-editing-poster.jpg",
     featured: true,
     highlights: [
@@ -245,7 +245,7 @@ export const coursesData: Course[] = [
       "Industry-oriented AI-powered digital marketing training covering SEO, Social Media Marketing, Google Ads, Meta Ads, Email Marketing, Content Marketing, and more. Learn with live client projects and AI tools.",
     duration: "6 Months",
     mode: "Offline Program",
-    image: "/images/courses/digital-marketing.jpg",
+    image: "/images/programs/digital-marketing-poster.jpg",
     bannerImage: "/images/programs/digital-marketing-poster.jpg",
     featured: true,
     highlights: [
@@ -280,7 +280,7 @@ export const coursesData: Course[] = [
       "Comprehensive graphic design training using industry-leading tools like Adobe Photoshop, Illustrator, InDesign, Canva, and AI-powered design tools. Build a stunning portfolio with live project experience.",
     duration: "6 Months",
     mode: "Offline Program",
-    image: "/images/courses/graphic-design.jpg",
+    image: "/images/programs/graphic-design-poster.jpg",
     bannerImage: "/images/programs/graphic-design-poster.jpg",
     featured: true,
     highlights: [

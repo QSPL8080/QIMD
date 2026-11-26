@@ -56,7 +56,7 @@ export const CauseData = [
     id: 1,
     title: "AI-Powered Digital Marketing Workshop",
     slug: "ai-powered-digital-marketing-workshop",
-    image: "/images/courses/digital-marketing.jpg",
+    image: "/images/programs/digital-marketing-poster.jpg",
     raised: 150,
     goal: 200,
     detail: "Master modern AI tools for digital marketing, SEO, social media and analytics.",
@@ -68,7 +68,7 @@ export const CauseData = [
     id: 2,
     title: "Graphic Design Masterclass",
     slug: "graphic-design-masterclass",
-    image: "/images/courses/graphic-design.jpg",
+    image: "/images/programs/graphic-design-poster.jpg",
     raised: 180,
     goal: 200,
     detail: "Learn Photoshop, Illustrator, Figma, and AI design tools from industry experts.",
@@ -83,7 +83,7 @@ export const Eventdata = [
     id: 1,
     title: "Annual Design & AI Conference 2026",
     slug: "annual-design-ai-conference-2026",
-    image: "/images/courses/graphic-design.jpg",
+    image: "/images/programs/graphic-design-poster.jpg",
     detail: "Explore the future of creative technology and design with industry experts.",
     category: "Conference",
     location: "Pune, MH",
@@ -96,17 +96,17 @@ export const Eventdata = [
 
 export const helpdata = [
   {
-    icon: "/images/courses/digital-marketing.jpg",
+    icon: "/images/programs/digital-marketing-poster.jpg",
     title: "Practical Training",
     text: "Learn through hands-on live projects using real industry workflows and modern AI tools.",
   },
   {
-    icon: "/images/courses/graphic-design.jpg",
+    icon: "/images/programs/graphic-design-poster.jpg",
     title: "100% Placement Support",
     text: "Dedicated placement cell offering interview preparation, resume assistance, and job leads.",
   },
   {
-    icon: "/images/courses/video-editing.jpg",
+    icon: "/images/programs/video-editing-poster.jpg",
     title: "Expert Instructors",
     text: "Guidance from experienced industry professionals focused on practical skills.",
   },
