@@ -107,8 +107,9 @@ export async function getDynamicTestimonials() {
           name: t.studentName || 'QIMD Student',
           studentName: t.studentName || 'QIMD Student',
           heading: safeHeading,
-          image: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
-          photo: t.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80',
+          // Only what the CRM has: no stand-in photo when the photo is removed
+          image: t.photo || '',
+          photo: t.photo || '',
           courseTaken: safeCourse,
           course: safeCourse,
           role: t.role || 'Alumnus',

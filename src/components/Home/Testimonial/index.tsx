@@ -27,18 +27,19 @@ const HomeTestimonialCard: React.FC<{ testimonial: Testimonial; onOpenVideo: (ur
   const isVideoTestimonial = !!(testimonial.isVideo && testimonial.videoUrl && testimonial.videoUrl.trim() !== '')
   const resolved = resolveTestimonialVideo(testimonial)
   const open = () => onOpenVideo(resolved.src || testimonial.videoUrl!, testimonial.studentName)
+  // CRM photo, else the YouTube frame of the video; uploaded videos show their first frame
+  const ytId = (resolved.src.match(/(?:youtu\.be\/|embed\/|shorts\/|[?&]v=)([\w-]{11})/) || [])[1]
+  const poster = testimonial.image || (testimonial as any).photo || (ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : '')
 
   return (
     <article className="qo-voice">
       {isVideoTestimonial && (
         <button type="button" onClick={open} className="qo-voice-media" aria-label="Play video review">
-          <Image
-            src={resolved.poster || testimonial.videoThumbnail || testimonial.image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80'}
-            alt={`${testimonial.studentName} Video Review`}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className={resolved.isLocal ? 'is-reel' : ''}
-          />
+          {poster ? (
+            <Image src={poster} alt={`${testimonial.studentName} Video Review`} fill sizes="(max-width: 768px) 100vw, 33vw" />
+          ) : resolved.isFile ? (
+            <video src={`${resolved.src}#t=0.5`} preload="metadata" muted playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : null}
           <span className="qo-voice-tag">
             <Icon icon="mdi:video" /> Video Review
           </span>

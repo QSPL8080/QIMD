@@ -188,7 +188,7 @@ export async function savePlacementAction(data: any, id?: string) {
 
     if (id) {
       const oldPlacement = await db.placement.findUnique({ where: { id } })
-      await db.placement.update({ where: { id }, data: validated.data })
+      await db.placement.update({ where: { id }, data: { ...validated.data, videoThumbnail: null } }) // thumbnails are not managed in the CRM; clear stale ones
 
       // Clean up old student photo if replaced or deleted
       if (oldPlacement?.studentPhoto && oldPlacement.studentPhoto !== validated.data.studentPhoto) {
@@ -426,7 +426,7 @@ export async function saveTestimonialAction(data: any, id?: string) {
 
     if (id) {
       const oldTestimonial = await db.testimonial.findUnique({ where: { id } })
-      await db.testimonial.update({ where: { id }, data: validated.data })
+      await db.testimonial.update({ where: { id }, data: { ...validated.data, videoThumbnail: null } }) // thumbnails are not managed in the CRM; clear stale ones
 
       if (oldTestimonial?.photo && oldTestimonial.photo !== validated.data.photo) {
         await safeDeleteUnusedFile(oldTestimonial.photo, { table: 'testimonial', id })

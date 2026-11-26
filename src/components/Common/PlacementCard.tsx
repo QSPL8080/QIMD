@@ -14,7 +14,8 @@ interface PlacementCardProps {
 const PlacementCard: React.FC<PlacementCardProps> = ({ student, index = 0 }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false)
 
-  const studentPhoto = (student as any).studentPhoto || student.image || student.videoThumbnail
+  // Only the photo set in the CRM (no stale thumbnails as stand-ins)
+  const studentPhoto = (student as any).studentPhoto ?? student.image
   const studentName = student.name || (student as any).studentName || 'Placed Student'
   const designation = student.role || (student as any).designation || 'Specialist'
   const company = student.company || (student as any).companyName || 'Hiring Partner'

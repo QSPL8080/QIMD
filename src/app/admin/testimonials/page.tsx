@@ -336,11 +336,15 @@ export default function AdminTestimonialsPage() {
                       />
                     </td>
                     <td className="p-4 flex items-center gap-3.5">
-                      <img
-                        src={item.photo || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80'}
+                      {item.photo ? (
+                        <img
+                        src={item.photo}
                         alt={item.studentName}
                         className="w-10 h-10 rounded-full object-cover border border-slate-200 bg-slate-100 flex-shrink-0"
                       />
+                      ) : (
+                        <span className="w-10 h-10 rounded-full bg-zinc-200 text-zinc-700 grid place-items-center font-semibold flex-shrink-0">{(item.studentName || 'S').charAt(0)}</span>
+                      )}
                       <div>
                         <p className="font-semibold text-slate-900 text-base leading-snug">{item.studentName}</p>
                         {item.company && (

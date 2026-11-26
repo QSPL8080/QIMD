@@ -20,9 +20,6 @@ export const isVideoFile = (url?: string | null) => !!url && /\.(mp4|webm|mov|m4
 
 /** Best playable URL + poster for a testimonial */
 export function resolveTestimonialVideo(t: { studentName?: string; videoUrl?: string | null; videoThumbnail?: string | null; image?: string | null }) {
-  // A video uploaded from the admin panel always wins; the bundled videos are only a fallback
-  if (isVideoFile(t.videoUrl)) return { src: t.videoUrl!, poster: t.videoThumbnail || null, isFile: true, isLocal: false }
-  const local = localTestimonialVideo(t.studentName)
-  if (local) return { src: local.src, poster: local.poster, isFile: true, isLocal: true }
-  return { src: t.videoUrl || '', poster: t.videoThumbnail || null, isFile: isVideoFile(t.videoUrl), isLocal: false }
+  // The website shows exactly what the CRM has: its video and its photo. Removing either in the CRM removes it here.
+  return { src: t.videoUrl || '', poster: t.image || null, isFile: isVideoFile(t.videoUrl), isLocal: false }
 }

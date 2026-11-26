@@ -158,8 +158,8 @@ export function QwVideo({ review, onPlay }: { review: any; onPlay: () => void })
   const ytId = resolved.isLocal ? null : youTubeId(videoSrc)
   const isFile = resolved.isFile
 
-  // Poster: hosted video frame → the video's own YouTube frame → admin thumbnail → student photo
-  const candidates = [resolved.isLocal ? resolved.poster : null, ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null, review.videoThumbnail, review.image].filter(Boolean) as string[]
+  // Poster: the student photo from the CRM, else the video's own frame (YouTube frame or first frame of the uploaded file)
+  const candidates = [review.image || review.photo, ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : null].filter(Boolean) as string[]
   const [posterIdx, setPosterIdx] = React.useState(0)
   const poster = candidates[posterIdx]
   const imgRef = React.useRef<HTMLImageElement>(null)
