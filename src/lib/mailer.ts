@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import { createTransport, type Transporter } from 'nodemailer'
 
 /**
  * Outgoing email (lead alerts, receipts, fee reminders, password reset).
@@ -13,7 +13,7 @@ import nodemailer from 'nodemailer'
  *   NOTIFICATION_EMAIL optional: where website enquiries go (else Settings → Website enquiry emails)
  */
 
-let transporter: nodemailer.Transporter | null = null
+let transporter: Transporter | null = null
 
 export function mailConfigured() {
   return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
@@ -23,7 +23,7 @@ function getTransporter() {
   if (!mailConfigured()) return null
   if (!transporter) {
     const port = Number(process.env.SMTP_PORT || 465)
-    transporter = nodemailer.createTransport({
+    transporter = createTransport({
       host: process.env.SMTP_HOST,
       port,
       secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : port === 465,
