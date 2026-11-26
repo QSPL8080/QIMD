@@ -24,7 +24,14 @@ export async function uploadMedia(file: File, folder: string, onProgress?: (perc
       xhr.open('PUT', s.signedUrl)
       xhr.setRequestHeader('x-upsert', 'false')
       xhr.upload.onprogress = (e) => e.lengthComputable && onProgress?.(Math.round((e.loaded / e.total) * 100))
-      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status}). ${parseErr(xhr.responseText)}`)))
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) return resolve()
+        const msg = parseErr(xhr.responseText)
+        if (xhr.status === 413 || /maximum allowed size|too large|payload/i.test(msg)) {
+          return reject(new Error(`This file (${Math.round(file.size / 1048576)} MB) is bigger than your Supabase storage allows. In Supabase go to Storage → Settings and raise "Upload file size limit" (the Free plan stops at 50 MB), or compress the video, or use a YouTube link.`))
+        }
+        reject(new Error(`Upload failed (${xhr.status}). ${msg}`))
+      }
       xhr.onerror = () => reject(new Error('Upload failed. Check your internet connection.'))
       xhr.send(body)
     })

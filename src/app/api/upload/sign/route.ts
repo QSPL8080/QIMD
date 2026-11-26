@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
 import { can } from '@/lib/permissions'
-import { BUCKET, ensurePublicBucket, MEDIA_TYPES, mediaKind, newObjectPath, publicUrl, storage } from '@/lib/storage'
+import { BUCKET, bucketFileLimit, ensurePublicBucket, MEDIA_TYPES, mediaKind, newObjectPath, publicUrl, storage } from '@/lib/storage'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,8 +21,13 @@ export async function POST(req: NextRequest) {
   if (!kind) return NextResponse.json({ error: 'Unsupported file type. Use JPG, PNG, WebP, GIF, SVG, MP4, WebM, MOV or PDF.' }, { status: 400 })
   if (!size || size > MEDIA_TYPES[kind].max) return NextResponse.json({ error: `File too large. ${MEDIA_TYPES[kind].label}.` }, { status: 400 })
   await ensurePublicBucket()
+  if (bucketFileLimit && size > bucketFileLimit) {
+    return NextResponse.json({ error: `This file is ${mb(size)}; the storage bucket allows up to ${mb(bucketFileLimit)}. Raise the limit in Supabase → Storage → qimd-media → Edit bucket, or compress the video.` }, { status: 400 })
+  }
   const path = newObjectPath(String(body.folder || 'media'), name)
   const { data, error } = await s.from(BUCKET).createSignedUploadUrl(path)
   if (error || !data) return NextResponse.json({ error: `Storage error: ${error?.message || 'no upload URL'}` }, { status: 502 })
   return NextResponse.json({ direct: true, signedUrl: data.signedUrl, path, url: publicUrl(path) })
 }
+
+const mb = (b: number) => `${Math.round((b / 1048576) * 10) / 10} MB`

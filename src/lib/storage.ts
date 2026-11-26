@@ -20,7 +20,14 @@ export function storage() {
 }
 
 let bucketReady: Promise<void> | null = null
-/** Makes sure the bucket exists and is public, so website visitors can load the files. */
+/** Per-file limit set on the bucket itself (bytes), or null when only the project-wide limit applies. */
+export let bucketFileLimit: number | null = null
+
+/**
+ * Makes sure the bucket exists, is public (so website visitors can load the files) and has no
+ * per-bucket size cap below what the admin panel allows — then only Supabase's project-wide
+ * "Upload file size limit" applies (Free plan: 50 MB; Pro: up to 500 GB).
+ */
 export function ensurePublicBucket() {
   const s = storage()
   if (!s) return Promise.resolve()
@@ -30,10 +37,19 @@ export function ensurePublicBucket() {
       if (error || !data) {
         const created = await s.createBucket(BUCKET, { public: true })
         if (created.error && !/exists/i.test(created.error.message)) throw new Error(created.error.message)
-      } else if (!data.public) {
-        const upd = await s.updateBucket(BUCKET, { public: true })
-        if (upd.error) throw new Error(upd.error.message)
+        bucketFileLimit = null
+        return
       }
+      const limit = (data as any).file_size_limit ? Number((data as any).file_size_limit) : null
+      if (!data.public || (limit !== null && limit < MEDIA_TYPES.video.max)) {
+        const upd = await s.updateBucket(BUCKET, { public: true, fileSizeLimit: null, allowedMimeTypes: (data as any).allowed_mime_types ?? null })
+        if (upd.error) {
+          console.error('[storage] could not update bucket settings:', upd.error.message)
+          bucketFileLimit = limit
+          return
+        }
+      }
+      bucketFileLimit = null
     })().catch((e) => {
       bucketReady = null
       console.error('[storage] bucket check failed:', e?.message || e)
