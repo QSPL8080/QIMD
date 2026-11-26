@@ -8,7 +8,7 @@ import type { Event } from "@/types";
 export const metadata: Metadata = {
   title: `Events – ${siteConfig.name}`,
   description: "Stay updated with QIMD Institute's upcoming events — new batch announcements, workshops, career counselling sessions, and placement drives.",
-  alternates: { canonical: "https://www.qimd.in/events" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/events" },
 };
 
 const EventCard: React.FC<{ event: Event; index: number }> = ({ event, index }) => (

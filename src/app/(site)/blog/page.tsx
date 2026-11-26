@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: `Blog & Knowledge Hub – ${siteConfig.name}`,
   description:
     "Explore QIMD's Knowledge Hub — trusted insights, practical learning, career guidance, and emerging trends in Digital Marketing, Graphic Design, Video Editing, and AI.",
-  alternates: { canonical: "https://www.qimd.in/blog" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/blog" },
 };
 
 export default async function BlogPage() {

@@ -13,7 +13,7 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: `FAQs – ${siteConfig.name}`,
   description: "Find answers to frequently asked questions about QIMD Institute's programs, admissions, fees, placements, and more.",
-  alternates: { canonical: "https://www.qimd.in/faqs" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/faqs" },
 };
 
 

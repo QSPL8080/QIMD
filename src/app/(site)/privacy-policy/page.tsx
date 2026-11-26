@@ -5,7 +5,7 @@ import LegalLayout from "@/components/Common/LegalLayout";
 export const metadata: Metadata = {
   title: `Privacy Policy – ${siteConfig.name}`,
   description: "Read Quickupp Institute of Marketing & Design (QIMD) Privacy Policy to understand how we collect, use, store, and protect your personal information.",
-  alternates: { canonical: "https://www.qimd.in/privacy-policy" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/privacy-policy" },
 };
 
 export default function PrivacyPolicyPage() {

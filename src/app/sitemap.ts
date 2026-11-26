@@ -1,18 +1,26 @@
 import type { MetadataRoute } from "next";
 import { coursesData, blogsData, eventsData } from "@/data";
 import { seoPages } from "@/data/seoPages";
+import { db } from "@/lib/db";
 
-const BASE_URL = "https://www.qimd.in";
+// Rebuilt every hour so blogs published from the CRM appear without a redeploy
+export const revalidate = 3600;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const BASE_URL = "https://www.quickuppinstitute.com";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     { url: BASE_URL, priority: 1.0, changeFrequency: "weekly" as const },
-    { url: `${BASE_URL}/about`, priority: 0.9, changeFrequency: "monthly" as const },
+    { url: `${BASE_URL}/about/about-qimd`, priority: 0.9, changeFrequency: "monthly" as const },
+    { url: `${BASE_URL}/about/our-team`, priority: 0.7, changeFrequency: "monthly" as const },
     { url: `${BASE_URL}/courses`, priority: 0.9, changeFrequency: "weekly" as const },
     { url: `${BASE_URL}/why-qimd`, priority: 0.8, changeFrequency: "monthly" as const },
     { url: `${BASE_URL}/trainers`, priority: 0.8, changeFrequency: "monthly" as const },
     { url: `${BASE_URL}/placements`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE_URL}/gallery`, priority: 0.7, changeFrequency: "monthly" as const },
+    { url: `${BASE_URL}/reviews-testimonials`, priority: 0.7, changeFrequency: "monthly" as const },
+    { url: `${BASE_URL}/success-stories`, priority: 0.7, changeFrequency: "monthly" as const },
+    { url: `${BASE_URL}/qimd-franchise`, priority: 0.6, changeFrequency: "monthly" as const },
     { url: `${BASE_URL}/blog`, priority: 0.8, changeFrequency: "weekly" as const },
     { url: `${BASE_URL}/events`, priority: 0.7, changeFrequency: "weekly" as const },
     { url: `${BASE_URL}/faqs`, priority: 0.7, changeFrequency: "monthly" as const },
@@ -33,12 +41,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
   }));
 
-  const blogPages = blogsData.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
-    priority: 0.7,
-    changeFrequency: "monthly" as const,
-    lastModified: new Date(post.publishedAt),
-  }));
+  // Blogs published from the CRM; the built-in posts only if the CRM has none (same as the blog page)
+  let blogPages: { url: string; priority: number; changeFrequency: "monthly"; lastModified: Date }[] = [];
+  try {
+    const dbBlogs = await db.blog.findMany({
+      where: { isActive: true, status: "PUBLISHED", isDeleted: false },
+      select: { slug: true, updatedAt: true },
+    });
+    blogPages = dbBlogs.map((b) => ({ url: `${BASE_URL}/blog/${b.slug}`, priority: 0.7, changeFrequency: "monthly" as const, lastModified: b.updatedAt }));
+  } catch (err) {
+    console.error("[sitemap] blogs not loaded:", err);
+  }
+  if (blogPages.length === 0) {
+    blogPages = blogsData.map((post) => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      priority: 0.7,
+      changeFrequency: "monthly" as const,
+      lastModified: new Date(post.publishedAt),
+    }));
+  }
 
   const eventPages = eventsData.map((event) => ({
     url: `${BASE_URL}/events/${event.slug}`,

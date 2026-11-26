@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS: SettingsShape = {
     address: 'Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Pune 411057',
     phone: '',
     email: 'info@quickuppinstitute.com',
-    website: 'https://www.qimd.in',
+    website: 'https://www.quickuppinstitute.com',
     receiptFooter: 'This is a computer-generated receipt.',
   },
   // From the institute's admission form

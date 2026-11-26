@@ -26,11 +26,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${course.title} – ${siteConfig.name}`,
     description: course.description,
-    alternates: { canonical: `https://www.qimd.in/courses/${slug}` },
+    alternates: { canonical: `https://www.quickuppinstitute.com/courses/${slug}` },
     openGraph: {
       title: `${course.title} – ${siteConfig.name}`,
       description: course.description,
-      url: `https://www.qimd.in/courses/${slug}`,
+      url: `https://www.quickuppinstitute.com/courses/${slug}`,
     },
   };
 }

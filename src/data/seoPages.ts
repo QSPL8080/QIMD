@@ -147,11 +147,11 @@ export const seoPages: SeoPage[] = [
       name: 'AI Powered Digital Marketing Program',
       description:
         'Learn AI-powered digital marketing, SEO, social media marketing, paid advertising, content marketing and modern marketing strategies through practical training at Quickupp Institute.',
-      provider: { '@type': 'Organization', name: 'Quickupp Institute', url: 'https://quickuppinstitute.com/' },
+      provider: { '@type': 'Organization', name: 'Quickupp Institute', url: 'https://www.quickuppinstitute.com/' },
       educationalLevel: 'Beginner to Advanced',
       inLanguage: 'en',
       courseMode: 'Offline',
-      url: 'https://quickuppinstitute.com/courses/ai-digital-marketing',
+      url: 'https://www.quickuppinstitute.com/courses/ai-digital-marketing',
     },
   },
 
@@ -264,11 +264,11 @@ export const seoPages: SeoPage[] = [
       name: 'AI Powered Video Editing Program',
       description:
         'Learn AI-powered video editing, video creation, advanced editing techniques and modern AI tools through practical training at Quickupp Institute.',
-      provider: { '@type': 'Organization', name: 'Quickupp Institute', url: 'https://quickuppinstitute.com/' },
+      provider: { '@type': 'Organization', name: 'Quickupp Institute', url: 'https://www.quickuppinstitute.com/' },
       educationalLevel: 'Beginner to Advanced',
       inLanguage: 'en',
       courseMode: 'Offline',
-      url: 'https://quickuppinstitute.com/courses/ai-video-editing',
+      url: 'https://www.quickuppinstitute.com/courses/ai-video-editing',
     },
   },
 
@@ -385,12 +385,12 @@ export const seoPages: SeoPage[] = [
       name: 'AI Powered Graphic Design Program',
       description:
         'Learn graphic design with AI-powered tools and practical training through Quickupp Institute. Develop creative design skills, work on real-world projects, and gain industry-relevant knowledge with placement assistance.',
-      provider: { '@type': 'EducationalOrganization', name: 'Quickupp Institute', url: 'https://quickuppinstitute.com/' },
+      provider: { '@type': 'EducationalOrganization', name: 'Quickupp Institute', url: 'https://www.quickuppinstitute.com/' },
       educationalLevel: 'Beginner to Advanced',
       inLanguage: 'en',
       courseMode: 'Offline',
       occupationalCredentialAwarded: 'Certificate in AI Powered Graphic Design',
-      url: 'https://quickuppinstitute.com/courses/ai-graphic-design',
+      url: 'https://www.quickuppinstitute.com/courses/ai-graphic-design',
     },
   },
 ]

@@ -7,7 +7,7 @@ import EnquiryForm from '@/components/Common/EnquiryForm'
 import { siteConfig } from '@/data'
 import { getSeoPage, type SeoPage } from '@/data/seoPages'
 
-const SITE = 'https://quickuppinstitute.com'
+const SITE = 'https://www.quickuppinstitute.com'
 
 /** Icon per "why choose" card, picked by its title. */
 function chooseIcon(title: string) {

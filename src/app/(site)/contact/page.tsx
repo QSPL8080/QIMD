@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: `Contact Us – ${siteConfig.name}`,
   description:
     "Get in touch with QIMD Institute in Hinjewadi, Pune. Schedule a free career counselling session for Digital Marketing, Graphic Design, and Video Editing.",
-  alternates: { canonical: "https://www.qimd.in/contact" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/contact" },
 };
 
 export default function ContactPage() {

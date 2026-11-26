@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: `QIMD Franchise – Partner With Us | ${siteConfig.name}`,
   description:
     "Partner with QIMD Institute and bring AI-powered practical education to your city. Complete academic, marketing, operational, and placement support provided.",
-  alternates: { canonical: "https://www.qimd.in/qimd-franchise" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/qimd-franchise" },
 };
 
 export default function FranchisePage() {

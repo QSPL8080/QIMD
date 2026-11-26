@@ -5,7 +5,7 @@ import AboutContent from "../AboutContent";
 export const metadata: Metadata = {
   title: `About QIMD – ${siteConfig.name}`,
   description: `Learn about QIMD Institute – ${siteConfig.tagline}. Based in Hinjewadi, Pune, QIMD offers practical AI-powered training in Digital Marketing, Graphic Design, and Video Editing.`,
-  alternates: { canonical: "https://www.qimd.in/about/about-qimd" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/about/about-qimd" },
 };
 
 export default function AboutQimdPage() {

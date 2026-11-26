@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: `Careers – ${siteConfig.name}`,
   description:
     "Join QIMD Institute! Explore career opportunities for trainers, counsellors, and creative professionals in Hinjewadi, Pune.",
-  alternates: { canonical: "https://www.qimd.in/careers" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/careers" },
 };
 
 export default async function CareersPage() {

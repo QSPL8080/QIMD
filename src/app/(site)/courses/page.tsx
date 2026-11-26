@@ -8,7 +8,7 @@ import type { Course } from "@/types";
 export const metadata: Metadata = {
   title: `Programs – ${siteConfig.name}`,
   description: "Explore QIMD's AI-powered programs in Digital Marketing, Graphic Design, and Video Editing. 6-month offline training with live projects and 100% placement support.",
-  alternates: { canonical: "https://www.qimd.in/courses" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/courses" },
 };
 
 function modeLabel(mode?: string) {

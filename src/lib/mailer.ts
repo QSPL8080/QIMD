@@ -43,7 +43,7 @@ export const esc = (v: unknown) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.qimd.in').replace(/\/$/, '')
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.quickuppinstitute.com').replace(/\/$/, '')
 
 /** Branded email shell (navy header, white card). */
 export function emailLayout(title: string, bodyHtml: string, subtitle?: string) {

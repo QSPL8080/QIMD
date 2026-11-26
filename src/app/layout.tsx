@@ -36,7 +36,7 @@ const inter = localFont({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.qimd.in"),
+  metadataBase: new URL("https://www.quickuppinstitute.com"),
   title: {
     default: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
     template: "%s | QIMD Institute",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     "job assistance digital marketing",
     "placement guaranteed course Pune",
   ],
-  authors: [{ name: siteConfig.name, url: "https://www.qimd.in" }],
+  authors: [{ name: siteConfig.name, url: "https://www.quickuppinstitute.com" }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
   robots: {
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://www.qimd.in",
+    url: "https://www.quickuppinstitute.com",
     siteName: siteConfig.name,
     title: `${siteConfig.name} – ${siteConfig.tagline}`,
     description: siteConfig.description,
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
     google: "8aEpBmUy2zgfG_RNwXH2VgGgIvxho0BVWqWqXjzTbyk",
   },
   alternates: {
-    canonical: "https://www.qimd.in",
+    canonical: "https://www.quickuppinstitute.com",
   },
 };
 

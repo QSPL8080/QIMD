@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${post.title} – ${siteConfig.name}`,
     description: post.excerpt,
-    alternates: { canonical: `https://www.qimd.in/blog/${slug}` },
+    alternates: { canonical: `https://www.quickuppinstitute.com/blog/${slug}` },
     openGraph: {
       title: post.title,
       description: post.excerpt,
@@ -70,8 +70,8 @@ function formatInlineText(text: string) {
       if (match) {
         const linkText = match[1];
         let linkHref = match[2];
-        if (linkHref.startsWith("https://quickuppinstitute.com")) {
-          linkHref = linkHref.replace("https://quickuppinstitute.com", "") || "/";
+        if (/^https:\/\/(www\.)?quickuppinstitute\.com/.test(linkHref)) {
+          linkHref = linkHref.replace(/^https:\/\/(www\.)?quickuppinstitute\.com/, "") || "/";
         }
         return (
           <Link

@@ -5,7 +5,7 @@ import LegalLayout from "@/components/Common/LegalLayout";
 export const metadata: Metadata = {
   title: `Terms & Conditions – ${siteConfig.name}`,
   description: "Read Quickupp Institute of Marketing & Design (QIMD) Terms and Conditions for using our website, programs, and educational services.",
-  alternates: { canonical: "https://www.qimd.in/terms-and-conditions" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/terms-and-conditions" },
 };
 
 export default function TermsPage() {

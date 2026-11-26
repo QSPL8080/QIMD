@@ -7,7 +7,7 @@ import { siteConfig, coursesData } from "@/data";
 export const metadata: Metadata = {
   title: `Sitemap – ${siteConfig.name}`,
   description: "Browse the complete sitemap of QIMD Institute website — all pages, programs, and resources.",
-  alternates: { canonical: "https://www.qimd.in/sitemap" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/sitemap" },
 };
 
 const SitemapSection: React.FC<{ title: string; icon: string; links: { label: string; href: string }[] }> = ({

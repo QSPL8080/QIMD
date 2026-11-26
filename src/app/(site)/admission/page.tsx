@@ -10,7 +10,7 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: `Admission Information – ${siteConfig.name}`,
   description: "Learn about QIMD Institute's admission process, eligibility criteria, program fees, and enrollment procedure.",
-  alternates: { canonical: "https://www.qimd.in/admission" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/admission" },
 };
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (

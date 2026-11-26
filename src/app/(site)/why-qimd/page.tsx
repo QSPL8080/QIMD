@@ -8,7 +8,7 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: `Why QIMD? – ${siteConfig.name}`,
   description: "Discover why QIMD Institute is India's most trusted AI-powered practical training institute. Practical learning, expert trainers, live projects, and 100% placement support.",
-  alternates: { canonical: "https://www.qimd.in/why-qimd" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/why-qimd" },
 };
 
 export default function WhyQimdPage() {

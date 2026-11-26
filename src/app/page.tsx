@@ -25,12 +25,12 @@ export const metadata: Metadata = {
   title: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
   description: siteConfig.description,
   alternates: {
-    canonical: "https://www.qimd.in",
+    canonical: "https://www.quickuppinstitute.com",
   },
   openGraph: {
     title: "AI-Powered Digital Marketing, Graphic Design & Video Editing Courses in Pune | QIMD",
     description: siteConfig.description,
-    url: "https://www.qimd.in",
+    url: "https://www.quickuppinstitute.com",
     images: [{ url: "/images/logo/qimd-logo.png" }],
   },
 };

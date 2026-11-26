@@ -5,7 +5,7 @@ import LegalLayout from "@/components/Common/LegalLayout";
 export const metadata: Metadata = {
   title: `Refund & Cancellation Policy – ${siteConfig.name}`,
   description: "Read Quickupp Institute of Marketing & Design (QIMD) Refund and Cancellation Policy for program enrollments, fees, and batch schedules.",
-  alternates: { canonical: "https://www.qimd.in/refund-policy" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/refund-policy" },
 };
 
 export default function RefundPolicyPage() {

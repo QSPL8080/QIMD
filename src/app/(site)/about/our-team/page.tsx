@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: `Our Team – ${siteConfig.name}`,
   description:
     "Meet the experts behind QIMD (Quickupp Institute of Marketing & Design). Experienced trainers, creative thinkers, industry mentors, and career builders dedicated to student success.",
-  alternates: { canonical: "https://www.qimd.in/about/our-team" },
+  alternates: { canonical: "https://www.quickuppinstitute.com/about/our-team" },
 };
 
 export default function OurTeamPage() {
