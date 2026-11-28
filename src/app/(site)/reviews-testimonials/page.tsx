@@ -239,9 +239,9 @@ export default function ReviewsTestimonialsPage() {
         title="Become Our Next Success Story"
         actions={
           <>
-            <a href="tel:+918087897288" className="qw-btn qw-btn-light">
+            <a href="tel:+917410106608" className="qw-btn qw-btn-light">
               <Icon icon="mdi:phone" />
-              <span>Call Us: +91 80878 97288</span>
+              <span>Call Us: +91 7410-106608</span>
             </a>
             <Link href="/contact" className="qw-btn qw-btn-glass">
               <Icon icon="mdi:account-badge-outline" />

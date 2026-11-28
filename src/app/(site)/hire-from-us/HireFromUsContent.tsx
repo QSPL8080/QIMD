@@ -455,9 +455,9 @@ export default function HireFromUsContent() {
         desc="Our Placement Team will review your requirements and share suitable candidate profiles based on your hiring needs."
         actions={
           <>
-            <Link href="tel:+918237024479" className="qk-btn qk-btn-light">
+            <Link href="tel:+917410106608" className="qk-btn qk-btn-light">
               <Icon icon="mdi:phone" />
-              <span>Call: +91 8237024479</span>
+              <span>Call: +91 7410-106608</span>
             </Link>
             <Link href="mailto:career@quickuppinstitute.com" className="qk-btn qk-btn-ghost">
               <Icon icon="mdi:email-outline" />

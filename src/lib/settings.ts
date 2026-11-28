@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS: SettingsShape = {
     name: 'Quickupp Institute of Marketing & Design',
     shortName: 'QIMD',
     address: 'Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Pune 411057',
-    phone: '',
+    phone: '+91 7410-106608',
     email: 'info@quickuppinstitute.com',
     website: 'https://www.quickuppinstitute.com',
     receiptFooter: 'This is a computer-generated receipt.',
@@ -53,7 +53,11 @@ export async function getSetting<K extends SettingKey>(key: K): Promise<Settings
     if (row?.value !== undefined && row?.value !== null) {
       const def = DEFAULT_SETTINGS[key]
       if (Array.isArray(def)) return (Array.isArray(row.value) ? row.value : def) as SettingsShape[K]
-      if (typeof def === 'object') return { ...(def as object), ...(row.value as object) } as SettingsShape[K]
+      if (typeof def === 'object') {
+        // Blank saved fields fall back to the default (e.g. the institute phone)
+        const saved = Object.fromEntries(Object.entries(row.value as object).filter(([, v]) => v !== '' && v !== null && v !== undefined))
+        return { ...(def as object), ...saved } as SettingsShape[K]
+      }
       return (typeof row.value === typeof def ? row.value : def) as SettingsShape[K]
     }
   } catch (err) {

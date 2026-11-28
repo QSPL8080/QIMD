@@ -409,9 +409,9 @@ export default function CareersContent({ jobOpenings }: { jobOpenings: any[] }) 
         title="Build a Career That Makes an Impact"
         desc="Join a workplace where your expertise helps shape the next generation of Digital Marketers, Graphic Designers, and Video Editors. At QIMD, you'll have the opportunity to inspire learners, work alongside industry professionals, and grow your career in a collaborative and innovation-driven environment."
         actions={
-          <Link href="tel:+918237024479" className="qk-btn qk-btn-light">
+          <Link href="tel:+917410106608" className="qk-btn qk-btn-light">
             <Icon icon="mdi:phone" />
-            <span>Call HR: +91 8237024479</span>
+            <span>Call HR: +91 7410-106608</span>
           </Link>
         }
         note="Take the next step in your career. Apply today and grow with QIMD."

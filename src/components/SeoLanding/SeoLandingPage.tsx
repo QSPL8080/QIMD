@@ -225,7 +225,7 @@ export default function SeoLandingPage({ path }: { path: string }) {
               <div className="qp-help">
                 <h4>Need Help?</h4>
                 <p>Talk to our counsellors for personalized guidance.</p>
-                <Link href={`tel:${siteConfig.phone}`} className="qp-help-link">
+                <Link href={`tel:${siteConfig.phone.replace(/[^\d+]/g, '')}`} className="qp-help-link">
                   <Icon icon="mdi:phone" />
                   {siteConfig.phone}
                 </Link>

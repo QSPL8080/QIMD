@@ -432,9 +432,9 @@ export default function FranchiseContent() {
         desc="Become a QIMD Franchise Partner and establish a successful education business backed by a practical learning model, AI-powered curriculum, and continuous business support."
         actions={
           <>
-            <Link href="tel:+918087897288" className="qk-btn qk-btn-light">
+            <Link href="tel:+917410106608" className="qk-btn qk-btn-light">
               <Icon icon="mdi:phone" />
-              <span>Call: +91 80878 97288</span>
+              <span>Call: +91 7410-106608</span>
             </Link>
             <Link href="mailto:info@quickuppinstitute.com" className="qk-btn qk-btn-ghost">
               <Icon icon="mdi:email-outline" />

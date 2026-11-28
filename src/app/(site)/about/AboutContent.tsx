@@ -8,7 +8,7 @@ import { AboutTabs, QaKicker, QaHead } from "@/components/About/AboutKit";
 
 export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: any[] } = {}) {
   const { phone } = siteSettings;
-  const contactPhone = phone || "+91 80878 97288";
+  const contactPhone = phone || "+91 7410-106608";
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   // 1. Learning model 5 steps - directly from doc
@@ -151,7 +151,7 @@ export default function AboutContent({ dynamicTrainers }: { dynamicTrainers?: an
     { title: "Portfolio Building", icon: "mdi:folder-star-outline" },
     { title: "Career Preparation", icon: "mdi:rocket-launch-outline" },
   ];
-  const telHref = `tel:${contactPhone.replace(/\s+/g, '')}`;
+  const telHref = `tel:${contactPhone.replace(/[^\d+]/g, '')}`;
 
   return (
     <div className="qa">

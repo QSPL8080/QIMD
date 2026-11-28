@@ -30,17 +30,17 @@ export const siteConfig = {
   tagline: "India's First Industry-Oriented & AI Powered Marketing & Design Institute",
   description:
     "Join QIMD's AI-Powered & Performance-Driven Practical Training Program in Digital Marketing, Graphic Design & Video Editing with 100% Job Assistance & Placement Opportunities. Offline Learning Only.",
-  phone: "+91 90000 00000",
+  phone: "+91 7410-106608",
   email: "info@quickuppinstitute.com",
   address: "Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057",
-  whatsapp: "+919000000000",
+  whatsapp: "+917410106608",
   socialLinks: {
     instagram: "https://www.instagram.com/quickupp.institute/",
     facebook: "https://www.facebook.com/profile.php?id=61591834097665",
     youtube: "https://www.youtube.com/@QuickuppInstitute",
     linkedin: "https://www.linkedin.com/company/133377696/",
     twitter: "",
-    whatsapp: "https://wa.me/919000000000",
+    whatsapp: "https://wa.me/917410106608",
   },
   logoLight: "/images/logo/qimd-logo.png",
   logoDark: "/images/logo/qimd-logo.png",
@@ -119,7 +119,7 @@ export const footerLinks = {
 
 // ─── Contact Info ────────────────────────────────────────────
 export const contactInfo: ContactInfo = {
-  phone: "+91 90000 00000",
+  phone: "+91 7410-106608",
   email: "info@quickuppinstitute.com",
   address: "Office 411, Suratwala Mark Plazzo, Hinjawadi Rd, Phase 1, Hinjawadi, Maharashtra 411057",
   socialLinks: {
@@ -128,7 +128,7 @@ export const contactInfo: ContactInfo = {
     youtube: "https://youtube.com/@qimdinstitute",
     linkedin: "https://linkedin.com/company/qimdinstitute",
     twitter: "https://twitter.com/qimdinstitute",
-    whatsapp: "https://wa.me/910000000000",
+    whatsapp: "https://wa.me/917410106608",
   },
 };
 

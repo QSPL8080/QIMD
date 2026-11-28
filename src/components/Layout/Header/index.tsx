@@ -181,7 +181,7 @@ const Header: React.FC = () => {
               )}
 
               {header?.enquireNow?.active !== false && (
-                <Link href={`tel:${phone}`} className="qh-btn qh-btn-primary">
+                <Link href={`tel:${String(phone).replace(/[^\d+]/g, '')}`} className="qh-btn qh-btn-primary">
                   <span>{header?.enquireNow?.text || 'Enquire Now'}</span>
                   <span className="qh-btn-arrow">
                     <Icon icon="solar:arrow-right-up-linear" />
@@ -241,7 +241,7 @@ const Header: React.FC = () => {
 
         <div className="qm-actions">
           {header?.enquireNow?.active !== false && (
-            <Link href={`tel:${phone}`} onClick={() => setNavbarOpen(false)} className="qm-cta qm-cta-primary">
+            <Link href={`tel:${String(phone).replace(/[^\d+]/g, '')}`} onClick={() => setNavbarOpen(false)} className="qm-cta qm-cta-primary">
               <Icon icon="solar:phone-calling-bold" className="text-lg" />
               {header?.enquireNow?.text || 'Enquire Now'}
             </Link>

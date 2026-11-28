@@ -170,7 +170,7 @@ const Footer: React.FC = () => {
                 <div className="min-w-0">
                   {phoneList[0]?.label && <p className="qf-card-label">{phoneList[0].label}</p>}
                   {phoneList.map((p) => (
-                    <Link key={p.id} href={`tel:${p.value.replace(/\s+/g, '')}`} className="qf-card-value block">
+                    <Link key={p.id} href={`tel:${p.value.replace(/[^\d+]/g, '')}`} className="qf-card-value block">
                       {p.value}
                     </Link>
                   ))}

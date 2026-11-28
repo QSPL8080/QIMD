@@ -139,11 +139,11 @@ export default function ContactContent() {
                   <Icon icon="solar:headphones-round-sound-bold" />
                   Helpline &amp; Support
                 </p>
-                <Link href="tel:+918087897288" className="qn-line">
+                <Link href="tel:+917410106608" className="qn-line">
                   <span className="qn-line-ic"><Icon icon="solar:phone-calling-bold" /></span>
                   <span className="qn-line-text">
                     <span className="qn-line-label">Phone Helpline</span>
-                    <span className="qn-line-value">+91 8087897288</span>
+                    <span className="qn-line-value">+91 7410-106608</span>
                   </span>
                   <Icon icon="solar:arrow-right-up-linear" className="qn-line-arrow" />
                 </Link>

@@ -268,9 +268,9 @@ export default function PlacementsPage() {
               <span>View Placed Students</span>
               <Icon icon="mdi:arrow-down" />
             </a>
-            <a href="tel:+918087897288" className="qw-btn qw-btn-soft">
+            <a href="tel:+917410106608" className="qw-btn qw-btn-soft">
               <Icon icon="mdi:phone" />
-              <span>+91 80878 97288</span>
+              <span>+91 7410-106608</span>
             </a>
           </>
         }
@@ -429,9 +429,9 @@ export default function PlacementsPage() {
         title="Ready to Launch Your Career?"
         actions={
           <>
-            <a href="tel:+918087897288" className="qw-btn qw-btn-light">
+            <a href="tel:+917410106608" className="qw-btn qw-btn-light">
               <Icon icon="mdi:phone" />
-              <span>Call Us: +91 80878 97288</span>
+              <span>Call Us: +91 7410-106608</span>
             </a>
             <Link href="/contact" className="qw-btn qw-btn-glass">
               <Icon icon="mdi:account-badge-outline" />

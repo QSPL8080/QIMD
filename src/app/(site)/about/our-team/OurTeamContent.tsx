@@ -8,7 +8,7 @@ import { AboutTabs, QaKicker, QaHead, QaCheck } from "@/components/About/AboutKi
 
 export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: any[] }) {
   const { phone, teamGroupPhoto } = siteSettings;
-  const contactPhone = phone || "+91 80878 97288";
+  const contactPhone = phone || "+91 7410-106608";
 
   // Auto-rotating active card index (0 -> 1 -> 2) every 5 seconds
   const [activeCardIndex, setActiveCardIndex] = useState(0);
@@ -94,7 +94,7 @@ export default function OurTeamContent({ dynamicTrainers }: { dynamicTrainers?: 
     "Stay updated with latest AI tools",
     "Prepare for interviews & placements",
   ];
-  const telHref = `tel:${contactPhone.replace(/\s+/g, '')}`;
+  const telHref = `tel:${contactPhone.replace(/[^\d+]/g, '')}`;
 
   return (
     <div className="qa">
