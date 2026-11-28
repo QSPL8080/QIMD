@@ -1,4 +1,4 @@
-import { sendMail, emailLayout, emailTable, emailButton, SITE_URL } from './mailer'
+import { sendMail, emailLayout, emailTable, emailButton, esc, SITE_URL } from './mailer'
 import { getSetting } from './settings'
 
 /**
@@ -52,5 +52,33 @@ export async function sendLeadEmail(
     if (!res.ok) console.warn('[lead email]', res.error)
   } catch (err) {
     console.error('[lead email] could not send:', err)
+  }
+}
+
+const ACK: Record<Exclude<LeadMailType, 'meta'>, { subject: string; line: string }> = {
+  admission: { subject: 'We received your admission enquiry', line: 'Thank you for your admission enquiry. Our team will contact you shortly.' },
+  contact: { subject: 'We received your enquiry', line: 'Thank you for contacting us. Our team will contact you shortly.' },
+  career: { subject: 'We received your application', line: 'Thank you for applying. Our team will review your application and contact you if it is a match.' },
+  hire: { subject: 'We received your hiring request', line: 'Thank you for your hiring request. Our placement team will contact you shortly.' },
+  franchise: { subject: 'We received your franchise enquiry', line: 'Thank you for your interest in a QIMD franchise. Our team will contact you shortly.' },
+}
+
+/** Short "we received it" email to the person who filled in a website form. Never throws. */
+export async function sendSubmitterAck(type: Exclude<LeadMailType, 'meta'>, to?: string | null, name?: string | null) {
+  try {
+    const email = String(to || '').trim()
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return
+    const inst = await getSetting('institute')
+    const { subject, line } = ACK[type]
+    const contact = [inst.phone, inst.email].filter(Boolean).join(' · ')
+    const html = emailLayout(
+      subject,
+      `<p style="margin:0 0 12px">Hi ${esc(name || '')},</p><p style="margin:0 0 12px">${esc(line)}</p>${contact ? `<p style="margin:0 0 12px;color:#6B6A80">${esc(inst.name)}<br>${esc(inst.address)}<br>${esc(contact)}</p>` : ''}`,
+    )
+    const text = [`Hi ${name || ''},`, line, '', inst.name, inst.address, contact].filter((x) => x !== undefined).join('\n')
+    const res = await sendMail({ to: email, subject: `${subject} — ${inst.shortName || inst.name}`, html, text, replyTo: inst.email })
+    if (!res.ok) console.warn('[ack email]', res.error)
+  } catch (err) {
+    console.error('[ack email] could not send:', err)
   }
 }

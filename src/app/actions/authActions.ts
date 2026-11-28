@@ -8,6 +8,8 @@ import { audit } from '@/lib/audit'
 import { normalizeRole } from '@/lib/permissions'
 import { sendPasswordResetEmail } from '@/lib/passwordReset'
 import { notifySuperAdmin } from '@/lib/notifications'
+import { emailAccountNotice } from '@/lib/staffMail'
+import { SITE_URL } from '@/lib/mailer'
 
 const MAX_ATTEMPTS = 5
 const LOCK_MINUTES = 15
@@ -42,6 +44,7 @@ export async function loginAdminAction(prevState: any, formData: FormData) {
       })
       await audit({ id: user.id, fullName: user.fullName, roleName: user.role }, lock ? 'LOGIN_LOCKED' : 'LOGIN_FAILED', 'user', user.id, lock ? `Account locked for ${LOCK_MINUTES} min after ${MAX_ATTEMPTS} failed logins` : `Failed login (${count}/${MAX_ATTEMPTS})`)
       if (lock) {
+        await emailAccountNotice(user, 'Your QIMD admin account was locked', 'Account locked for 15 minutes', [`There were ${MAX_ATTEMPTS} wrong password attempts on your QIMD admin account, so it is locked for ${LOCK_MINUTES} minutes.`, 'If this was not you, reset your password now and tell your Super Admin.'], { href: `${SITE_URL}/admin/forgot-password`, label: 'Reset password' })
         await notifySuperAdmin({ type: 'LOGIN_LOCKED', title: `${user.fullName}'s account was locked after ${MAX_ATTEMPTS} failed logins`, actor: { id: user.id, fullName: user.fullName, email: user.email, role: user.role } })
         return { success: false, error: `Too many failed attempts. Your account is locked for ${LOCK_MINUTES} minutes.` }
       }
@@ -109,6 +112,7 @@ export async function resetPasswordAction(_prev: any, formData: FormData): Promi
       data: { passwordHash: await hashPassword(password), passwordResetHash: null, passwordResetExpires: null, failedLoginCount: 0, lockedUntil: null } as any,
     })
     await audit({ id: user.id, fullName: user.fullName, roleName: user.role }, 'PASSWORD_RESET', 'user', user.id, `${user.fullName} reset their password with an emailed link`)
+    await emailAccountNotice(user, 'Your QIMD admin password was changed', 'Your password was changed', ['Your QIMD admin password was reset using an emailed link.', 'If this was not you, contact your Super Admin immediately.'])
     await notifySuperAdmin({ type: 'PASSWORD_CHANGED', title: `${user.fullName} reset their password`, actor: { id: user.id, fullName: user.fullName, email: user.email, role: user.role } })
     return { success: true, message: 'Your password has been changed. You can sign in now.' }
   } catch (err) {

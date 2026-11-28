@@ -1,6 +1,8 @@
 import { createHmac, timingSafeEqual } from 'crypto'
 import { createLead } from '@/lib/leads'
 import { audit } from '@/lib/audit'
+import { notifySuperAdmin } from '@/lib/notifications'
+import { emailStaff } from '@/lib/staffMail'
 
 export const dynamic = 'force-dynamic'
 
@@ -113,6 +115,13 @@ export async function POST(request: Request) {
     }
   }
   // A failed import returns 500 so Meta retries the delivery; leads already saved are skipped by their leadgen ID
-  if (failed) return Response.json({ ok: false, created, failed }, { status: 500 })
+  if (failed) {
+    await notifySuperAdmin({ type: 'INTEGRATION_ERROR', title: `Meta Lead Ads: ${failed} lead(s) could not be imported — check the Meta access token`, link: '/admin/audit?entity=lead' })
+    await emailStaff(
+      { roles: ['SUPER_ADMIN'] },
+      { subject: 'Meta Lead Ads: leads could not be imported', title: 'Meta lead import failed', intro: `${failed} lead(s) from Meta could not be imported. Meta will retry; if it keeps failing, the page access token has probably expired.`, link: '/admin/audit?entity=lead', linkLabel: 'Open audit log' },
+    )
+    return Response.json({ ok: false, created, failed }, { status: 500 })
+  }
   return Response.json({ ok: true, created })
 }

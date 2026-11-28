@@ -11,6 +11,7 @@ import { ADMISSION_STATUSES, PAYMENT_MODES } from '@/lib/fees'
 import { dateOnly, isYmd, istStart, todayIST, ymdOf } from '@/lib/dates'
 import { recordPaymentInternal } from '@/lib/payments'
 import { GENDERS, QUALIFICATIONS, CURRENT_STATUSES, DOCUMENTS } from '@/lib/admissionForm'
+import { emailStaff } from '@/lib/staffMail'
 
 type Result = { success: boolean; message?: string; error?: string; id?: string; warning?: string }
 
@@ -180,6 +181,18 @@ export async function createAdmissionAction(input: any): Promise<Result> {
       ['SUPER_ADMIN', 'ADMIN', 'ADMISSION_HEAD'],
       { type: 'ADMISSION_CREATED', title: `Admission ${admission.admissionCode} created: ${admission.studentName} — ${admission.courseName}`, link: `/admin/admissions/${admission.id}`, actor: { id: session.id, fullName: session.fullName, email: session.email, role: session.roleName } },
       session.id,
+    )
+
+    await emailStaff(
+      { roles: ['ADMISSION_HEAD'], exceptUserId: session.id },
+      {
+        subject: `New admission ${admission.admissionCode}: ${admission.studentName}`,
+        title: 'New admission to verify',
+        intro: `${session.fullName} created admission ${admission.admissionCode}. Please check the details and documents, then mark it verified.`,
+        items: [`${admission.studentName} · ${admission.mobile}`, `${admission.courseName}`],
+        link: `/admin/admissions/${admission.id}`,
+        linkLabel: 'Open the admission',
+      },
     )
 
     let message = `Admission ${admission.admissionCode} created.`

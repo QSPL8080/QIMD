@@ -10,6 +10,7 @@ import { audit, diff } from '@/lib/audit'
 import { notifyUser } from '@/lib/notifications'
 import { recordTrash, clearTrash } from '@/lib/trash'
 import { istLocalToDate } from '@/lib/dates'
+import { emailStaff } from '@/lib/staffMail'
 
 type Result = { success: boolean; message?: string; error?: string; id?: string }
 
@@ -135,6 +136,18 @@ export async function assignLeadsAction(ids: string[], userId: string | null): P
       })
     }
     if (to && changed > 0) {
+      const mine = leads.filter((l: any) => l.assignedToId !== to.id)
+      await emailStaff(
+        { userIds: [to.id], exceptUserId: session.id },
+        {
+          subject: changed === 1 ? `New lead assigned to you: ${mine[0]?.fullName || ''}` : `${changed} new leads assigned to you`,
+          title: changed === 1 ? 'A lead was assigned to you' : `${changed} leads were assigned to you`,
+          intro: `${session.fullName} assigned ${changed === 1 ? 'this lead' : 'these leads'} to you. Please call and add a follow-up in the CRM.`,
+          items: mine.slice(0, 25).map((l: any) => `${l.leadCode} · ${l.fullName}${l.phone ? ` · ${l.phone}` : ''}${l.course ? ` · ${l.course}` : ''}`),
+          link: changed === 1 ? `/admin/leads/${mine[0]?.id}` : '/admin/leads?assigned=me',
+          linkLabel: changed === 1 ? 'Open the lead' : 'Open my leads',
+        },
+      )
       await notifyUser(to.id, {
         type: 'LEAD_ASSIGNED',
         title: changed === 1 ? `${session.fullName} assigned you a lead: ${leads.find((l: any) => l.assignedToId !== to.id)?.fullName || ''}` : `${session.fullName} assigned you ${changed} leads`,

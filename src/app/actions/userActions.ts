@@ -8,6 +8,8 @@ import { notifySuperAdmin } from '@/lib/notifications'
 import { sendPasswordResetEmail } from '@/lib/passwordReset'
 import { audit } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
+import { emailAccountNotice } from '@/lib/staffMail'
+import { SITE_URL } from '@/lib/mailer'
 
 type Result = { success: boolean; message?: string; error?: string }
 const fail = (err: any): Result => ({ success: false, error: String(err?.message || err).replace(/^(UNAUTHORIZED|FORBIDDEN): /, '') })
@@ -93,6 +95,7 @@ export async function saveUserAction(data: any, id?: string): Promise<Result> {
       if (other.length) await audit(session, 'USER_UPDATE', 'user', id, `${updated.fullName}: updated ${other.join(', ')}`)
       if (v.password) {
         await audit(session, 'USER_PASSWORD_SET', 'user', id, `${session.fullName} set a new password for ${updated.fullName}`)
+        await emailAccountNotice(updated, 'Your QIMD admin password was changed', 'Your password was changed', [`${session.fullName} set a new password for your QIMD admin account. They will share it with you.`, 'If you did not expect this, contact your Super Admin.'], { href: `${SITE_URL}/admin/login`, label: 'Sign in' })
         if (id !== session.id) {
           await notifySuperAdmin({ type: 'PASSWORD_SET_BY_ADMIN', title: `${session.fullName} set a new password for ${updated.fullName}`, actor: { id: session.id, fullName: session.fullName, email: session.email, role: session.roleName } })
         }
@@ -100,6 +103,17 @@ export async function saveUserAction(data: any, id?: string): Promise<Result> {
     } else {
       const created = await db.user.create({ data: { ...d, passwordHash: await hashPassword(v.password!) } as any })
       await audit(session, 'USER_CREATE', 'user', created.id, `Created user ${created.fullName} (${roleLabel(d.role)})`)
+      // Welcome email: where to sign in and the login name (never the password)
+      await emailAccountNotice(
+        created,
+        'Your QIMD admin account',
+        'Your admin account is ready',
+        [
+          `${session.fullName} created a ${roleLabel(d.role)} account for you in the QIMD admin panel.`,
+          `Sign in with ${created.username ? `username "${created.username}" or ` : ''}your email ${created.email}. Your password will be shared with you separately; you can also set your own with "Forgot password?" on the sign-in page.`,
+        ],
+        { href: `${SITE_URL}/admin/login`, label: 'Open the admin panel' },
+      )
     }
     revalidatePath('/admin/users')
     return { success: true, message: 'User account saved.' }
@@ -180,6 +194,7 @@ export async function resetUserPasswordAction(id: string, password: string): Pro
     if (pwd.length < 8) return { success: false, error: 'Password must be at least 8 characters.' }
     await db.user.update({ where: { id }, data: { passwordHash: await hashPassword(pwd), failedLoginCount: 0, lockedUntil: null } as any })
     await audit(session, 'USER_PASSWORD_SET', 'user', id, `${session.fullName} set a new password for ${target.fullName}`)
+    await emailAccountNotice(target, 'Your QIMD admin password was changed', 'Your password was changed', [`${session.fullName} set a new password for your QIMD admin account. They will share it with you.`, 'If you did not expect this, contact your Super Admin.'], { href: `${SITE_URL}/admin/login`, label: 'Sign in' })
     if (id !== session.id) {
       await notifySuperAdmin({ type: 'PASSWORD_SET_BY_ADMIN', title: `${session.fullName} set a new password for ${target.fullName}`, actor: { id: session.id, fullName: session.fullName, email: session.email, role: session.roleName } })
     }
@@ -237,6 +252,7 @@ export async function changeOwnPasswordAction(currentPassword: string, newPasswo
     if (await comparePassword(next, user.passwordHash)) return { success: false, error: 'New password must be different from the current one.' }
     await db.user.update({ where: { id: session.id }, data: { passwordHash: await hashPassword(next) } })
     await audit(session, 'PASSWORD_CHANGE', 'user', session.id, `${user.fullName} changed their password`)
+    await emailAccountNotice(user, 'Your QIMD admin password was changed', 'Your password was changed', ['The password for your QIMD admin account was just changed from your profile.', 'If this was not you, contact your Super Admin immediately.'])
     await notifySuperAdmin({ type: 'PASSWORD_CHANGED', title: `${user.fullName} changed their password`, actor: { id: user.id, fullName: user.fullName, email: user.email, role: user.role } })
     revalidatePath('/admin', 'layout')
     return { success: true, message: 'Password changed.' }

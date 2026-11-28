@@ -6,6 +6,7 @@ import { fmtMoney, todayIST, ymdOf } from './dates'
 import { audit } from './audit'
 import { emailReceipt } from './receipts'
 import { notifyRoles } from './notifications'
+import { emailStaff } from './staffMail'
 
 export const MODES_NEEDING_REFERENCE = ['UPI', 'BANK_TRANSFER', 'CHEQUE', 'CARD', 'GATEWAY']
 
@@ -90,6 +91,19 @@ export async function recordPaymentInternal(
     },
     session?.id,
   )
+  if (online) {
+    await emailStaff(
+      { roles: ['ADMISSION_HEAD', 'SUPER_ADMIN'] },
+      {
+        subject: `Online payment ${fmtMoney(amount)} — ${admission.studentName} (${admission.admissionCode})`,
+        title: 'Online fee payment received',
+        intro: `${fmtMoney(amount)} was paid online via ${online.gateway} and recorded automatically. Receipt ${payment.receiptNo} ${mail.ok ? 'was emailed to the student' : 'could not be emailed — share it from the CRM'}.`,
+        items: [`Transaction ID: ${online.gatewayTxnId}`],
+        link: `/admin/admissions/${admission.id}?tab=fees`,
+        linkLabel: 'Open fees',
+      },
+    )
+  }
   return {
     success: true,
     paymentId: payment.id,

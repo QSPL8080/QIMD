@@ -1,5 +1,5 @@
 import { db } from './db'
-import { sendLeadEmail } from './leadMail'
+import { sendLeadEmail, sendSubmitterAck } from './leadMail'
 import { notifyRoles } from './notifications'
 
 /** Last 10 digits of a mobile number, for duplicate matching. */
@@ -117,5 +117,9 @@ export async function createLead(input: NewLeadInput) {
       `/admin/leads/${lead.id}`,
     )
   }
+
+  // "We received it" email to the person who filled in the website form
+  if (input.source === 'WEBSITE') await sendSubmitterAck(input.enquiryType === 'ADMISSION' ? 'admission' : 'contact', lead.email, lead.fullName)
+
   return lead
 }

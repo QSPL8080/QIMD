@@ -13,7 +13,7 @@ import {
 } from '@/lib/validations'
 import { requirePermission, requireSuperAdminSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
-import { sendLeadEmail } from '@/lib/leadMail'
+import { sendLeadEmail, sendSubmitterAck } from '@/lib/leadMail'
 import { createLead } from '@/lib/leads'
 
 // --- PUBLIC FORM SUBMISSIONS ---
@@ -134,6 +134,7 @@ export async function submitCareerApplicationAction(data: {
       ],
       validated.data.email,
     )
+    await sendSubmitterAck('career', validated.data.email, validated.data.fullName)
 
     return { success: true, message: 'Application submitted successfully! HR will review your application.' }
   } catch (err: any) {
@@ -186,6 +187,7 @@ export async function submitFranchiseEnquiryAction(data: {
       ],
       validated.data.email,
     )
+    await sendSubmitterAck('franchise', validated.data.email, validated.data.fullName)
 
     return { success: true, message: 'Franchise partnership proposal received! Our expansion team will get in touch.' }
   } catch (err: any) {
@@ -241,6 +243,7 @@ export async function submitHireRequestAction(data: {
       ],
       validated.data.email,
     )
+    await sendSubmitterAck('hire', validated.data.email, validated.data.contactPerson)
 
     return { success: true, message: 'Hiring request submitted! Our placement team will share top candidate profiles.' }
   } catch (err: any) {

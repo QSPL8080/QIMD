@@ -3,6 +3,7 @@ import { loadLedgers, LIVE_ADMISSION } from './admissionData'
 import { addDays, daysBetween, fmtDate, fmtMoney, istEnd, istStart, todayIST } from './dates'
 import { notifyRoles, notifyUser } from './notifications'
 import { audit } from './audit'
+import { emailStaff } from './staffMail'
 
 /**
  * Internal fee reminders (SRS §11.1): 15, 7 and 3 days before a due date, on the
@@ -52,6 +53,7 @@ export async function runFeeReminders(today = todayIST()) {
   if (admissions.length === 0) return 0
   const ledgers = await loadLedgers(admissions, today)
   const roles = await admissionHeadRoles()
+  const digest: string[] = []
 
   for (const a of admissions) {
     const ledger = ledgers.get(a.id)!
@@ -74,12 +76,24 @@ export async function runFeeReminders(today = todayIST()) {
       })
       if (!ok) continue
       sent++
-      await notifyRoles(roles, {
-        type: st.stage === 'OVERDUE' ? 'FEE_OVERDUE' : 'FEE_DUE',
-        title: `${a.studentName} (${a.admissionCode}): ${fmtMoney(inst.remaining)} ${st.text}${st.stage === 'OVERDUE' ? ` since ${fmtDate(inst.dueDate)}` : ` — ${fmtDate(inst.dueDate)}`}`,
-        link: `/admin/admissions/${a.id}?tab=fees`,
-      })
+      const title = `${a.studentName} (${a.admissionCode}): ${fmtMoney(inst.remaining)} ${st.text}${st.stage === 'OVERDUE' ? ` since ${fmtDate(inst.dueDate)}` : ` — ${fmtDate(inst.dueDate)}`}`
+      digest.push(title)
+      await notifyRoles(roles, { type: st.stage === 'OVERDUE' ? 'FEE_OVERDUE' : 'FEE_DUE', title, link: `/admin/admissions/${a.id}?tab=fees` })
     }
+  }
+  // One email with everything that became due in this run
+  if (digest.length) {
+    await emailStaff(
+      { roles },
+      {
+        subject: `Fee reminders: ${digest.length} instalment${digest.length === 1 ? '' : 's'} due or overdue`,
+        title: 'Fee instalments to follow up',
+        intro: 'These instalments reached a reminder point (15, 7 or 3 days before, due today, or overdue):',
+        items: digest,
+        link: '/admin/fees?view=dues&due=7',
+        linkLabel: 'Open pending dues',
+      },
+    )
   }
   return sent
 }
@@ -88,9 +102,10 @@ export async function runFeeReminders(today = todayIST()) {
 export async function runFollowUpAlerts(today = todayIST()) {
   const leads = await (db as any).lead.findMany({
     where: { isDeleted: false, assignedToId: { not: null }, nextFollowUpAt: { gte: istStart(today), lte: istEnd(today) } },
-    select: { id: true, leadCode: true, fullName: true, assignedToId: true, nextFollowUpAt: true },
+    select: { id: true, leadCode: true, fullName: true, phone: true, assignedToId: true, nextFollowUpAt: true },
   })
   let sent = 0
+  const perUser = new Map<string, string[]>()
   for (const l of leads) {
     const already = await (db as any).adminNotification.count({
       where: { recipientId: l.assignedToId, type: 'FOLLOW_UP_DUE', link: `/admin/leads/${l.id}`, createdAt: { gte: istStart(today) } },
@@ -98,7 +113,22 @@ export async function runFollowUpAlerts(today = todayIST()) {
     if (already) continue
     const time = new Date(l.nextFollowUpAt).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' })
     await notifyUser(l.assignedToId, { type: 'FOLLOW_UP_DUE', title: `Follow-up due today at ${time}: ${l.fullName} (${l.leadCode})`, link: `/admin/leads/${l.id}` })
+    perUser.set(l.assignedToId, [...(perUser.get(l.assignedToId) || []), `${time} · ${l.fullName} (${l.leadCode})${l.phone ? ` · ${l.phone}` : ''}`])
     sent++
+  }
+  // One email per counsellor with today's follow-ups
+  for (const [userId, items] of perUser) {
+    await emailStaff(
+      { userIds: [userId] },
+      {
+        subject: `Today's follow-ups: ${items.length} lead${items.length === 1 ? '' : 's'}`,
+        title: 'Follow-ups due today',
+        intro: 'Please call these leads today and add the follow-up in the CRM:',
+        items,
+        link: '/admin/leads?followup=today',
+        linkLabel: "Open today's follow-ups",
+      },
+    )
   }
   return sent
 }
