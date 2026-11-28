@@ -1,5 +1,5 @@
 import { db } from './db'
-import { emailButton, emailLayout, esc, mailConfigured, sendMail, SITE_URL } from './mailer'
+import { emailButton, emailLayout, emailList, emailNote, esc, mailConfigured, sendMail, SITE_URL } from './mailer'
 
 /**
  * Emails to staff (counsellors, Admission Head, admins) about CRM events.
@@ -19,8 +19,11 @@ export async function emailStaff(
     const emails: string[] = [...new Set<string>(users.filter((u: any) => u.id !== to.exceptUserId && u.email).map((u: any) => String(u.email).trim().toLowerCase()))]
     if (!emails.length) return 0
     const url = msg.link ? (msg.link.startsWith('http') ? msg.link : `${SITE_URL}${msg.link}`) : ''
-    const list = msg.items?.length ? `<ul style="padding-left:18px;margin:8px 0 16px">${msg.items.map((i) => `<li style="margin:4px 0">${esc(i)}</li>`).join('')}</ul>` : ''
-    const html = emailLayout(msg.title, `<p style="margin:0 0 12px">${esc(msg.intro)}</p>${list}${url ? `<p style="margin:16px 0 4px">${emailButton(url, msg.linkLabel || 'Open in CRM')}</p>` : ''}<p style="margin:18px 0 0;color:#6B6A80;font-size:12px">You are receiving this because of your role in the QIMD admin panel.</p>`)
+    const html = emailLayout(
+      msg.title,
+      `<p>${esc(msg.intro)}</p>${emailList(msg.items || [])}${url ? emailButton(url, msg.linkLabel || 'Open in CRM') : ''}${emailNote('You are receiving this because of your role in the QIMD admin panel.')}`,
+      'QIMD Admin Panel',
+    )
     const text = [msg.intro, ...(msg.items || []).map((i) => `- ${i}`), url ? `\n${msg.linkLabel || 'Open in CRM'}: ${url}` : ''].join('\n')
     // One email per person, so addresses are not shared between staff
     const results = await Promise.all(emails.map((e) => sendMail({ to: e, subject: msg.subject, html, text })))
@@ -35,11 +38,14 @@ export async function emailStaff(
 export async function emailAccountNotice(user: { email?: string | null; fullName?: string | null }, subject: string, title: string, lines: string[], link?: { href: string; label: string }) {
   try {
     if (!mailConfigured() || !user.email) return false
-    const body = lines.map((l) => `<p style="margin:0 0 12px">${esc(l)}</p>`).join('') + (link ? `<p style="margin:16px 0 4px">${emailButton(link.href, link.label)}</p>` : '')
+    const body =
+      lines.map((l) => `<p>${esc(l)}</p>`).join('') +
+      (link ? emailButton(link.href, link.label) : '') +
+      emailNote('This is an automatic security email about your QIMD admin account.')
     const r = await sendMail({
       to: user.email,
       subject,
-      html: emailLayout(title, `<p style="margin:0 0 12px">Hi ${esc(user.fullName || '')},</p>${body}`),
+      html: emailLayout(title, `<p>Hi ${esc(user.fullName || '')},</p>${body}`, 'Account security'),
       text: [`Hi ${user.fullName || ''},`, ...lines, link ? `${link.label}: ${link.href}` : ''].join('\n\n'),
     })
     return r.ok

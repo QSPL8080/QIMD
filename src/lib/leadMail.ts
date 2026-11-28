@@ -1,4 +1,4 @@
-import { sendMail, emailLayout, emailTable, emailButton, esc, SITE_URL } from './mailer'
+import { sendMail, emailLayout, emailTable, emailButton, emailNote, esc, SITE_URL } from './mailer'
 import { getSetting } from './settings'
 
 /**
@@ -41,10 +41,12 @@ export async function sendLeadEmail(
       title,
       emailTable(
         rows.map((f) =>
-          f.link ? { label: f.label, html: `<a href="${absoluteUrl(String(f.value))}" style="color:#5B3FD9">${absoluteUrl(String(f.value))}</a>` } : { label: f.label, value: f.value },
+          f.link ? { label: f.label, html: `<a href="${esc(absoluteUrl(String(f.value)))}" style="color:#4F46E5">${esc(absoluteUrl(String(f.value)))}</a>` } : { label: f.label, value: f.value },
         ),
-      ) + emailButton(link, 'Open in Admin Panel'),
-      `${when} IST`,
+      ) +
+        emailButton(link, 'Open in Admin Panel') +
+        emailNote('Submitted from the QIMD website. Reply to this email to answer the enquirer directly.'),
+      `Website enquiry · ${when} IST`,
     )
     const text = [`${title} — ${when} IST`, '', ...rows.map((f) => `${f.label}: ${f.link ? absoluteUrl(String(f.value)) : f.value}`), '', `Admin: ${link}`].join('\n')
 
@@ -73,9 +75,10 @@ export async function sendSubmitterAck(type: Exclude<LeadMailType, 'meta'>, to?:
     const contact = [inst.phone, inst.email].filter(Boolean).join(' · ')
     const html = emailLayout(
       subject,
-      `<p style="margin:0 0 12px">Hi ${esc(name || '')},</p><p style="margin:0 0 12px">${esc(line)}</p>${contact ? `<p style="margin:0 0 12px;color:#6B6A80">${esc(inst.name)}<br>${esc(inst.address)}<br>${esc(contact)}</p>` : ''}`,
+      `<p>Hi ${esc(name || '')},</p><p>${esc(line)}</p><p>If you have any questions in the meantime, simply reply to this email${inst.phone ? ` or call us on ${esc(inst.phone)}` : ''}.</p><p style="margin:22px 0 0">Warm regards,<br><strong style="color:#0F0D1A">Team ${esc(inst.shortName || 'QIMD')}</strong><br><span style="color:#6E6D85;font-size:13px">${esc(inst.name)}</span></p>`,
+      'Thank you for reaching out',
     )
-    const text = [`Hi ${name || ''},`, line, '', inst.name, inst.address, contact].filter((x) => x !== undefined).join('\n')
+    const text = [`Hi ${name || ''},`, '', line, '', 'Warm regards,', `Team ${inst.shortName || 'QIMD'}`, inst.name, inst.address, contact].filter((x) => x !== undefined).join('\n')
     const res = await sendMail({ to: email, subject: `${subject} — ${inst.shortName || inst.name}`, html, text, replyTo: inst.email })
     if (!res.ok) console.warn('[ack email]', res.error)
   } catch (err) {

@@ -3,7 +3,7 @@ import { computeLedger } from './fees'
 import { paymentModeLabel } from './fees'
 import { ymdOf, todayIST, fmtDateTime, fmtMoney } from './dates'
 import { getSetting, type InstituteSettings } from './settings'
-import { sendMail, emailLayout, emailTable, emailButton, esc, SITE_URL } from './mailer'
+import { sendMail, emailLayout, emailTable, emailButton, emailNote, esc, SITE_URL } from './mailer'
 
 export type ReceiptData = {
   paymentId: string
@@ -103,7 +103,8 @@ export async function emailReceipt(paymentId: string): Promise<{ ok: boolean; er
           { label: 'Balance Due', value: fmtMoney(r.balance) },
         ]) +
         emailButton(receiptLink(r.token), 'View / Download Receipt') +
-        `<p style="color:#6B6A80;font-size:12px;margin-top:18px">${esc(r.institute.name)} · ${esc(r.institute.address)}${r.institute.phone ? ` · ${esc(r.institute.phone)}` : ''}</p>`,
+        emailNote(r.institute.receiptFooter || 'This is a computer-generated receipt.'),
+      'Payment received',
     )
     const text = `Payment Receipt ${r.receiptNo}\nStudent: ${r.studentName}\nAdmission ID: ${r.admissionCode}\nCourse: ${r.courseName}\nAmount: ${fmtMoney(r.amount)}\nDate: ${fmtDateTime(r.paidAt)}\nMode: ${r.mode}\nBalance due: ${fmtMoney(r.balance)}\nReceipt: ${receiptLink(r.token)}`
     const sent = await sendMail({ to: r.studentEmail, subject: `Payment Receipt ${r.receiptNo} — ${r.institute.shortName || r.institute.name}`, html, text, replyTo: r.institute.email })

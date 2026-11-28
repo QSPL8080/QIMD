@@ -8,7 +8,7 @@ import { emailReceipt, receiptLink } from '@/lib/receipts'
 import { audit } from '@/lib/audit'
 import { istLocalToDate, fmtDate, fmtMoney, todayIST } from '@/lib/dates'
 import { getSetting } from '@/lib/settings'
-import { sendMail, emailLayout, emailTable, esc } from '@/lib/mailer'
+import { sendMail, emailLayout, emailTable, emailNote, esc } from '@/lib/mailer'
 import { normalizePhone } from '@/lib/leads'
 import { PAYMENT_KIND_LABEL } from '@/lib/fees'
 
@@ -182,7 +182,9 @@ export async function sendStudentReminderAction(admissionId: string, channel: 'E
               { label: 'Due Date', value: due ? fmtDate(due.dueDate) : null },
               { label: 'Total Outstanding', value: fmtMoney(ledger.balance) },
             ]) +
-            `<p>Please pay at the institute office (cash / UPI / bank transfer)${contact ? ` or contact us at ${esc(contact)}` : ''}. If you have already paid, please ignore this message.</p><p style="color:#6B6A80;font-size:12px">${esc(inst.name)} · ${esc(inst.address)}</p>`,
+            `<p>Please pay at the institute office (cash / UPI / bank transfer)${contact ? ` or contact us at ${esc(contact)}` : ''}.</p><p style="margin:22px 0 0">Warm regards,<br><strong style="color:#0F0D1A">Accounts Team, ${esc(inst.shortName || 'QIMD')}</strong></p>` +
+              emailNote('If you have already paid, please ignore this message.'),
+          'Fee reminder',
         ),
       })
       if (!r.ok) {
