@@ -106,9 +106,9 @@ export default function AdminFranchiseProposalsPage() {
       'Company Name',
       'Email',
       'Phone',
-      'City',
-      'State',
-      'Investment Capacity',
+      'Preferred City',
+      'City / State',
+      'Current Profession',
       'Proposal Message',
       'Status',
     ]
@@ -653,15 +653,15 @@ export default function AdminFranchiseProposalsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 min-w-0">
                 <div className="min-w-0">
-                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">City / Location</span>
+                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">Preferred City</span>
                   <span className="text-slate-900 font-bold block truncate">{selectedProposal.city || 'N/A'}</span>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">State</span>
+                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">City / State</span>
                   <span className="text-slate-900 font-bold block truncate">{selectedProposal.state || 'N/A'}</span>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">Investment Capacity</span>
+                  <span className="text-slate-400 font-semibold block text-[10px] uppercase">Current Profession</span>
                   <span className="text-slate-900 font-bold block truncate" title={selectedProposal.investmentCapacity}>{selectedProposal.investmentCapacity || 'N/A'}</span>
                 </div>
               </div>
